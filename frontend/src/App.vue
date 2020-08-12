@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" class="wrapper">
     <TopNavBar />
 
     <div id="container">
@@ -17,6 +17,8 @@ import TopNavBar from "@/components/TopNavBar";
 import LeftNavBar from "@/components/LeftNavBar";
 import Footer from "@/components/Footer";
 
+require("@/assets/css/cmmn/public.css");
+
 export default {
   name: "App",
   components: {
@@ -27,7 +29,5 @@ export default {
 };
 </script>
 
-<style>
-#app {
-}
+<style scoped src="@/assets/css/cmmn/public.css">
 </style>
