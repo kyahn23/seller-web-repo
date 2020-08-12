@@ -5,7 +5,7 @@
     <div id="container">
       <div class="fixedWidth">
         <LeftNavBar />
-        <!-- <router-view :key="$route.fullPath" /> -->
+        <router-view :key="$route.fullPath" />
       </div>
     </div>
     <Footer />
@@ -18,6 +18,15 @@ import LeftNavBar from "@/components/LeftNavBar";
 import Footer from "@/components/Footer";
 
 require("@/assets/css/cmmn/public.css");
+
+require("@/assets/js/lib/jquery-1.10.2.min.js");
+require("@/assets/js/lib/jquery-migrate-1.2.1.min.js");
+require("@/assets/js/lib/jquery-ui.min.js");
+require("@/assets/js/lib/jquery-ui-datepicker-ko.js");
+require("@/assets/js/lib/jquery.mtz.monthpicker.js");
+require("@/assets/js/lib/jquery.popupoverlay.js");
+require("@/assets/js/lib/jquery.placeholder.min.js");
+require("@/assets/js/public.js");
 
 export default {
   name: "App",

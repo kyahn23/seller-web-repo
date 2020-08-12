@@ -1,8 +1,27 @@
 import Vue from 'vue'
-import Router from 'vue-router'
+import VueRouter from 'vue-router'
+import ServiceInbox from '@/views/service-inbox.vue'
+import ServiceVisit from '@/views/service-visit.vue'
 
-Vue.use(Router)
+Vue.use(VueRouter)
 
-export default new Router({
+const mode = 'history'
 
+const routes = [{
+    path: '/service/inbox',
+    name: 'service-inbox',
+    component: ServiceInbox
+  },
+  {
+    path: '/service/visit',
+    name: 'service-visit',
+    component: ServiceVisit
+  }
+]
+
+const router = new VueRouter({
+  mode,
+  routes
 })
+
+export default router
