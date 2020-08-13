@@ -40,16 +40,16 @@
           </a>
           <ul>
             <li @click="ActivateItem(4)" :class="isActive[4]">
-              <a href="carr-mntrt-manage.html">
+              <router-link :to="{ name: 'carr-mntrt', params:{carrier:'skt'} }">
                 <img src="../assets/images/cmmn/hidden.png" class="ico-list" alt="아이콘" />
                 <span>요금제등록관리</span>
-              </a>
+              </router-link>
             </li>
             <li @click="ActivateItem(5)" :class="isActive[5]">
-              <a href="carr-deal-manage.html">
+              <router-link :to="{ name: 'carr-deal', params:{carrier:'skt'} }">
                 <img src="../assets/images/cmmn/hidden.png" class="ico-list" alt="아이콘" />
                 <span>판매정책관리</span>
-              </a>
+              </router-link>
             </li>
           </ul>
         </li>
@@ -59,16 +59,16 @@
           </a>
           <ul>
             <li @click="ActivateItem(6)" :class="isActive[6]">
-              <a href="#">
+              <router-link :to="{ name: 'carr-mntrt', params:{carrier:'kt'} }">
                 <img src="../assets/images/cmmn/hidden.png" class="ico-list" alt="아이콘" />
                 <span>요금제등록관리</span>
-              </a>
+              </router-link>
             </li>
             <li @click="ActivateItem(7)" :class="isActive[7]">
-              <a href="#">
+              <router-link :to="{ name: 'carr-deal', params:{carrier:'kt'} }">
                 <img src="../assets/images/cmmn/hidden.png" class="ico-list" alt="아이콘" />
                 <span>판매정책관리</span>
-              </a>
+              </router-link>
             </li>
           </ul>
         </li>
@@ -78,16 +78,16 @@
           </a>
           <ul>
             <li @click="ActivateItem(8)" :class="isActive[8]">
-              <a href="#">
+              <router-link :to="{ name: 'carr-mntrt', params:{carrier:'lgu'} }">
                 <img src="../assets/images/cmmn/hidden.png" class="ico-list" alt="아이콘" />
                 <span>요금제등록관리</span>
-              </a>
+              </router-link>
             </li>
             <li @click="ActivateItem(9)" :class="isActive[9]">
-              <a href="#">
+              <router-link :to="{ name: 'carr-deal', params:{carrier:'lgu'} }">
                 <img src="../assets/images/cmmn/hidden.png" class="ico-list" alt="아이콘" />
                 <span>판매정책관리</span>
-              </a>
+              </router-link>
             </li>
           </ul>
         </li>
@@ -97,22 +97,22 @@
           </a>
           <ul>
             <li @click="ActivateItem(10)" :class="isActive[10]">
-              <a href="shop-manage.html">
-                <img src="../assets/images/cmmn/hidden.png" class="ico-nfc" alt="아이콘" />
+              <router-link :to="{ name: 'shop-manage' }">
+                <img src="../assets/images/cmmn/hidden.png" class="ico-vendor" alt="아이콘" />
                 <span>매장정보관리</span>
-              </a>
+              </router-link>
             </li>
             <li @click="ActivateItem(11)" :class="isActive[11]">
-              <a href="shop-employees.html">
-                <img src="../assets/images/cmmn/hidden.png" class="ico-nfc2" alt="아이콘" />
+              <router-link :to="{ name: 'shop-employees' }">
+                <img src="../assets/images/cmmn/hidden.png" class="ico-vendor" alt="아이콘" />
                 <span>직원관리</span>
-              </a>
+              </router-link>
             </li>
             <li @click="ActivateItem(12)" :class="isActive[12]">
-              <a href="shop-notice.html">
-                <img src="../assets/images/cmmn/hidden.png" class="ico-nfc2" alt="아이콘" />
+              <router-link :to="{ name: 'shop-notice' }">
+                <img src="../assets/images/cmmn/hidden.png" class="ico-vendor" alt="아이콘" />
                 <span>공지사항관리</span>
-              </a>
+              </router-link>
             </li>
           </ul>
         </li>

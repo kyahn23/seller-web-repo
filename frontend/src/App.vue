@@ -40,3 +40,8 @@ export default {
 
 <style scoped src="@/assets/css/cmmn/public.css">
 </style>
+<style scoped>
+.fixedWidth {
+  min-height: 890px;
+}
+</style>
