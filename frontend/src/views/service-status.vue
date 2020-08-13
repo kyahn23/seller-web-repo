@@ -1,0 +1,229 @@
+<template>
+  <!-- contents -->
+  <div class="sectionRight" id="content">
+    <div class="contentWrap">
+      <div class="onlyWideView">
+        <div class="subHeader">
+          <div id="foldUnfold">
+            <a href="#" class="btnFold">
+              <span>좌측메뉴 접기/펴기</span>
+            </a>
+          </div>
+          <h2 class="h2">
+            <img src="../assets/images/cmmn/hidden.png" class="ico-vendor" alt="아이콘" />상담관리현황
+          </h2>
+          <div class="pageLocation">
+            <span>상담 관리</span>&gt;
+            <strong>상담관리현황</strong>
+          </div>
+        </div>
+
+        <div class="searchArea">
+          <ul>
+            <li class="txtSize2">
+              <label>등록일</label>
+              <input type="text" class="wDate" id placeholder="등록일 선택" value="2020-06-21" />
+              <span class="datePickerUI">
+                <input type="hidden" id="srchSrvcDate" title="등록일 선택" />
+                <a href="#" class="btnCalender" id="btnSrchSrvcDate">
+                  <em>조회 등록일 선택</em>
+                </a>
+              </span>
+            </li>
+            <li class="txtSize3">
+              <label for="marketing01">등록자</label>
+              <select id="marketing01">
+                <option value>전체</option>
+                <option value>매장판매원1</option>
+                <option value>매장판매원2</option>
+                <option value>매장판매원3</option>
+              </select>
+            </li>
+          </ul>
+          <div class="btnSearch">
+            <a href="#" class="btnM colorBlue">
+              <span>검색</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- content group1 -->
+        <div class="contentBlock">
+          <div class="contentTitle">
+            <div class="cTit">상담 처리 현황</div>
+            <div class="cTitRight">
+              <div class="SelectBoxBasic selectPaging">
+                <input type="hidden" value="1page" />
+                <div class="DefaultName">선택하세요</div>
+                <ul>
+                  <li id="1page">1 page</li>
+                  <li id="2page">2 page</li>
+                  <li id="3page">3 page</li>
+                  <li id="4page">4 page</li>
+                  <li id="5page">5 page</li>
+                  <li id="6page">6 page</li>
+                  <li id="7page">7 page</li>
+                  <li id="8page">8 page</li>
+                  <li id="9page">9 page</li>
+                  <li id="10page">10 page</li>
+                  <li id="11page">11 page</li>
+                  <li id="12page">12 page</li>
+                  <li id="13page">13 page</li>
+                  <li id="14page">14 page</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <!-- content -->
+          <div class="contentDetail slideTogglebox">
+            <div class="tHeadScrollBG">
+              <div class="tHeadScroll">
+                <table class="tblList tHead">
+                  <colgroup>
+                    <col style="width:10%" />
+                    <col style="width:10%" />
+                    <col style="width:10%" />
+                    <col style="width:10%" />
+                    <col style="width:*" />
+                    <col style="width:*" />
+                    <col style="width:10%" />
+                    <col style="width:*" />
+                  </colgroup>
+                  <tbody>
+                    <tr>
+                      <td>구분</td>
+                      <td>고객명</td>
+                      <td>통신사</td>
+                      <td>개통유형</td>
+                      <td>상담요금제</td>
+                      <td>휴대폰</td>
+                      <td>등록자</td>
+                      <td>등록일시</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="tBodyScroll">
+              <table class="tblList tBody trClick">
+                <caption>상담 처리 현황 정보</caption>
+                <colgroup>
+                  <col style="width:10%" />
+                  <col style="width:10%" />
+                  <col style="width:10%" />
+                  <col style="width:10%" />
+                  <col style="width:*" />
+                  <col style="width:*" />
+                  <col style="width:10%" />
+                  <col style="width:*" />
+                </colgroup>
+                <thead>
+                  <tr>
+                    <td>구분</td>
+                    <td>고객명</td>
+                    <td>통신사</td>
+                    <td>개통유형</td>
+                    <td>상담요금제</td>
+                    <td>휴대폰</td>
+                    <td>등록자</td>
+                    <td>등록일시</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="alignC">방문예정</td>
+                    <td class="alignC">홍길동</td>
+                    <td class="alignC">SKT</td>
+                    <td class="alignC">번호이동</td>
+                    <td class="alignC">5G 76</td>
+                    <td class="alignC">갤럭시 S20</td>
+                    <td class="alignC">매장판매원1</td>
+                    <td class="alignC">2020-06-21 15:00</td>
+                  </tr>
+                  <tr class="checkedItem">
+                    <td class="alignC">방문예정</td>
+                    <td class="alignC">고길동</td>
+                    <td class="alignC">KT</td>
+                    <td class="alignC">기기변경</td>
+                    <td class="alignC">5G 55</td>
+                    <td class="alignC">갤럭시 S10</td>
+                    <td class="alignC">매장판매원1</td>
+                    <td class="alignC">2020-06-21 15:10</td>
+                  </tr>
+                  <tr>
+                    <td class="alignC">방문예정</td>
+                    <td class="alignC">이효리</td>
+                    <td class="alignC">LGU+</td>
+                    <td class="alignC">기기변경</td>
+                    <td class="alignC">5G 55</td>
+                    <td class="alignC">갤럭시 S20 Plus</td>
+                    <td class="alignC">매장판매원1</td>
+                    <td class="alignC">2020-06-21 15:20</td>
+                  </tr>
+                  <tr>
+                    <td class="alignC">블랙고객</td>
+                    <td class="alignC">삼순이</td>
+                    <td class="alignC">SKT</td>
+                    <td class="alignC">신규가입</td>
+                    <td class="alignC">5G 90</td>
+                    <td class="alignC">갤럭시 S10 Plus</td>
+                    <td class="alignC">매장판매원2</td>
+                    <td class="alignC">2020-06-21 15:30</td>
+                  </tr>
+                  <tr>
+                    <td class="alignC">블랙고객</td>
+                    <td class="alignC">아무개</td>
+                    <td class="alignC">SKT</td>
+                    <td class="alignC">신규가입</td>
+                    <td class="alignC">5G 90</td>
+                    <td class="alignC">갤럭시 S10 Plus</td>
+                    <td class="alignC">매장판매원3</td>
+                    <td class="alignC">2020-06-21 15:40</td>
+                  </tr>
+                  <tr>
+                    <td class="alignC">개통완료</td>
+                    <td class="alignC">슈퍼맨</td>
+                    <td class="alignC">KT</td>
+                    <td class="alignC">번호이동</td>
+                    <td class="alignC">5G 76</td>
+                    <td class="alignC">갤럭시 S10 Plus</td>
+                    <td class="alignC">매장판매원1</td>
+                    <td class="alignC">2020-06-21 15:40</td>
+                  </tr>
+                  <tr>
+                    <td class="alignC">개통완료</td>
+                    <td class="alignC">아이언맨</td>
+                    <td class="alignC">LGU+</td>
+                    <td class="alignC">기기변경</td>
+                    <td class="alignC">5G 55</td>
+                    <td class="alignC">갤럭시 S10</td>
+                    <td class="alignC">매장판매원2</td>
+                    <td class="alignC">2020-06-21 15:40</td>
+                  </tr>
+                  <!-- 결과없음 -->
+                  <tr class="errorMessage">
+                    <td colspan="6">
+                      <div class="errorTxt">
+                        <span>항목이 없습니다.</span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!-- //content -->
+        </div>
+        <!-- //content group1 -->
+      </div>
+    </div>
+  </div>
+  <!-- //contents -->
+</template>
+
+<script>
+export default {};
+</script>
+
+<style lang="scss" scoped>
+</style>

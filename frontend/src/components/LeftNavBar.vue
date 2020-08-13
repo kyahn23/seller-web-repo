@@ -21,16 +21,16 @@
               </router-link>
             </li>
             <li @click="ActivateItem(2)" :class="isActive[2]">
-              <a href="service-status.html">
-                <img src="../assets/images/cmmn/hidden.png" class="ico-pw" alt="아이콘" />
+              <router-link :to="{ name: 'service-status' }">
+                <img src="../assets/images/cmmn/hidden.png" class="ico-user" alt="아이콘" />
                 <span>상담관리현황</span>
-              </a>
+              </router-link>
             </li>
             <li @click="ActivateItem(3)" :class="isActive[3]">
-              <a href="service-marketing.html">
-                <img src="../assets/images/cmmn/hidden.png" class="ico-pw" alt="아이콘" />
+              <router-link :to="{ name: 'service-marketing' }">
+                <img src="../assets/images/cmmn/hidden.png" class="ico-user" alt="아이콘" />
                 <span>마케팅대상관리</span>
-              </a>
+              </router-link>
             </li>
           </ul>
         </li>
