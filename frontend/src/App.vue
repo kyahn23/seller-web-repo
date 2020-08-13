@@ -1,14 +1,19 @@
 <template>
   <div id="app" class="wrapper">
-    <TopNavBar />
-
-    <div id="container">
-      <div class="fixedWidth">
-        <LeftNavBar />
-        <router-view :key="$route.fullPath" />
-      </div>
+    <div v-if="$route.fullPath === '/'">
+      <MainPage />
     </div>
-    <Footer />
+    <div v-else>
+      <TopNavBar />
+
+      <div id="container">
+        <div class="fixedWidth">
+          <LeftNavBar />
+          <router-view :key="$route.fullPath" />
+        </div>
+      </div>
+      <Footer />
+    </div>
   </div>
 </template>
 
@@ -16,6 +21,7 @@
 import TopNavBar from "@/components/TopNavBar";
 import LeftNavBar from "@/components/LeftNavBar";
 import Footer from "@/components/Footer";
+import MainPage from "@/views/main-page";
 
 require("@/assets/css/cmmn/public.css");
 
@@ -31,6 +37,7 @@ require("@/assets/js/public.js");
 export default {
   name: "App",
   components: {
+    MainPage,
     TopNavBar,
     LeftNavBar,
     Footer,

@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+
+import MainPage from '@/views/main-page.vue'
 import ServiceInbox from '@/views/service-inbox.vue'
 import ServiceVisit from '@/views/service-visit.vue'
 import ServiceMarketing from '@/views/service-marketing.vue'
@@ -15,6 +17,11 @@ Vue.use(VueRouter)
 const mode = 'history'
 
 const routes = [{
+    path: '/',
+    name: 'main-page',
+    component: MainPage
+  },
+  {
     path: '/service/inbox',
     name: 'service-inbox',
     component: ServiceInbox

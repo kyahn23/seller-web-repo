@@ -3,9 +3,9 @@
   <div class="header">
     <div class="fixedWidth">
       <h1 class="logo">
-        <a href="main.html">
+        <router-link :to="{ name: 'MainPage' }">
           <img src="../assets/images/cmmn/logo.png" alt="PentaWorks" style="height: 30px;" />
-        </a>
+        </router-link>
       </h1>
       <div class="headerRight">
         <p class="hdTime">
