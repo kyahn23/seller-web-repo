@@ -3,7 +3,7 @@
   <div class="header">
     <div class="fixedWidth">
       <h1 class="logo">
-        <router-link :to="{ name: 'MainPage' }">
+        <router-link :to="{ name: 'main-page' }">
           <img src="../assets/images/cmmn/logo.png" alt="PentaWorks" style="height: 30px;" />
         </router-link>
       </h1>
