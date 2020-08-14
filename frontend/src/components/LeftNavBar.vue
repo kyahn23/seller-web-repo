@@ -123,11 +123,14 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   data() {
     return {
+      initMenuID: -1,
       isActive: [
-        { current: true },
+        { current: false },
         { current: false },
         { current: false },
         { current: false },
@@ -143,6 +146,20 @@ export default {
       ],
     };
   },
+  created() {
+    // this.ActivateItem(this.initMenuID);
+    // this.ActivateItem(0);
+  },
+  mounted() {
+    this.initMenuID = this.menu.initMenu;
+    if (this.initMenuID !== -1) {
+      this.ActivateItem(this.initMenuID);
+      // this.initMenuID = -1;
+    } else {
+      this.ActivateItem(0);
+    }
+  },
+  computed: mapState("menu", ["initMenu"]),
   methods: {
     ActivateItem: function (n) {
       for (var i = 0; i < this.isActive.length; i++) {

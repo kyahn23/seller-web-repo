@@ -1,0 +1,45 @@
+@charset 'UTF-8';
+
+/* ------------------------------ 
+ * Description: 로그인 페이지 전용
+ * Modified-date: 2016.08.
+ * ------------------------------ */
+
+html,body { background:url('../../images/cmmn/login-bg.jpg') center top !important;overflow-x:hidden; }
+
+ /* 로그인 */
+ .loginWrapper {position:relative;height:100%;min-height:630px;max-height:768px; }
+ .loginVisual { width:100%;_background:url('../../images/cmmn/login-bg.jpg') center top;height:100%;position: relative; }
+ .loginVisual .visualBox { max-width:1200px; margin:0 auto; }
+  .loginVisual .visualBox h1 { text-align:center;padding-top:5% }
+ .loginVisual .visualBox .vImg { position:absolute; z-index:3; text-align:center; bottom:160px; left:50%; margin-left:-258px; }
+ .loginBox { width:100%; position:absolute; bottom:30px;
+ 	background-color:#005fa6;
+	background-image: -moz-linear-gradient(top, #0072b4 50%, #005fa6 100%);
+	background-image: -webkit-linear-gradient(top,#0072b4 50%, #005fa6 100%);
+	background-image: linear-gradient(to bottom, #0072b4 50%, #005fa6 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0072b4', endColorstr='#005fa6',GradientType=0);
+}
+.loginBox .loginForm {width:448px;margin:0 auto;position:relative; padding:56px 12px 18px 12px;}
+.loginBox .loginForm h2 { margin-bottom:12px;text-align:center; }
+.loginBox input[type=text],
+.loginBox input[type=password] {border:1px solid #ccc; border-radius:3px; height:40px; line-height:1.5; background:#fff; font-size:12px; width:76%; padding-left: 12px;}
+.loginBox .loginForm > p { border:solid #ccc;}
+.loginBox .etcLink { width:76%;font-size:12px;margin-top:4px; }
+.loginBox .etcLink a { color:#fff; padding:0 1px; }
+.loginBox .etcLink .linkJoin { float:right;font-weight:bold; }
+.loginBox .formWrapper > p {margin-bottom:6px;}
+.loginBox .btnLogin { position:absolute; top:90px; right:0;border-radius:3px; border:1px solid #00aaec; width:106px; height:84px;
+	background-color:#0093e4;
+	background-image: -moz-linear-gradient(top, #00bef2 50%, #009fec 100%);
+	background-image: -webkit-linear-gradient(top,#00bef2 50%, #009fec 100%);
+	background-image: linear-gradient(to bottom, #00bef2 50%, #009fec 100%);
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00bef2', endColorstr='#009fec',GradientType=0);
+}
+.loginBox .btnLogin span { margin-top:30px; }
+.loginBox label {position:absolute;overflow:hidden;clip:rect(0,0,0,0);width:1px;height:1px;margin:-1px;padding:0;border:0;}
+
+ .loginFooter { width:100%; height:30px; background:#005393;position:absolute; bottom:0; }
+ .loginFooter p { text-align:center;color:#fff;font-size:11px;line-height:30px; }
+ 
+
