@@ -1,19 +1,21 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport">
 	<title>Pentaworks Service</title>
-	<link rel="stylesheet" href="../css/cmmn/public.css">
-	<script type="text/javascript" src="../js/lib/jquery-1.10.2.min.js"></script>
-	<script type="text/javascript" src="../js/lib/jquery-migrate-1.2.1.min.js"></script>
-	<script type="text/javascript" src="../js/lib/jquery-ui.min.js"></script>
-	<script type="text/javascript" src="../js/lib/jquery-ui-datepicker-ko.js"></script>
-	<script type="text/javascript" src="../js/lib/jquery.mtz.monthpicker.js"></script>
-	<script type="text/javascript" src="../js/lib/jquery.popupoverlay.js"></script>
-	<script type="text/javascript" src="../js/lib/jquery.placeholder.min.js"></script>
-	<script type="text/javascript" src="../js/public.js"></script>
+	<link rel="stylesheet" th:href="@{/css/cmmn/public.css}">
+	<script type="text/javascript" th:src="@{/js/lib/jquery-1.10.2.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/lib/jquery-migrate-1.2.1.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/lib/jquery-ui.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/lib/jquery-ui-datepicker-ko.js}"></script>
+	<script type="text/javascript" th:src="@{/js/lib/jquery.mtz.monthpicker.js}"></script>
+	<script type="text/javascript" th:src="@{/js/lib/jquery.popupoverlay.js}"></script>
+	<script type="text/javascript" th:src="@{/js/lib/jquery.placeholder.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/lib/vue.js}"></script>
+	<script type="text/javascript" th:src="@{/js/lib/axios.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/public.js}"></script>
 </head>
 
 <body>
@@ -23,7 +25,7 @@
 		<div class="header">
 			<div class="fixedWidth">
 				<h1 class="logo">
-					<a href="main.html"><img src="../images/cmmn/logo.png" alt="PentaWorks" style="height: 30px;" /></a>
+					<a href="main.html"><img th:src="@{/images/cmmn/logo.png}" alt="PentaWorks" style="height: 30px;" /></a>
 				</h1>
 				<div class="headerRight">
 					<p class="hdTime"><em>09:59</em><a href="#" class="btnExtension">연장하기</a></p>
@@ -48,25 +50,25 @@
 								<ul>
 									<li class="current">
 										<a href="service-inbox.html">
-											<img src="../images/cmmn/hidden.png" class="ico-vendor" alt="아이콘">
+											<img th:src="@{/images/cmmn/hidden.png}" class="ico-vendor" alt="아이콘">
 											<span>상담접수관리</span>
 										</a>
 									</li>
 									<li>
 										<a href="service-visit.html">
-											<img src="../images/cmmn/hidden.png" class="ico-user" alt="아이콘">
+											<img th:src="@{/images/cmmn/hidden.png}" class="ico-user" alt="아이콘">
 											<span>방문개통관리</span>
 										</a>
 									</li>
 									<li>
 										<a href="service-status.html">
-											<img src="../images/cmmn/hidden.png" class="ico-pw" alt="아이콘">
+											<img th:src="@{/images/cmmn/hidden.png}" class="ico-pw" alt="아이콘">
 											<span>상담관리현황</span>
 										</a>
 									</li>
 									<li>
 										<a href="service-marketing.html">
-											<img src="../images/cmmn/hidden.png" class="ico-pw" alt="아이콘">
+											<img th:src="@{/images/cmmn/hidden.png}" class="ico-pw" alt="아이콘">
 											<span>마케팅대상관리</span>
 										</a>
 									</li>
@@ -77,13 +79,13 @@
 								<ul>
 									<li>
 										<a href="carr-mntrt-manage.html">
-											<img src="../images/cmmn/hidden.png" class="ico-list" alt="아이콘">
+											<img th:src="@{/images/cmmn/hidden.png}" class="ico-list" alt="아이콘">
 											<span>요금제등록관리</span>
 										</a>
 									</li>
 									<li>
 										<a href="carr-deal-manage.html">
-											<img src="../images/cmmn/hidden.png" class="ico-list" alt="아이콘">
+											<img th:src="@{/images/cmmn/hidden.png}" class="ico-list" alt="아이콘">
 											<span>판매정책관리</span>
 										</a>
 									</li>
@@ -94,13 +96,13 @@
 								<ul>
 									<li>
 										<a href="#">
-											<img src="../images/cmmn/hidden.png" class="ico-list" alt="아이콘">
+											<img th:src="@{/images/cmmn/hidden.png}" class="ico-list" alt="아이콘">
 											<span>요금제등록관리</span>
 										</a>
 									</li>
 									<li>
 										<a href="#">
-											<img src="../images/cmmn/hidden.png" class="ico-list" alt="아이콘">
+											<img th:src="@{/images/cmmn/hidden.png}" class="ico-list" alt="아이콘">
 											<span>판매정책관리</span>
 										</a>
 									</li>
@@ -111,13 +113,13 @@
 								<ul>
 									<li>
 										<a href="#">
-											<img src="../images/cmmn/hidden.png" class="ico-list" alt="아이콘">
+											<img th:src="@{/images/cmmn/hidden.png}" class="ico-list" alt="아이콘">
 											<span>요금제등록관리</span>
 										</a>
 									</li>
 									<li>
 										<a href="#">
-											<img src="../images/cmmn/hidden.png" class="ico-list" alt="아이콘">
+											<img th:src="@{/images/cmmn/hidden.png}" class="ico-list" alt="아이콘">
 											<span>판매정책관리</span>
 										</a>
 									</li>
@@ -128,19 +130,19 @@
 								<ul>
 									<li>
 										<a href="shop-manage.html">
-											<img src="../images/cmmn/hidden.png" class="ico-nfc" alt="아이콘">
+											<img th:src="@{/images/cmmn/hidden.png}" class="ico-nfc" alt="아이콘">
 											<span>매장정보관리</span>
 										</a>
 									</li>
 									<li>
 										<a href="shop-employees.html">
-											<img src="../images/cmmn/hidden.png" class="ico-nfc2" alt="아이콘">
+											<img th:src="@{/images/cmmn/hidden.png}" class="ico-nfc2" alt="아이콘">
 											<span>직원관리</span>
 										</a>
 									</li>
 									<li>
 										<a href="shop-notice.html">
-											<img src="../images/cmmn/hidden.png" class="ico-nfc2" alt="아이콘">
+											<img th:src="@{/images/cmmn/hidden.png}" class="ico-nfc2" alt="아이콘">
 											<span>공지사항관리</span>
 										</a>
 									</li>
@@ -158,7 +160,7 @@
 
 							<div class="subHeader">
 								<div id="foldUnfold"><a href="#" class="btnFold"><span>좌측메뉴 접기/펴기</span></a></div>
-								<h2 class="h2"><img src="../images/cmmn/hidden.png" class="ico-vendor" alt="아이콘">상담접수관리</h2>
+								<h2 class="h2"><img th:src="@{/images/cmmn/hidden.png}" class="ico-vendor" alt="아이콘">상담접수관리</h2>
 								<div class="pageLocation">
 									<span>상담 관리</span>&gt;<strong>상담접수관리</strong>
 								</div>
@@ -430,7 +432,7 @@
 	<div id="footer">
 		<div class="fixedWidth">
 			copyrights PENTAS. all rights reserved.
-			<div class="goTop"><a href="#" class="btnGoTop"><img src="../images/cmmn/btn-top.png" alt="위로이동"></a></div>
+			<div class="goTop"><a href="#" class="btnGoTop"><img th:src="@{/images/cmmn/btn-top.png}" alt="위로이동"></a></div>
 		</div>
 	</div>
 	<!-- //footer -->
