@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<settings>
+		<setting name="jdbcTypeForNull" value="NULL"/>
+		<setting name="callSettersOnNulls" value="true"/>
+		<setting name="mapUnderscoreToCamelCase" value="true"/>
+	</settings>
+    <typeAliases>
+        <typeAlias alias="DevMap" type="com.pentas.sellerweb.common.module.util.DevMap"/>
+    </typeAliases>
+    <plugins>
+        <plugin interceptor="com.pentas.sellerweb.common.module.mybatis.paginator.OffsetLimitInterceptor" >
+        	<property name="dialectClass" value="com.pentas.sellerweb.common.module.mybatis.paginator.dialect.MySQLDialect"/>
+        </plugin>
+    </plugins>
+</configuration>
