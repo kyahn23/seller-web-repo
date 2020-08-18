@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport">
+	<title>Pentaworks Service</title>
+	<link rel="stylesheet" href="../css/cmmn/public.css">
+	<script type="text/javascript" src="../js/lib/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="../js/lib/jquery-migrate-1.2.1.min.js"></script>
+	<script type="text/javascript" src="../js/lib/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="../js/lib/jquery-ui-datepicker-ko.js"></script>
+	<script type="text/javascript" src="../js/lib/jquery.mtz.monthpicker.js"></script>
+	<script type="text/javascript" src="../js/lib/jquery.popupoverlay.js"></script>
+	<script type="text/javascript" src="../js/lib/jquery.placeholder.min.js"></script>
+	<script type="text/javascript" src="../js/public.js"></script>
+</head>
+
+<body>
+
+	<div class="wrapper">
+		<!-- header -->
+		<div class="header">
+			<div class="fixedWidth">
+				<h1 class="logo">
+					<a href="main.html"><img src="../images/cmmn/logo.png" alt="PentaWorks" style="height: 30px;" /></a>
+				</h1>
+				<div class="headerRight">
+					<p class="hdTime"><em>09:59</em><a href="#" class="btnExtension">연장하기</a></p>
+					<p class="hdUser"><em>(주)이티스트</em>님 안녕하세요!</p>
+					<p class="hdLogout"><a href="login.html" onclick="javascript:RemaLogoutCall();" title="로그아웃">logout</a></p>
+				</div>
+			</div>
+		</div>
+		<!-- //header -->
+
+
+		<!-- container -->
+		<div id="container">
+			<div class="fixedWidth">
+
+				<!-- left -->
+				<div class="sectionLeft">
+					<div class="lnbBgBox">
+						<ul class="accordion" id="LNB">
+							<li class="depthBox">
+								<a href="#" class="dep1"><span>상담 관리</span></a>
+								<ul>
+									<li>
+										<a href="service-inbox.html">
+											<img src="../images/cmmn/hidden.png" class="ico-vendor" alt="아이콘">
+											<span>상담접수관리</span>
+										</a>
+									</li>
+									<li class="current">
+										<a href="service-visit.html">
+											<img src="../images/cmmn/hidden.png" class="ico-user" alt="아이콘">
+											<span>방문개통관리</span>
+										</a>
+									</li>
+									<li>
+										<a href="service-status.html">
+											<img src="../images/cmmn/hidden.png" class="ico-pw" alt="아이콘">
+											<span>상담관리현황</span>
+										</a>
+									</li>
+									<li>
+										<a href="service-marketing.html">
+											<img src="../images/cmmn/hidden.png" class="ico-pw" alt="아이콘">
+											<span>마케팅대상관리</span>
+										</a>
+									</li>
+								</ul>
+							</li>
+							<li class="depthBox">
+								<a href="#" class="dep1"><span>SKT 관리</span></a>
+								<ul>
+									<li>
+										<a href="carr-mntrt-manage.html">
+											<img src="../images/cmmn/hidden.png" class="ico-list" alt="아이콘">
+											<span>요금제등록관리</span>
+										</a>
+									</li>
+									<li>
+										<a href="carr-deal-manage.html">
+											<img src="../images/cmmn/hidden.png" class="ico-list" alt="아이콘">
+											<span>판매정책관리</span>
+										</a>
+									</li>
+								</ul>
+							</li>
+							<li class="depthBox">
+								<a href="#" class="dep1"><span>KT 관리</span></a>
+								<ul>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-list" alt="아이콘">
+											<span>요금제등록관리</span>
+										</a>
+									</li>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-list" alt="아이콘">
+											<span>판매정책관리</span>
+										</a>
+									</li>
+								</ul>
+							</li>
+							<li class="depthBox">
+								<a href="#" class="dep1"><span>LGU+ 관리</span></a>
+								<ul>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-list" alt="아이콘">
+											<span>요금제등록관리</span>
+										</a>
+									</li>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-list" alt="아이콘">
+											<span>판매정책관리</span>
+										</a>
+									</li>
+								</ul>
+							</li>
+							<li class="depthBox">
+								<a href="#" class="dep1"><span>매장 관리</span></a>
+								<ul>
+									<li>
+										<a href="shop-manage.html">
+											<img src="../images/cmmn/hidden.png" class="ico-nfc" alt="아이콘">
+											<span>매장정보관리</span>
+										</a>
+									</li>
+									<li>
+										<a href="shop-employees.html">
+											<img src="../images/cmmn/hidden.png" class="ico-nfc2" alt="아이콘">
+											<span>직원관리</span>
+										</a>
+									</li>
+									<li>
+										<a href="shop-notice.html">
+											<img src="../images/cmmn/hidden.png" class="ico-nfc2" alt="아이콘">
+											<span>공지사항관리</span>
+										</a>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<!-- //left -->
+
+				<!-- contents -->
+				<div class="sectionRight" id="content">
+					<div class="contentWrap">
+						<div class="onlyWideView">
+
+							<div class="subHeader">
+								<div id="foldUnfold"><a href="#" class="btnFold"><span>좌측메뉴 접기/펴기</span></a></div>
+								<h2 class="h2"><img src="../images/cmmn/hidden.png" class="ico-vendor" alt="아이콘">방문개통관리</h2>
+								<div class="pageLocation">
+									<span>상담 관리</span>&gt;<strong>방문개통관리</strong>
+								</div>
+							</div>
+
+							<div class="searchArea">
+								<ul>
+									<li class="txtSize2">
+										<label>방문예정일</label>
+										<input type="text" class="wDate" id="" placeholder="방문예정일 선택" value="2020-06-21">
+										<span class="datePickerUI">
+											<input type="hidden" id="srchDate" title="방문예정일 선택">
+											<a href="#" class="btnCalender" id="btnSrchDate"><em>조회 날짜 선택</em></a>
+										</span>
+									</li>
+									<li class="txtSize5">
+										<label for="visit01">고객명</label>
+										<input type="text" id="visit01" placeholder="고객명 입력" value="">
+									</li>
+									<li class="txtSize3">
+										<label for="visit02">등록자</label>
+										<select id="visit02">
+											<option value="">전체</option>
+											<option value="">매장판매원1</option>
+											<option value="">매장판매원2</option>
+											<option value="">매장판매원3</option>
+										</select>
+									</li>
+								</ul>
+								<div class="btnSearch">
+									<a href="#" class="btnM colorBlue"><span>검색</span></a>
+								</div>
+							</div>
+
+							<!-- content group1 -->
+							<div class="contentBlock">
+								<div class="contentTitle">
+									<div class="cTit">
+										방문 대상 현황
+									</div>
+									<div class="cTitRight">
+										<div class="SelectBoxBasic selectPaging">
+											<input type="hidden" value="1page" />
+											<div class="DefaultName">선택하세요</div>
+											<ul>
+												<li id="1page">1 page</li>
+												<li id="2page">2 page</li>
+												<li id="3page">3 page</li>
+												<li id="4page">4 page</li>
+												<li id="5page">5 page</li>
+												<li id="6page">6 page</li>
+												<li id="7page">7 page</li>
+												<li id="8page">8 page</li>
+												<li id="9page">9 page</li>
+												<li id="10page">10 page</li>
+												<li id="11page">11 page</li>
+												<li id="12page">12 page</li>
+												<li id="13page">13 page</li>
+												<li id="14page">14 page</li>
+											</ul>
+										</div>
+									</div>
+								</div>
+								<!-- content -->
+								<div class="contentDetail slideTogglebox">
+									<div class="tHeadScrollBG">
+										<div class="tHeadScroll">
+											<table class="tblList tHead">
+												<colgroup>
+													<col style="width:*">
+													<col style="width:10%">
+													<col style="width:10%">
+													<col style="width:10%">
+													<col style="width:*">
+													<col style="width:*">
+													<col style="width:10%">
+												</colgroup>
+												<tbody>
+													<tr>
+														<td>방문예정일시</td>
+														<td>고객명</td>
+														<td>통신사</td>
+														<td>개통유형</td>
+														<td>상담 요금제</td>
+														<td>휴대폰</td>
+														<td>등록자</td>
+													</tr>
+												</tbody>
+											</table>
+										</div>
+									</div>
+									<div class="tBodyScroll">
+										<table class="tblList tBody trClick">
+											<caption>방문 대상 현황 정보</caption>
+											<colgroup>
+												<col style="width:*">
+												<col style="width:10%">
+												<col style="width:10%">
+												<col style="width:10%">
+												<col style="width:*">
+												<col style="width:*">
+												<col style="width:10%">
+											</colgroup>
+											<thead>
+												<tr>
+													<td>방문예정일시</td>
+													<td>고객명</td>
+													<td>통신사</td>
+													<td>개통유형</td>
+													<td>상담 요금제</td>
+													<td>휴대폰</td>
+													<td>등록자</td>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td class="alignC">2020-06-21 15:00</td>
+													<td class="alignC">홍길동</td>
+													<td class="alignC">SKT</td>
+													<td class="alignC">번호이동</td>
+													<td class="alignC">LTE 55</td>
+													<td class="alignC">갤럭시 S20</td>
+													<td class="alignC">매장판매원1</td>
+												</tr>
+												<tr class="checkedItem">
+													<td class="alignC">2020-06-21 15:10</td>
+													<td class="alignC">고길동</td>
+													<td class="alignC">KT</td>
+													<td class="alignC">번호이동</td>
+													<td class="alignC">LTE 56</td>
+													<td class="alignC">갤럭시 S20</td>
+													<td class="alignC">매장판매원2</td>
+												</tr>
+												<tr>
+													<td class="alignC">2020-06-21 15:20</td>
+													<td class="alignC">이효리</td>
+													<td class="alignC">LGU+</td>
+													<td class="alignC">기기변경</td>
+													<td class="alignC">5G 55</td>
+													<td class="alignC">갤럭시 S10</td>
+													<td class="alignC">매장판매원3</td>
+												</tr>
+												<tr>
+													<td class="alignC">2020-06-21 15:30</td>
+													<td class="alignC">삼순이</td>
+													<td class="alignC">LGU+</td>
+													<td class="alignC">기기변경</td>
+													<td class="alignC">5G 76</td>
+													<td class="alignC">갤럭시 S20 Plus</td>
+													<td class="alignC">매장판매원1</td>
+												</tr>
+												<tr>
+													<td class="alignC">2020-06-21 15:40</td>
+													<td class="alignC">아무개</td>
+													<td class="alignC">SKT</td>
+													<td class="alignC">신규가입</td>
+													<td class="alignC">5G 90</td>
+													<td class="alignC">갤럭시 S10 Plus</td>
+													<td class="alignC">매장판매원2</td>
+												</tr>
+												<!-- 결과없음 -->
+												<tr class="errorMessage">
+													<td colspan="6">
+														<div class="errorTxt">
+															<span>항목이 없습니다.</span>
+														</div>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<!-- //content -->
+							</div>
+							<!-- //content group1 -->
+
+							<!-- content group2 -->
+							<div class="contentBlock">
+								<div class="contentTitle">
+									<div class="cTit">
+										상담 접수 상세정보
+									</div>
+									<div class="cTitRight">
+										<!-- !!! 여기가 팝업 버튼 !!! -->
+										<div id="btn2"><a href="#popLayerServiceResultAdd"
+												class="btnM colorGreen popLayerServiceResultAdd_open"><span>개통결과 등록</span></a></div>
+									</div>
+								</div>
+								<!-- content -->
+								<div class="contentDetail">
+									<table class="tblDataRow mb15">
+										<colgroup>
+											<col style="width:140px">
+											<col style="width:*">
+											<col style="width:140px">
+											<col style="width:*">
+										</colgroup>
+										<tbody>
+											<tr>
+												<th>통신사 / 개통유형</th>
+												<td>KT / 번호이동</td>
+												<th>상담요금제</th>
+												<td>LTE 56</td>
+											</tr>
+											<tr>
+												<th>휴대폰</th>
+												<td colspan="3">갤럭시 S20</td>
+											</tr>
+										</tbody>
+									</table>
+
+									<table class="tblDataRow mb15">
+										<colgroup>
+											<col style="width:140px">
+											<col style="width:*">
+											<col style="width:140px">
+											<col style="width:*">
+										</colgroup>
+										<tbody>
+											<tr>
+												<th colspan="2" style="padding: 6px 10px 6px 12px; text-align: center; background: #ebf3fd;">
+													접수 시 판매 정책</th>
+												<th colspan="2" style="padding: 6px 10px 6px 12px; text-align: center; background: #fdebed;">
+													현재 판매 정책</th>
+											</tr>
+											<tr>
+												<th style="background: #ebf3fd;">출고가</th>
+												<td style="text-align: right;">1,248,000 원</td>
+												<th style="background: #fdebed;">출고가</th>
+												<td style="text-align: right;">1,248,000 원</td>
+											</tr>
+											<tr>
+												<th style="background: #ebf3fd;">공시지원금</th>
+												<td style="text-align: right;">400,000 원</td>
+												<th style="background: #fdebed;">공시지원금</th>
+												<td style="text-align: right;">400,000 원</td>
+											</tr>
+											<tr>
+												<th style="background: #ebf3fd;">추가지원금</th>
+												<td style="color: #ff0000; text-align: right;">300,000 원</td>
+												<th style="background: #fdebed;">추가지원금</th>
+												<td style="text-align: right;">400,000 원</td>
+											</tr>
+											<tr>
+												<th style="background: #ebf3fd;">실구매가</th>
+												<td style="color: #ff0000; text-align: right;">546,000 원</td>
+												<th style="background: #fdebed;">실구매가</th>
+												<td style="text-align: right;">446,000 원</td>
+											</tr>
+											<tr>
+												<th style="background: #ebf3fd;">부가서비스</th>
+												<td style="color: #ff0000; text-align: right;">있음</td>
+												<th style="background: #fdebed;">부가서비스</th>
+												<td style="text-align: right;">없음</td>
+											</tr>
+										</tbody>
+									</table>
+
+								</div>
+								<!-- //content -->
+							</div>
+							<!-- //content group2 -->
+
+							<!-- content group3 -->
+							<div class="contentBlock">
+								<div class="contentTitle">
+									<div class="cTit">
+										상담결과정보
+									</div>
+									<div class="cTitRight">
+										<div id="btn2"><a href="#" class="btnM colorSky"><span>방문예정일시 변경</span></a></div>
+									</div>
+								</div>
+								<!-- content -->
+								<div class="contentDetail">
+									<table class="tblDataRow mb15">
+										<colgroup>
+											<col style="width:140px">
+											<col style="width:*">
+											<col style="width:140px">
+											<col style="width:*">
+										</colgroup>
+										<tbody>
+											<tr>
+												<th>고객명</th>
+												<td>고길동</td>
+												<th>상담결과</th>
+												<td>방문예정</td>
+											</tr>
+											<tr>
+												<th>고객연락처</th>
+												<td>010-1111-1110</td>
+												<th>방문예정일시<span class="icoMust"><em>필수</em></span></th>
+												<td>
+													<input type="text" class="wDate" id="" placeholder="방문예정일시 선택" value="2020-06-21">
+													<span class="datePickerUI">
+														<input type="hidden" id="visitDate" title="방문예정일시 선택">
+														<a href="#" class="btnCalender" id="btnVisitDate"><em>방문예정일시 선택</em></a>
+													</span>
+													<input type="text" class="wDate" id="" placeholder="방문예정일시 선택" value="15 : 10">
+												</td>
+											</tr>
+											<tr>
+												<th colspan="2" style="padding: 6px 10px 6px 12px; text-align: center; background: #ebf3fd;">
+													고객요청사항</th>
+												<th colspan="2" style="padding: 6px 10px 6px 12px; text-align: center; background: #ebfdeb;">
+													상담내용</th>
+											</tr>
+											<tr>
+												<td colspan="2">고객이 요청한 내용이
+													출력됨<br /><br /><br /><br /><br />
+												</td>
+												<td colspan="2">갤럭시 S20 PLUS로 기기 변경 가능<br />요금제 변경
+													가능<br /><br /><br /><br /></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<!-- //content -->
+							</div>
+							<!-- //content group3 -->
+
+						</div>
+					</div>
+				</div>
+				<!-- //contents -->
+
+			</div>
+		</div>
+		<!-- //container -->
+	</div>
+
+	<!-- footer -->
+	<div id="footer">
+		<div class="fixedWidth">
+			copyrights PENTAS. all rights reserved.
+			<div class="goTop"><a href="#" class="btnGoTop"><img src="../images/cmmn/btn-top.png" alt="위로이동"></a></div>
+		</div>
+	</div>
+	<!-- //footer -->
+
+	<!-- 팝업: 개통결과등록 -->
+	<div class="layerWrapper layerSizeM" id="popLayerServiceResultAdd" style="display:inherit !important">
+		<div class="layerHeader">
+			<strong>개통결과등록</strong>
+			<a href="#" class="btnClose popLayerServiceResultAdd_close"><img src="../images/cmmn/btn-layer-close.png"
+					alt="창닫기"></a>
+		</div>
+		<div class="layerContainer">
+			<div class="layerContent">
+
+				<!-- 컨텐츠 -->
+				<div class="guidanceWrapper">
+					<table class="tblDataRow">
+						<caption>개통결과등록</caption>
+						<colgroup>
+							<col style="width:80px">
+							<col style="width:*">
+							<col style="width:80px">
+							<col style="width:*">
+						</colgroup>
+						<tbody>
+							<tr>
+								<th>개통담당자</th>
+								<td colspan="3">
+									<select class="wPer" id="">
+										<option value="">매장판매원1</option>
+										<option value="">매장판매원2</option>
+										<option value="">매장판매원3</option>
+										<option value="">매장판매원4</option>
+										<option value="">매장판매원5</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<th>구분</th>
+								<td colspan="3">
+									<input type="radio" id="saleSucc" name="saleRslt" value="saleSucc"><label
+										for="saleSucc">개통완료</label>&nbsp;
+									<input type="radio" id="saleFail" name="saleRslt" value="saleFail"><label for="saleFail">미개통처리(블랙고객
+										등록)</label>
+								</td>
+							</tr>
+							<tr>
+								<th>고객명</th>
+								<td><input class="wPer" type="text" id="" placeholder="고객명" value="고길동"></td>
+								<th>개통번호</th>
+								<td><input class="wPer" type="text" id="" placeholder="개통번호" value="010-1111-1110"></td>
+							</tr>
+							<tr>
+								<th>통신사</th>
+								<td>
+									<select class="wPer" id="">
+										<option value="">SKT</option>
+										<option value="">KT</option>
+										<option value="">LGU+</option>
+									</select>
+								</td>
+								<th>조건</th>
+								<td>
+									<select class="wPer" id="">
+										<option value="">번호이동</option>
+										<option value="">기기변경</option>
+										<option value="">신규가입</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<th>요금제</th>
+								<td colspan="3">
+									<select class="wPer" id="">
+										<option value="">5GX 플래티넘</option>
+										<option value="">5GX 프라임</option>
+										<option value="">5GX 스탠다드</option>
+										<option value="">슬림</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<th>제조사</th>
+								<td>
+									<select class="wPer" id="">
+										<option value="">삼성</option>
+										<option value="">LG</option>
+										<option value="">애플</option>
+										<option value="">샤오미</option>
+										<option value="">ZTC</option>
+									</select>
+								</td>
+								<th>모델</th>
+								<td>
+									<select class="wPer" id="">
+										<option value="">갤럭시 S20</option>
+										<option value="">갤럭시 S20 Plus</option>
+										<option value="">갤럭시 S20 Ultra</option>
+										<option value="">갤럭시 S20 Ultra 5G</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<th>부가서비스</th>
+								<td colspan="3">
+									<input type="checkbox" id="addService" name="addService" value="include">
+									<label for="addService">포함</label>
+								</td>
+							</tr>
+							<tr>
+								<th>비고</th>
+								<td colspan="3">
+									<input class="wPer" type="text" id="" placeholder="비고" value="부가서비스 3개월 유지">
+								</td>
+							</tr>
+							<tr>
+								<th>기타사항</th>
+								<td colspan="3" style="height: 85px">
+									<textarea style="width: 100%; height: 100%;">기타사항 입력란
+미개통처리 및 블랙고객 등록 사유 입력란
+
+
+</textarea>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<!-- //컨텐츠 -->
+				<div class="btnWrapper">
+					<a href="#" class="btnL colorBlue popLayerServiceResultAdd_close"><span>저장</span></a>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<!-- //팝업: 개통결과등록 -->
+
+	<script type="text/javascript">
+		$(function () {
+			if ($(".layerWrapper").length) {
+				//개통결과등록
+				$('#popLayerServiceResultAdd').popup();
+			}
+		});
+	</script>
+
+</body>
+
+</html>

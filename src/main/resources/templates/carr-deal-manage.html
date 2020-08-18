@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport">
+	<title>Pentaworks Service</title>
+	<link rel="stylesheet" href="../css/cmmn/public.css">
+	<script type="text/javascript" src="../js/lib/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="../js/lib/jquery-migrate-1.2.1.min.js"></script>
+	<script type="text/javascript" src="../js/lib/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="../js/lib/jquery-ui-datepicker-ko.js"></script>
+	<script type="text/javascript" src="../js/lib/jquery.mtz.monthpicker.js"></script>
+	<script type="text/javascript" src="../js/lib/jquery.popupoverlay.js"></script>
+	<script type="text/javascript" src="../js/lib/jquery.placeholder.min.js"></script>
+	<script type="text/javascript" src="../js/public.js"></script>
+</head>
+
+<body>
+
+	<div class="wrapper">
+		<!-- header -->
+		<div class="header">
+			<div class="fixedWidth">
+				<h1 class="logo">
+					<a href="main.html"><img src="../images/cmmn/logo.png" alt="PentaWorks" style="height: 30px;" /></a>
+				</h1>
+				<div class="headerRight">
+					<p class="hdTime"><em>09:59</em><a href="#" class="btnExtension">연장하기</a></p>
+					<p class="hdUser"><em>(주)이티스트</em>님 안녕하세요!</p>
+					<p class="hdLogout"><a href="login.html" onclick="javascript:RemaLogoutCall();" title="로그아웃">logout</a></p>
+				</div>
+			</div>
+		</div>
+		<!-- //header -->
+
+
+		<!-- container -->
+		<div id="container">
+			<div class="fixedWidth">
+
+				<!-- left -->
+				<div class="sectionLeft">
+					<div class="lnbBgBox">
+						<ul class="accordion" id="LNB">
+							<li class="depthBox">
+								<a href="#" class="dep1"><span>상담 관리</span></a>
+								<ul>
+									<li>
+										<a href="service-inbox.html">
+											<img src="../images/cmmn/hidden.png" class="ico-vendor" alt="아이콘">
+											<span>상담접수관리</span>
+										</a>
+									</li>
+									<li>
+										<a href="service-visit.html">
+											<img src="../images/cmmn/hidden.png" class="ico-user" alt="아이콘">
+											<span>방문개통관리</span>
+										</a>
+									</li>
+									<li>
+										<a href="service-status.html">
+											<img src="../images/cmmn/hidden.png" class="ico-pw" alt="아이콘">
+											<span>상담관리현황</span>
+										</a>
+									</li>
+									<li>
+										<a href="service-marketing.html">
+											<img src="../images/cmmn/hidden.png" class="ico-pw" alt="아이콘">
+											<span>마케팅대상관리</span>
+										</a>
+									</li>
+								</ul>
+							</li>
+							<li class="depthBox">
+								<a href="#" class="dep1"><span>SKT 관리</span></a>
+								<ul>
+									<li>
+										<a href="carr-mntrt-manage.html">
+											<img src="../images/cmmn/hidden.png" class="ico-list" alt="아이콘">
+											<span>요금제등록관리</span>
+										</a>
+									</li>
+									<li class="current">
+										<a href="carr-deal-manage.html">
+											<img src="../images/cmmn/hidden.png" class="ico-list" alt="아이콘">
+											<span>판매정책관리</span>
+										</a>
+									</li>
+								</ul>
+							</li>
+							<li class="depthBox">
+								<a href="#" class="dep1"><span>KT 관리</span></a>
+								<ul>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-list" alt="아이콘">
+											<span>요금제등록관리</span>
+										</a>
+									</li>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-list" alt="아이콘">
+											<span>판매정책관리</span>
+										</a>
+									</li>
+								</ul>
+							</li>
+							<li class="depthBox">
+								<a href="#" class="dep1"><span>LGU+ 관리</span></a>
+								<ul>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-list" alt="아이콘">
+											<span>요금제등록관리</span>
+										</a>
+									</li>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-list" alt="아이콘">
+											<span>판매정책관리</span>
+										</a>
+									</li>
+								</ul>
+							</li>
+							<li class="depthBox">
+								<a href="#" class="dep1"><span>매장 관리</span></a>
+								<ul>
+									<li>
+										<a href="shop-manage.html">
+											<img src="../images/cmmn/hidden.png" class="ico-nfc" alt="아이콘">
+											<span>매장정보관리</span>
+										</a>
+									</li>
+									<li>
+										<a href="shop-employees.html">
+											<img src="../images/cmmn/hidden.png" class="ico-nfc2" alt="아이콘">
+											<span>직원관리</span>
+										</a>
+									</li>
+									<li>
+										<a href="shop-notice.html">
+											<img src="../images/cmmn/hidden.png" class="ico-nfc2" alt="아이콘">
+											<span>공지사항관리</span>
+										</a>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<!-- //left -->
+
+				<!-- contents -->
+				<div class="sectionRight" id="content">
+					<div class="contentWrap">
+						<div class="onlyWideView">
+
+							<div class="subHeader">
+								<div id="foldUnfold"><a href="#" class="btnFold"><span>좌측메뉴 접기/펴기</span></a></div>
+								<h2 class="h2"><img src="../images/cmmn/hidden.png" class="ico-list" alt="아이콘">판매정책관리
+								</h2>
+								<div class="pageLocation">
+									<span>SKT 관리</span>&gt;<strong>판매정책관리</strong>
+								</div>
+							</div>
+
+							<div class="searchArea">
+								<ul>
+									<li class="txtSize4">
+										<label for="purchaes01">판매상태</label>
+										<select id="purchaes01">
+											<option value="">전체</option>
+											<option value="">납품정보등록전</option>
+											<option value="">납품정보승인요청</option>
+											<option value="">납품정보승인반려</option>
+										</select>
+									</li>
+									<li class="txtSize4">
+										<label for="purchaes01">제조사</label>
+										<select id="purchaes01">
+											<option value="">전체</option>
+											<option value="">납품정보등록전</option>
+											<option value="">납품정보승인요청</option>
+											<option value="">납품정보승인반려</option>
+										</select>
+									</li>
+									<li class="txtSize3">
+										<label for="purchaes03">모델명</label>
+										<input type="text" id="purchaes04" placeholder="모델명 입력">
+									</li>
+									<li class="txtSize4">
+										<label for="purchaes01">통신유형</label>
+										<select id="purchaes01">
+											<option value="">전체</option>
+											<option value="">납품정보등록전</option>
+											<option value="">납품정보승인요청</option>
+											<option value="">납품정보승인반려</option>
+										</select>
+									</li>
+								</ul>
+								<div class="btnSearch">
+									<a href="#" class="btnM colorBlue"><span>검색</span></a>
+								</div>
+							</div>
+
+							<!-- content group1 -->
+							<div class="contentBlock contentSlide">
+								<div class="contentTitle slideToggle">
+									<div class="cTit">
+										제품 현황
+										<span class="icon"></span>
+									</div>
+									<div class="cTitRight">
+										<a href="#" class="btnM colorOrg"><span>판매중지</span></a>
+									</div>
+								</div>
+								<!-- slide content -->
+								<div class="contentDetail slideTogglebox">
+									<div class="tHeadScrollBG">
+										<div class="tHeadScroll">
+											<table class="tblList tHead">
+												<colgroup>
+													<col style="width:3%">
+													<col style="width:7%">
+													<col style="width:10%">
+													<col style="width:12%">
+													<col style="width:10%">
+													<col style="width:10%">
+													<col style="width:10%">
+													<col style="width:10%">
+													<col style="width:10%">
+													<col style="width:*">
+												</colgroup>
+												<thead>
+													<tr>
+														<th scope="col"><input type="checkbox" title="행 선택"></th>
+														<th scope="col">판매상태</th>
+														<th scope="col">제조사</th>
+														<th scope="col">모델명</th>
+														<th scope="col">출고가</th>
+														<th scope="col">통신유형</th>
+														<th scope="col">용량</th>
+														<th scope="col">모델코드</th>
+														<th scope="col">등록자</th>
+														<th scope="col">최종변경일시</th>
+													</tr>
+												</thead>
+											</table>
+										</div>
+									</div>
+									<div class="tBodyScroll">
+										<table class="tblList tBody trClick">
+											<caption>납품정보등록 요청현황</caption>
+											<colgroup>
+												<col style="width:3%">
+												<col style="width:7%">
+												<col style="width:10%">
+												<col style="width:12%">
+												<col style="width:10%">
+												<col style="width:10%">
+												<col style="width:10%">
+												<col style="width:10%">
+												<col style="width:10%">
+												<col style="width:*">
+											</colgroup>
+											<thead>
+												<tr>
+													<th scope="col"><input type="checkbox" title="행 선택"></th>
+													<th scope="col">판매상태</th>
+													<th scope="col">제조사</th>
+													<th scope="col">모델명</th>
+													<th scope="col">출고가</th>
+													<th scope="col">통신유형</th>
+													<th scope="col">용량</th>
+													<th scope="col">모델코드</th>
+													<th scope="col">등록자</th>
+													<th scope="col">최종변경일시</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td class="alignC"><input type="checkbox" title="행 선택"></td>
+													<td class="alignC">판매중</td>
+													<td class="alignC">삼성전자</td>
+													<td class="alignC">갤럭시 노트20</td>
+													<td class="alignC">1,255,000</td>
+													<td class="alignC">5G</td>
+													<td class="alignC">128G</td>
+													<td class="alignC">SM-001</td>
+													<td class="alignC">직원1</td>
+													<td class="alignC">2020-01-01 12:20</td>
+												</tr>
+												<tr>
+													<td class="alignC"><input type="checkbox" title="행 선택"></td>
+													<td class="alignC">판매중</td>
+													<td class="alignC">삼성전자</td>
+													<td class="alignC">갤럭시 S20</td>
+													<td class="alignC">1,165,000</td>
+													<td class="alignC">5G</td>
+													<td class="alignC">128G</td>
+													<td class="alignC">SM-001</td>
+													<td class="alignC">직원1</td>
+													<td class="alignC">2020-01-01 12:20</td>
+												</tr>
+												<tr>
+													<td class="alignC"><input type="checkbox" title="행 선택"></td>
+													<td class="alignC">판매중</td>
+													<td class="alignC">삼성전자</td>
+													<td class="alignC">갤럭시 Z 폴드2</td>
+													<td class="alignC">2,189,000</td>
+													<td class="alignC">5G</td>
+													<td class="alignC">256G</td>
+													<td class="alignC">SM-001</td>
+													<td class="alignC">직원1</td>
+													<td class="alignC">2020-01-01 12:20</td>
+												</tr>
+												<tr>
+													<td class="alignC"><input type="checkbox" title="행 선택"></td>
+													<td class="alignC">판매중</td>
+													<td class="alignC">LG전자</td>
+													<td class="alignC">LG V50</td>
+													<td class="alignC">955,000</td>
+													<td class="alignC">5G</td>
+													<td class="alignC">128G</td>
+													<td class="alignC">SM-001</td>
+													<td class="alignC">직원1</td>
+													<td class="alignC">2020-01-01 12:20</td>
+												</tr>
+												<tr>
+													<td class="alignC"><input type="checkbox" title="행 선택"></td>
+													<td class="alignC">판매중</td>
+													<td class="alignC">LG전자</td>
+													<td class="alignC">LG VELVET</td>
+													<td class="alignC">890,000</td>
+													<td class="alignC">5G</td>
+													<td class="alignC">64G</td>
+													<td class="alignC">SM-001</td>
+													<td class="alignC">직원2</td>
+													<td class="alignC">2020-01-01 12:20</td>
+												</tr>
+												<tr>
+													<td class="alignC"><input type="checkbox" title="행 선택"></td>
+													<td class="alignC">판매중</td>
+													<td class="alignC">APPLE</td>
+													<td class="alignC">아이폰11</td>
+													<td class="alignC">890,000</td>
+													<td class="alignC">LTE</td>
+													<td class="alignC">128G</td>
+													<td class="alignC">SM-001</td>
+													<td class="alignC">직원2</td>
+													<td class="alignC">2020-01-01 12:20</td>
+												</tr>
+												<tr>
+													<td class="alignC"><input type="checkbox" title="행 선택"></td>
+													<td class="alignC">판매중</td>
+													<td class="alignC">APPLE</td>
+													<td class="alignC">아이폰11 PRO MAX</td>
+													<td class="alignC">1,190,000</td>
+													<td class="alignC">LTE</td>
+													<td class="alignC">256G</td>
+													<td class="alignC">SM-001</td>
+													<td class="alignC">직원2</td>
+													<td class="alignC">2020-01-01 12:20</td>
+												</tr>
+												<tr>
+													<td class="alignC"><input type="checkbox" title="행 선택"></td>
+													<td class="alignC">판매중</td>
+													<td class="alignC">APPLE</td>
+													<td class="alignC">아이폰 SE2</td>
+													<td class="alignC">590,000</td>
+													<td class="alignC">LTE</td>
+													<td class="alignC">128G</td>
+													<td class="alignC">SM-001</td>
+													<td class="alignC">직원2</td>
+													<td class="alignC">2020-01-01 12:20</td>
+												</tr>
+												<tr>
+													<td class="alignC"><input type="checkbox" title="행 선택"></td>
+													<td class="alignC">판매중</td>
+													<td class="alignC">기타</td>
+													<td class="alignC">XIAOMI MI 10 LITE</td>
+													<td class="alignC">500,000</td>
+													<td class="alignC">5G</td>
+													<td class="alignC">128G</td>
+													<td class="alignC">SM-001</td>
+													<td class="alignC">직원2</td>
+													<td class="alignC">2020-01-01 12:20</td>
+												</tr>
+												<tr>
+													<td class="alignC"><input type="checkbox" title="행 선택"></td>
+													<td class="alignC">판매중</td>
+													<td class="alignC">기타</td>
+													<td class="alignC">Redmi Note 9S</td>
+													<td class="alignC">375,000</td>
+													<td class="alignC">LTE</td>
+													<td class="alignC">64G</td>
+													<td class="alignC">SM-001</td>
+													<td class="alignC">직원2</td>
+													<td class="alignC">2020-01-01 12:20</td>
+												</tr>
+												<tr class="errorMessage">
+													<td colspan="10">
+														<div class="errorTxt">
+															<span>항목이 없습니다.</span>
+														</div>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+								<!-- //slide content -->
+							</div>
+							<!-- //content group1 -->
+
+							<!-- content group2 -->
+							<div class="contentBlock">
+								<div class="contentTitle">
+									<div class="cTit">
+										번호이동정책
+									</div>
+									<div class="cTitRight">
+										<a href="#" class="btnM colorSky"><span>번이정책 저장</span></a>
+									</div>
+								</div>
+								<!-- content -->
+								<div class="contentDetail">
+									<table class="tblList alignC">
+										<caption>납품 정보</caption>
+										<colgroup>
+											<col style="width:12%">
+											<col style="width:7%">
+											<col style="width:14%">
+											<col style="width:14%">
+											<col style="width:8%">
+											<col style="width:14%">
+											<col style="width:8%">
+											<col style="width:*">
+										</colgroup>
+										<thead>
+											<tr>
+												<th scope="col" rowspan="2">요금제</th>
+												<th scope="col" rowspan="2">월 기본요금</th>
+												<th colspan="3">공시지원금</th>
+												<th colspan="2">선택약정</th>
+												<th rowspan="2">부가서비스 정책</th>
+											</tr>
+											<tr>
+
+												<th scope="col">공시지원금</th>
+												<th scope="col">추가지원금</th>
+												<th scope="col">할부원금</th>
+												<th scope="col">추가지원금</th>
+												<th scope="col">할부원금</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td class="alignC">ㅁㅁㅁㅁ요금제</td>
+												<td>60,000</td>
+												<td><input style="width: 100%" class="inMoney" type="text" id="" onkeyup="cmaComma(this);"
+														onchange="cmaComma(this);" value="">
+												</td>
+												<td>
+													<input style="width: 100%" class="inMoney" type="text" id="" onkeyup="cmaComma(this);"
+														onchange="cmaComma(this);" value="">
+												</td>
+												<td>
+													450,000
+												</td>
+												<td>
+													<input style="width: 100%" class="wPer inNumber" type="text" id="" placeholder="">
+												</td>
+												<td>
+													450,000
+												</td>
+												<td>
+													<input style="width: 100%;" type="text" id="">
+												</td>
+											</tr>
+											<tr>
+												<td class="alignC">ㅁㅁㅁㅁ요금제</td>
+												<td>80,000</td>
+												<td><input style="width: 100%" class="inMoney" type="text" id="" onkeyup="cmaComma(this);"
+														onchange="cmaComma(this);" value="">
+												</td>
+												<td>
+													<input style="width: 100%" class="inMoney" type="text" id="" onkeyup="cmaComma(this);"
+														onchange="cmaComma(this);">
+												</td>
+												<td>
+													450,000
+												</td>
+												<td>
+													<input style="width: 100%;" type="text" id="">
+												</td>
+												<td>
+													550,000
+												</td>
+												<td>
+													<input style="width: 100%;" type="text" id="">
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<!-- //content -->
+							</div>
+							<!-- //content group2 -->
+
+							<!-- content group3 -->
+							<div class="contentBlock">
+								<div class="contentTitle">
+									<div class="cTit">
+										기기변경정책
+									</div>
+									<div class="cTitRight">
+										<a href="#" class="btnM colorSky"><span>기변정책 저장</span></a>
+									</div>
+								</div>
+								<!-- content -->
+								<div class="contentDetail">
+									<table class="tblList alignC">
+										<caption>납품 정보</caption>
+										<colgroup>
+											<col style="width:12%">
+											<col style="width:7%">
+											<col style="width:14%">
+											<col style="width:14%">
+											<col style="width:8%">
+											<col style="width:14%">
+											<col style="width:8%">
+											<col style="width:*">
+										</colgroup>
+										<thead>
+											<tr>
+												<th colspan="5">공시지원금</th>
+												<th colspan="2">공시지원금</th>
+												<th rowspan="2">부가서비스 정책</th>
+											</tr>
+											<tr>
+												<th scope="col">요금제</th>
+												<th scope="col">월 기본요금</th>
+												<th scope="col">공시지원금</th>
+												<th scope="col">추가지원금</th>
+												<th scope="col">할부원금</th>
+												<th scope="col">추가지원금</th>
+												<th scope="col">할부원금</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td class="alignC">ㅁㅁㅁㅁ요금제</td>
+												<td>65,000</td>
+												<td><input style="width: 100%" class="inMoney" type="text" id="" onkeyup="cmaComma(this);"
+														onchange="cmaComma(this);"></td>
+												<td>
+													<input style="width: 100%" class="inMoney" type="text" id="" onkeyup="cmaComma(this);"
+														onchange="cmaComma(this);">
+												</td>
+												<td>
+													450,000
+												</td>
+												<td>
+													<input class="wPer inNumber" type="text" id="" placeholder="">
+												</td>
+												<td>
+													450,000
+												</td>
+												<td>
+													<input style="width: 100%" class="wS inNumber" type="text" id="" placeholder="">
+												</td>
+											</tr>
+											<tr>
+												<td class="alignC">ㅁㅁㅁㅁ요금제</td>
+												<td>110,000</td>
+												<td><input style="width: 100%" class="inMoney" type="text" id="" onkeyup="cmaComma(this);"
+														onchange="cmaComma(this);" value="">
+												</td>
+												<td>
+													<input style="width: 100%;" class="inMoney" type="text" id="" onkeyup="cmaComma(this);"
+														onchange="cmaComma(this);">
+												</td>
+												<td>
+													650,000
+												</td>
+												<td>
+													<input class="wPer inNumber" type="text" id="" placeholder="">
+												</td>
+												<td>
+													550,000
+												</td>
+												<td>
+													<input style="width: 100%" class="wS inNumber" type="text" id="" placeholder="">
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<!-- //content -->
+							</div>
+							<!-- //content group3 -->
+
+							<!-- content group4 -->
+							<div class="contentBlock">
+								<div class="contentTitle">
+									<div class="cTit">
+										신규가입정책
+									</div>
+									<div class="cTitRight">
+										<a href="#" class="btnM colorSky"><span>신규정책 저장</span></a>
+									</div>
+								</div>
+								<!-- content -->
+								<div class="contentDetail">
+									<table class="tblList alignC">
+										<caption>납품 정보</caption>
+										<colgroup>
+											<col style="width:12%">
+											<col style="width:7%">
+											<col style="width:14%">
+											<col style="width:14%">
+											<col style="width:8%">
+											<col style="width:14%">
+											<col style="width:8%">
+											<col style="width:*">
+										</colgroup>
+										<thead>
+											<tr>
+												<th colspan="5">공시지원금</th>
+												<th colspan="2">공시지원금</th>
+												<th rowspan="2">부가서비스 정책</th>
+											</tr>
+											<tr>
+												<th scope="col">요금제</th>
+												<th scope="col">월 기본요금</th>
+												<th scope="col">공시지원금</th>
+												<th scope="col">추가지원금</th>
+												<th scope="col">할부원금</th>
+												<th scope="col">추가지원금</th>
+												<th scope="col">할부원금</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td class="alignC">ㅁㅁㅁㅁ요금제</td>
+												<td>65,000</td>
+												<td><input style="width: 100%" class="inMoney" type="text" id="" onkeyup="cmaComma(this);"
+														onchange="cmaComma(this);"></td>
+												<td>
+													<input style="width: 100%" class="inMoney" type="text" id="" onkeyup="cmaComma(this);"
+														onchange="cmaComma(this);">
+												</td>
+												<td>
+													450,000
+												</td>
+												<td>
+													<input class="wPer inNumber" type="text" id="" placeholder="">
+												</td>
+												<td>
+													450,000
+												</td>
+												<td>
+													<input style="width: 100%" class="wS inNumber" type="text" id="" placeholder="">
+												</td>
+											</tr>
+											<tr>
+												<td class="alignC">ㅁㅁㅁㅁ요금제</td>
+												<td>110,000</td>
+												<td><input style="width: 100%" class="inMoney" type="text" id="" onkeyup="cmaComma(this);"
+														onchange="cmaComma(this);" value="">
+												</td>
+												<td>
+													<input style="width: 100%;" class="inMoney" type="text" id="" onkeyup="cmaComma(this);"
+														onchange="cmaComma(this);">
+												</td>
+												<td>
+													650,000
+												</td>
+												<td>
+													<input class="wPer inNumber" type="text" id="" placeholder="">
+												</td>
+												<td>
+													550,000
+												</td>
+												<td>
+													<input style="width: 100%" class="wS inNumber" type="text" id="" placeholder="">
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<!-- //content -->
+							</div>
+							<!-- //content group4 -->
+
+						</div>
+					</div>
+				</div>
+				<!-- //contents -->
+
+			</div>
+		</div>
+		<!-- //container -->
+	</div>
+	<!-- footer -->
+	<div id="footer">
+		<div class="fixedWidth">
+			copyrights WOORI BANK. all rights reserved.
+			<div class="goTop"><a href="#" class="btnGoTop"><img src="../images/cmmn/btn-top.png" alt="위로이동"></a></div>
+		</div>
+	</div>
+	<!-- //footer -->
+
+	<!-- 팝업: 납품 제품 추가 -->
+	<div class="layerWrapper layerSizeM" id="popLayerSupplyAdd">
+		<div class="layerHeader">
+			<strong>납품 제품 추가</strong>
+			<a href="#" class="btnClose popLayerSupplyAdd_close"><img src="../images/cmmn/btn-layer-close.png" alt="창닫기"></a>
+		</div>
+		<div class="layerContainer">
+			<div class="layerContent">
+
+				<!-- 제품목록 -->
+				<div class="guidanceWrapper">
+
+					<div class="searchArea mb15">
+						<ul>
+							<li class="txtSize3">
+								<label for="purchaes01">제품명</label>
+								<select class="sizeAuto" id="purchaes01">
+									<option value="">선택</option>
+									<option value="">선택1</option>
+								</select>
+							</li>
+							<li class="txtSize3">
+								<label for="purchaes02">제조사</label>
+								<select class="sizeAuto" id="purchaes02">
+									<option value="">선택</option>
+									<option value="">선택1</option>
+								</select>
+							</li>
+						</ul>
+						<div class="btnSearch">
+							<a href="#" class="btnM colorBlue"><span>검색</span></a>
+						</div>
+					</div>
+
+					<div class="contentTitle">
+						<div class="cTit">
+							협력업체 현황 정보
+						</div>
+						<div class="cTitRight">
+							<a href="#" class="btnM colorSky"><span>추가</span></a>
+						</div>
+					</div>
+
+					<div class="tHeadScrollBG">
+						<div class="tHeadScroll">
+							<table class="tblList tHead">
+								<colgroup>
+									<col style="width:10%">
+									<col style="width:30%">
+									<col style="width:30%">
+									<col style="width:30%">
+								</colgroup>
+								<tbody>
+									<tr>
+										<td><input type="checkbox" title="전체선택"></td>
+										<td>제품명</td>
+										<td>제조사</td>
+										<td>공급단가</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+					<div class="tBodyScroll heightSize2">
+						<table class="tblList tBody alignC">
+							<caption>매입신청목록</caption>
+							<colgroup>
+								<col style="width:10%">
+								<col style="width:30%">
+								<col style="width:30%">
+								<col style="width:30%">
+							</colgroup>
+							<thead>
+								<tr>
+									<td scope="col">선택</td>
+									<td scope="col">제품명</td>
+									<td scope="col">제조사</td>
+									<td scope="col">공급단가</td>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td><input type="checkbox" title="행 선택"></td>
+									<td>IBM 720</td>
+									<td>IBM</td>
+									<td class="numMoney">5,000,000</td>
+								</tr>
+								<tr>
+									<td><input type="checkbox" title="행 선택"></td>
+									<td>IBM 720</td>
+									<td>IBM</td>
+									<td class="numMoney">5,000,000</td>
+								</tr>
+								<tr>
+									<td><input type="checkbox" title="행 선택"></td>
+									<td>IBM 720</td>
+									<td>IBM</td>
+									<td class="numMoney">5,000,000</td>
+								</tr>
+								<tr>
+									<td><input type="checkbox" title="행 선택"></td>
+									<td>IBM 720</td>
+									<td>IBM</td>
+									<td class="numMoney">5,000,000</td>
+								</tr>
+								<tr>
+									<td><input type="checkbox" title="행 선택"></td>
+									<td>IBM 720</td>
+									<td>IBM</td>
+									<td class="numMoney">5,000,000</td>
+								</tr>
+								<tr>
+									<td><input type="checkbox" title="행 선택"></td>
+									<td>IBM 720</td>
+									<td>IBM</td>
+									<td class="numMoney">5,000,000</td>
+								</tr>
+								<tr>
+									<td><input type="checkbox" title="행 선택"></td>
+									<td>IBM 720</td>
+									<td>IBM</td>
+									<td class="numMoney">5,000,000</td>
+								</tr>
+								<tr>
+									<td><input type="checkbox" title="행 선택"></td>
+									<td>IBM 720</td>
+									<td>IBM</td>
+									<td class="numMoney">5,000,000</td>
+								</tr>
+								<tr>
+									<td><input type="checkbox" title="행 선택"></td>
+									<td>IBM 720</td>
+									<td>IBM</td>
+									<td class="numMoney">5,000,000</td>
+								</tr>
+								<tr>
+									<td><input type="checkbox" title="행 선택"></td>
+									<td>IBM 720</td>
+									<td>IBM</td>
+									<td class="numMoney">5,000,000</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<!-- //제품목록 -->
+			</div>
+			<div class="btnWrapper">
+				<a href="#" class="btnL colorBlue"><span>확인</span></a>
+			</div>
+		</div>
+	</div>
+	<!-- //팝업: 납품 제품 추가 -->
+
+	<!-- 팝업: 반려 사유 정보 -->
+	<div class="layerWrapper layerSizeM" id="popLayerReturnInfo">
+		<div class="layerHeader">
+			<strong>반려 사유 정보</strong>
+			<a href="#" class="btnClose popLayerReturnInfo_close"><img src="../images/cmmn/btn-layer-close.png" alt="창닫기"></a>
+		</div>
+		<div class="layerContainer">
+			<div class="layerContent">
+
+				<!-- content -->
+				<div class="guidanceWrapper">
+					<div class="tblTitle">반려 정보</div>
+					<table class="tblDataRow">
+						<caption>반려 정보</caption>
+						<colgroup>
+							<col style="width:80px">
+							<col style="width:*">
+							<col style="width:80px">
+							<col style="width:*">
+						</colgroup>
+						<tbody>
+							<tr>
+								<th>소속</th>
+								<td>우리에프아이에스</td>
+								<th>담당자명</th>
+								<td>반려자</td>
+							</tr>
+							<tr>
+								<th>직급</th>
+								<td>부장</td>
+								<th>연락처</th>
+								<td>010-2222-2222</td>
+							</tr>
+							<tr>
+								<th>반려일자</th>
+								<td>2016-01-02</td>
+								<th>계약번호</th>
+								<td>201610-0200010101</td>
+							</tr>
+							<tr>
+								<th>사유</th>
+								<td colspan="3">
+									<div class="txtOutput yScroll">
+										계약 일자 수정 요청 부탁드립니다.<br>
+										변경전 : 2016-01-02 ~ 2016-11-01<br>
+										변경후 : 2016-01-02 ~ 2016-12-01<br>
+										계약 일자 수정 요청 부탁드립니다.<br>
+										변경전 : 2016-01-02 ~ 2016-11-01<br>
+										변경후 : 2016-01-02 ~ 2016-12-01<br>
+										계약 일자 수정 요청 부탁드립니다.<br>
+										변경전 : 2016-01-02 ~ 2016-11-01<br>
+										변경후 : 2016-01-02 ~ 2016-12-01<br>
+										계약 일자 수정 요청 부탁드립니다.<br>
+										변경전 : 2016-01-02 ~ 2016-11-01<br>
+										변경후 : 2016-01-02 ~ 2016-12-01<br>
+										계약 일자 수정 요청 부탁드립니다.<br>
+										변경전 : 2016-01-02 ~ 2016-11-01<br>
+										변경후 : 2016-01-02 ~ 2016-12-01<br>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<!-- //content -->
+			</div>
+			<div class="btnWrapper">
+				<a href="#" class="btnL colorBlue"><span>확인</span></a>
+			</div>
+		</div>
+	</div>
+	<!-- //팝업: 반려 사유 정보 -->
+
+	<script type="text/javascript">
+		$(function () {
+			if ($(".layerWrapper").length) {
+				//납품정보추가
+				$('#popLayerSupplyAdd').popup();
+
+				//반려사유정보
+				$('#popLayerReturnInfo').popup();
+			}
+		});
+	</script>
+
+</body>
+
+</html>

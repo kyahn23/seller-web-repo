@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport">
+	<title>Pentaworks Service</title>
+	<link rel="stylesheet" href="../css/cmmn/public.css">
+	<script type="text/javascript" src="../js/lib/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="../js/lib/jquery-migrate-1.2.1.min.js"></script>
+	<script type="text/javascript" src="../js/lib/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="../js/lib/jquery-ui-datepicker-ko.js"></script>
+	<script type="text/javascript" src="../js/lib/jquery.mtz.monthpicker.js"></script>
+	<script type="text/javascript" src="../js/lib/jquery.popupoverlay.js"></script>
+	<script type="text/javascript" src="../js/lib/jquery.placeholder.min.js"></script>
+	<script type="text/javascript" src="../js/public.js"></script>
+</head>
+<style>
+	.tblList th,
+	.tblList td {
+		padding: 6px 8px;
+		height: 40px;
+	}
+
+	table th,
+	table td {
+		padding: 6px 0;
+		border: 1px solid #e1e3e8;
+		border-width: 0 0 1px 1px;
+	}
+
+	table th,
+	table td {
+		padding: 6px 0;
+		font-size: 14px;
+		border: 1px solid #e1e3e8;
+		border-width: 0 0 1px 1px;
+	}
+
+	input {
+		height: 30px;
+		width: auto;
+		padding: 0;
+		padding-bottom: 5px;
+		padding: 0 6px;
+		margin: 2px 0;
+	}
+
+	#container {
+		margin: auto;
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+	}
+
+	#container>.fixedWidth {
+		position: relative;
+		overflow: hidden;
+		background: #fff;
+	}
+
+	#container>.fixedWidth>div {
+		float: none;
+	}
+
+	.fixedWidth {
+		display: inline-block;
+		width: 1080px !important;
+	}
+
+	.onlyWideView {
+		text-align: center;
+	}
+
+	.contentDetail {
+		/* width: 600px; */
+		display: inline-block;
+	}
+
+	.sectionRight {
+		width: 1060px;
+		margin: auto;
+		text-align: center;
+	}
+
+	.contentWrap {
+		background: #fff;
+		display: inline-block;
+	}
+
+	.subHeader {
+		position: relative;
+		padding-top: 30px;
+		height: 45px;
+		text-align: center;
+	}
+
+	.tblList a {
+		color: #333;
+		display: inline-block;
+	}
+
+	.alignL {
+		text-align: left;
+	}
+
+	.btnS {
+		height: 28px;
+		padding: 0 8px;
+		font-size: 12px;
+		font-family: dotum, '돋움', Sans-serif;
+	}
+
+	.btnS>span {
+		padding: 6px 0;
+		line-height: 1.5;
+	}
+
+	.passform {
+		border-bottom: 0;
+	}
+
+	.desBr {
+		font-size: initial;
+		font-weight: bold;
+	}
+
+	.tblList tr {
+		cursor: initial;
+	}
+
+	.tblList tr:hover {
+		background-color: white;
+	}
+</style>
+
+<body>
+
+	<div class="wrapper">
+		<!-- header -->
+		<div class="header">
+			<div class="fixedWidth">
+				<h1 class="logo">
+					<a href="login.html"><img src="../images/cmmn/logo.png" alt="PentaWorks" style="height: 30px;" /></a>
+				</h1>
+			</div>
+		</div>
+		<!-- //header -->
+
+
+		<!-- container -->
+		<div id="container">
+			<div class="fixedWidth">
+				<!-- contents -->
+				<div class="sectionRight" id="content">
+					<div class="contentWrap">
+						<div class="onlyWideView">
+
+							<div class="subHeader">
+								<h2 class="h2"><img src="../images/cmmn/hidden.png" class="ico-plus" alt="아이콘">회원정보 입력</h2>
+								<div class="pageLocation">
+									<span>회원가입</span>&gt;<strong>회원정보 입력</strong>
+								</div>
+							</div>
+
+							<!-- content group1 -->
+							<div class="contentBlock">
+								<!-- <div class="contentTitle">
+									<div class="cTit">
+										사업자정보
+									</div>
+									<div class="cTitRight">
+										<a href="#" class="btnM colorSky"><span>저장</span></a>
+									</div>
+								</div> -->
+								<!-- content -->
+								<div class="contentDetail">
+									<table class="tblList alignL">
+										<caption>기본정보</caption>
+										<colgroup>
+											<col style="width:20%">
+											<col style="width:*">
+											<col style="width:20%">
+											<col style="width:*">
+										</colgroup>
+										<tbody>
+											<tr>
+												<th>아이디<span class="icoMust"><em>필수</em></span></th>
+												<td colspan="3">
+													<input style="width: 40%;" type="text" id="" placeholder="이메일주소를 입력해주세요">
+													<a href="#" class="btnS colorWhite"><span>중복확인</span></a>
+												</td>
+											</tr>
+											<tr>
+												<th class="passform">비밀번호<span class="icoMust"><em>필수</em></span></th>
+												<td colspan="3" class="passform">
+													<input type="text" class="wPer" id=""
+														placeholder="비밀번호는 8자 이상, 16자 이하의 영문자, 숫자 및 특수문자를 조합하여 사용해야 합니다">
+												</td>
+											</tr>
+											<tr>
+												<th>비밀번호 확인<span class="icoMust"><em>필수</em></span></th>
+												<td colspan="3">
+													<input type="text" class="wPer" id=""
+														placeholder="비밀번호는 8자 이상, 16자 이하의 영문자, 숫자 및 특수문자를 조합하여 사용해야 합니다">
+												</td>
+											</tr>
+											<tr>
+												<th>회사명<span class="icoMust"><em>필수</em></span></th>
+												<td colspan="3">
+													<input type="text" class="wPer" id="" placeholder="계약설명" value="ABC모바일">
+												</td>
+											</tr>
+											<tr>
+												<th>주소<span class="icoMust"><em>필수</em></span></th>
+												<td colspan="3">
+													<input type="text" class="wZipcode" id="" placeholder="우편번호" value="11038">
+													<a href="#" class="btnS colorWhite"><span>주소 검색</span></a>
+													<p class="br">
+														<input type="text" class="wAddr" id="" placeholder="주소 입력" value="서울시 중구 서소문11길19">
+														<input type="text" class="wAddr" id="" placeholder="상세주소 입력" value="정동, 배재정동빌딩 B동 10층">
+													</p>
+												</td>
+											</tr>
+											<!-- <tr>
+												<th>담당자 이름<span class="icoMust"><em>필수</em></span></th>
+												<td colspan="3">
+													<input style="width: 100%;" type="text" id=""
+														placeholder="담당자명을 입력해 주세요">
+												</td>
+												 <th>담당자 연락처<span class="icoMust"><em>필수</em></span></th>
+												<td><input style="width: 100%;" type="text" id=""
+														placeholder="연락처를 입력해 주세요"></td>
+											</tr> -->
+											<tr>
+												<th>사업자등록번호<span class="icoMust"><em>필수</em></span></th>
+												<td colspan="3">
+													<input style="width: 30%;" type="text" id="" placeholder="000">
+													<input style="width: 30%;" type="text" id="" placeholder="00">
+													<input style="width: 30%;" type="text" id="" placeholder="00000">
+												</td>
+											</tr>
+											<tr>
+												<th>대표자명<span class="icoMust"><em>필수</em></span></th>
+												<td colspan="3">
+													<input type="text" class="wPer" id="" placeholder="대표자명을 입력해주세요">
+												</td>
+											</tr>
+											<tr>
+												<th>업태/종목<span class="icoMust"><em>필수</em></span></th>
+												<td colspan="3">
+													<input style="width: 49%;" type="text" id="" placeholder="업태명을 입력해주세요">
+													/
+													<input style="width: 49%;" type="text" id="" placeholder="종목명을 입력해주세요">
+												</td>
+											</tr>
+											<tr>
+												<th>증빙서류<span class="icoMust"><em>필수</em></span></th>
+												<td colspan="3">
+													<p class="desBr">
+														신청 정보를 증명할 수 있는 사업자등록증 사본을 제출해 주세요
+													</p>
+													<p class="br">
+														일반과세자(개인사업자)의 경우, 사업자등록증에 주민등록번호가 포함되어 있으면<br>뒷자리 7자리를
+														음영처리(masking)하여 제출 바랍니다.<br>첨부파일은 육안으로 식별 가능해야 하며, 서류 검토 후 문제가
+														있을
+														경우 서비스 이용에 제한을 받을 수 있습니다.
+													</p>
+													<br>
+													<input type="text" id="" placeholder="우편번호" value="11038">
+													<a href="#" class="btnS colorWhite"><span>파일첨부</span></a>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<!-- //content -->
+								<div class="btnWrapper">
+									<a href="login.html" class="btnL colorGray"><span>취소</span></a>
+									<a href="login.html" class="btnL colorBlue"><span>가입</span></a>
+								</div>
+							</div>
+							<!-- //content group1 -->
+						</div>
+					</div>
+				</div>
+				<!-- //contents -->
+			</div>
+		</div>
+		<!-- //container -->
+	</div>
+
+	<!-- footer -->
+	<div id="footer">
+		<div class="fixedWidth">
+			copyrights PENTAS. all rights reserved.
+			<div class="goTop"><a href="#" class="btnGoTop"><img src="../images/cmmn/btn-top.png" alt="위로이동"></a></div>
+		</div>
+	</div>
+	<!-- //footer -->
+
+</body>
+
+</html>

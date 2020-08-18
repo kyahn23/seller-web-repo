@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport">
+	<title>Pentaworks Service</title>
+	<link rel="stylesheet" href="../css/cmmn/public.css">
+	<script type="text/javascript" src="../js/lib/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="../js/lib/jquery-migrate-1.2.1.min.js"></script>
+	<script type="text/javascript" src="../js/lib/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="../js/lib/jquery-ui-datepicker-ko.js"></script>
+	<script type="text/javascript" src="../js/lib/jquery.mtz.monthpicker.js"></script>
+	<script type="text/javascript" src="../js/lib/jquery.popupoverlay.js"></script>
+	<script type="text/javascript" src="../js/lib/jquery.placeholder.min.js"></script>
+	<script type="text/javascript" src="../js/public.js"></script>
+</head>
+<style>
+	.tblList th,
+	.tblList td {
+		padding: 6px 8px;
+		height: 34px;
+	}
+
+	table th,
+	table td {
+		padding: 6px 0;
+		border: 1px solid #e1e3e8;
+		border-width: 0 0 1px 1px;
+	}
+
+	input {
+		height: 30px;
+		width: auto;
+		padding: 0;
+		padding-bottom: 5px;
+		padding: 0 6px;
+	}
+
+	.btnS {
+		height: 28px;
+		padding: 0 8px;
+		font-size: 12px;
+		font-family: dotum, '돋움', Sans-serif;
+	}
+
+	.btnS>span {
+		padding: 4px 0;
+		line-height: 1.6;
+	}
+
+	.desBr {
+		font-size: initial;
+		font-weight: bold;
+	}
+</style>
+
+<body>
+
+	<div class="wrapper">
+		<!-- header -->
+		<div class="header">
+			<div class="fixedWidth">
+				<h1 class="logo"><img src="../images/cmmn/logo.gif" alt="PentaWorks" /></h1>
+				<div class="headerRight">
+					<p class="hdTime"><em>09:59</em><a href="#" class="btnExtension">연장하기</a></p>
+					<p class="hdUser"><em>(주)이티스트</em>님 안녕하세요!</p>
+					<p class="hdLogout"><a href="#" onclick="javascript:RemaLogoutCall();" title="로그아웃">logout</a></p>
+				</div>
+			</div>
+		</div>
+		<!-- //header -->
+
+
+		<!-- container -->
+		<div id="container">
+			<div class="fixedWidth">
+
+				<!-- left -->
+				<div class="sectionLeft">
+					<div class="lnbBgBox">
+						<ul class="accordion" id="LNB">
+							<li class="depthBox">
+								<a href="#" class="dep1"><span>사용자 관리</span></a>
+								<ul>
+									<li class="current">
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-vendor" alt="아이콘">
+											<span>매장정보관리</span>
+										</a>
+									</li>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-user" alt="아이콘">
+											<span>직원관리</span>
+										</a>
+									</li>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-list" alt="아이콘">
+											<span>공지사항관리</span>
+										</a>
+									</li>
+								</ul>
+							</li>
+							<li class="depthBox">
+								<a href="#" class="dep1"><span>사업 관리</span></a>
+								<ul>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-list" alt="아이콘">
+											<span>사업등록관리</span>
+										</a>
+									</li>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-list" alt="아이콘">
+											<span>계약등록관리</span>
+										</a>
+									</li>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-list" alt="아이콘">
+											<span>납품정보등록관리</span>
+										</a>
+									</li>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-list" alt="아이콘">
+											<span>납품정보승인관리</span>
+										</a>
+									</li>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-chk" alt="아이콘">
+											<span>검수현황</span>
+										</a>
+									</li>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-chk" alt="아이콘">
+											<span>계약현황</span>
+										</a>
+									</li>
+								</ul>
+							</li>
+							<li class="depthBox">
+								<a href="#" class="dep1"><span>NFC 관리</span></a>
+								<ul>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-nfc" alt="아이콘">
+											<span>NFC발송관리</span>
+										</a>
+									</li>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-nfc2" alt="아이콘">
+											<span>NFC설치현황</span>
+										</a>
+									</li>
+								</ul>
+							</li>
+							<li class="depthBox">
+								<a href="#" class="dep1"><span>유지보수 관리</span></a>
+								<ul>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-list" alt="아이콘">
+											<span>유지보수접수관리</span>
+										</a>
+									</li>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-chk" alt="아이콘">
+											<span>유지보수조치현황</span>
+										</a>
+									</li>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-chk" alt="아이콘">
+											<span>유지보수사업별현황</span>
+										</a>
+									</li>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-chk" alt="아이콘">
+											<span>유지보수계약별현황</span>
+										</a>
+									</li>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-chk" alt="아이콘">
+											<span>유지보수장비별현황</span>
+										</a>
+									</li>
+								</ul>
+							</li>
+							<li class="depthBox">
+								<a href="#" class="dep1"><span>제품 관리</span></a>
+								<ul>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-monitor" alt="아이콘">
+											<span>보유제품관리</span>
+										</a>
+									</li>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-part" alt="아이콘">
+											<span>부품관리</span>
+										</a>
+									</li>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-plus" alt="아이콘">
+											<span>납품제품사전등록</span>
+										</a>
+									</li>
+								</ul>
+							</li>
+							<li class="depthBox">
+								<a href="#" class="dep1"><span>유지보수 업무 배정</span></a>
+								<ul>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-maintain" alt="아이콘">
+											<span class="letterS">유지보수업무배정관리</span>
+										</a>
+									</li>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-pp" alt="아이콘">
+											<span class="letterS">엔지니어업무배정상태현황</span>
+										</a>
+									</li>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-list" alt="아이콘">
+											<span class="letterS">엔지니어업무배정처리이력</span>
+										</a>
+									</li>
+								</ul>
+							</li>
+							<li class="depthBox">
+								<a href="#" class="dep1"><span>정산 관리</span></a>
+								<ul>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-cal" alt="아이콘">
+											<span>정산등록관리 </span>
+										</a>
+									</li>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-money" alt="아이콘">
+											<span>정산현황</span>
+										</a>
+									</li>
+								</ul>
+							</li>
+							<li class="depthBox">
+								<a href="#" class="dep1"><span>고객센터</span></a>
+								<ul>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-notice" alt="아이콘">
+											<span>공지사항</span>
+										</a>
+									</li>
+									<li>
+										<a href="#">
+											<img src="../images/cmmn/hidden.png" class="ico-quest" alt="아이콘">
+											<span>Q&A</span>
+										</a>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<!-- //left -->
+
+				<!-- contents -->
+				<div class="sectionRight" id="content">
+					<div class="contentWrap">
+						<div class="onlyWideView">
+
+							<div class="subHeader">
+								<div id="foldUnfold"><a href="#" class="btnFold"><span>좌측메뉴 접기/펴기</span></a></div>
+								<h2 class="h2"><img src="../images/cmmn/hidden.png" class="ico-list" alt="아이콘">매장정보 관리
+								</h2>
+								<div class="pageLocation">
+									<span>매장 관리</span>&gt;<strong>매장정보관리</strong>
+								</div>
+							</div>
+							<!-- content group2 -->
+							<div class="contentBlock">
+								<div class="contentTitle">
+									<div class="cTit">
+										사업자 정보
+									</div>
+									<div class="cTitRight">
+										<a href="#" class="btnM colorSky"><span>저장</span></a>
+									</div>
+								</div>
+								<!-- content -->
+								<div class="contentDetail">
+									<table class="tblDataRow mb15">
+										<caption>기본정보</caption>
+										<colgroup>
+											<col style="width:140px">
+											<col style="width:*">
+											<col style="width:140px">
+											<col style="width:*">
+										</colgroup>
+										<tbody>
+											<tr>
+												<th>회사명<span class="icoMust"><em>필수</em></span></th>
+												<td colspan="3">
+													<input type="text" class="wPer" id="" placeholder="계약설명"
+														value="ABC모바일">
+												</td>
+											</tr>
+											<tr>
+												<th>주소<span class="icoMust"><em>필수</em></span></th>
+												<td colspan="3">
+													<input type="text" class="wZipcode" id="" placeholder="우편번호"
+														value="11038">
+													<a href="#" class="btnS colorWhite"><span>주소 검색</span></a>
+													<p class="br">
+														<input type="text" class="wAddr" id="" placeholder="주소 입력"
+															value="서울시 중구 서소문11길19">
+														<input type="text" class="wAddr" id="" placeholder="상세주소 입력"
+															value="정동, 배재정동빌딩 B동 10층">
+													</p>
+												</td>
+											</tr>
+											<!-- <tr>
+												<th>담당자 이름<span class="icoMust"><em>필수</em></span></th>
+												<td colspan="3">
+													<input style="width: 100%;" type="text" id=""
+														placeholder="담당자명을 입력해 주세요">
+												</td>
+												<th>담당자 연락처<span class="icoMust"><em>필수</em></span></th>
+												<td><input style="width: 100%;" type="text" id=""
+														placeholder="연락처를 입력해 주세요"></td>
+											</tr> -->
+											<tr>
+												<th>사업자등록번호<span class="icoMust"><em>필수</em></span></th>
+												<td colspan="3">
+													<input style="width: 33%;" type="text" id="" placeholder="000">
+													<input style="width: 33%;" type="text" id="" placeholder="00">
+													<input style="width: 33%;" type="text" id="" placeholder="00000">
+												</td>
+											</tr>
+											<tr>
+												<th>대표자명<span class="icoMust"><em>필수</em></span></th>
+												<td colspan="3">
+													<input type="text" class="wPer" id="" placeholder="대표자명을 입력해주세요">
+												</td>
+											</tr>
+											<tr>
+												<th>업태/종목<span class="icoMust"><em>필수</em></span></th>
+												<td colspan="3">
+													<input style="width: 49%;" type="text" id=""
+														placeholder="업태명을 입력해주세요">
+													/
+													<input style="width: 49%;" type="text" id=""
+														placeholder="종목명을 입력해주세요">
+												</td>
+											</tr>
+											<tr>
+												<th>증빙서류<span class="icoMust"><em>필수</em></span></th>
+												<td colspan="3">
+													<p class="desBr">
+														신청 정보를 증명할 수 있는 사업자등록증 사본을 제출해 주세요
+													</p>
+													<p class="br">
+														일반과세자(개인사업자)의 경우, 사업자등록증에 주민등록번호가 포함되어 있으면 뒷자리 7자리를
+														음영처리(masking)하여 제출 바랍니다.<br>첨부파일은 육안으로 식별 가능해야 하며, 서류 검토 후 문제가
+														있을
+														경우 서비스 이용에 제한을 받을 수 있습니다.
+													</p>
+													<br>
+													<input type="text" id="" placeholder="우편번호" value="11038">
+													<a href="#" class="btnS colorWhite"><span>파일첨부</span></a>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<!-- //content -->
+							</div>
+							<!-- //content group2 -->
+
+						</div>
+					</div>
+				</div>
+				<!-- //contents -->
+
+			</div>
+		</div>
+		<!-- //container -->
+	</div>
+
+	<!-- footer -->
+	<div id="footer">
+		<div class="fixedWidth">
+			copyrights WOORI BANK. all rights reserved.
+			<div class="goTop"><a href="#" class="btnGoTop"><img src="../images/cmmn/btn-top.png" alt="위로이동"></a></div>
+		</div>
+	</div>
+	<!-- //footer -->
+
+</body>
+
+</html>
