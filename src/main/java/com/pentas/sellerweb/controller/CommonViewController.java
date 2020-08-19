@@ -11,4 +11,9 @@ public class CommonViewController {
         return "main";
     }
 
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+
 }

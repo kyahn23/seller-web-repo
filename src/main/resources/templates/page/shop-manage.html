@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/default">
+
+<!-- shop-manage 고유 css -->
+<th:block layout:fragment="css">
+    <style>
+        .tblList th,
+        .tblList td {
+            padding: 6px 8px;
+            height: 34px;
+        }
+
+        table th,
+        table td {
+            padding: 6px 0;
+            border: 1px solid #e1e3e8;
+            border-width: 0 0 1px 1px;
+        }
+
+        input {
+            height: 30px;
+            width: auto;
+            padding: 0;
+            padding-bottom: 5px;
+            padding: 0 6px;
+        }
+
+        .btnS {
+            height: 28px;
+            padding: 0 8px;
+            font-size: 12px;
+            font-family: dotum, '돋움', Sans-serif;
+        }
+
+        .btnS>span {
+            padding: 4px 0;
+            line-height: 1.6;
+        }
+
+        .desBr {
+            font-size: initial;
+            font-weight: bold;
+        }
+    </style>
+</th:block>
+
+<div layout:fragment="content">
+    <!-- contents -->
+    <div class="sectionRight" id="content">
+        <div class="contentWrap">
+            <div class="onlyWideView">
+
+                <div class="subHeader">
+                    <div id="foldUnfold"><a href="#" class="btnFold"><span>좌측메뉴 접기/펴기</span></a></div>
+                    <h2 class="h2"><img src="../images/cmmn/hidden.png" class="ico-list" alt="아이콘">매장정보 관리
+                    </h2>
+                    <div class="pageLocation">
+                        <span>매장 관리</span>&gt;<strong>매장정보관리</strong>
+                    </div>
+                </div>
+                <!-- content group2 -->
+                <div class="contentBlock">
+                    <div class="contentTitle">
+                        <div class="cTit">
+                            사업자 정보
+                        </div>
+                        <div class="cTitRight">
+                            <a href="#" class="btnM colorSky"><span>저장</span></a>
+                        </div>
+                    </div>
+                    <!-- content -->
+                    <div class="contentDetail">
+                        <table class="tblDataRow mb15">
+                            <caption>기본정보</caption>
+                            <colgroup>
+                                <col style="width:140px">
+                                <col style="width:*">
+                                <col style="width:140px">
+                                <col style="width:*">
+                            </colgroup>
+                            <tbody>
+                            <tr>
+                                <th>회사명<span class="icoMust"><em>필수</em></span></th>
+                                <td colspan="3">
+                                    <input type="text" class="wPer" id="" placeholder="계약설명" value="ABC모바일">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>주소<span class="icoMust"><em>필수</em></span></th>
+                                <td colspan="3">
+                                    <input type="text" class="wZipcode" id="" placeholder="우편번호" value="11038">
+                                    <a href="#" class="btnS colorWhite popLayerDaumPostcodeSrch_open"
+                                       onclick="layer_execDaumPostcode(); return false;">
+                                        <span>주소 검색</span>
+                                    </a>
+                                    <p class="br">
+                                        <input type="text" class="wAddr" id="" placeholder="주소 입력" value="서울시 중구 서소문11길19">
+                                        <input type="text" class="wAddr" id="" placeholder="상세주소 입력" value="정동, 배재정동빌딩 B동 10층">
+                                    </p>
+                                </td>
+                            </tr>
+                            <!-- <tr>
+                                <th>담당자 이름<span class="icoMust"><em>필수</em></span></th>
+                                <td colspan="3">
+                                    <input style="width: 100%;" type="text" id=""
+                                        placeholder="담당자명을 입력해 주세요">
+                                </td>
+                                <th>담당자 연락처<span class="icoMust"><em>필수</em></span></th>
+                                <td><input style="width: 100%;" type="text" id=""
+                                        placeholder="연락처를 입력해 주세요"></td>
+                            </tr> -->
+                            <tr>
+                                <th>사업자등록번호<span class="icoMust"><em>필수</em></span></th>
+                                <td colspan="3">
+                                    <input style="width: 33%;" type="text" id="" placeholder="000">
+                                    <input style="width: 33%;" type="text" id="" placeholder="00">
+                                    <input style="width: 33%;" type="text" id="" placeholder="00000">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>대표자명<span class="icoMust"><em>필수</em></span></th>
+                                <td colspan="3">
+                                    <input type="text" class="wPer" id="" placeholder="대표자명을 입력해주세요">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>업태/종목<span class="icoMust"><em>필수</em></span></th>
+                                <td colspan="3">
+                                    <input style="width: 49%;" type="text" id="" placeholder="업태명을 입력해주세요">
+                                    /
+                                    <input style="width: 49%;" type="text" id="" placeholder="종목명을 입력해주세요">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>증빙서류<span class="icoMust"><em>필수</em></span></th>
+                                <td colspan="3">
+                                    <p class="desBr">
+                                        신청 정보를 증명할 수 있는 사업자등록증 사본을 제출해 주세요
+                                    </p>
+                                    <p class="br">
+                                        일반과세자(개인사업자)의 경우, 사업자등록증에 주민등록번호가 포함되어 있으면 뒷자리 7자리를
+                                        음영처리(masking)하여 제출 바랍니다.<br>첨부파일은 육안으로 식별 가능해야 하며, 서류 검토 후 문제가
+                                        있을
+                                        경우 서비스 이용에 제한을 받을 수 있습니다.
+                                    </p>
+                                    <br>
+                                    <input type="text" id="" placeholder="우편번호" value="11038">
+                                    <a href="#" class="btnS colorWhite"><span>파일첨부</span></a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- //content -->
+                </div>
+                <!-- //content group2 -->
+
+            </div>
+        </div>
+    </div>
+    <!-- //contents -->
+</div>
+
+<div layout:fragment="layer">
+    <!-- 팝업: 우편번호 찾기 -->
+    <div class="layerWrapper layerSizeM" id="popLayerDaumPostcodeSrch" style="display:inherit !important;">
+        <div class="layerHeader">
+            <strong>우편번호 찾기</strong>
+            <a href="#" class="btnClose popLayerDaumPostcodeSrch_close"><img src="../images/cmmn/btn-layer-close.png"
+                                                                             alt="창닫기"></a>
+        </div>
+        <div class="layerContainer" style="display: inline-block;">
+            <div class="layerContent">
+
+                <!-- 컨텐츠 -->
+                <div class="guidanceWrapper">
+                    <div id="daumPostcodeWrap"
+                         style="display: block; border: 1px solid; width: 500px; height: 300px; margin:5px 0; position: relative;">
+                    </div>
+                </div>
+                <!-- //컨텐츠 -->
+            </div>
+
+        </div>
+    </div>
+    <!-- //팝업: 우편번호 찾기 -->
+
+    <script type="text/javascript">
+        document.cookie = '_TI_NID=1; SameSite=None; Secure';
+        document.cookie = '_kadu=2; SameSite=None; Secure';
+        document.cookie = '_kdt=3; SameSite=None; Secure';
+        document.cookie = 'TIARA=4; SameSite=None; Secure';
+        document.cookie = 'kd_lang=5; SameSite=None; Secure';
+        // document.cookie = 'safeCookie6="webid_ts"; SameSite=Lax;';
+        // document.cookie = 'safeCookie7="webid"; SameSite=Lax;';
+    </script>
+    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script>
+        // 우편번호 찾기 찾기 화면을 넣을 element
+        var element_wrap = document.getElementById('daumPostcodeWrap');
+
+        // function foldDaumPostcode() {
+        //     // iframe을 넣은 element를 안보이게 한다.
+        //     element_wrap.style.display = 'none';
+        // }
+
+        function layer_execDaumPostcode() {
+            // 현재 scroll 위치를 저장해놓는다.
+            var currentScroll = Math.max(document.body.scrollTop, document.documentElement.scrollTop);
+            new daum.Postcode({
+                oncomplete: function (data) {
+                    // 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+
+                    // 각 주소의 노출 규칙에 따라 주소를 조합한다.
+                    // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
+                    var addr = ''; // 주소 변수
+                    var extraAddr = ''; // 참고항목 변수
+
+                    //사용자가 선택한 주소 타입에 따라 해당 주소 값을 가져온다.
+                    if (data.userSelectedType === 'R') { // 사용자가 도로명 주소를 선택했을 경우
+                        addr = data.roadAddress;
+                    } else { // 사용자가 지번 주소를 선택했을 경우(J)
+                        addr = data.jibunAddress;
+                    }
+
+                    // 사용자가 선택한 주소가 도로명 타입일때 참고항목을 조합한다.
+                    if (data.userSelectedType === 'R') {
+                        // 법정동명이 있을 경우 추가한다. (법정리는 제외)
+                        // 법정동의 경우 마지막 문자가 "동/로/가"로 끝난다.
+                        if (data.bname !== '' && /[동|로|가]$/g.test(data.bname)) {
+                            extraAddr += data.bname;
+                        }
+                        // 건물명이 있고, 공동주택일 경우 추가한다.
+                        if (data.buildingName !== '' && data.apartment === 'Y') {
+                            extraAddr += (extraAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                        }
+                        // 표시할 참고항목이 있을 경우, 괄호까지 추가한 최종 문자열을 만든다.
+                        if (extraAddr !== '') {
+                            extraAddr = ' (' + extraAddr + ')';
+                        }
+                        // 조합된 참고항목을 해당 필드에 넣는다.
+                        document.getElementById("layer_extraAddress").value = extraAddr;
+
+                    } else {
+                        document.getElementById("layer_extraAddress").value = '';
+                    }
+
+                    // 우편번호와 주소 정보를 해당 필드에 넣는다.
+                    document.getElementById('layer_postcode').value = data.zonecode;
+                    document.getElementById("layer_address").value = addr;
+                    // 커서를 상세주소 필드로 이동한다.
+                    document.getElementById("layer_detailAddress").focus();
+
+                    // iframe을 넣은 element를 안보이게 한다.
+                    // (autoClose:false 기능을 이용한다면, 아래 코드를 제거해야 화면에서 사라지지 않는다.)
+                    // element_wrap.style.display = 'none';
+
+                    // 우편번호 찾기 화면이 보이기 이전으로 scroll 위치를 되돌린다.
+                    document.body.scrollTop = currentScroll;
+                },
+                // 우편번호 찾기 화면 크기가 조정되었을때 실행할 코드를 작성하는 부분. iframe을 넣은 element의 높이값을 조정한다.
+                onresize: function (size) {
+                    element_wrap.style.height = size.height + 'px';
+                },
+                width: '100%',
+                height: '100%'
+            }).embed(element_wrap);
+
+            // iframe을 넣은 element를 보이게 한다.
+            // element_wrap.style.display = 'block';
+        }
+    </script>
+
+    <script type="text/javascript">
+        $(function () {
+            if ($(".layerWrapper").length) {
+                //개통결과등록
+                $('#popLayerDaumPostcodeSrch').popup();
+            }
+        });
+    </script>
+</div>
+</html>

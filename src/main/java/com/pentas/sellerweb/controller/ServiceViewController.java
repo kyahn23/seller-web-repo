@@ -8,12 +8,16 @@ public class ServiceViewController {
 
     @GetMapping("/service/inbox")
     public String serviceInbox() {
-        return "service-inbox";
-    }
-
-    @GetMapping("/page/service/inbox")
-    public String pageServiceInbox() {
         return "page/service-inbox";
     }
+
+    @GetMapping("/service/visit")
+    public String serviceVisit() { return "page/service-visit"; }
+
+    @GetMapping("/service/status")
+    public String serviceStatus() { return "page/service-status"; }
+
+    @GetMapping("/service/marketing")
+    public String serviceMarketing() { return "page/service-marketing"; }
 
 }
