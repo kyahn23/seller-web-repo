@@ -1,16 +1,19 @@
-$(function(){
+var g_cxt = '/'
+g_cxt = g_cxt.substring(0, g_cxt.length - 1)
+
+$(function () {
     // 공통 레이어팝업 숨기기
     $('#layerNoticeCommon').popup("hide");
 
-    $("body").click(function(){
+    $("body").click(function () {
         cf_initTimer();
     })
 
     // form 태그안에 input 필드에서 엔터 키 입력시 자동 submit 방지를 위한 로직
-    $("form > input").keydown(function(event){
-        if(event.target.id !== "userId" && event.target.id !== "userPw" && event.keyCode === 13){
-            if(event.target.parentElement.tagName === "FORM"){
-                $(event.target.parentElement).submit(function(e){
+    $("form > input").keydown(function (event) {
+        if (event.target.id !== "userId" && event.target.id !== "userPw" && event.keyCode === 13) {
+            if (event.target.parentElement.tagName === "FORM") {
+                $(event.target.parentElement).submit(function (e) {
                     e.preventDefault(e);
                 })
             }
@@ -22,35 +25,35 @@ $(function(){
  * ================= VueJs 공통설정 시작 =================
  */
 Vue.mixin({
-    created : function(){
+    created: function () {
         var el = this.$options.el;
 
         // 메인콘텐츠의 경우 vue 가 다 뜬다음 보여주도록 한다.
         var el_id = el.substring(1);
-        if(document.getElementById(el_id).hasClass('main_contents')){
-            if(document.getElementById(el_id) != null){
+        if (document.getElementById(el_id).hasClass('main_contents')) {
+            if (document.getElementById(el_id) != null) {
                 document.getElementById(el_id).style.display = 'block'; // show
 //				document.getElementById('myElement').style.display = 'none'; // hide
             }
         }
     },
-    methods : {
-        allCheckToggle : function(datalist){
+    methods: {
+        allCheckToggle: function (datalist) {
 
             var obj = event.target != undefined ? event.target : event.srcElement
 
             var chkval = obj.checked;
-            for(var i=0; i<datalist.length; i++){
-                datalist[i].chk=chkval;
+            for (var i = 0; i < datalist.length; i++) {
+                datalist[i].chk = chkval;
             }
         },
 
     },
-    directives : {
+    directives: {
         /**
          * 처음 페이지가 열릴때 포커스가 선택되게 하는 directive
          */
-        focus : {
+        focus: {
             // 바인딩 된 엘리먼트가 DOM에 삽입되었을 때...
             inserted: function (el) {
                 // 엘리먼트에 포커스를 줍니다
@@ -60,7 +63,7 @@ Vue.mixin({
         /**
          * 마우스가 선택될때 전체선택이 되도록 하는 directive
          */
-        select : function (el, binding, vnode) {
+        select: function (el, binding, vnode) {
             el.addEventListener('click', function (event) {
                 this.select();
             }, false);
@@ -68,14 +71,14 @@ Vue.mixin({
         /**
          * 팝업을 열때 팝업의 Vue 인스턴스의 data 중 opener에 호출한 Vue 인스턴스를 넘기는 directive
          */
-        popupopen : function(el, binding, vnode) {
+        popupopen: function (el, binding, vnode) {
             el.addEventListener('click', function (event) {
-                var classList = this.className.replaceAll('\t',' ').split(' ');
+                var classList = this.className.replaceAll('\t', ' ').split(' ');
                 var classname = "";
-                for(var i=0; i<classList.length; i++){
+                for (var i = 0; i < classList.length; i++) {
                     classname = classList[i];
-                    if(classname.length > 5 && classname.substring(classname.length-5) === "_open"){
-                        eval(classname.substring(0, classname.length-5) + "_app.opener = vnode.context.$root");
+                    if (classname.length > 5 && classname.substring(classname.length - 5) === "_open") {
+                        eval(classname.substring(0, classname.length - 5) + "_app.opener = vnode.context.$root");
                         break;
                     }
                 }
@@ -84,7 +87,7 @@ Vue.mixin({
         /**
          * 한글만 입력이 되도록 하는 directive
          */
-        hangle : function (el, binding, vnode) {
+        hangle: function (el, binding, vnode) {
 
             var data = vnode.data.domProps.value;
 
@@ -93,8 +96,8 @@ Vue.mixin({
 
             var directives = vnode.data.directives;
             var dataexpression = "";
-            for(var i=0; i<directives.length; i++){
-                if(directives[i].name === "model"){
+            for (var i = 0; i < directives.length; i++) {
+                if (directives[i].name === "model") {
                     dataexpression = directives[i].expression;
                     break;
                 }
@@ -105,7 +108,7 @@ Vue.mixin({
         /**
          * 숫자만 formating 입력이 되도록 하는 directive
          */
-        numform : function (el, binding, vnode) {
+        numform: function (el, binding, vnode) {
 
             var data = vnode.data.domProps.value;
 
@@ -128,8 +131,8 @@ Vue.mixin({
 
             var directives = vnode.data.directives;
             var dataexpression = "";
-            for(var i=0; i<directives.length; i++){
-                if(directives[i].name === "model"){
+            for (var i = 0; i < directives.length; i++) {
+                if (directives[i].name === "model") {
                     dataexpression = directives[i].expression;
                     break;
                 }
@@ -144,12 +147,12 @@ Vue.mixin({
  * ================= VueJs 공통설정 끝 =================
  */
 
-function cf_goAppPage(page){
+function cf_goAppPage(page) {
     var url = window.location.href;
-    if(url.indexOf('/page/bondbuyResvPage') != -1){
+    if (url.indexOf('/page/bondbuyResvPage') != -1) {
         if (app.bondbuyList.length > 0) {
-            if($('#popLayerResvNonBondBuy').length){
-                popLayerResvNonBondBuy_app.page = page ;
+            if ($('#popLayerResvNonBondBuy').length) {
+                popLayerResvNonBondBuy_app.page = page;
                 $('#popLayerResvNonBondBuy').popup("show");
             }
         } else {
@@ -161,12 +164,12 @@ function cf_goAppPage(page){
 
 }
 
-function cf_goExtpage(page){
+function cf_goExtpage(page) {
     var url = window.location.href;
-    if(url.indexOf('/page/bondbuyResvPage') != -1){
+    if (url.indexOf('/page/bondbuyResvPage') != -1) {
         if (app.bondbuyList.length > 0) {
-            if($('#popLayerResvNonBondBuy').length){
-                popLayerResvNonBondBuy_app.page = page ;
+            if ($('#popLayerResvNonBondBuy').length) {
+                popLayerResvNonBondBuy_app.page = page;
                 $('#popLayerResvNonBondBuy').popup("show");
             }
         } else {
@@ -177,24 +180,24 @@ function cf_goExtpage(page){
     }
 }
 
-function cf_newTab(page){
+function cf_newTab(page) {
     window.open(g_cxt + page, '_blank');
 }
 
-function cf_newTabExtPage(page){
+function cf_newTabExtPage(page) {
     window.open(page, '_blank');
 }
 
-function cf_loadingbarShow(){
+function cf_loadingbarShow() {
     $(".loadingDiv").show();
 }
 
-function cf_loadingbarHide(){
+function cf_loadingbarHide() {
     $(".loadingDiv").hide();
 }
 
-function cf_nvl(obj, defval){
-    if(obj==null || obj=="null") return defval;
+function cf_nvl(obj, defval) {
+    if (obj == null || obj == "null") return defval;
     return obj;
 }
 
@@ -207,11 +210,12 @@ function cf_nvl(obj, defval){
  * @returns
  */
 var rsltFailArr = ['error', 'dev-error', 'FAIL'];
-function cf_call(url, param, callback, options, isloadingbar){
 
-    if(cf_isEmpty(options)) options = {};
+function cf_call(url, param, callback, options, isloadingbar) {
 
-    if(isloadingbar !== false){
+    if (cf_isEmpty(options)) options = {};
+
+    if (isloadingbar !== false) {
         cf_loadingbarShow();
     }
 
@@ -219,15 +223,15 @@ function cf_call(url, param, callback, options, isloadingbar){
         .then(function (response) {
             cf_loadingbarHide();
 //			console.log(response);
-            if(rsltFailArr.includes(response.data.rsltStat)){
-                if(response.data.rsltStat == "dev-error" && !cf_isEmpty(response.data.errMsg)){
+            if (rsltFailArr.includes(response.data.rsltStat)) {
+                if (response.data.rsltStat == "dev-error" && !cf_isEmpty(response.data.errMsg)) {
                     alert(response.data.errMsg);
                 } else {
                     alert("처리중 오류가 발생했습니다. \n관리자에게 문의하세요.");
                 }
             } else {
-                if(callback != null){
-                    if(cf_whatIsIt(response.data) === "string" && response.data.indexOf("<!DOCTYPE html>") != -1){
+                if (callback != null) {
+                    if (cf_whatIsIt(response.data) === "string" && response.data.indexOf("<!DOCTYPE html>") != -1) {
 //						$(location).attr("href", g_cxt + "/");
                         alert("처리중 오류가 발생했습니다. \n관리자에게 문의하세요.");
                     } else {
@@ -238,7 +242,7 @@ function cf_call(url, param, callback, options, isloadingbar){
         })
         .catch(function (error) {
             cf_loadingbarHide();
-            if(error.message == "Network Error"){
+            if (error.message == "Network Error") {
                 alert("네트워크상태 또는 서버 구동상태를 확인해 주세요.");
             } else {
                 alert("처리중 오류가 발생했습니다. \n관리자에게 문의하세요.");
@@ -252,11 +256,11 @@ function cf_call(url, param, callback, options, isloadingbar){
  * @param fileName
  * @returns
  */
-function cf_fileDownload(fileName){
-    location.href= g_cxt + "/fileDownload?fileName="+fileName;
+function cf_fileDownload(fileName) {
+    location.href = g_cxt + "/fileDownload?fileName=" + fileName;
 }
 
-function cf_excelDown(url, param){
+function cf_excelDown(url, param) {
 
     var form = document.createElement("form");
     form.setAttribute("charset", "UTF-8");
@@ -264,9 +268,9 @@ function cf_excelDown(url, param){
     form.setAttribute("action", g_cxt + url);
 
     var hiddenField = document.createElement("input");
-    hiddenField.setAttribute("type","hidden");
-    hiddenField.setAttribute("name","param");
-    hiddenField.setAttribute("value",JSON.stringify(param));
+    hiddenField.setAttribute("type", "hidden");
+    hiddenField.setAttribute("name", "param");
+    hiddenField.setAttribute("value", JSON.stringify(param));
     form.appendChild(hiddenField);
     document.body.appendChild(form);
     form.submit();
@@ -280,39 +284,39 @@ function cf_excelDown(url, param){
  * @param callback
  * @returns
  */
-function cf_callWithFiles(url, fileList, param, callback){
+function cf_callWithFiles(url, fileList, param, callback) {
 
     var formData = new FormData();
-    for(var i=0; i<fileList.length; i++){
+    for (var i = 0; i < fileList.length; i++) {
         formData.append("fileList", fileList[i]);
     }
-    formData.append("param",JSON.stringify(param));
+    formData.append("param", JSON.stringify(param));
 
     $.ajax({
-        url : g_cxt + url,
-        dataType : "json",
-        data : formData,
-        type : 'POST',
-        contentType : false,
-        processData : false,
-        beforeSend : function(){
+        url: g_cxt + url,
+        dataType: "json",
+        data: formData,
+        type: 'POST',
+        contentType: false,
+        processData: false,
+        beforeSend: function () {
             cf_loadingbarShow();
         },
-        success: function(data, status){
+        success: function (data, status) {
             cf_loadingbarHide();
-            if(rsltFailArr.includes(data.rsltStat)){
-                if(data.rsltStat == "user-error" && !cf_isEmpty(data.errMsg)){
+            if (rsltFailArr.includes(data.rsltStat)) {
+                if (data.rsltStat == "user-error" && !cf_isEmpty(data.errMsg)) {
                     alert(data.errMsg);
                 } else {
                     alert("업로드를 실패했습니다. 관리자에게 문의하세요.");
                 }
             } else {
-                if(callback != null){
+                if (callback != null) {
                     callback(data);
                 }
             }
         },
-        error: function(){
+        error: function () {
             cf_loadingbarHide();
             alert("업로드를 실패했습니다. 관리자에게 문의하세요.");
         }
@@ -327,16 +331,16 @@ function cf_callWithFiles(url, fileList, param, callback){
  * @param callback
  * @returns
  */
-function cf_extractExcelData(elid, excelInfo, callback){
+function cf_extractExcelData(elid, excelInfo, callback) {
 
-    var tmpel = $("#"+elid);
+    var tmpel = $("#" + elid);
     var tmp = tmpel.val();
-    if(tmp === ""){
+    if (tmp === "") {
         return;
     }
 
     var extension = cf_getExtensionOfFilename(tmp);
-    if(extension != "xls" && extension != "xlsx"){
+    if (extension != "xls" && extension != "xlsx") {
         alert("엑셀 파일만 첨부해 주세요.");
         tmpel.val(null);
         return;
@@ -344,30 +348,30 @@ function cf_extractExcelData(elid, excelInfo, callback){
 
     var formData = new FormData();
     formData.append("excel", tmpel[0].files[0]);
-    formData.append("excelInfo",JSON.stringify(excelInfo));
+    formData.append("excelInfo", JSON.stringify(excelInfo));
 
     $.ajax({
-        url : g_cxt + "/extractExcelData",
-        dataType : "json",
-        data : formData,
-        type : 'POST',
-        contentType : false,
-        processData : false,
-        beforeSend : function(){
+        url: g_cxt + "/extractExcelData",
+        dataType: "json",
+        data: formData,
+        type: 'POST',
+        contentType: false,
+        processData: false,
+        beforeSend: function () {
             cf_loadingbarShow();
         },
-        success: function(rsltdata, status){
+        success: function (rsltdata, status) {
             cf_loadingbarHide();
             tmpel.val(null);
 
             var mappingInfo = excelInfo.mappingInfo;
             var keys = Object.keys(mappingInfo)
             var fn, col, val;
-            for(var i=0; i<keys.length; i++){
+            for (var i = 0; i < keys.length; i++) {
                 fn = mappingInfo[keys[i]].fn;
-                if(!cf_isEmpty(fn)){
+                if (!cf_isEmpty(fn)) {
                     col = mappingInfo[keys[i]].col;
-                    for(var j=0; j<rsltdata.length; j++){
+                    for (var j = 0; j < rsltdata.length; j++) {
                         val = rsltdata[j][col];
                         eval(fn);
                         rsltdata[j][col] = val;
@@ -377,7 +381,7 @@ function cf_extractExcelData(elid, excelInfo, callback){
 
             callback(rsltdata);
         },
-        error: function(){
+        error: function () {
             cf_loadingbarHide();
             tmpel.val(null);
             //에러발생을 위한 code페이지
@@ -392,13 +396,13 @@ function cf_extractExcelData(elid, excelInfo, callback){
  * @param jsonAryData
  * @returns
  */
-function cf_getCheckedData(jsonAryData){
+function cf_getCheckedData(jsonAryData) {
     var rslt = []
     var chkval;
     var jsondata;
-    for(var i=0; i<jsonAryData.length; i++){
+    for (var i = 0; i < jsonAryData.length; i++) {
         chkval = jsonAryData[i].chk;
-        if(chkval == "1"){
+        if (chkval == "1") {
             rslt.push(jsonAryData[i]);
         }
     }
@@ -407,25 +411,25 @@ function cf_getCheckedData(jsonAryData){
 
 /**
  * 공통코드를 가져오는 함수
- *	var params = [
- *		{
+ *    var params = [
+ *        {
  *			disCd : "LATE_STCD", // 마스터코드
  *			sortTarget : "disDtlCd", // 정렬기준을 설정함. "disDtlCd" 또는 "disDtlCdNm". defalut값은 "disDtlCd"
  *			isAscent : true,  // 정렬의 오름차순여부. defalut값은 true
  *			excludeCode : "2,3"  // 제외대상코드
  *		},
- *		{
+ *        {
  *			disCd : "MNU_AUTH",
  *			sortTarget : "disDtlCdNm",
  *			isAscent : false,
  *		},
- *		{
+ *        {
  *			disCd : "REQ_RSP_DSCD",
  *		},
- *	]
+ *    ]
  *
  */
-function cf_getCmmnCd(params, callback){
+function cf_getCmmnCd(params, callback) {
     cf_call("/getCmmnCd", params, callback, null, false);
 }
 
@@ -436,8 +440,8 @@ function cf_getCmmnCd(params, callback){
  *
  * @returns
  */
-function cf_genUUID(){
-    return cf_genrandom()+cf_genrandom()+cf_genrandom()+cf_genrandom()+cf_genrandom();
+function cf_genUUID() {
+    return cf_genrandom() + cf_genrandom() + cf_genrandom() + cf_genrandom() + cf_genrandom();
 }
 
 /**
@@ -445,8 +449,8 @@ function cf_genUUID(){
  * 예) fbb1
  * @returns
  */
-function cf_genrandom(){
-    return ((1+Math.random()) * 0x10000 | 0).toString(16).substring(1);
+function cf_genrandom() {
+    return ((1 + Math.random()) * 0x10000 | 0).toString(16).substring(1);
 }
 
 /**
@@ -454,24 +458,24 @@ function cf_genrandom(){
  * @param obj
  * @returns
  */
-function cf_whatIsIt(obj){
+function cf_whatIsIt(obj) {
     var stringConstructor = "test".constructor;
     var numberConstructor = Number("123").constructor;
     var arrayConstructor = [].constructor;
     var objectConstructor = {}.constructor;
 
-    if(obj === null){
+    if (obj === null) {
         return "null";
-    } else if(obj === undefined){
+    } else if (obj === undefined) {
         return "undefined";
-    } else if(obj.constructor === stringConstructor){
+    } else if (obj.constructor === stringConstructor) {
         return "string";
-    } else if(obj.constructor === numberConstructor){
-        if(isNaN(obj)) return "nothing";
+    } else if (obj.constructor === numberConstructor) {
+        if (isNaN(obj)) return "nothing";
         return "number";
-    } else if(obj.constructor === arrayConstructor){
+    } else if (obj.constructor === arrayConstructor) {
         return "array";
-    } else if(obj.constructor === objectConstructor){
+    } else if (obj.constructor === objectConstructor) {
         return "object";
     } else {
         return "nothing";
@@ -481,14 +485,14 @@ function cf_whatIsIt(obj){
 /**
  * json list 에서 조건에 해당하는 첫번째 인덱스를 가지고 온다.
  *
- * 	var users = [
- *  	{ 'user': 'barney',  'active': false },
- *  	{ 'user': 'fred',    'active': false },
- *  	{ 'user': 'pebbles', 'active': true }
- *	];
+ *    var users = [
+ *    { 'user': 'barney',  'active': false },
+ *    { 'user': 'fred',    'active': false },
+ *    { 'user': 'pebbles', 'active': true }
+ *    ];
  *
- *	var rslt_index = findIndex(users, { 'user': 'fred', 'active': false });
- *	===> rslt_index 값은 1
+ *    var rslt_index = findIndex(users, { 'user': 'fred', 'active': false });
+ *    ===> rslt_index 값은 1
  *
  * @param p_jsonList
  * @param p_condition
@@ -496,20 +500,20 @@ function cf_whatIsIt(obj){
  */
 function cf_findFirstIndex(p_jsonList, p_condition) {
 
-    if(p_condition == undefined || p_condition == null || p_condition.length == 0){
+    if (p_condition == undefined || p_condition == null || p_condition.length == 0) {
         return -1;
     }
 
     var paramkeys = Object.keys(p_condition)
     var tmpcnt;
-    for(var i=0; i<p_jsonList.length; i++){
+    for (var i = 0; i < p_jsonList.length; i++) {
         tmpcnt = 0;
-        for(var j=0; j<paramkeys.length; j++){
-            if(p_jsonList[i][paramkeys[j]] === p_condition[paramkeys[j]]){
+        for (var j = 0; j < paramkeys.length; j++) {
+            if (p_jsonList[i][paramkeys[j]] === p_condition[paramkeys[j]]) {
                 tmpcnt++;
             }
         }
-        if(tmpcnt === paramkeys.length){
+        if (tmpcnt === paramkeys.length) {
             return i;
         }
     }
@@ -532,12 +536,12 @@ function cf_findFirstIndex(p_jsonList, p_condition) {
  * @param p_isDescent
  * @returns
  */
-function cf_sortArray(p_array, p_isDescent){
-    return p_array.sort(function(a, b){
+function cf_sortArray(p_array, p_isDescent) {
+    return p_array.sort(function (a, b) {
         var comparison;
-        if(a > b){
+        if (a > b) {
             comparison = 1;
-        } else if(a === b){
+        } else if (a === b) {
             comparison = 0;
         } else {
             comparison = -1;
@@ -559,8 +563,8 @@ function cf_sortArray(p_array, p_isDescent){
  * @param p_isDescent
  * @returns
  */
-function cf_sortJsonList(p_jsonList, p_key, p_isDescent){
-    p_jsonList.sort(function(a, b) {
+function cf_sortJsonList(p_jsonList, p_key, p_isDescent) {
+    p_jsonList.sort(function (a, b) {
         if (!a.hasOwnProperty(p_key) || !b.hasOwnProperty(p_key)) {
             return 0;
         }
@@ -585,7 +589,7 @@ function cf_sortJsonList(p_jsonList, p_key, p_isDescent){
  * @param param
  * @returns
  */
-function cf_openRdReport(url, params){
+function cf_openRdReport(url, params) {
     window.open("", "reportTarget", "width=1130, height=860, toolbar=no, menubar=no, scrollbars=no, resizable=yes");
 
     var form = document.createElement("form");
@@ -595,9 +599,9 @@ function cf_openRdReport(url, params){
     form.setAttribute("target", "reportTarget");
 
     var hiddenField = document.createElement("input");
-    hiddenField.setAttribute("type","hidden");
-    hiddenField.setAttribute("name","params");
-    hiddenField.setAttribute("value",JSON.stringify(params));
+    hiddenField.setAttribute("type", "hidden");
+    hiddenField.setAttribute("name", "params");
+    hiddenField.setAttribute("value", JSON.stringify(params));
     form.appendChild(hiddenField);
     document.body.appendChild(form);
     form.submit();
@@ -610,12 +614,12 @@ function cf_openRdReport(url, params){
  * @param obj
  * @returns
  */
-function cf_isEmpty(obj){
+function cf_isEmpty(obj) {
     var objtyp = cf_whatIsIt(obj);
-    if(objtyp == "null") return true;
-    else if(objtyp == "undefined") return true;
-    else if(objtyp == "string" && obj == "") return true;
-    else if(objtyp == "object" && obj == {}) return true;
+    if (objtyp == "null") return true;
+    else if (objtyp == "undefined") return true;
+    else if (objtyp == "string" && obj == "") return true;
+    else if (objtyp == "object" && obj == {}) return true;
     return false;
 }
 
@@ -645,71 +649,73 @@ function cf_getExtensionOfFilename(filename) {
 //콤마찍기
 function cf_numberFormat(num) {
     var pattern = /(-?[0-9]+)([0-9]{3})/;
-    while(pattern.test(num)) {
-        num = num.replace(pattern,"$1,$2");
+    while (pattern.test(num)) {
+        num = num.replace(pattern, "$1,$2");
     }
     return num;
 }
 
 //주민번호, 사업자번호, 채권번호 마스킹
-function cf_maskFormat(str){
+function cf_maskFormat(str) {
     if (str.length == 10) {
-        return str.substring(0,3)  + "-" + str.substring(3,5)  + "-*****" ;
+        return str.substring(0, 3) + "-" + str.substring(3, 5) + "-*****";
     } else if (str.length == 13) {
-        return str.substring(0,str.length -7) + "-*******" ;
+        return str.substring(0, str.length - 7) + "-*******";
     } else if (str.length == 14) {
-        return str.substring(0,4)  + "-" + str.substring(4,6)  + "-" + str.substring(6,10)  + "-" + str.substring(10,14);
+        return str.substring(0, 4) + "-" + str.substring(4, 6) + "-" + str.substring(6, 10) + "-" + str.substring(10, 14);
     }
     return "";
 }
 
 //콤마제거
 function cf_unNumberFormat(num) {
-    return (num.replace(/\,/g,""));
+    return (num.replace(/\,/g, ""));
 }
 
 var iMinute;
 var iSecond;
 var timerchecker = null;
 
-function cf_startTimer(){
+function cf_startTimer() {
     cf_initTimer();
     cf_actTimer();
 }
 
-function cf_initTimer(){
-    iMinute = 09;  // 초기값 10분으로 초기화
+function cf_initTimer() {
+    iMinute = 0
+    9;  // 초기값 10분으로 초기화
     iSecond = iMinute * 60;
 }
 
-function cf_actTimer(){
+function cf_actTimer() {
     var rMinute = parseInt(iSecond / 60);
     var rSecond = iSecond % 60;
-    if(iSecond > 0){
-        $("#timer").html((rMinute + "").lpad(2,"0") + " : " + (rSecond + "").lpad(2,"0"));
+    if (iSecond > 0) {
+        $("#timer").html((rMinute + "").lpad(2, "0") + " : " + (rSecond + "").lpad(2, "0"));
         iSecond--;
         timerchecker = setTimeout("cf_actTimer()", 1000); // 1초 간격으로 체크
-        if(iSecond==60) {  //1분 남았을 경우
+        if (iSecond == 60) {  //1분 남았을 경우
             cf_oneminuteLogoutNoti();
         }
-    }else{
+    } else {
         cf_logout();
     }
 }
 
-function cf_logout(){
+function cf_logout() {
     location.href = g_cxt + "/logout";
 }
 
 var noticeLayerBtn = "";
-function cf_setNoticeLayerBtn(color, title, func){
+
+function cf_setNoticeLayerBtn(color, title, func) {
     noticeLayerBtn = "<a class='btnL " + color + " layerNoticeCommon_close' onclick=\"" + func + "\">"
         + "<span>" + title + "</span>"
         + "</a>";
     return noticeLayerBtn;
 }
 
-function cf_guide4MemberReg(){
+function cf_guide4MemberReg() {
     $('#layerNoticeCommon').removeClass();
     $('#layerNoticeCommon').addClass("layerWrapper");
     $('#layerNoticeCommon').addClass("layerSizeM");
@@ -726,7 +732,7 @@ function cf_guide4MemberReg(){
     $('#layerNoticeCommon').popup("show");
 }
 
-function cf_guide4PwSearch(){
+function cf_guide4PwSearch() {
     $('#layerNoticeCommon').removeClass();
     $('#layerNoticeCommon').addClass("layerWrapper");
     $('#layerNoticeCommon').addClass("layerSizeM");
@@ -743,7 +749,7 @@ function cf_guide4PwSearch(){
     $('#layerNoticeCommon').popup("show");
 }
 
-function cf_failLginDayCntOver(){
+function cf_failLginDayCntOver() {
     $('#layerNoticeCommon').removeClass();
     $('#layerNoticeCommon').addClass("layerWrapper");
     $('#layerNoticeCommon').addClass("layerSizeM");
@@ -765,7 +771,7 @@ function cf_failLginDayCntOver(){
     $('#layerNoticeCommon').popup("show");
 }
 
-function cf_failLginAvlNo(){
+function cf_failLginAvlNo() {
     $('#layerNoticeCommon').removeClass();
     $('#layerNoticeCommon').addClass("layerWrapper");
     $('#layerNoticeCommon').addClass("layerSizeM");
@@ -778,7 +784,7 @@ function cf_failLginAvlNo(){
     $('#layerNoticeCommon').popup("show");
 }
 
-function cf_failPwerrCntOverMst(){
+function cf_failPwerrCntOverMst() {
     $('#layerNoticeCommon').removeClass();
     $('#layerNoticeCommon').addClass("layerWrapper");
     $('#layerNoticeCommon').addClass("layerSizeM");
@@ -793,7 +799,7 @@ function cf_failPwerrCntOverMst(){
     $('#layerNoticeCommon').popup("show");
 }
 
-function cf_failPwerrCntOverSub(){
+function cf_failPwerrCntOverSub() {
     $('#layerNoticeCommon').removeClass();
     $('#layerNoticeCommon').addClass("layerWrapper");
     $('#layerNoticeCommon').addClass("layerSizeM");
@@ -808,7 +814,7 @@ function cf_failPwerrCntOverSub(){
     $('#layerNoticeCommon').popup("show");
 }
 
-function cf_failPwerr(pwerrCn){
+function cf_failPwerr(pwerrCn) {
     $('#layerNoticeCommon').removeClass();
     $('#layerNoticeCommon').addClass("layerWrapper");
     $('#layerNoticeCommon').addClass("layerSizeM");
@@ -823,7 +829,7 @@ function cf_failPwerr(pwerrCn){
     $('#layerNoticeCommon').popup("show");
 }
 
-function cf_failLgin(){
+function cf_failLgin() {
     $('#layerNoticeCommon').removeClass();
     $('#layerNoticeCommon').addClass("layerWrapper");
     $('#layerNoticeCommon').addClass("layerSizeM");
@@ -838,7 +844,7 @@ function cf_failLgin(){
     $('#layerNoticeCommon').popup("show");
 }
 
-function cf_logoutByDuplLogin(){
+function cf_logoutByDuplLogin() {
     $('#layerNoticeCommon').removeClass();
     $('#layerNoticeCommon').addClass("layerWrapper");
     $('#layerNoticeCommon').addClass("layerSizeM");
@@ -856,7 +862,7 @@ function cf_logoutByDuplLogin(){
     $('#layerNoticeCommon').popup("show");
 }
 
-function cf_oneminuteLogoutNoti(){
+function cf_oneminuteLogoutNoti() {
     $('#layerNoticeCommon').removeClass();
     $('#layerNoticeCommon').addClass("layerWrapper");
     $('#layerNoticeCommon').addClass("layerSizeM");
@@ -875,7 +881,7 @@ function cf_oneminuteLogoutNoti(){
     $('#layerNoticeCommon').popup("show");
 }
 
-function cf_zoomScreenGuide(){
+function cf_zoomScreenGuide() {
     $('#layerNoticeCommon').removeClass();
     $('#layerNoticeCommon').addClass("layerWrapper");
     $('#layerNoticeCommon').addClass("layerSizeML");
@@ -896,22 +902,22 @@ function cf_zoomScreenGuide(){
     $('#layerNoticeCommon').popup("show");
 }
 
-function cf_dateFormate(datestr){
-    return datestr.substring(0,4) + "-" + datestr.substring(4,6) + "-" + datestr.substring(6);
+function cf_dateFormate(datestr) {
+    return datestr.substring(0, 4) + "-" + datestr.substring(4, 6) + "-" + datestr.substring(6);
 }
 
-function cf_gotoUrl(url, param){
+function cf_gotoUrl(url, param) {
     var form = document.createElement("form");
     form.setAttribute("charset", "UTF-8");
     form.setAttribute("method", "Post");
     form.setAttribute("action", g_cxt + url);
 
     var paramkeys = Object.getOwnPropertyNames(param);
-    for(var i=0; i<paramkeys.length; i++){
+    for (var i = 0; i < paramkeys.length; i++) {
         var hiddenField = document.createElement("input");
-        hiddenField.setAttribute("type","hidden");
-        hiddenField.setAttribute("name",paramkeys[i]);
-        hiddenField.setAttribute("value",param[paramkeys[i]]);
+        hiddenField.setAttribute("type", "hidden");
+        hiddenField.setAttribute("name", paramkeys[i]);
+        hiddenField.setAttribute("value", param[paramkeys[i]]);
         form.appendChild(hiddenField);
     }
     document.body.appendChild(form);
@@ -919,22 +925,22 @@ function cf_gotoUrl(url, param){
 }
 
 /* ----- 팝업 ----- */
-function cf_openWindow(url,intWidth,intHeight){
-    window.open(g_cxt + url,"_blank","width="+intWidth+",height="+intHeight+",resizable=0,scrollbars=yes");
+function cf_openWindow(url, intWidth, intHeight) {
+    window.open(g_cxt + url, "_blank", "width=" + intWidth + ",height=" + intHeight + ",resizable=0,scrollbars=yes");
 }
 
 
-function fn_checkNumber(t){
-    if(t.value == "") {
+function fn_checkNumber(t) {
+    if (t.value == "") {
         return;
     }
     for (var int = 0; int < t.value.length; int++) {
-        if(!isNumber(t.value)) {
+        if (!isNumber(t.value)) {
             alert("숫자만 입력가능합니다.");
-            t.value  = "";
-        }else if(-1!=t.value.indexOf(".")){
+            t.value = "";
+        } else if (-1 != t.value.indexOf(".")) {
             alert("숫자만 입력 가능합니다.");
-            t.value  = "";
+            t.value = "";
         }
     }
 }
@@ -952,7 +958,7 @@ function isNumber(n) {
  *            비교대상 문자열
  * @return 동일값 여부
  */
-String.prototype.eq = function(tagetStr) {
+String.prototype.eq = function (tagetStr) {
     return (tagetStr != null && typeof (tagetStr) != 'undefined' && this == tagetStr);
 }
 
@@ -961,7 +967,7 @@ String.prototype.eq = function(tagetStr) {
  *
  * @return 문자열의 byte 길이
  */
-String.prototype.getByte = function() {
+String.prototype.getByte = function () {
     var cnt = 0;
     for (var i = 0; i < this.length; i++) {
         if (this.charCodeAt(i) > 127) {
@@ -980,7 +986,7 @@ String.prototype.getByte = function() {
  *            최소길이
  * @return 최소길이 이상인지의 여부
  */
-String.prototype.isMin = function(minLen) {
+String.prototype.isMin = function (minLen) {
     return this.length >= minLen;
 }
 
@@ -991,7 +997,7 @@ String.prototype.isMin = function(minLen) {
  *            최대길이
  * @return 최대길이 이하인지의 여부
  */
-String.prototype.isMax = function(maxLen) {
+String.prototype.isMax = function (maxLen) {
     return this.length <= maxLen;
 }
 
@@ -1002,7 +1008,7 @@ String.prototype.isMax = function(maxLen) {
  *            최소바이트수
  * @return 최소바이트수 이상인지의 여부
  */
-String.prototype.isMinByte = function(minByte) {
+String.prototype.isMinByte = function (minByte) {
     return this.getByte() >= minByte;
 }
 
@@ -1013,7 +1019,7 @@ String.prototype.isMinByte = function(minByte) {
  *            최대바이트수
  * @return 최대바이트수 이하인지의 여부
  */
-String.prototype.isMaxByte = function(maxByte) {
+String.prototype.isMaxByte = function (maxByte) {
     return this.getByte() <= maxByte;
 }
 
@@ -1022,7 +1028,7 @@ String.prototype.isMaxByte = function(maxByte) {
  *
  * @return 대문자로 치환된 문자열
  */
-String.prototype.upper = function() {
+String.prototype.upper = function () {
     return this.toUpperCase();
 }
 
@@ -1031,7 +1037,7 @@ String.prototype.upper = function() {
  *
  * @return 소문자로 치환된 문자열
  */
-String.prototype.lower = function() {
+String.prototype.lower = function () {
     return this.toLowerCase();
 }
 
@@ -1040,7 +1046,7 @@ String.prototype.lower = function() {
  *
  * @return 좌우 공백 제거된 문자열
  */
-String.prototype.trim = function() {
+String.prototype.trim = function () {
     return this.replace(/^\s+/g, '').replace(/\s+$/g, '');
 }
 
@@ -1049,7 +1055,7 @@ String.prototype.trim = function() {
  *
  * @return 좌 공백 제거된 문자열
  */
-String.prototype.ltrim = function() {
+String.prototype.ltrim = function () {
     return this.replace(/(^\s*)/, "");
 }
 
@@ -1058,7 +1064,7 @@ String.prototype.ltrim = function() {
  *
  * @return 우 공백 제거된 문자열
  */
-String.prototype.rtrim = function() {
+String.prototype.rtrim = function () {
     return this.replace(/(\s*$)/, "");
 }
 
@@ -1071,7 +1077,7 @@ String.prototype.rtrim = function() {
  *            대체 문자열
  * @return 치환된 문자열
  */
-String.prototype.replaceAll = function(pattnStr, chngStr) {
+String.prototype.replaceAll = function (pattnStr, chngStr) {
     var retsult = "";
     var trimStr = this.replace(/(^\s*)|(\s*$)/g, "");
 
@@ -1089,7 +1095,7 @@ String.prototype.replaceAll = function(pattnStr, chngStr) {
  *
  * @return 거꾸로 치환된 문자열
  */
-String.prototype.reverse = function() {
+String.prototype.reverse = function () {
     var result = '';
 
     for (var i = this.length - 1; i > -1; i--) {
@@ -1107,7 +1113,7 @@ String.prototype.reverse = function() {
  *            채울 문자열
  * @return 채워진 문자열
  */
-String.prototype.lpad = function(len, padStr) {
+String.prototype.lpad = function (len, padStr) {
     var result = '';
     var loop = Number(len) - this.length;
     for (var i = 0; i < loop; i++) {
@@ -1125,7 +1131,7 @@ String.prototype.lpad = function(len, padStr) {
  *            채울 문자열
  * @return 채워진 문자열
  */
-String.prototype.rpad = function(len, padStr) {
+String.prototype.rpad = function (len, padStr) {
 
     var result = '';
     var loop = Number(len) - this.length;
@@ -1140,7 +1146,7 @@ String.prototype.rpad = function(len, padStr) {
  *
  * @return 공백이나 널인지의 여부
  */
-String.prototype.isBlank = function() {
+String.prototype.isBlank = function () {
     var str = this.trim();
     for (var i = 0; i < str.length; i++) {
         if ((str.charAt(i) != "\t") && (str.charAt(i) != "\n")
@@ -1158,7 +1164,7 @@ String.prototype.isBlank = function() {
  *            추가 허용할 문자
  * @return 영어만으로 구성되어 있는지의 여부
  */
-String.prototype.isEng = function(exceptChar) {
+String.prototype.isEng = function (exceptChar) {
     return (/^[a-zA-Z]+$/).test(this.remove(exceptChar)) ? true : false;
 }
 
@@ -1169,7 +1175,7 @@ String.prototype.isEng = function(exceptChar) {
  *            추가 허용할 문자
  * @return 숫자와 영어만으로 구성되어 있는지의 여부
  */
-String.prototype.isEngNum = function(exceptChar) {
+String.prototype.isEngNum = function (exceptChar) {
     return (/^[0-9a-zA-Z]+$/).test(this.remove(exceptChar)) ? true : false;
 }
 
@@ -1180,7 +1186,7 @@ String.prototype.isEngNum = function(exceptChar) {
  *            추가 허용할 문자
  * @return 한글만으로 구성되어 있는지의 여부
  */
-String.prototype.isKor = function(exceptChar) {
+String.prototype.isKor = function (exceptChar) {
     return (/^[가-힣]+$/).test(this.remove(exceptChar)) ? true : false;
 }
 
@@ -1191,7 +1197,7 @@ String.prototype.isKor = function(exceptChar) {
  *            추가 허용할 문자
  * @return 숫자와 한글만으로 구성되어 있는지의 여부
  */
-String.prototype.isKorNum = function(exceptChar) {
+String.prototype.isKorNum = function (exceptChar) {
     return (/^[0-9가-힣]+$/).test(this.remove(exceptChar)) ? true : false;
 }
 
@@ -1202,7 +1208,7 @@ String.prototype.isKorNum = function(exceptChar) {
  *            추가 허용할 문자
  * @return 영문과 한글만으로 구성되어 있는지의 여부
  */
-String.prototype.isEngKor = function(exceptChar) {
+String.prototype.isEngKor = function (exceptChar) {
     return (/^[a-zA-Z가-힣]+$/).test(this.remove(exceptChar)) ? true : false;
 }
 
@@ -1211,7 +1217,7 @@ String.prototype.isEngKor = function(exceptChar) {
  *
  * @return 유효성 여부
  */
-String.prototype.isEmail = function() {
+String.prototype.isEmail = function () {
     return (/\w+([-+.]\w+)*@\w+([-.]\w+)*\.[a-zA-Z]{2,4}$/).test(this.trim());
 }
 
@@ -1222,7 +1228,7 @@ String.prototype.isEmail = function() {
  *            구분자(default : '-')
  * @return 유효성 여부
  */
-String.prototype.isPhone = function(dlm) {
+String.prototype.isPhone = function (dlm) {
     var arg = dlm != null && typeof (dlm) != 'undefined' && dlm.neq('') ? dlm
         : '-';
     return eval("(/(02|0[3-9]{1}[0-9]{1})" + arg + "[1-9]{1}[0-9]{2,3}" + arg
@@ -1236,7 +1242,7 @@ String.prototype.isPhone = function(dlm) {
  *            구분자(default : '-')
  * @return 유효성 여부
  */
-String.prototype.isMobile = function(dlm) {
+String.prototype.isMobile = function (dlm) {
     var arg = dlm != null && typeof (dlm) != 'undefined' && dlm.neq('') ? dlm
         : '-';
     return eval("(/01[016789]" + arg + "[1-9]{1}[0-9]{2,3}" + arg
@@ -1248,7 +1254,7 @@ String.prototype.isMobile = function(dlm) {
  *
  * @return 유효성 여부
  */
-String.prototype.isDate = function() {
+String.prototype.isDate = function () {
     var result = false;
     if (this.length == 8 && this.isNum()) {
         var y = Number(this.substring(0, 4));
@@ -1266,7 +1272,7 @@ String.prototype.isDate = function() {
  * 파일의 확장자를 구하여 반환한다.
  * @return 확장자
  */
-String.prototype.ext = function() {
+String.prototype.ext = function () {
     return (this.indexOf(".") < 0) ? "" : this.substring(
         this.lastIndexOf(".") + 1, this.length);
 }
@@ -1274,11 +1280,11 @@ String.prototype.ext = function() {
 /**
  * 해당 클래스명이 있는지 확인
  */
-HTMLElement.prototype.hasClass = function(cls) {
+HTMLElement.prototype.hasClass = function (cls) {
     var i;
-    var classes = this.className.replaceAll('\t',' ').split(" ");
-    for(i = 0; i < classes.length; i++) {
-        if(classes[i] == cls) {
+    var classes = this.className.replaceAll('\t', ' ').split(" ");
+    for (i = 0; i < classes.length; i++) {
+        if (classes[i] == cls) {
             return true;
         }
     }
@@ -1288,8 +1294,8 @@ HTMLElement.prototype.hasClass = function(cls) {
 /**
  * 해당클래스명을 추가
  */
-HTMLElement.prototype.addClass = function(add) {
-    if (!this.hasClass(add)){
+HTMLElement.prototype.addClass = function (add) {
+    if (!this.hasClass(add)) {
         this.className = (this.className + " " + add).trim();
     }
 };
@@ -1297,40 +1303,40 @@ HTMLElement.prototype.addClass = function(add) {
 /**
  * 해당클래스명을 삭제
  */
-HTMLElement.prototype.removeClass = function(remove) {
+HTMLElement.prototype.removeClass = function (remove) {
     var newClassName = "";
     var i;
     var classes = this.className.replace(/\s{2,}/g, ' ').split(" ");
-    for(i = 0; i < classes.length; i++) {
-        if(classes[i] !== remove) {
+    for (i = 0; i < classes.length; i++) {
+        if (classes[i] !== remove) {
             newClassName += classes[i] + " ";
         }
     }
     this.className = newClassName.trim();
 };
 
-HTMLElement.prototype.remove = function(){
-    if(this.parentNode !== null){
+HTMLElement.prototype.remove = function () {
+    if (this.parentNode !== null) {
         this.parentNode.removeChild(this);
     }
 }
 
-Array.prototype.removeElement = function(idx){
-    this.splice(idx,1);
+Array.prototype.removeElement = function (idx) {
+    this.splice(idx, 1);
 }
 
-Array.prototype.addElement = function(idx, el){
-    this.splice(idx,0,el);
+Array.prototype.addElement = function (idx, el) {
+    this.splice(idx, 0, el);
 }
 
-Array.prototype.addArray = function(idx, arry){
-    for(var i=0; i<arry.length; i++){
-        this.splice(idx+i,0,arry[i]);
+Array.prototype.addArray = function (idx, arry) {
+    for (var i = 0; i < arry.length; i++) {
+        this.splice(idx + i, 0, arry[i]);
     }
 }
 
-Array.prototype.setOrderNumbering = function(key){
-    for(var i=0; i<this.length; i++){
+Array.prototype.setOrderNumbering = function (key) {
+    for (var i = 0; i < this.length; i++) {
         eval("this[i]." + key + "= (i + 1 + '')");
     }
 }
@@ -1344,7 +1350,7 @@ Array.prototype.setOrderNumbering = function(key){
  * arr.includes('c', -100); // true
  * arr.includes('a', -2); // false
  */
-Array.prototype.includes = function(searchElement, fromIndex) {
+Array.prototype.includes = function (searchElement, fromIndex) {
     if (this == null) {
         throw new TypeError('"this" is null or not defined');
     }
