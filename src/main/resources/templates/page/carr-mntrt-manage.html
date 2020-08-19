@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout/default">
+
+<div layout:fragment="content">
+    <!-- contents -->
+    <div class="sectionRight" id="content">
+        <div class="contentWrap">
+            <div class="onlyWideView">
+
+                <div class="subHeader">
+                    <div id="foldUnfold"><a href="#" class="btnFold"><span>좌측메뉴 접기/펴기</span></a></div>
+                    <h2 class="h2"><img th:src="@{/images/cmmn/hidden.png}" class="ico-list" alt="아이콘">SKT 관리
+                    </h2>
+                    <div class="pageLocation">
+                        <span>SKT 관리</span>&gt;<strong>요금제등록관리</strong>
+                    </div>
+                </div>
+
+                <div class="searchArea">
+                    <ul>
+                        <li class="txtSize4">
+                            <label for="purchaes01">구분</label>
+                            <select id="purchaes01">
+                                <option value="">전체</option>
+                                <option value="">확인전</option>
+                                <option value="">확인</option>
+                                <option value="">완료</option>
+                                <option value="">반려</option>
+                            </select>
+                        </li>
+                        <li class="txtSize4">
+                            <label for="purchaes01">통신유형</label>
+                            <select id="purchaes01">
+                                <option value="">전체</option>
+                                <option value="">확인전</option>
+                                <option value="">확인</option>
+                                <option value="">완료</option>
+                                <option value="">반려</option>
+                            </select>
+                        </li>
+                        <li class="txtSize4">
+                        </li>
+                        <li class="txtSize4">
+                        </li>
+                    </ul>
+                    <div class="btnSearch">
+                        <a href="#" class="btnM colorBlue"><span>검색</span></a>
+                    </div>
+                </div>
+
+                <!-- content group1 -->
+                <div class="contentBlock">
+                    <div class="contentTitle ">
+                        <div class="cTit">
+                            요금제 현황
+                        </div>
+                        <div class="cTitRight">
+                            <a href="#" class="btnM colorOrg"><span>요금제 미사용</span></a>
+                            <a href="#" class="btnM colorGreen"><span>요금제 사용</span></a>
+                        </div>
+                    </div>
+                    <!-- content -->
+                    <div class="contentDetail">
+                        <table class="tblList">
+                            <caption>엔지니어 업무 배정 처리 현황</caption>
+                            <colgroup>
+                                <col style="width:3%">
+                                <col style="width:4%">
+                                <col style="width:16%">
+                                <col style="width:7%">
+                                <col style="width:10%">
+                                <col style="width:10%">
+                                <col style="width:10%">
+                                <col style="width:10%">
+                                <col style="width:10%">
+                                <col style="width:*">
+                            </colgroup>
+                            <thead>
+                            <tr>
+                                <th scope="col"><input type="checkbox" title="행 선택"></th>
+                                <th scope="col">구분</th>
+                                <th scope="col">요금제명</th>
+                                <th scope="col">통신유형</th>
+                                <th scope="col">월기본요금</th>
+                                <th scope="col">데이터</th>
+                                <th scope="col">통화</th>
+                                <th scope="col">문자</th>
+                                <th scope="col">등록자</th>
+                                <th scope="col">최종변경일시</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td class="alignC"><input type="checkbox" title="행 선택"></td>
+                                <td class="alignC">사용</td>
+                                <td class="alignC">요금제명1</td>
+                                <td class="alignC">LTE</td>
+                                <td class="alignC">55,000</td>
+                                <td class="alignC">5G</td>
+                                <td class="alignC">300분</td>
+                                <td class="alignC">300건</td>
+                                <td class="alignC">직원1</td>
+                                <td class="alignC">2020-01-01 12:20</td>
+                            </tr>
+                            <tr>
+                                <td class="alignC"><input type="checkbox" title="행 선택"></td>
+                                <td class="alignC">사용</td>
+                                <td class="alignC">요금제명2</td>
+                                <td class="alignC">LTE</td>
+                                <td class="alignC">65,000</td>
+                                <td class="alignC">5G</td>
+                                <td class="alignC">200분</td>
+                                <td class="alignC">200건</td>
+                                <td class="alignC">직원1</td>
+                                <td class="alignC">2020-01-01 12:20</td>
+                            </tr>
+                            <tr>
+                                <td class="alignC"><input type="checkbox" title="행 선택"></td>
+                                <td class="alignC">사용</td>
+                                <td class="alignC">요금제명3</td>
+                                <td class="alignC">5G</td>
+                                <td class="alignC">89,000</td>
+                                <td class="alignC">9G</td>
+                                <td class="alignC">무제한</td>
+                                <td class="alignC">무제한</td>
+                                <td class="alignC">직원1</td>
+                                <td class="alignC">2020-01-01 12:20</td>
+                            </tr>
+                            <tr>
+                                <td class="alignC"><input type="checkbox" title="행 선택"></td>
+                                <td class="alignC">사용</td>
+                                <td class="alignC">요금제명4</td>
+                                <td class="alignC">5G</td>
+                                <td class="alignC">55,000</td>
+                                <td class="alignC">무제한</td>
+                                <td class="alignC">300분</td>
+                                <td class="alignC">무제한</td>
+                                <td class="alignC">직원1</td>
+                                <td class="alignC">2020-01-01 12:20</td>
+                            </tr>
+                            <tr>
+                                <td class="alignC"><input type="checkbox" title="행 선택"></td>
+                                <td class="alignC">사용</td>
+                                <td class="alignC">요금제명5</td>
+                                <td class="alignC">5G</td>
+                                <td class="alignC">110,000</td>
+                                <td class="alignC">무제한</td>
+                                <td class="alignC">무제한</td>
+                                <td class="alignC">무제한</td>
+                                <td class="alignC">직원2</td>
+                                <td class="alignC">2020-01-01 12:20</td>
+                            </tr>
+                            <tr>
+                                <td class="alignC"><input type="checkbox" title="행 선택"></td>
+                                <td class="alignC">-</td>
+                                <td class="alignC">요금제명6</td>
+                                <td class="alignC">5G</td>
+                                <td class="alignC">100,000</td>
+                                <td class="alignC">무제한</td>
+                                <td class="alignC">무제한</td>
+                                <td class="alignC">무제한</td>
+                                <td class="alignC">직원2</td>
+                                <td class="alignC">2020-01-01 12:20</td>
+                            </tr>
+                            <tr>
+                                <td class="alignC"><input type="checkbox" title="행 선택"></td>
+                                <td class="alignC">-</td>
+                                <td class="alignC">요금제명7</td>
+                                <td class="alignC">5G</td>
+                                <td class="alignC">90,000</td>
+                                <td class="alignC">무제한</td>
+                                <td class="alignC">무제한</td>
+                                <td class="alignC">무제한</td>
+                                <td class="alignC">직원2</td>
+                                <td class="alignC">2020-01-01 12:20</td>
+                            </tr>
+                            <tr>
+                                <td class="alignC"><input type="checkbox" title="행 선택"></td>
+                                <td class="alignC">-</td>
+                                <td class="alignC">요금제명8</td>
+                                <td class="alignC">3G</td>
+                                <td class="alignC">33,000</td>
+                                <td class="alignC">5G</td>
+                                <td class="alignC">무제한</td>
+                                <td class="alignC">300건</td>
+                                <td class="alignC">직원2</td>
+                                <td class="alignC">2020-01-01 12:20</td>
+                            </tr>
+                            <tr>
+                                <td class="alignC"><input type="checkbox" title="행 선택"></td>
+                                <td class="alignC">-</td>
+                                <td class="alignC">요금제명9</td>
+                                <td class="alignC">3G</td>
+                                <td class="alignC">55,000</td>
+                                <td class="alignC">5G</td>
+                                <td class="alignC">무제한</td>
+                                <td class="alignC">200건</td>
+                                <td class="alignC">직원2</td>
+                                <td class="alignC">2020-01-01 12:20</td>
+                            </tr>
+                            <tr>
+                                <td class="alignC"><input type="checkbox" title="행 선택"></td>
+                                <td class="alignC">-</td>
+                                <td class="alignC">요금제명10</td>
+                                <td class="alignC">LTE</td>
+                                <td class="alignC">75,000</td>
+                                <td class="alignC">무제한</td>
+                                <td class="alignC">무제한</td>
+                                <td class="alignC">무제한</td>
+                                <td class="alignC">직원2</td>
+                                <td class="alignC">2020-01-01 12:20</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- //content -->
+                </div>
+                <!-- //content group1 -->
+
+            </div>
+        </div>
+    </div>
+    <!-- //contents -->
+</div>
+
+
+</html>
