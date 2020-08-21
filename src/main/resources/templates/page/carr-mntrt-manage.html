@@ -11,10 +11,11 @@
 
                 <div class="subHeader">
                     <div id="foldUnfold"><a href="#" class="btnFold"><span>좌측메뉴 접기/펴기</span></a></div>
-                    <h2 class="h2"><img th:src="@{/images/cmmn/hidden.png}" class="ico-list" alt="아이콘">SKT 관리
+                    <h2 class="h2"><img th:src="@{/images/cmmn/hidden.png}" class="ico-list" alt="아이콘">{{carr.toUpperCase()}} 관리
                     </h2>
                     <div class="pageLocation">
-                        <span>SKT 관리</span>&gt;<strong>요금제등록관리</strong>
+<!--                        <span th:text="${carr}"></span>-->
+                        <span >{{carr.toUpperCase()}} 관리</span>&gt;<strong>요금제등록관리</strong>
                     </div>
                 </div>
 
@@ -24,20 +25,17 @@
                             <label for="purchaes01">구분</label>
                             <select id="purchaes01">
                                 <option value="">전체</option>
-                                <option value="">확인전</option>
-                                <option value="">확인</option>
-                                <option value="">완료</option>
-                                <option value="">반려</option>
+                                <option value="">사용</option>
+                                <option value="">미사용</option>
                             </select>
                         </li>
                         <li class="txtSize4">
                             <label for="purchaes01">통신유형</label>
-                            <select id="purchaes01">
+                            <select id="purchaes02">
                                 <option value="">전체</option>
-                                <option value="">확인전</option>
-                                <option value="">확인</option>
-                                <option value="">완료</option>
-                                <option value="">반려</option>
+                                <option value="">5G</option>
+                                <option value="">LTE</option>
+                                <option value="">3G</option>
                             </select>
                         </li>
                         <li class="txtSize4">
@@ -224,6 +222,29 @@
     </div>
     <!-- //contents -->
 </div>
+<div layout:fragment="script">
+    <script>
+        var app = new Vue({
+            el: "#app",
+            data: {
+                carr: ""
+            },
+            mounted: function () {
+                var currentPath = window.location.pathname
+                this.carr = currentPath.substring(currentPath.lastIndexOf('/')+1)
 
-
+                // alert("1")
+            },
+            methods: {
+                tttt() {
+                    var param = {}
+                    cf_call("/testpath", param, this.ttttCB);
+                },
+                ttttCB(data) {
+                    console.log(data)
+                }
+            }
+        })
+    </script>
+</div>
 </html>
