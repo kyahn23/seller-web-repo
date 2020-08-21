@@ -99,7 +99,7 @@
                             <tr>
                                 <th>회사명<span class="icoMust"><em>필수</em></span></th>
                                 <td colspan="3">
-                                    <input type="text" class="wPer" id="" placeholder="계약설명" value="ABC모바일">
+                                    <input type="text" class="wPer" id="" placeholder="회사명" v-model="shopInfo.bnNm" @input="shopInfo.bnNm = $event.target.value">
                                 </td>
                             </tr>
                             <tr>
@@ -111,7 +111,7 @@
                                         <span>주소 검색</span>
                                     </a>
                                     <p class="br">
-                                        <input type="text" class="wAddr" id="" placeholder="주소 입력" value="서울시 중구 서소문11길19">
+                                        <input type="text" class="wAddr" id="" placeholder="주소 입력" v-model="shopInfo.bnAddrDtl" @input="shopInfo.bnAddrDtl = $event.target.value">
                                         <input type="text" class="wAddr" id="" placeholder="상세주소 입력" value="정동, 배재정동빌딩 B동 10층">
                                     </p>
                                 </td>
