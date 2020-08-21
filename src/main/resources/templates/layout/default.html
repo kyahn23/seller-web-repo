@@ -9,22 +9,26 @@
 </head>
 
 <body>
-    <!-- headerFragment -->
-    <th:block th:replace="fragment/header :: headerFragment"></th:block>
-    <!-- container -->
-    <div id="container">
-        <div class="fixedWidth">
-            <!-- lnbFragment -->
-            <th:block th:replace="fragment/lnb :: lnbFragment"></th:block>
-            <!-- content -->
-            <th:block layout:fragment="content"></th:block>
+    <div id="app">
+        <!-- headerFragment -->
+        <th:block th:replace="fragment/header :: headerFragment"></th:block>
+        <!-- container -->
+        <div id="container">
+            <div class="fixedWidth">
+                <!-- lnbFragment -->
+                <th:block th:replace="fragment/lnb :: lnbFragment"></th:block>
+                <!-- content -->
+                <th:block layout:fragment="content"></th:block>
+            </div>
         </div>
+        <!-- //container -->
+        <!-- footerFragment -->
+        <th:block th:replace="fragment/footer :: footerFragment"></th:block>
+        <!-- layerFragment -->
+        <th:block layout:fragment="layer"></th:block>
     </div>
-    <!-- //container -->
-    <!-- footerFragment -->
-    <th:block th:replace="fragment/footer :: footerFragment"></th:block>
     <!-- layerFragment -->
-    <th:block layout:fragment="layer"></th:block>
+    <th:block layout:fragment="script"></th:block>
 </body>
 
 </html>
