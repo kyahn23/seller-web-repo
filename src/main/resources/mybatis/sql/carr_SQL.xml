@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+<mapper namespace="sellerweb.carr">
+
+    <select id="mntrtlist" resultType="DevMap" parameterType="DevMap">
+        select B.MNT_USEYN_NO as MNT_USEYN_NO,	    /*사용여부 확인을 위한 idx*/
+        A.PN_MNT_RT_NO,	                            /*요금제 번호 */
+        A.PN_MNT_RT_NM,
+        A.PN_NET_TYPE,
+        A.PN_MNT_AMT,
+        A.PN_MNT_DATA,
+        A.PN_MNT_CALL,
+        A.PN_MNT_SMS,
+        B.AMD_MBR_ID,	                            /*요금제사용테이블에 추가한 직원아이디*/
+        DATE_FORMAT(B.AMD_DT, '%Y-%m-%d %H:%i'),    /*요금제사용테이블에 추가한 날짜*/
+        B.AMD_DT
+        from TBL010 A left outer join TBL013 B
+        on A.PN_MNT_RT_NO = B.PN_MNT_RT_NO
+        WHERE pn_carr = #{carr}
+        <if test='selectedSellOpt != "all"'>
+            <if test='selectedSellOpt == "y"'>
+                <![CDATA[
+                AND B.MNT_USEYN_NO is not null ]]>
+            </if>
+            <if test='selectedSellOpt == "n"'>
+                <![CDATA[
+                AND B.MNT_USEYN_NO is null ]]>
+            </if>
+        </if>
+        <if test='selectedNetType != "all"'>
+            AND pn_net_type = #{selectedNetType}
+        </if>
+    </select>
+
+
+
+<!--    <select id="mntrtlist12" resultType="DevMap" parameterType="DevMap">-->
+<!--        SELECT *-->
+<!--        FROM TBL010-->
+<!--        where pn_carr = #{carr}-->
+<!--        <if test='selectedNetType != "all"'>-->
+<!--            AND pn_net_type = #{selectedNetType}-->
+<!--        </if>-->
+<!--    </select>-->
+
+
+
+
+</mapper>

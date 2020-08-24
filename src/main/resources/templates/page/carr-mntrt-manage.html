@@ -11,11 +11,12 @@
 
                 <div class="subHeader">
                     <div id="foldUnfold"><a href="#" class="btnFold"><span>좌측메뉴 접기/펴기</span></a></div>
-                    <h2 class="h2"><img th:src="@{/images/cmmn/hidden.png}" class="ico-list" alt="아이콘">{{carr.toUpperCase()}} 관리
+                    <h2 class="h2"><img th:src="@{/images/cmmn/hidden.png}" class="ico-list" alt="아이콘">{{carr.toUpperCase()}}
+                        관리
                     </h2>
                     <div class="pageLocation">
-<!--                        <span th:text="${carr}"></span>-->
-                        <span >{{carr.toUpperCase()}} 관리</span>&gt;<strong>요금제등록관리</strong>
+                        <!--                        <span th:text="${carr}"></span>-->
+                        <span>{{carr.toUpperCase()}} 관리</span>&gt;<strong>요금제등록관리</strong>
                     </div>
                 </div>
 
@@ -23,19 +24,15 @@
                     <ul>
                         <li class="txtSize4">
                             <label for="purchaes01">구분</label>
-                            <select id="purchaes01">
-                                <option value="">전체</option>
-                                <option value="">사용</option>
-                                <option value="">미사용</option>
+                            <select id="purchaes01" v-model="selectedSellOpt">
+                                <option v-for="sell in sellYn" :value="sell.code">{{sell.value}}</option>
                             </select>
+
                         </li>
                         <li class="txtSize4">
-                            <label for="purchaes01">통신유형</label>
-                            <select id="purchaes02">
-                                <option value="">전체</option>
-                                <option value="">5G</option>
-                                <option value="">LTE</option>
-                                <option value="">3G</option>
+                            <label for="purchaes02">통신유형</label>
+                            <select id="purchaes02" v-model="selectedNetType">
+                                <option v-for="net in networkType" :value="net.code">{{net.value}}</option>
                             </select>
                         </li>
                         <li class="txtSize4">
@@ -44,7 +41,7 @@
                         </li>
                     </ul>
                     <div class="btnSearch">
-                        <a href="#" class="btnM colorBlue"><span>검색</span></a>
+                        <a href="#none" class="btnM colorBlue" @click="searchList"><span>검색</span></a>
                     </div>
                 </div>
 
@@ -64,8 +61,8 @@
                         <table class="tblList">
                             <caption>엔지니어 업무 배정 처리 현황</caption>
                             <colgroup>
-                                <col style="width:3%">
                                 <col style="width:4%">
+                                <col style="width:6%">
                                 <col style="width:16%">
                                 <col style="width:7%">
                                 <col style="width:10%">
@@ -81,7 +78,7 @@
                                 <th scope="col">구분</th>
                                 <th scope="col">요금제명</th>
                                 <th scope="col">통신유형</th>
-                                <th scope="col">월기본요금</th>
+                                <th scope="col">월기본요금(원)</th>
                                 <th scope="col">데이터</th>
                                 <th scope="col">통화</th>
                                 <th scope="col">문자</th>
@@ -90,126 +87,129 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
+                            <tr v-for="mntrt in mntrtList">
                                 <td class="alignC"><input type="checkbox" title="행 선택"></td>
-                                <td class="alignC">사용</td>
-                                <td class="alignC">요금제명1</td>
-                                <td class="alignC">LTE</td>
-                                <td class="alignC">55,000</td>
-                                <td class="alignC">5G</td>
-                                <td class="alignC">300분</td>
-                                <td class="alignC">300건</td>
-                                <td class="alignC">직원1</td>
-                                <td class="alignC">2020-01-01 12:20</td>
+                                <td class="alignC" v-if="mntrt.mntUseynNo">사용</td>
+                                <td class="alignC" v-else>-</td>
+                                <td class="alignC">{{mntrt.pnMntRtNm}}</td>
+                                <td class="alignC">{{mntrt.pnNetType}}</td>
+                                <td class="alignC">{{mntrt.pnMntAmt}}</td>
+                                <td class="alignC">{{mntrt.pnMntData}}</td>
+                                <td class="alignC">{{mntrt.pnMntCall}}</td>
+                                <td class="alignC">{{mntrt.pnMntSms}}</td>
+                                <td class="alignC" v-if="mntrt.amdMbrId">{{mntrt.amdMbrId}}</td>
+                                <td class="alignC" v-else>-</td>
+                                <td class="alignC" v-if="mntrt.amdDt">{{mntrt.amdDt}}</td>
+                                <td class="alignC" v-else>-</td>
                             </tr>
-                            <tr>
-                                <td class="alignC"><input type="checkbox" title="행 선택"></td>
-                                <td class="alignC">사용</td>
-                                <td class="alignC">요금제명2</td>
-                                <td class="alignC">LTE</td>
-                                <td class="alignC">65,000</td>
-                                <td class="alignC">5G</td>
-                                <td class="alignC">200분</td>
-                                <td class="alignC">200건</td>
-                                <td class="alignC">직원1</td>
-                                <td class="alignC">2020-01-01 12:20</td>
-                            </tr>
-                            <tr>
-                                <td class="alignC"><input type="checkbox" title="행 선택"></td>
-                                <td class="alignC">사용</td>
-                                <td class="alignC">요금제명3</td>
-                                <td class="alignC">5G</td>
-                                <td class="alignC">89,000</td>
-                                <td class="alignC">9G</td>
-                                <td class="alignC">무제한</td>
-                                <td class="alignC">무제한</td>
-                                <td class="alignC">직원1</td>
-                                <td class="alignC">2020-01-01 12:20</td>
-                            </tr>
-                            <tr>
-                                <td class="alignC"><input type="checkbox" title="행 선택"></td>
-                                <td class="alignC">사용</td>
-                                <td class="alignC">요금제명4</td>
-                                <td class="alignC">5G</td>
-                                <td class="alignC">55,000</td>
-                                <td class="alignC">무제한</td>
-                                <td class="alignC">300분</td>
-                                <td class="alignC">무제한</td>
-                                <td class="alignC">직원1</td>
-                                <td class="alignC">2020-01-01 12:20</td>
-                            </tr>
-                            <tr>
-                                <td class="alignC"><input type="checkbox" title="행 선택"></td>
-                                <td class="alignC">사용</td>
-                                <td class="alignC">요금제명5</td>
-                                <td class="alignC">5G</td>
-                                <td class="alignC">110,000</td>
-                                <td class="alignC">무제한</td>
-                                <td class="alignC">무제한</td>
-                                <td class="alignC">무제한</td>
-                                <td class="alignC">직원2</td>
-                                <td class="alignC">2020-01-01 12:20</td>
-                            </tr>
-                            <tr>
-                                <td class="alignC"><input type="checkbox" title="행 선택"></td>
-                                <td class="alignC">-</td>
-                                <td class="alignC">요금제명6</td>
-                                <td class="alignC">5G</td>
-                                <td class="alignC">100,000</td>
-                                <td class="alignC">무제한</td>
-                                <td class="alignC">무제한</td>
-                                <td class="alignC">무제한</td>
-                                <td class="alignC">직원2</td>
-                                <td class="alignC">2020-01-01 12:20</td>
-                            </tr>
-                            <tr>
-                                <td class="alignC"><input type="checkbox" title="행 선택"></td>
-                                <td class="alignC">-</td>
-                                <td class="alignC">요금제명7</td>
-                                <td class="alignC">5G</td>
-                                <td class="alignC">90,000</td>
-                                <td class="alignC">무제한</td>
-                                <td class="alignC">무제한</td>
-                                <td class="alignC">무제한</td>
-                                <td class="alignC">직원2</td>
-                                <td class="alignC">2020-01-01 12:20</td>
-                            </tr>
-                            <tr>
-                                <td class="alignC"><input type="checkbox" title="행 선택"></td>
-                                <td class="alignC">-</td>
-                                <td class="alignC">요금제명8</td>
-                                <td class="alignC">3G</td>
-                                <td class="alignC">33,000</td>
-                                <td class="alignC">5G</td>
-                                <td class="alignC">무제한</td>
-                                <td class="alignC">300건</td>
-                                <td class="alignC">직원2</td>
-                                <td class="alignC">2020-01-01 12:20</td>
-                            </tr>
-                            <tr>
-                                <td class="alignC"><input type="checkbox" title="행 선택"></td>
-                                <td class="alignC">-</td>
-                                <td class="alignC">요금제명9</td>
-                                <td class="alignC">3G</td>
-                                <td class="alignC">55,000</td>
-                                <td class="alignC">5G</td>
-                                <td class="alignC">무제한</td>
-                                <td class="alignC">200건</td>
-                                <td class="alignC">직원2</td>
-                                <td class="alignC">2020-01-01 12:20</td>
-                            </tr>
-                            <tr>
-                                <td class="alignC"><input type="checkbox" title="행 선택"></td>
-                                <td class="alignC">-</td>
-                                <td class="alignC">요금제명10</td>
-                                <td class="alignC">LTE</td>
-                                <td class="alignC">75,000</td>
-                                <td class="alignC">무제한</td>
-                                <td class="alignC">무제한</td>
-                                <td class="alignC">무제한</td>
-                                <td class="alignC">직원2</td>
-                                <td class="alignC">2020-01-01 12:20</td>
-                            </tr>
+<!--                            <tr>-->
+<!--                                <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
+<!--                                <td class="alignC">사용</td>-->
+<!--                                <td class="alignC">요금제명2</td>-->
+<!--                                <td class="alignC">LTE</td>-->
+<!--                                <td class="alignC">65,000</td>-->
+<!--                                <td class="alignC">5G</td>-->
+<!--                                <td class="alignC">200분</td>-->
+<!--                                <td class="alignC">200건</td>-->
+<!--                                <td class="alignC">직원1</td>-->
+<!--                                <td class="alignC">2020-01-01 12:20</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
+<!--                                <td class="alignC">사용</td>-->
+<!--                                <td class="alignC">요금제명3</td>-->
+<!--                                <td class="alignC">5G</td>-->
+<!--                                <td class="alignC">89,000</td>-->
+<!--                                <td class="alignC">9G</td>-->
+<!--                                <td class="alignC">무제한</td>-->
+<!--                                <td class="alignC">무제한</td>-->
+<!--                                <td class="alignC">직원1</td>-->
+<!--                                <td class="alignC">2020-01-01 12:20</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
+<!--                                <td class="alignC">사용</td>-->
+<!--                                <td class="alignC">요금제명4</td>-->
+<!--                                <td class="alignC">5G</td>-->
+<!--                                <td class="alignC">55,000</td>-->
+<!--                                <td class="alignC">무제한</td>-->
+<!--                                <td class="alignC">300분</td>-->
+<!--                                <td class="alignC">무제한</td>-->
+<!--                                <td class="alignC">직원1</td>-->
+<!--                                <td class="alignC">2020-01-01 12:20</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
+<!--                                <td class="alignC">사용</td>-->
+<!--                                <td class="alignC">요금제명5</td>-->
+<!--                                <td class="alignC">5G</td>-->
+<!--                                <td class="alignC">110,000</td>-->
+<!--                                <td class="alignC">무제한</td>-->
+<!--                                <td class="alignC">무제한</td>-->
+<!--                                <td class="alignC">무제한</td>-->
+<!--                                <td class="alignC">직원2</td>-->
+<!--                                <td class="alignC">2020-01-01 12:20</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
+<!--                                <td class="alignC">-</td>-->
+<!--                                <td class="alignC">요금제명6</td>-->
+<!--                                <td class="alignC">5G</td>-->
+<!--                                <td class="alignC">100,000</td>-->
+<!--                                <td class="alignC">무제한</td>-->
+<!--                                <td class="alignC">무제한</td>-->
+<!--                                <td class="alignC">무제한</td>-->
+<!--                                <td class="alignC">직원2</td>-->
+<!--                                <td class="alignC">2020-01-01 12:20</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
+<!--                                <td class="alignC">-</td>-->
+<!--                                <td class="alignC">요금제명7</td>-->
+<!--                                <td class="alignC">5G</td>-->
+<!--                                <td class="alignC">90,000</td>-->
+<!--                                <td class="alignC">무제한</td>-->
+<!--                                <td class="alignC">무제한</td>-->
+<!--                                <td class="alignC">무제한</td>-->
+<!--                                <td class="alignC">직원2</td>-->
+<!--                                <td class="alignC">2020-01-01 12:20</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
+<!--                                <td class="alignC">-</td>-->
+<!--                                <td class="alignC">요금제명8</td>-->
+<!--                                <td class="alignC">3G</td>-->
+<!--                                <td class="alignC">33,000</td>-->
+<!--                                <td class="alignC">5G</td>-->
+<!--                                <td class="alignC">무제한</td>-->
+<!--                                <td class="alignC">300건</td>-->
+<!--                                <td class="alignC">직원2</td>-->
+<!--                                <td class="alignC">2020-01-01 12:20</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
+<!--                                <td class="alignC">-</td>-->
+<!--                                <td class="alignC">요금제명9</td>-->
+<!--                                <td class="alignC">3G</td>-->
+<!--                                <td class="alignC">55,000</td>-->
+<!--                                <td class="alignC">5G</td>-->
+<!--                                <td class="alignC">무제한</td>-->
+<!--                                <td class="alignC">200건</td>-->
+<!--                                <td class="alignC">직원2</td>-->
+<!--                                <td class="alignC">2020-01-01 12:20</td>-->
+<!--                            </tr>-->
+<!--                            <tr>-->
+<!--                                <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
+<!--                                <td class="alignC">-</td>-->
+<!--                                <td class="alignC">요금제명10</td>-->
+<!--                                <td class="alignC">LTE</td>-->
+<!--                                <td class="alignC">75,000</td>-->
+<!--                                <td class="alignC">무제한</td>-->
+<!--                                <td class="alignC">무제한</td>-->
+<!--                                <td class="alignC">무제한</td>-->
+<!--                                <td class="alignC">직원2</td>-->
+<!--                                <td class="alignC">2020-01-01 12:20</td>-->
+<!--                            </tr>-->
                             </tbody>
                         </table>
                     </div>
@@ -227,21 +227,50 @@
         var app = new Vue({
             el: "#app",
             data: {
-                carr: ""
+                carr: "",
+                sellYn: [
+                    {code: "all", value: "전체"},
+                    {code: "y", value: "사용"},
+                    {code: "n", value: "미사용"}
+                ],
+                selectedSellOpt: "all",
+                networkType: [
+                    {code: "all", value: "전체"},
+                    {code: "5g", value: "5G"},
+                    {code: "lte", value: "LTE"},
+                    {code: "3g", value: "3G"}
+                ],
+                selectedNetType: "all",
+                mntrtList:[],
+            },
+            watch: {
+                selectedSellOpt: function (data) {
+
+                    console.log(this.selectedSellOpt)
+                },
+                selectedNetType: function (data) {
+                    console.log(this.selectedNetType)
+                }
             },
             mounted: function () {
                 var currentPath = window.location.pathname
-                this.carr = currentPath.substring(currentPath.lastIndexOf('/')+1)
+                this.carr = currentPath.substring(currentPath.lastIndexOf('/') + 1)
 
-                // alert("1")
+                this.searchList()
             },
             methods: {
-                tttt() {
-                    var param = {}
-                    cf_call("/testpath", param, this.ttttCB);
+                searchList(){
+                    var param = {
+                        carr : this.carr,
+                        selectedNetType: this.selectedNetType,
+                        selectedSellOpt: this.selectedSellOpt
+                    }
+                    this.mntrtList = []
+                    cf_call("/carr/getMntrtList", param, this.searchListCB)
                 },
-                ttttCB(data) {
+                searchListCB(data){
                     console.log(data)
+                    this.mntrtList = data.mntrtList
                 }
             }
         })
