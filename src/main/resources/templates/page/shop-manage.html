@@ -144,6 +144,9 @@
                                         경우 서비스 이용에 제한을 받을 수 있습니다.
                                     </p>
                                     <br>
+                                    <p class="br">
+                                        <img :src="bnRegCardFull" alt="사업자등록증 사본" style="width: 300px;">
+                                    </p>
                                     <input
                                             type="text"
                                             placeholder="사업자등록증 사본"
@@ -282,7 +285,7 @@
                 phoneMask: ['##'],
                 phoneMaskSeoul: ['##-###-####', '##-####-####'],
                 phoneMaskOther: ['###-###-####', '###-####-####'],
-                bnImgPath: '/images/shop/'
+                bnImgPath: '/images/shop'
             },
             mounted: function(){
                 this.getShopInfo()
@@ -296,7 +299,9 @@
             },
             methods: {
                 getShopInfo() {
-                    var param = {}
+                    var param = {
+                        bnMbrId: 'qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com'
+                    }
                     cf_call("/shop/getShopInfo", param, this.getShopInfoCB);
                 },
                 getShopInfoCB(rslt){
@@ -333,7 +338,10 @@
                     return this.bnPnNo.replaceAll('-', '')
                 },
                 bnImgFull() {
-                    return this.bnImgPath + this.shopInfo.bnImg
+                    return this.bnImgPath + '/bnimg/' + this.shopInfo.bnImg
+                },
+                bnRegCardFull() {
+                    return this.bnImgPath + '/bnregcard/' + this.shopInfo.bnRegCard
                 }
             }
         })

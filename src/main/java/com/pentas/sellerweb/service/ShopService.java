@@ -12,6 +12,7 @@ public class ShopService {
     CmmnDao cmmnDao;
 
     public DevMap shopInfo(DevMap param) {
-        return cmmnDao.selectOne(null, null);
+        return cmmnDao.selectOne("sellerweb.shop.shopinfo", param);
     }
+
 }
