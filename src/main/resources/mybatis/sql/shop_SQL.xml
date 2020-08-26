@@ -3,7 +3,7 @@
 <mapper namespace="sellerweb.shop">
 
     <select id="shopinfo" resultType="DevMap" parameterType="DevMap">
-
+        SELECT * FROM TBL003 WHERE BN_NO = (SELECT BN_NO FROM TBL002 WHERE BN_MBR_ID = #{bnMbrId})
     </select>
 
 </mapper>
