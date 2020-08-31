@@ -82,11 +82,11 @@
                             사업자 정보
                         </div>
                         <div class="cTitRight">
-                            <a href="#" class="btnM colorSky"><span>저장</span></a>
+                            <a href="#" class="btnM colorSky" @click="modiShopInfo"><span>저장</span></a>
                         </div>
                     </div>
                     <!-- content -->
-                    <div class="contentDetail">
+                    <div class="contentDetail" v-show="initDone">
                         <table class="tblDataRow mb15">
                             <caption>기본정보</caption>
                             <colgroup>
@@ -103,7 +103,7 @@
                                         type="text"
                                         class="wPer"
                                         placeholder="회사명"
-                                        v-model="shopInfo.bnNm"
+                                        :value="shopInfo.bnNm"
                                         @input="shopInfo.bnNm = $event.target.value"
                                     >
                                 </td>
@@ -115,7 +115,8 @@
                                             type="text"
                                             class="wPer"
                                             placeholder="대표자명을 입력해주세요"
-                                            v-model="shopInfo.ownerNm"
+                                            :value="shopInfo.ownerNm"
+                                            @input="shopInfo.ownerNm = $event.target.value"
                                     >
                                 </td>
                             </tr>
@@ -145,14 +146,22 @@
                                     </p>
                                     <br>
                                     <p class="br">
-                                        <img :src="bnRegCardFull" alt="사업자등록증 사본" style="width: 300px;">
+                                        <img :src="getImagePath(shopInfo.bnRegCard)" alt="사업자등록증 사본" style="width: 300px; height: auto;">
                                     </p>
                                     <input
-                                            type="text"
-                                            placeholder="사업자등록증 사본"
-                                            v-model="shopInfo.bnRegCard"
+                                        type="file"
+                                        name="bnRegCard"
+                                        id="bnRegCard"
+                                        placeholder="사업자등록증 사본"
+                                        style="padding-top: 4px;"
                                     >
-                                    <a href="#" class="btnS colorWhite"><span>파일첨부</span></a>
+                                    <a
+                                        href="#;"
+                                        class="btnS colorWhite"
+                                        @click="uploadImage('bnRegCard')"
+                                    >
+                                        <span>파일첨부</span>
+                                    </a>
                                 </td>
                             </tr>
                             <tr>
@@ -165,7 +174,7 @@
                                         v-model="daumPostcodeRslt.zonecode"
                                     >
                                     <a
-                                        href="#"
+                                        href="#;"
                                         class="btnS colorWhite popLayerDaumPostcodeSrch_open"
                                         onclick="layer_execDaumPostcode(); return false;"
                                     >
@@ -176,14 +185,15 @@
                                             type="text"
                                             class="wAddr"
                                             placeholder="주소 입력"
-                                            v-model="shopInfo.bnAddrDtl"
-                                            @input="shopInfo.bnAddrDtl = $event.target.value"
+                                            :value="bnAddrStr"
+                                            @input="bnAddrStr = $event.target.value"
                                         >
                                         <input
                                             type="text"
                                             class="wAddr"
                                             placeholder="상세주소 입력"
-                                            v-model="bnAddrBldg"
+                                            :value="bnAddrBldg"
+                                            @input="bnAddrBldg = $event.target.value"
                                         >
                                     </p>
                                 </td>
@@ -204,15 +214,23 @@
                                 <th>대표사진</th>
                                 <td colspan="3">
                                     <p class="br">
-                                        <img :src="bnImgFull" alt="매장 대표사진" style="width: 300px; height: 300px;">
+                                        <img :src="getImagePath(shopInfo.bnImg)" alt="매장 대표사진" style="width: 300px; height: auto;">
                                     </p>
                                     <br>
                                     <input
-                                            type="text"
-                                            placeholder="매장 대표사진"
-                                            v-model="shopInfo.bnImg"
+                                        type="file"
+                                        name="bnImg"
+                                        id="bnImg"
+                                        placeholder="매장 대표사진"
+                                        style="padding-top: 4px;"
                                     >
-                                    <a href="#" class="btnS colorWhite"><span>파일첨부</span></a>
+                                    <a
+                                        href="#;"
+                                        class="btnS colorWhite"
+                                        @click="uploadImage('bnImg')"
+                                    >
+                                        <span>파일첨부</span>
+                                    </a>
                                 </td>
                             </tr>
                             </tbody>
@@ -278,14 +296,17 @@
         var app = new Vue({
             el:"#app",
             data:{
+                initDone: false,
+                bnMbrId: 'qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com',
                 shopInfo: {},
                 daumPostcodeRslt: {},
+                bnAddrStr: '',
                 bnAddrBldg: '',
                 bnPnNo: '',
                 phoneMask: ['##'],
                 phoneMaskSeoul: ['##-###-####', '##-####-####'],
                 phoneMaskOther: ['###-###-####', '###-####-####'],
-                bnImgPath: '/images/shop'
+                uploadTgtNm: '',
             },
             mounted: function(){
                 this.getShopInfo()
@@ -299,8 +320,9 @@
             },
             methods: {
                 getShopInfo() {
+                    this.initDone = false
                     var param = {
-                        bnMbrId: 'qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com'
+                        bnMbrId: this.bnMbrId
                     }
                     cf_call("/shop/getShopInfo", param, this.getShopInfoCB);
                 },
@@ -309,13 +331,52 @@
                         this.setPhoneMask(rslt.bnPnNo)
                         this.bnPnNo = rslt.bnPnNo
                     }
+                    this.bnAddrStr = rslt.bnAddrDtl
                     this.shopInfo = rslt
+                    this.initDone = true
+                },
+                uploadImage(tgtNm) {
+                    this.uploadTgtNm = tgtNm
+                    var fileList = []
+                    var param = {}
+                    if ($("#" + tgtNm)[0].files[0] !== undefined) {
+                        fileList.push($("#" + tgtNm)[0].files[0])
+                        param.bnMbrId = this.bnMbrId
+                        cf_callWithFiles("/upload/image", fileList, param, this.uploadImageCB)
+                    }
+                },
+                uploadImageCB(data) {
+                    if (this.uploadTgtNm === 'bnRegCard') {
+                        this.shopInfo.bnRegCard = data.filNm
+                        $("#bnRegCard")[0].value = ''
+                    }``
+                    if (this.uploadTgtNm === 'bnImg') {
+                        this.shopInfo.bnImg = data.filNm
+                        $("#bnImg")[0].value = ''
+                    }
+                    alert('사진이 업로드 되었습니다.\n페이지 상단 \'저장\'을 누르시면 사진이 변경됩니다.')
+                },
+                modiShopInfo() {
+                    var param = this.shopInfo
+                    param.bnMbrId = this.bnMbrId
+                    param.bnAddrDtl = this.bnAddrFull
+                    param.bnRegNo = this.bnRegNoND
+                    param.bnPnNo = this.bnPnNoND
+                    cf_call("/shop/modiShopInfo", param, this.modiShopInfoCB)
+                },
+                modiShopInfoCB(rslt) {
+                    if(rslt.rsltStat === "SUCC") {
+                        alert("변경사항이 저장되었습니다.")
+                        this.daumPostcodeRslt = {}
+                        this.bnAddrBldg = ''
+                        this.getShopInfo()
+                    }
                 },
                 daumPostcodeCB(e) {
                     this.daumPostcodeRslt = e
                     this.shopInfo.bnAddrSido = this.daumPostcodeRslt.sido
                     this.shopInfo.bnAddrSigg = this.daumPostcodeRslt.sigungu
-                    this.shopInfo.bnAddrDtl = this.daumPostcodeRslt.address
+                    this.bnAddrStr = this.daumPostcodeRslt.address
                     $('#popLayerDaumPostcodeSrch').popup('hide')
                 },
                 setPhoneMask(phoneNo) {
@@ -325,23 +386,22 @@
                     } else {
                         this.phoneMask = this.phoneMaskOther
                     }
+                },
+                getImagePath(fileName) {
+                    if (fileName !== undefined) {
+                        return '/imageSrc?fileName=' + fileName
+                    }
                 }
             },
             computed: {
                 bnAddrFull() {
-                    return this.shopInfo.bnAddrDtl + ' ' + this.bnAddrBldg
+                    return this.bnAddrStr + ' ' + this.bnAddrBldg
                 },
                 bnRegNoND() {
                     return this.shopInfo.bnRegNo.replaceAll('-', '')
                 },
                 bnPnNoND() {
                     return this.bnPnNo.replaceAll('-', '')
-                },
-                bnImgFull() {
-                    return this.bnImgPath + '/bnimg/' + this.shopInfo.bnImg
-                },
-                bnRegCardFull() {
-                    return this.bnImgPath + '/bnregcard/' + this.shopInfo.bnRegCard
                 }
             }
         })

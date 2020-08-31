@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+<mapper namespace="sellerweb.common">
+
+    <select id="selectFileType" parameterType="string" resultType="string">
+        SELECT FIL_TYP FROM TBL014 WHERE STOR_FIL_NM = #{storFilNm}
+    </select>
+
+    <insert id="insertFileDetail" parameterType="DevMap">
+        INSERT INTO TBL014 (
+            FIL_STOR_PTH_TXT,
+            STOR_FIL_NM,
+            ORIG_FIL_NM,
+            FIL_EXT_NM,
+            FIL_SIZ_NO,
+            FIL_TYP,
+            INP_MBR_ID
+        ) VALUES (
+            #{filStorPthTxt},
+            #{storFilNm},
+            #{origFilNm},
+            #{filExtNm},
+            #{filSizNo},
+            #{filTyp},
+            #{inpMbrId}
+        )
+    </insert>
+
+</mapper>

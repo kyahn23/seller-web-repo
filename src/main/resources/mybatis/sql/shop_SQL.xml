@@ -2,8 +2,42 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
 <mapper namespace="sellerweb.shop">
 
-    <select id="shopinfo" resultType="DevMap" parameterType="DevMap">
-        SELECT * FROM TBL003 WHERE BN_NO = (SELECT BN_NO FROM TBL002 WHERE BN_MBR_ID = #{bnMbrId})
+    <select id="getShopInfo" resultType="DevMap" parameterType="DevMap">
+        SELECT
+            BN_NO
+            ,BN_REG_NO
+            ,BN_NM
+            ,OWNER_NM
+            ,BN_REG_CARD
+            ,BN_ADDR_SIDO
+            ,BN_ADDR_SIGG
+            ,BN_ADDR_DTL
+            ,MST_MBR_ID
+            ,CARD_CHK_YN
+            ,BN_PN_NO
+            ,BN_IMG
+        FROM TBL003
+        WHERE BN_NO = (
+            SELECT BN_NO FROM TBL002 WHERE BN_MBR_ID = #{bnMbrId}
+        )
     </select>
+
+    <update id="updateShopInfo" parameterType="DevMap">
+        UPDATE TBL003
+        SET
+            BN_REG_NO = #{bnRegNo}
+            ,BN_NM = #{bnNm}
+            ,OWNER_NM = #{ownerNm}
+            ,BN_REG_CARD = #{bnRegCard}
+            ,BN_ADDR_SIDO = #{bnAddrSido}
+            ,BN_ADDR_SIGG = #{bnAddrSigg}
+            ,BN_ADDR_DTL = #{bnAddrDtl}
+            ,CARD_CHK_YN = #{cardChkYn}
+            ,BN_PN_NO = #{bnPnNo}
+            ,BN_IMG = #{bnImg}
+            ,AMD_DT = CURRENT_TIMESTAMP()
+        WHERE
+            BN_NO = #{bnNo}
+    </update>
 
 </mapper>
