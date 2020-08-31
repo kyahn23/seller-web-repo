@@ -52,8 +52,8 @@
                             요금제 현황
                         </div>
                         <div class="cTitRight">
-                            <a href="#" class="btnM colorOrg"><span>요금제 미사용</span></a>
-                            <a href="#" class="btnM colorGreen"><span>요금제 사용</span></a>
+                            <a href="#none" class="btnM colorOrg" @click="nUseMntrt"><span>요금제 미사용</span></a>
+                            <a href="#none" class="btnM colorGreen" @click="useMntrt"><span>요금제 사용</span></a>
                         </div>
                     </div>
                     <!-- content -->
@@ -74,7 +74,7 @@
                             </colgroup>
                             <thead>
                             <tr>
-                                <th scope="col"><input type="checkbox" title="행 선택"></th>
+                                <th scope="col"><input type="checkbox" @change="checkAll" v-model="allSelected"></th>
                                 <th scope="col">구분</th>
                                 <th scope="col">요금제명</th>
                                 <th scope="col">통신유형</th>
@@ -88,12 +88,13 @@
                             </thead>
                             <tbody>
                             <tr v-for="mntrt in mntrtList">
-                                <td class="alignC"><input type="checkbox" title="행 선택"></td>
+                                <td class="alignC"><input type="checkbox" @click="chkboxClick" v-model="selectedMntNo"
+                                                          :value="mntrt.pnMntRtNo"></td>
                                 <td class="alignC" v-if="mntrt.mntUseynNo">사용</td>
                                 <td class="alignC" v-else>-</td>
                                 <td class="alignC">{{mntrt.pnMntRtNm}}</td>
                                 <td class="alignC">{{mntrt.pnNetType}}</td>
-                                <td class="alignC">{{mntrt.pnMntAmt}}</td>
+                                <td class="alignC">{{Number(mntrt.pnMntAmt).toLocaleString()}}</td>
                                 <td class="alignC">{{mntrt.pnMntData}}</td>
                                 <td class="alignC">{{mntrt.pnMntCall}}</td>
                                 <td class="alignC">{{mntrt.pnMntSms}}</td>
@@ -102,114 +103,6 @@
                                 <td class="alignC" v-if="mntrt.amdDt">{{mntrt.amdDt}}</td>
                                 <td class="alignC" v-else>-</td>
                             </tr>
-<!--                            <tr>-->
-<!--                                <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
-<!--                                <td class="alignC">사용</td>-->
-<!--                                <td class="alignC">요금제명2</td>-->
-<!--                                <td class="alignC">LTE</td>-->
-<!--                                <td class="alignC">65,000</td>-->
-<!--                                <td class="alignC">5G</td>-->
-<!--                                <td class="alignC">200분</td>-->
-<!--                                <td class="alignC">200건</td>-->
-<!--                                <td class="alignC">직원1</td>-->
-<!--                                <td class="alignC">2020-01-01 12:20</td>-->
-<!--                            </tr>-->
-<!--                            <tr>-->
-<!--                                <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
-<!--                                <td class="alignC">사용</td>-->
-<!--                                <td class="alignC">요금제명3</td>-->
-<!--                                <td class="alignC">5G</td>-->
-<!--                                <td class="alignC">89,000</td>-->
-<!--                                <td class="alignC">9G</td>-->
-<!--                                <td class="alignC">무제한</td>-->
-<!--                                <td class="alignC">무제한</td>-->
-<!--                                <td class="alignC">직원1</td>-->
-<!--                                <td class="alignC">2020-01-01 12:20</td>-->
-<!--                            </tr>-->
-<!--                            <tr>-->
-<!--                                <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
-<!--                                <td class="alignC">사용</td>-->
-<!--                                <td class="alignC">요금제명4</td>-->
-<!--                                <td class="alignC">5G</td>-->
-<!--                                <td class="alignC">55,000</td>-->
-<!--                                <td class="alignC">무제한</td>-->
-<!--                                <td class="alignC">300분</td>-->
-<!--                                <td class="alignC">무제한</td>-->
-<!--                                <td class="alignC">직원1</td>-->
-<!--                                <td class="alignC">2020-01-01 12:20</td>-->
-<!--                            </tr>-->
-<!--                            <tr>-->
-<!--                                <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
-<!--                                <td class="alignC">사용</td>-->
-<!--                                <td class="alignC">요금제명5</td>-->
-<!--                                <td class="alignC">5G</td>-->
-<!--                                <td class="alignC">110,000</td>-->
-<!--                                <td class="alignC">무제한</td>-->
-<!--                                <td class="alignC">무제한</td>-->
-<!--                                <td class="alignC">무제한</td>-->
-<!--                                <td class="alignC">직원2</td>-->
-<!--                                <td class="alignC">2020-01-01 12:20</td>-->
-<!--                            </tr>-->
-<!--                            <tr>-->
-<!--                                <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
-<!--                                <td class="alignC">-</td>-->
-<!--                                <td class="alignC">요금제명6</td>-->
-<!--                                <td class="alignC">5G</td>-->
-<!--                                <td class="alignC">100,000</td>-->
-<!--                                <td class="alignC">무제한</td>-->
-<!--                                <td class="alignC">무제한</td>-->
-<!--                                <td class="alignC">무제한</td>-->
-<!--                                <td class="alignC">직원2</td>-->
-<!--                                <td class="alignC">2020-01-01 12:20</td>-->
-<!--                            </tr>-->
-<!--                            <tr>-->
-<!--                                <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
-<!--                                <td class="alignC">-</td>-->
-<!--                                <td class="alignC">요금제명7</td>-->
-<!--                                <td class="alignC">5G</td>-->
-<!--                                <td class="alignC">90,000</td>-->
-<!--                                <td class="alignC">무제한</td>-->
-<!--                                <td class="alignC">무제한</td>-->
-<!--                                <td class="alignC">무제한</td>-->
-<!--                                <td class="alignC">직원2</td>-->
-<!--                                <td class="alignC">2020-01-01 12:20</td>-->
-<!--                            </tr>-->
-<!--                            <tr>-->
-<!--                                <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
-<!--                                <td class="alignC">-</td>-->
-<!--                                <td class="alignC">요금제명8</td>-->
-<!--                                <td class="alignC">3G</td>-->
-<!--                                <td class="alignC">33,000</td>-->
-<!--                                <td class="alignC">5G</td>-->
-<!--                                <td class="alignC">무제한</td>-->
-<!--                                <td class="alignC">300건</td>-->
-<!--                                <td class="alignC">직원2</td>-->
-<!--                                <td class="alignC">2020-01-01 12:20</td>-->
-<!--                            </tr>-->
-<!--                            <tr>-->
-<!--                                <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
-<!--                                <td class="alignC">-</td>-->
-<!--                                <td class="alignC">요금제명9</td>-->
-<!--                                <td class="alignC">3G</td>-->
-<!--                                <td class="alignC">55,000</td>-->
-<!--                                <td class="alignC">5G</td>-->
-<!--                                <td class="alignC">무제한</td>-->
-<!--                                <td class="alignC">200건</td>-->
-<!--                                <td class="alignC">직원2</td>-->
-<!--                                <td class="alignC">2020-01-01 12:20</td>-->
-<!--                            </tr>-->
-<!--                            <tr>-->
-<!--                                <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
-<!--                                <td class="alignC">-</td>-->
-<!--                                <td class="alignC">요금제명10</td>-->
-<!--                                <td class="alignC">LTE</td>-->
-<!--                                <td class="alignC">75,000</td>-->
-<!--                                <td class="alignC">무제한</td>-->
-<!--                                <td class="alignC">무제한</td>-->
-<!--                                <td class="alignC">무제한</td>-->
-<!--                                <td class="alignC">직원2</td>-->
-<!--                                <td class="alignC">2020-01-01 12:20</td>-->
-<!--                            </tr>-->
                             </tbody>
                         </table>
                     </div>
@@ -241,11 +134,13 @@
                     {code: "3g", value: "3G"}
                 ],
                 selectedNetType: "all",
-                mntrtList:[],
+                mntrtList: [],
+                allSelected: false,
+                selectedMntNo: [],
+                validateArr: []
             },
             watch: {
                 selectedSellOpt: function (data) {
-
                     console.log(this.selectedSellOpt)
                 },
                 selectedNetType: function (data) {
@@ -259,19 +154,128 @@
                 this.searchList()
             },
             methods: {
-                searchList(){
+                searchList() {
                     var param = {
-                        carr : this.carr,
+                        carr: this.carr,
                         selectedNetType: this.selectedNetType,
                         selectedSellOpt: this.selectedSellOpt
                     }
                     this.mntrtList = []
                     cf_call("/carr/getMntrtList", param, this.searchListCB)
                 },
-                searchListCB(data){
-                    console.log(data)
+                searchListCB(data) {
                     this.mntrtList = data.mntrtList
+                },
+                chkboxClick() {
+                    this.allSelected = false
+                },
+                checkAll() {
+                    this.selectedMntNo = []
+
+                    if (this.allSelected) {
+                        for (list in this.mntrtList) {
+                            this.selectedMntNo.push(this.mntrtList[list].pnMntRtNo)
+                        }
+                    }
+                },
+                useMntrt() {
+                    if (this.selectedMntNo.length !== 0) {
+                        if (!this.mntValidate('use')) {
+                            let temparr = []
+                            for (let i = 0; i < this.selectedMntNo.length; i++) {
+                                let tempobj = {}
+                                tempobj.pnMntRtNo = this.selectedMntNo[i]
+                                temparr.push(tempobj)
+                            }
+                            this.selectedMntNo = []
+                            cf_call("/carr/insertUseMnt", temparr, this.useMntrtCB);
+                        } else alert('선택한 요금제를 확인해주세요.')
+                    } else alert("선택된 항목이 없습니다.")
+
+                },
+                useMntrtCB(data) {
+                    if (data.succ === "Y") {
+                        this.searchList()
+                    }
+                },
+                nUseMntrt() {
+                    if (this.selectedMntNo.length !== 0) {
+                        if (!this.mntValidate('nUse')) {
+                            let temparr = []
+                            for (let i = 0; i < this.selectedMntNo.length; i++) {
+                                let tempobj = {}
+                                tempobj.pnMntRtNo = this.selectedMntNo[i]
+                                temparr.push(tempobj)
+                            }
+                            this.selectedMntNo = []
+                            cf_call("/carr/deleteUseMnt", temparr, this.nUseMntrtCB);
+
+                        } else alert('선택한 요금제를 확인해주세요.')
+                    } else alert("선택된 항목이 없습니다.")
+
+
+                    // if (this.mntValidate('nUse')) {
+                    //     alert(1)
+                    // }
+
+                    // if (this.selectedMntNo.length !== 0) {
+                    //     let temparr = []
+                    //     for (let i = 0; i < this.selectedMntNo.length; i++) {
+                    //         let tempobj = {}
+                    //         tempobj.pnMntRtNo = this.selectedMntNo[i]
+                    //         temparr.push(tempobj)
+                    //         console.log(temparr)
+                    //     }
+                    //     this.selectedMntNo = []
+                    //     cf_call("/carr/deleteUseMnt", temparr, this.nUseMntrtCB);
+                    // } else {
+                    //     alert("선택된 항목이 없습니다.")
+                    // }
+                },
+                nUseMntrtCB(data) {
+                    if (data.succ === "Y") {
+                        this.searchList()
+                    }
+                },
+                mntValidate(chk) {
+                    console.log(chk)
+
+                    let nUseChk = false      // 초기값 false null값이 있는것이 chk될경우 true
+                    let useChk = false     // 초기값 false null값이 없는것이 chk될경우 true
+                    this.validateArr = []
+                    for (let i = 0; i < this.selectedMntNo.length; i++) {
+                        for (validate in this.mntrtList) {
+                            if (this.selectedMntNo[i] === this.mntrtList[validate].pnMntRtNo) this.validateArr.push(this.mntrtList[validate])
+                        }
+                    }
+                    console.log(this.validateArr)
+                    if (chk === 'nUse') {
+                        for (chk in this.validateArr) {
+                            console.log(this.validateArr[chk].mntUseynNo)
+                            if (this.validateArr[chk].mntUseynNo == null) {
+                                nUseChk = true
+                                break
+                            }
+                        }
+                        console.log(nUseChk)
+                        return nUseChk
+
+                    } else if (chk === 'use') {
+                        for (chk in this.validateArr) {
+                            console.log(this.validateArr[chk].mntUseynNo)
+                            if (this.validateArr[chk].mntUseynNo != null) {
+                                useChk = true
+                                break
+                            }
+                        }
+                        console.log(useChk)
+
+                        return useChk
+                    }
+
                 }
+
+
             }
         })
     </script>

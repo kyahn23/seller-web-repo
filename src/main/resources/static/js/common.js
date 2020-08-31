@@ -1321,25 +1321,27 @@ HTMLElement.prototype.remove = function () {
     }
 }
 
-Array.prototype.removeElement = function (idx) {
-    this.splice(idx, 1);
-}
 
-Array.prototype.addElement = function (idx, el) {
-    this.splice(idx, 0, el);
-}
-
-Array.prototype.addArray = function (idx, arry) {
-    for (var i = 0; i < arry.length; i++) {
-        this.splice(idx + i, 0, arry[i]);
-    }
-}
-
-Array.prototype.setOrderNumbering = function (key) {
-    for (var i = 0; i < this.length; i++) {
-        eval("this[i]." + key + "= (i + 1 + '')");
-    }
-}
+// 0825 주석
+// Array.prototype.removeElement = function (idx) {
+//     this.splice(idx, 1);
+// }
+//
+// Array.prototype.addElement = function (idx, el) {
+//     this.splice(idx, 0, el);
+// }
+//
+// Array.prototype.addArray = function (idx, arry) {
+//     for (var i = 0; i < arry.length; i++) {
+//         this.splice(idx + i, 0, arry[i]);
+//     }
+// }
+//
+// Array.prototype.setOrderNumbering = function (key) {
+//     for (var i = 0; i < this.length; i++) {
+//         eval("this[i]." + key + "= (i + 1 + '')");
+//     }
+// }
 
 /**
  * ie에서 배열의 includes 함수가 지원이 안되는 관계로 재정의

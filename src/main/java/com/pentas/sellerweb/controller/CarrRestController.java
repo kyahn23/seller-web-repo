@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -26,10 +27,20 @@ public class CarrRestController {
     }
 
     @PostMapping("/carr/insertUseMnt")
-    public DevMap insertUseMnt(@RequestBody DevMap param){
+    public DevMap insertUseMnt(@RequestBody List<DevMap> param){
         DevMap rslt = new DevMap();
         carrService.insertUseMnt(param);
+
         // 정상적으로 insert
+        rslt.put("succ", "Y");
+
+        return rslt;
+    }
+
+    @PostMapping("/carr/deleteUseMnt")
+    public DevMap deleteUseMnt(@RequestBody List<DevMap> param){
+        DevMap rslt = new DevMap();
+        carrService.deleteUseMnt(param);
         rslt.put("succ", "Y");
 
         return rslt;
