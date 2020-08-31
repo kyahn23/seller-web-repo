@@ -15,7 +15,7 @@
         DATE_FORMAT(B.AMD_DT, '%Y-%m-%d %H:%i') as AMD_DT /*요금제사용테이블에 추가한 날짜*/
         from TBL010 A left outer join TBL013 B
         on A.PN_MNT_RT_NO = B.PN_MNT_RT_NO
-        WHERE pn_carr = #{carr}
+        WHERE pn_carr = #{carr} AND B.BN_NO = #{bnNo}
         <if test='selectedSellOpt != "all"'>
             <if test='selectedSellOpt == "y"'>
                 <![CDATA[
@@ -29,10 +29,12 @@
         <if test='selectedNetType != "all"'>
             AND pn_net_type = #{selectedNetType}
         </if>
-        GROUP BY PN_NET_TYPE, PN_MNT_AMT
-        ORDER BY PN_NET_TYPE, PN_MNT_AMT+0 desc
+        order by MNT_USEYN_NO is null asc, PN_NET_TYPE desc, convert(PN_MNT_AMT, decimal) DESC
+<!--        GROUP BY PN_NET_TYPE, PN_MNT_AMT-->
+<!--        ORDER BY PN_NET_TYPE desc, PN_MNT_AMT+0 desc-->
     </select>
 
+    <!-- 요금제 사용 -->
     <insert id="useMntRt" parameterType="DevMap">
         insert into TBL013 (
         BN_NO,
@@ -49,9 +51,40 @@
         )
     </insert>
 
+    <!-- 요금제미사용처리 -->
     <delete id="nUseMntRt" parameterType="DevMap">
         delete from TBL013
          where PN_MNT_RT_NO = #{pnMntRtNo}
     </delete>
+
+    <!-- 요금제사용여부내역 -->
+    <insert id="useYnHistory" parameterType="DevMap">
+        insert into TBL015 (
+        BN_NO,
+        PN_MNT_RT_NO,
+        USE_YN,
+        INP_DT,
+        AMD_MBR_ID
+        ) values (
+        #{bnNo},
+        #{pnMntRtNo},
+        #{useYn},
+        SYSDATE(),
+        #{amdMbrId}
+        )
+    </insert>
+
+    <!-- 관리자용 요금제사용내역테이블 조회 -->
+<!--    <select id="historyForAdmin">-->
+<!--        select A.BN_NO,-->
+<!--        A.PN_MNT_RT_NO,-->
+<!--        B.PN_CARR,-->
+<!--        B.PN_MNT_RT_NM,-->
+<!--        A.USE_YN,-->
+<!--        A.INP_DT,-->
+<!--        A.AMD_MBR_ID-->
+<!--        from TBL015 A left outer join TBL010 B-->
+<!--        on A.PN_MNT_RT_NO = B.PN_MNT_RT_NO-->
+<!--    </select>-->
 
 </mapper>

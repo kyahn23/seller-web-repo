@@ -86,14 +86,17 @@
                                 <th scope="col">최종변경일시</th>
                             </tr>
                             </thead>
-                            <tbody>
-                            <tr v-for="mntrt in mntrtList">
-                                <td class="alignC"><input type="checkbox" @click="chkboxClick" v-model="selectedMntNo"
-                                                          :value="mntrt.pnMntRtNo"></td>
+                            <tbody v-if="mntrtList.length !== 0">
+                            <tr v-for="mntrt in mntrtList" @click="chkRowClick(mntrt)">
+                                <td class="alignC">
+                                    <input type="checkbox" @click="chkboxClick" v-model="selectedMntNo"
+                                           :value="mntrt.pnMntRtNo">
+                                </td>
                                 <td class="alignC" v-if="mntrt.mntUseynNo">사용</td>
                                 <td class="alignC" v-else>-</td>
                                 <td class="alignC">{{mntrt.pnMntRtNm}}</td>
-                                <td class="alignC">{{mntrt.pnNetType}}</td>
+                                <td class="alignC" v-if="mntrt.pnNetType === '4G'">LTE</td>
+                                <td class="alignC" v-else>{{mntrt.pnNetType}}</td>
                                 <td class="alignC">{{Number(mntrt.pnMntAmt).toLocaleString()}}</td>
                                 <td class="alignC">{{mntrt.pnMntData}}</td>
                                 <td class="alignC">{{mntrt.pnMntCall}}</td>
@@ -102,6 +105,15 @@
                                 <td class="alignC" v-else>-</td>
                                 <td class="alignC" v-if="mntrt.amdDt">{{mntrt.amdDt}}</td>
                                 <td class="alignC" v-else>-</td>
+                            </tr>
+                            </tbody>
+                            <tbody v-else>
+                            <tr class="errorMessage">
+                                <td colspan="10">
+                                    <div class="errorTxt">
+                                        <span>항목이 없습니다.</span>
+                                    </div>
+                                </td>
                             </tr>
                             </tbody>
                         </table>
@@ -130,7 +142,7 @@
                 networkType: [
                     {code: "all", value: "전체"},
                     {code: "5g", value: "5G"},
-                    {code: "lte", value: "LTE"},
+                    {code: "4g", value: "LTE"},
                     {code: "3g", value: "3G"}
                 ],
                 selectedNetType: "all",
@@ -140,14 +152,19 @@
                 validateArr: []
             },
             watch: {
-                selectedSellOpt: function (data) {
-                    console.log(this.selectedSellOpt)
-                },
-                selectedNetType: function (data) {
+                selectedNetType() {
                     console.log(this.selectedNetType)
+                },
+                selectedMntNo: function () {
+                    if (this.mntrtList.length !== 0) {
+                        if (this.selectedMntNo.length === this.mntrtList.length) {
+                            this.allSelected = true
+                        }
+                    }
                 }
             },
             mounted: function () {
+                this.allSelected = false
                 var currentPath = window.location.pathname
                 this.carr = currentPath.substring(currentPath.lastIndexOf('/') + 1)
 
@@ -161,10 +178,22 @@
                         selectedSellOpt: this.selectedSellOpt
                     }
                     this.mntrtList = []
+                    this.selectedMntNo = []
+                    this.allSelected = false
                     cf_call("/carr/getMntrtList", param, this.searchListCB)
                 },
                 searchListCB(data) {
                     this.mntrtList = data.mntrtList
+                },
+                chkRowClick(data) {
+                    this.allSelected = false
+
+                    if (!this.selectedMntNo.includes(data.pnMntRtNo)) {
+                        this.selectedMntNo.push(data.pnMntRtNo)
+                    } else {
+                        const idx = this.selectedMntNo.indexOf(data.pnMntRtNo)
+                        if (idx > -1) this.selectedMntNo.splice(idx, 1)
+                    }
                 },
                 chkboxClick() {
                     this.allSelected = false
@@ -188,6 +217,7 @@
                                 temparr.push(tempobj)
                             }
                             this.selectedMntNo = []
+                            this.allSelected = false
                             cf_call("/carr/insertUseMnt", temparr, this.useMntrtCB);
                         } else alert('선택한 요금제를 확인해주세요.')
                     } else alert("선택된 항목이 없습니다.")
@@ -208,29 +238,11 @@
                                 temparr.push(tempobj)
                             }
                             this.selectedMntNo = []
+                            this.allSelected = false
                             cf_call("/carr/deleteUseMnt", temparr, this.nUseMntrtCB);
 
                         } else alert('선택한 요금제를 확인해주세요.')
                     } else alert("선택된 항목이 없습니다.")
-
-
-                    // if (this.mntValidate('nUse')) {
-                    //     alert(1)
-                    // }
-
-                    // if (this.selectedMntNo.length !== 0) {
-                    //     let temparr = []
-                    //     for (let i = 0; i < this.selectedMntNo.length; i++) {
-                    //         let tempobj = {}
-                    //         tempobj.pnMntRtNo = this.selectedMntNo[i]
-                    //         temparr.push(tempobj)
-                    //         console.log(temparr)
-                    //     }
-                    //     this.selectedMntNo = []
-                    //     cf_call("/carr/deleteUseMnt", temparr, this.nUseMntrtCB);
-                    // } else {
-                    //     alert("선택된 항목이 없습니다.")
-                    // }
                 },
                 nUseMntrtCB(data) {
                     if (data.succ === "Y") {
@@ -238,8 +250,6 @@
                     }
                 },
                 mntValidate(chk) {
-                    console.log(chk)
-
                     let nUseChk = false      // 초기값 false null값이 있는것이 chk될경우 true
                     let useChk = false     // 초기값 false null값이 없는것이 chk될경우 true
                     this.validateArr = []
@@ -248,34 +258,27 @@
                             if (this.selectedMntNo[i] === this.mntrtList[validate].pnMntRtNo) this.validateArr.push(this.mntrtList[validate])
                         }
                     }
-                    console.log(this.validateArr)
                     if (chk === 'nUse') {
                         for (chk in this.validateArr) {
-                            console.log(this.validateArr[chk].mntUseynNo)
                             if (this.validateArr[chk].mntUseynNo == null) {
                                 nUseChk = true
                                 break
                             }
                         }
-                        console.log(nUseChk)
+                        this.validateArr = []
                         return nUseChk
 
                     } else if (chk === 'use') {
                         for (chk in this.validateArr) {
-                            console.log(this.validateArr[chk].mntUseynNo)
                             if (this.validateArr[chk].mntUseynNo != null) {
                                 useChk = true
                                 break
                             }
                         }
-                        console.log(useChk)
-
+                        this.validateArr = []
                         return useChk
                     }
-
                 }
-
-
             }
         })
     </script>

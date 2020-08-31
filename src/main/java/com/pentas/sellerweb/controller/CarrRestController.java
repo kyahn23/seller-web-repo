@@ -27,7 +27,7 @@ public class CarrRestController {
     }
 
     @PostMapping("/carr/insertUseMnt")
-    public DevMap insertUseMnt(@RequestBody List<DevMap> param){
+    public DevMap insertUseMnt(@RequestBody List<DevMap> param) {
         DevMap rslt = new DevMap();
         carrService.insertUseMnt(param);
 
@@ -38,7 +38,7 @@ public class CarrRestController {
     }
 
     @PostMapping("/carr/deleteUseMnt")
-    public DevMap deleteUseMnt(@RequestBody List<DevMap> param){
+    public DevMap deleteUseMnt(@RequestBody List<DevMap> param) {
         DevMap rslt = new DevMap();
         carrService.deleteUseMnt(param);
         rslt.put("succ", "Y");
