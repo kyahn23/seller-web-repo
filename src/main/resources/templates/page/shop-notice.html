@@ -225,8 +225,17 @@
                         <tbody>
                         <tr>
                             <th>제목</th>
-                            <td><input class="wPer" type="text" id="" value=""></td>
-                            <td style="padding-right: 10px; text-align: right;">(0/100)</td>
+                            <td>
+                                <input
+                                    class="wPer"
+                                    type="text"
+                                    placeholder="공지사항 제목 기입"
+                                    :value="newBnBrd.brdTitle"
+                                    @input="newBnBrd.brdTitle = $event.target.value"
+                                    maxlength="100"
+                                >
+                            </td>
+                            <td style="padding-right: 10px; text-align: right;">({{ newBnBrd.brdTitle.length }}/100)</td>
                         </tr>
                         <tr>
                             <th>첨부파일<br />(최대 2개)</th>
@@ -241,28 +250,79 @@
                         </tr>
                         <tr>
                             <th>내용</th>
-                            <td style="height: 200px"><textarea style="width: 100%; height: 100%;"></textarea></td>
-                            <td style="padding-right: 10px; vertical-align: bottom; text-align: right;">(0/1000)</td>
+                            <td style="height: 200px">
+                                <textarea
+                                    style="width: 100%; height: 100%;"
+                                    placeholder="공지사항 내용 기입"
+                                    :value="newBnBrd.brdCont"
+                                    @input="newBnBrd.brdCont = $event.target.value"
+                                    maxlength="1000"
+                                ></textarea>
+                            </td>
+                            <td style="padding-right: 10px; vertical-align: bottom; text-align: right;">({{ newBnBrd.brdCont.length }}/1000)</td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
                 <div class="btnWrapper">
-                    <a href="#" class="btnL colorBlue popLayerNoticeAdd_close"><span>등록</span></a>
+                    <a href="#;" class="btnL colorBlue" @click="addBnBrd"><span>등록</span></a>
                 </div>
             </div>
             <!-- //컨텐츠 -->
         </div>
     </div>
     <!-- //팝업: 공지사항 등록 -->
+</div>
 
+<div layout:fragment="script">
     <script type="text/javascript">
+        var g_cxt = '/'
+        g_cxt = g_cxt.substring(0, g_cxt.length-1);
+
         $(function () {
             if ($(".layerWrapper").length) {
                 //개통결과등록
                 $('#popLayerNoticeAdd').popup();
             }
         });
+
+        var app = new Vue({
+            el:"#app",
+            data:{
+                bnMbrId: 'qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com',
+                newBnBrd: {
+                    brdTitle: '',
+                    brdCont: ''
+                }
+            },
+            mounted: function(){},
+            watch: {},
+            methods: {
+                addBnBrd() {
+                    if (this.newBnBrd.brdTitle.trim() === '') {
+                        alert('공지사항 제목을 입력하세요.')
+                    } else if (this.newBnBrd.brdCont.trim() === '') {
+                        alert('공지사항 내용을 입력하세요.')
+                    } else {
+                        var param = {
+                            bnMbrId: this.bnMbrId,
+                            brdTitle: this.newBnBrd.brdTitle,
+                            brdCont: this.newBnBrd.brdCont
+                        }
+                        cf_call('/shop/addBnBrd', param, this.addBnBrdCB)
+                    }
+                },
+                addBnBrdCB(rslt) {
+                    if (rslt.rsltStat === 'SUCC') {
+                        alert('공지사항이 작성되었습니다.')
+                        $('#popLayerNoticeAdd').popup('hide')
+                        this.newBnBrd.brdTitle = ''
+                        this.newBnBrd.brdCont = ''
+                    }
+                }
+            },
+            computed: {}
+        })
     </script>
 </div>
 </html>

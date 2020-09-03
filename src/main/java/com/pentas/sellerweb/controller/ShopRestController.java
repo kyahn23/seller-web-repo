@@ -128,4 +128,12 @@ public class ShopRestController {
         return rslt;
     }
 
+    @PostMapping("/shop/addBnBrd")
+    public DevMap addBnBrd(HttpServletRequest request, @RequestBody DevMap param) {
+        shopService.addBnBrd(param);
+
+        DevMap rslt = new DevMap();
+        rslt.put("rsltStat", "SUCC");
+        return rslt;
+    }
 }

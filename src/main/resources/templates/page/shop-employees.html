@@ -530,7 +530,7 @@
                         srchOptn: this.srchCond.srchOptn,
                         srchTerm: this.srchCond.srchTerm
                     }
-                    cf_call("/shop/getEmpList", param, this.getEmpListCB)
+                    cf_call('/shop/getEmpList', param, this.getEmpListCB)
                 },
                 getEmpListCB(rslt) {
                     var rsltList = rslt.empList
@@ -639,14 +639,14 @@
                             bnMbrIdList: this.chkEmpList,
                             amdMbrId: this.bnMbrId
                         }
-                        cf_call("/shop/modiEmpDeact", param, this.modiEmpDeactCB)
+                        cf_call('/shop/modiEmpDeact', param, this.modiEmpDeactCB)
                     } else {
                         alert('퇴사로 처리 할 직원을 선택하세요.')
                     }
                 },
                 modiEmpDeactCB(rslt) {
-                    if (rslt.rsltStat === "SUCC") {
-                        alert("해당 직원이 퇴사 처리 되었습니다.")
+                    if (rslt.rsltStat === 'SUCC') {
+                        alert('해당 직원이 퇴사 처리 되었습니다.')
                         this.initPage()
                     }
                 },
@@ -667,12 +667,12 @@
                             pwdNo: this.newPwdInfo.newPwdStr,
                             amdMbrId: this.bnMbrId
                         }
-                        cf_call("/shop/modiEmpPwd", param, this.modiEmpPwdCB)
+                        cf_call('/shop/modiEmpPwd', param, this.modiEmpPwdCB)
                     }
                 },
                 modiEmpPwdCB(rslt) {
-                    if (rslt.rsltStat === "SUCC") {
-                        alert("해당 직원의 비밀번호가 초기화 되었습니다.")
+                    if (rslt.rsltStat === 'SUCC') {
+                        alert('해당 직원의 비밀번호가 초기화 되었습니다.')
                         this.newPwdInfo = {
                             newPwdStr: '',
                             newPwdChk: false,
@@ -693,12 +693,12 @@
                             sellerPrms: this.newSellerPrmsInfo.sellerPrms,
                             amdMbrId: this.bnMbrId
                         }
-                        cf_call("/shop/modiEmpPrms", param, this.modiEmpPrmsCB)
+                        cf_call('/shop/modiEmpPrms', param, this.modiEmpPrmsCB)
                     }
                 },
                 modiEmpPrmsCB(rslt) {
-                    if (rslt.rsltStat === "SUCC") {
-                        alert("해당 직원의 권한이 변경되었습니다.")
+                    if (rslt.rsltStat === 'SUCC') {
+                        alert('해당 직원의 권한이 변경되었습니다.')
                         this.newSellerPrmsInfo.sellerPrms = 'READONLY'
                         this.initPage()
                     }
@@ -720,12 +720,12 @@
                         var param = this.newEmpInfo
                         param.bnMbrId = this.newBnMbrId
                         param.amdMbrId = this.bnMbrId
-                        cf_call("/shop/addEmpInfo", param, this.addNewEmpInfoCB)
+                        cf_call('/shop/addEmpInfo', param, this.addNewEmpInfoCB)
                     }
                 },
                 addNewEmpInfoCB(rslt) {
-                    if (rslt.rsltStat === "SUCC") {
-                        alert("신규 직원이 추가되었습니다.")
+                    if (rslt.rsltStat === 'SUCC') {
+                        alert('신규 직원이 추가되었습니다.')
 
                         this.newEmpInfo.idChk = false
                         this.newEmpInfo.emailId = ''
@@ -746,7 +746,7 @@
                     var param = {
                         mbrId: this.newBnMbrId
                     }
-                    cf_call("/member/checkId", param, this.chkMbrIdCB);
+                    cf_call('/member/checkId', param, this.chkMbrIdCB);
                 },
                 chkMbrIdCB(rslt) {
                     var mbrIdChk = rslt.chkMbrId

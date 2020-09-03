@@ -69,16 +69,18 @@ public class ShopService {
      * 직원 비밀번호 재발급
      * @param param
      */
-    public void modiEmpPwd(DevMap param) {
-        cmmnDao.update("sellerweb.shop.updateEmpPwd", param);
-    }
+    public void modiEmpPwd(DevMap param) { cmmnDao.update("sellerweb.shop.updateEmpPwd", param); }
 
     /**
      * 직원 권한 수정
      * @param param
      */
-    public void modiEmpPrms(DevMap param) {
-        cmmnDao.update("sellerweb.shop.updateEmpPrms", param);
-    }
+    public void modiEmpPrms(DevMap param) { cmmnDao.update("sellerweb.shop.updateEmpPrms", param); }
+
+    /**
+     * 매장 공지사항 글 작성
+     * @param param
+     */
+    public void addBnBrd(DevMap param) { cmmnDao.insert("sellerweb.shop.addBnBrd", param); }
 
 }

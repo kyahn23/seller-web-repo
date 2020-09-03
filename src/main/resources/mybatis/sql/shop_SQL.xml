@@ -120,4 +120,20 @@
         WHERE BN_MBR_ID = #{bnMbrId}
     </update>
 
+    <insert id="addBnBrd" parameterType="DevMap">
+        INSERT INTO TBL012 (
+            BRD_NO
+            ,BN_NO
+            ,BRD_TITLE
+            ,BRD_CONT
+            ,BRD_WRITER
+        ) VALUES (
+            IFNULL((SELECT MAX(BRD_NO) FROM TBL012 B WHERE BN_NO = (SELECT BN_NO FROM TBL002 WHERE BN_MBR_ID = #{bnMbrId})), 0) + 1
+            ,(SELECT BN_NO FROM TBL002 WHERE BN_MBR_ID = #{bnMbrId})
+            ,#{brdTitle}
+            ,#{brdCont}
+            ,#{bnMbrId}
+        )
+    </insert>
+
 </mapper>
