@@ -13,9 +13,24 @@
         A.PN_MNT_SMS,
         B.AMD_MBR_ID, /*요금제사용테이블에 추가한 직원아이디*/
         DATE_FORMAT(B.AMD_DT, '%Y-%m-%d %H:%i') as AMD_DT /*요금제사용테이블에 추가한 날짜*/
-        from TBL010 A left outer join TBL013 B
+        from TBL010 A left join (select * from TBL013 where BN_NO=#{bnNo}) B
         on A.PN_MNT_RT_NO = B.PN_MNT_RT_NO
-        WHERE pn_carr = #{carr} AND B.BN_NO = #{bnNo}
+        WHERE A.pn_carr = #{carr}
+<!--        select B.MNT_USEYN_NO as MNT_USEYN_NO, /*사용여부 확인을 위한 idx*/-->
+<!--        A.PN_MNT_RT_NO, /*요금제 번호 */-->
+<!--        A.PN_MNT_RT_NM,-->
+<!--        A.PN_NET_TYPE,-->
+<!--        A.PN_MNT_AMT,-->
+<!--        A.PN_MNT_DATA,-->
+<!--        A.PN_MNT_CALL,-->
+<!--        A.PN_MNT_SMS,-->
+<!--        (select BN_NO from TBL013 tb2 where A.PN_MNT_RT_NO = tb2.PN_MNT_RT_NO and tb2.BN_NO = #{bnNo}) as BN_NO,-->
+<!--        B.AMD_MBR_ID, /*요금제사용테이블에 추가한 직원아이디*/-->
+<!--        DATE_FORMAT(B.AMD_DT, '%Y-%m-%d %H:%i') as AMD_DT /*요금제사용테이블에 추가한 날짜*/-->
+<!--        from TBL010 A left outer join TBL013 B-->
+<!--        on A.PN_MNT_RT_NO = B.PN_MNT_RT_NO-->
+<!--        WHERE pn_carr = #{carr}-->
+<!--        and (B.BN_NO = #{bnNo} or B.BN_NO is null)-->
         <if test='selectedSellOpt != "all"'>
             <if test='selectedSellOpt == "y"'>
                 <![CDATA[
@@ -30,8 +45,8 @@
             AND pn_net_type = #{selectedNetType}
         </if>
         order by MNT_USEYN_NO is null asc, PN_NET_TYPE desc, convert(PN_MNT_AMT, decimal) DESC
-<!--        GROUP BY PN_NET_TYPE, PN_MNT_AMT-->
-<!--        ORDER BY PN_NET_TYPE desc, PN_MNT_AMT+0 desc-->
+        <!--        GROUP BY PN_NET_TYPE, PN_MNT_AMT-->
+        <!--        ORDER BY PN_NET_TYPE desc, PN_MNT_AMT+0 desc-->
     </select>
 
     <!-- 요금제 사용 -->
@@ -54,7 +69,8 @@
     <!-- 요금제미사용처리 -->
     <delete id="nUseMntRt" parameterType="DevMap">
         delete from TBL013
-         where PN_MNT_RT_NO = #{pnMntRtNo}
+        where PN_MNT_RT_NO = #{pnMntRtNo}
+        and BN_NO = #{bnNo}
     </delete>
 
     <!-- 요금제사용여부내역 -->
@@ -74,17 +90,179 @@
         )
     </insert>
 
+    <select id="sellDeviceList" parameterType="DevMap" resultType="DevMap">
+        <![CDATA[
+        select
+            (select case when ( (select count(*) from `TBL007-A` ta where a.PN_MDL_NO=ta.PN_MDL_NO and
+            a.PN_STOR=ta.PN_STOR and ta.SELL_YN = 'Y') +
+            (select count(*) from `TBL007-B` tb where a.PN_MDL_NO=tb.PN_MDL_NO and a.PN_STOR=tb.PN_STOR and tb.SELL_YN =
+            'Y') +
+            (select count(*) from `TBL007-C` tc where a.PN_MDL_NO=tc.PN_MDL_NO and a.PN_STOR=tc.PN_STOR and tc.SELL_YN =
+            'Y') )>0 then 'sell' else null end) as 'sellStatus',
+             ]]>
+        (select ta.AMD_MBR_ID from `TBL007-A` ta where a.PN_MDL_NO=ta.PN_MDL_NO and a.PN_STOR=ta.PN_STOR order by
+        ta.AMD_DT desc limit 0,1) as 'tambr',
+        DATE_FORMAT((select max(AMD_DT) from `TBL007-A` ta where a.PN_MDL_NO=ta.PN_MDL_NO and a.PN_STOR=ta.PN_STOR),
+        '%Y-%m-%d %H:%i') as 'tadate',
+        (select tb.AMD_MBR_ID from `TBL007-B` tb where a.PN_MDL_NO=tb.PN_MDL_NO and a.PN_STOR=tb.PN_STOR order by
+        tb.AMD_DT desc limit 0,1) as 'tbmbr',
+        DATE_FORMAT((select max(AMD_DT) from `TBL007-B` tb where a.PN_MDL_NO=tb.PN_MDL_NO and a.PN_STOR=tb.PN_STOR),
+        '%Y-%m-%d %H:%i') as 'tbdate',
+        (select tc.AMD_MBR_ID from `TBL007-C` tc where a.PN_MDL_NO=tc.PN_MDL_NO and a.PN_STOR=tc.PN_STOR order by
+        tc.AMD_DT desc limit 0,1) as 'tcmbr',
+        DATE_FORMAT((select max(AMD_DT) from `TBL007-C` tc where a.PN_MDL_NO=tc.PN_MDL_NO and a.PN_STOR=tc.PN_STOR),
+        '%Y-%m-%d %H:%i') as 'tcdate',
+        a.PN_MKR,
+        a.PN_MDL_NM,
+        a.PN_MSRP,
+        a.PN_NET_TYPE,
+        a.PN_STOR,
+        a.PN_MDL_NO,
+        a.INP_DT
+        from TBL011 a, `TBL007-A` tta, `TBL007-B` ttb, `TBL007-C` ttc
+        where tta.BN_NO = #{bnNo} and tta.BN_NO = ttb.BN_NO and ttb.BN_NO = ttc.BN_NO
+        and a.PN_CARR LIKE '%' || #{deviceCarr} || '%' /* 기기 통신사 */
+        <if test='pnMkr != "all"'>
+            <choose>
+                <when test='pnMkr == "ETC"'>
+                    and a.PN_ MKR NOT IN ('SAM','LGE','APP','XIA')
+                </when>
+                <otherwise>
+                    and a.PN_MKR = #{pnMkr}
+                </otherwise>
+            </choose>
+        </if>
+        <if test='selectedNetType != "all"'>
+            AND a.PN_NET_TYPE = #{selectedNetType}
+        </if>
+        <if test='searchKey != ""'>
+            AND a.PN_MDL_NM LIKE '%' || #{searchKey} || '%'
+        </if>
+        group by a.PN_MDL_NO, a.PN_STOR
+        order by sellStatus desc, a.INP_DT desc /* 출시일 컬럼 추가후 출시일로 변경 */
+    </select>
+
+    <select id="sellDeviceList2" parameterType="DevMap" resultType="DevMap">
+        SELECT
+        (
+        SELECT bb1.SELL_YN
+        FROM (
+        SELECT *
+        FROM
+        `TBL007-A`
+        UNION ALL
+        SELECT *
+        FROM
+        `TBL007-B`
+        UNION ALL
+        SELECT *
+        FROM
+        `TBL007-C`
+        ) bb1
+        WHERE a.PN_MDL_NO = bb1.PN_MDL_NO
+        AND a.PN_STOR = bb1.PN_STOR
+        AND bb1.SELL_YN = 'y'
+        AND bb1.BN_NO = #{bnNo}
+        AND bb1.MNT_CARR = #{mntCarr}
+        GROUP BY bb1.SELL_YN
+        ) AS 'sellStatus',
+        DATE_FORMAT((
+        SELECT MAX(AMD_DT)
+        FROM (
+        SELECT *
+        FROM
+        `TBL007-A`
+        UNION ALL
+        SELECT *
+        FROM
+        `TBL007-B`
+        UNION ALL
+        SELECT *
+        FROM
+        `TBL007-C`
+        ) bb2
+        WHERE a.PN_MDL_NO = bb2.PN_MDL_NO
+        AND a.PN_STOR = bb2.PN_STOR
+        AND bb2.BN_NO = #{bnNo}
+        AND bb2.MNT_CARR = #{mntCarr}
+        ), '%Y-%m-%d %H:%i') as 'lastModiDate',
+        (
+        SELECT bb3.AMD_MBR_ID
+        FROM (
+        SELECT *
+        FROM
+        `TBL007-A`
+        UNION ALL
+        SELECT *
+        FROM
+        `TBL007-B`
+        UNION ALL
+        SELECT *
+        FROM
+        `TBL007-C`
+        ) bb3
+        WHERE a.PN_MDL_NO = bb3.PN_MDL_NO
+        AND a.PN_STOR = bb3.PN_STOR
+        AND bb3.BN_NO = #{bnNo}
+        AND bb3.MNT_CARR = #{mntCarr}
+        ORDER BY bb3.AMD_DT DESC
+        LIMIT 0, 1
+        ) AS 'lastModiMbr',
+        a.PN_MKR,
+        a.PN_MDL_NM,
+        a.PN_MSRP,
+        a.PN_NET_TYPE,
+        a.PN_STOR,
+        a.PN_MDL_NO,
+        a.INP_DT
+        FROM
+        `TBL011` a
+        LEFT JOIN (
+        SELECT *
+        FROM
+        `TBL007-A`
+        UNION ALL
+        SELECT *
+        FROM
+        `TBL007-B`
+        UNION ALL
+        SELECT *
+        FROM
+        `TBL007-C`
+        ) b
+        ON a.PN_MDL_NO = b.PN_MDL_NO
+        WHERE a.PN_CARR LIKE '%' || #{deviceCarr} || '%' /* 기기 통신사 */
+        <if test='pnMkr != "all"'>
+            <choose>
+                <when test='pnMkr == "ETC"'>
+                    and a.PN_ MKR NOT IN ('SAM','LGE','APP','XIA')
+                </when>
+                <otherwise>
+                    and a.PN_MKR = #{pnMkr}
+                </otherwise>
+            </choose>
+        </if>
+        <if test='selectedNetType != "all"'>
+            AND a.PN_NET_TYPE = #{selectedNetType}
+        </if>
+        <if test='searchKey != ""'>
+            AND a.PN_MDL_NM LIKE '%' || #{searchKey} || '%'
+        </if>
+        group by a.PN_MDL_NO, a.PN_STOR
+        order by sellStatus desc, a.INP_DT desc /* 출시일 컬럼 추가후 출시일로 변경 */
+    </select>
+
     <!-- 관리자용 요금제사용내역테이블 조회 -->
-<!--    <select id="historyForAdmin">-->
-<!--        select A.BN_NO,-->
-<!--        A.PN_MNT_RT_NO,-->
-<!--        B.PN_CARR,-->
-<!--        B.PN_MNT_RT_NM,-->
-<!--        A.USE_YN,-->
-<!--        A.INP_DT,-->
-<!--        A.AMD_MBR_ID-->
-<!--        from TBL015 A left outer join TBL010 B-->
-<!--        on A.PN_MNT_RT_NO = B.PN_MNT_RT_NO-->
-<!--    </select>-->
+    <!--    <select id="historyForAdmin">-->
+    <!--        select A.BN_NO,-->
+    <!--        A.PN_MNT_RT_NO,-->
+    <!--        B.PN_CARR,-->
+    <!--        B.PN_MNT_RT_NM,-->
+    <!--        A.USE_YN,-->
+    <!--        A.INP_DT,-->
+    <!--        A.AMD_MBR_ID-->
+    <!--        from TBL015 A left outer join TBL010 B-->
+    <!--        on A.PN_MNT_RT_NO = B.PN_MNT_RT_NO-->
+    <!--    </select>-->
 
 </mapper>

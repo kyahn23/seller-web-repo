@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org"
-	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorator="layout/default">
 
 <div layout:fragment="content">
@@ -14,7 +14,7 @@
                     <h2 class="h2"><img th:src="@{/images/cmmn/hidden.png}" class="ico-list" alt="아이콘">판매정책관리
                     </h2>
                     <div class="pageLocation">
-                        <span>SKT 관리</span>&gt;<strong>판매정책관리</strong>
+                        <span>{{carr.toUpperCase()}} 관리</span>&gt;<strong>판매정책관리</strong>
                     </div>
                 </div>
 
@@ -22,33 +22,24 @@
                     <ul>
                         <li class="txtSize4">
                             <label for="purchaes01">판매상태</label>
-                            <select id="purchaes01">
-                                <option value="">전체</option>
-                                <option value="">납품정보등록전</option>
-                                <option value="">납품정보승인요청</option>
-                                <option value="">납품정보승인반려</option>
+                            <select id="purchaes01" v-model="selectedSellOpt">
+                                <option v-for="sell in sellYn" :value="sell.code">{{sell.value}}</option>
                             </select>
                         </li>
                         <li class="txtSize4">
-                            <label for="purchaes01">제조사</label>
-                            <select id="purchaes01">
-                                <option value="">전체</option>
-                                <option value="">납품정보등록전</option>
-                                <option value="">납품정보승인요청</option>
-                                <option value="">납품정보승인반려</option>
+                            <label for="purchaes02">제조사</label>
+                            <select id="purchaes02" v-model="selectedMkr">
+                                <option v-for="mkr in pnMkr" :value="mkr.code">{{mkr.value}}</option>
                             </select>
                         </li>
                         <li class="txtSize3">
                             <label for="purchaes03">모델명</label>
-                            <input type="text" id="purchaes04" placeholder="모델명 입력">
+                            <input type="text" id="purchaes04" placeholder="모델명 입력" v-model="searchKey">
                         </li>
                         <li class="txtSize4">
-                            <label for="purchaes01">통신유형</label>
-                            <select id="purchaes01">
-                                <option value="">전체</option>
-                                <option value="">납품정보등록전</option>
-                                <option value="">납품정보승인요청</option>
-                                <option value="">납품정보승인반려</option>
+                            <label for="purchaes03">통신유형</label>
+                            <select id="purchaes03" v-model="selectedNetType">
+                                <option v-for="net in networkType" :value="net.code">{{net.value}}</option>
                             </select>
                         </li>
                     </ul>
@@ -132,133 +123,137 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
+                                <tr v-for="sell in sellDeviceList">
                                     <td class="alignC"><input type="checkbox" title="행 선택"></td>
-                                    <td class="alignC">판매중</td>
-                                    <td class="alignC">삼성전자</td>
-                                    <td class="alignC">갤럭시 노트20</td>
-                                    <td class="alignC">1,255,000</td>
-                                    <td class="alignC">5G</td>
-                                    <td class="alignC">128G</td>
-                                    <td class="alignC">SM-001</td>
-                                    <td class="alignC">직원1</td>
-                                    <td class="alignC">2020-01-01 12:20</td>
+                                    <td class="alignC" v-if="sell.sellStatus === 'Y'">판매중</td>
+                                    <td class="alignC" v-else>미판매</td>
+                                    <td class="alignC">{{sell.pnMkr}}</td>
+                                    <td class="alignC">{{sell.pnMdlNm}}</td>
+                                    <td class="alignC">{{Number(sell.pnMsrp).toLocaleString()}}</td>
+                                    <td class="alignC" v-if="sell.pnNetType === '4G'">LTE</td>
+                                    <td class="alignC">{{sell.pnNetType}}</td>
+                                    <td class="alignC">{{sell.pnStor}}</td>
+                                    <td class="alignC">{{sell.pnMdlNo}}</td>
+                                    <td class="alignC" v-if="!sell.lastModiMbr">-</td>
+                                    <td class="alignC" v-else>{{sell.lastModiMbr}}</td>
+                                    <td class="alignC" v-if="!sell.lastModiDate">-</td>
+                                    <td class="alignC" v-else>{{sell.lastModiDate}}</td>
                                 </tr>
-                                <tr>
-                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>
-                                    <td class="alignC">판매중</td>
-                                    <td class="alignC">삼성전자</td>
-                                    <td class="alignC">갤럭시 S20</td>
-                                    <td class="alignC">1,165,000</td>
-                                    <td class="alignC">5G</td>
-                                    <td class="alignC">128G</td>
-                                    <td class="alignC">SM-001</td>
-                                    <td class="alignC">직원1</td>
-                                    <td class="alignC">2020-01-01 12:20</td>
-                                </tr>
-                                <tr>
-                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>
-                                    <td class="alignC">판매중</td>
-                                    <td class="alignC">삼성전자</td>
-                                    <td class="alignC">갤럭시 Z 폴드2</td>
-                                    <td class="alignC">2,189,000</td>
-                                    <td class="alignC">5G</td>
-                                    <td class="alignC">256G</td>
-                                    <td class="alignC">SM-001</td>
-                                    <td class="alignC">직원1</td>
-                                    <td class="alignC">2020-01-01 12:20</td>
-                                </tr>
-                                <tr>
-                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>
-                                    <td class="alignC">판매중</td>
-                                    <td class="alignC">LG전자</td>
-                                    <td class="alignC">LG V50</td>
-                                    <td class="alignC">955,000</td>
-                                    <td class="alignC">5G</td>
-                                    <td class="alignC">128G</td>
-                                    <td class="alignC">SM-001</td>
-                                    <td class="alignC">직원1</td>
-                                    <td class="alignC">2020-01-01 12:20</td>
-                                </tr>
-                                <tr>
-                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>
-                                    <td class="alignC">판매중</td>
-                                    <td class="alignC">LG전자</td>
-                                    <td class="alignC">LG VELVET</td>
-                                    <td class="alignC">890,000</td>
-                                    <td class="alignC">5G</td>
-                                    <td class="alignC">64G</td>
-                                    <td class="alignC">SM-001</td>
-                                    <td class="alignC">직원2</td>
-                                    <td class="alignC">2020-01-01 12:20</td>
-                                </tr>
-                                <tr>
-                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>
-                                    <td class="alignC">판매중</td>
-                                    <td class="alignC">APPLE</td>
-                                    <td class="alignC">아이폰11</td>
-                                    <td class="alignC">890,000</td>
-                                    <td class="alignC">LTE</td>
-                                    <td class="alignC">128G</td>
-                                    <td class="alignC">SM-001</td>
-                                    <td class="alignC">직원2</td>
-                                    <td class="alignC">2020-01-01 12:20</td>
-                                </tr>
-                                <tr>
-                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>
-                                    <td class="alignC">판매중</td>
-                                    <td class="alignC">APPLE</td>
-                                    <td class="alignC">아이폰11 PRO MAX</td>
-                                    <td class="alignC">1,190,000</td>
-                                    <td class="alignC">LTE</td>
-                                    <td class="alignC">256G</td>
-                                    <td class="alignC">SM-001</td>
-                                    <td class="alignC">직원2</td>
-                                    <td class="alignC">2020-01-01 12:20</td>
-                                </tr>
-                                <tr>
-                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>
-                                    <td class="alignC">판매중</td>
-                                    <td class="alignC">APPLE</td>
-                                    <td class="alignC">아이폰 SE2</td>
-                                    <td class="alignC">590,000</td>
-                                    <td class="alignC">LTE</td>
-                                    <td class="alignC">128G</td>
-                                    <td class="alignC">SM-001</td>
-                                    <td class="alignC">직원2</td>
-                                    <td class="alignC">2020-01-01 12:20</td>
-                                </tr>
-                                <tr>
-                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>
-                                    <td class="alignC">판매중</td>
-                                    <td class="alignC">기타</td>
-                                    <td class="alignC">XIAOMI MI 10 LITE</td>
-                                    <td class="alignC">500,000</td>
-                                    <td class="alignC">5G</td>
-                                    <td class="alignC">128G</td>
-                                    <td class="alignC">SM-001</td>
-                                    <td class="alignC">직원2</td>
-                                    <td class="alignC">2020-01-01 12:20</td>
-                                </tr>
-                                <tr>
-                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>
-                                    <td class="alignC">판매중</td>
-                                    <td class="alignC">기타</td>
-                                    <td class="alignC">Redmi Note 9S</td>
-                                    <td class="alignC">375,000</td>
-                                    <td class="alignC">LTE</td>
-                                    <td class="alignC">64G</td>
-                                    <td class="alignC">SM-001</td>
-                                    <td class="alignC">직원2</td>
-                                    <td class="alignC">2020-01-01 12:20</td>
-                                </tr>
-                                <tr class="errorMessage">
-                                    <td colspan="10">
-                                        <div class="errorTxt">
-                                            <span>항목이 없습니다.</span>
-                                        </div>
-                                    </td>
-                                </tr>
+<!--                                <tr>-->
+<!--                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
+<!--                                    <td class="alignC">판매중</td>-->
+<!--                                    <td class="alignC">삼성전자</td>-->
+<!--                                    <td class="alignC">갤럭시 S20</td>-->
+<!--                                    <td class="alignC">1,165,000</td>-->
+<!--                                    <td class="alignC">5G</td>-->
+<!--                                    <td class="alignC">128G</td>-->
+<!--                                    <td class="alignC">SM-001</td>-->
+<!--                                    <td class="alignC">직원1</td>-->
+<!--                                    <td class="alignC">2020-01-01 12:20</td>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
+<!--                                    <td class="alignC">판매중</td>-->
+<!--                                    <td class="alignC">삼성전자</td>-->
+<!--                                    <td class="alignC">갤럭시 Z 폴드2</td>-->
+<!--                                    <td class="alignC">2,189,000</td>-->
+<!--                                    <td class="alignC">5G</td>-->
+<!--                                    <td class="alignC">256G</td>-->
+<!--                                    <td class="alignC">SM-001</td>-->
+<!--                                    <td class="alignC">직원1</td>-->
+<!--                                    <td class="alignC">2020-01-01 12:20</td>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
+<!--                                    <td class="alignC">판매중</td>-->
+<!--                                    <td class="alignC">LG전자</td>-->
+<!--                                    <td class="alignC">LG V50</td>-->
+<!--                                    <td class="alignC">955,000</td>-->
+<!--                                    <td class="alignC">5G</td>-->
+<!--                                    <td class="alignC">128G</td>-->
+<!--                                    <td class="alignC">SM-001</td>-->
+<!--                                    <td class="alignC">직원1</td>-->
+<!--                                    <td class="alignC">2020-01-01 12:20</td>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
+<!--                                    <td class="alignC">판매중</td>-->
+<!--                                    <td class="alignC">LG전자</td>-->
+<!--                                    <td class="alignC">LG VELVET</td>-->
+<!--                                    <td class="alignC">890,000</td>-->
+<!--                                    <td class="alignC">5G</td>-->
+<!--                                    <td class="alignC">64G</td>-->
+<!--                                    <td class="alignC">SM-001</td>-->
+<!--                                    <td class="alignC">직원2</td>-->
+<!--                                    <td class="alignC">2020-01-01 12:20</td>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
+<!--                                    <td class="alignC">판매중</td>-->
+<!--                                    <td class="alignC">APPLE</td>-->
+<!--                                    <td class="alignC">아이폰11</td>-->
+<!--                                    <td class="alignC">890,000</td>-->
+<!--                                    <td class="alignC">LTE</td>-->
+<!--                                    <td class="alignC">128G</td>-->
+<!--                                    <td class="alignC">SM-001</td>-->
+<!--                                    <td class="alignC">직원2</td>-->
+<!--                                    <td class="alignC">2020-01-01 12:20</td>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
+<!--                                    <td class="alignC">판매중</td>-->
+<!--                                    <td class="alignC">APPLE</td>-->
+<!--                                    <td class="alignC">아이폰11 PRO MAX</td>-->
+<!--                                    <td class="alignC">1,190,000</td>-->
+<!--                                    <td class="alignC">LTE</td>-->
+<!--                                    <td class="alignC">256G</td>-->
+<!--                                    <td class="alignC">SM-001</td>-->
+<!--                                    <td class="alignC">직원2</td>-->
+<!--                                    <td class="alignC">2020-01-01 12:20</td>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
+<!--                                    <td class="alignC">판매중</td>-->
+<!--                                    <td class="alignC">APPLE</td>-->
+<!--                                    <td class="alignC">아이폰 SE2</td>-->
+<!--                                    <td class="alignC">590,000</td>-->
+<!--                                    <td class="alignC">LTE</td>-->
+<!--                                    <td class="alignC">128G</td>-->
+<!--                                    <td class="alignC">SM-001</td>-->
+<!--                                    <td class="alignC">직원2</td>-->
+<!--                                    <td class="alignC">2020-01-01 12:20</td>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
+<!--                                    <td class="alignC">판매중</td>-->
+<!--                                    <td class="alignC">기타</td>-->
+<!--                                    <td class="alignC">XIAOMI MI 10 LITE</td>-->
+<!--                                    <td class="alignC">500,000</td>-->
+<!--                                    <td class="alignC">5G</td>-->
+<!--                                    <td class="alignC">128G</td>-->
+<!--                                    <td class="alignC">SM-001</td>-->
+<!--                                    <td class="alignC">직원2</td>-->
+<!--                                    <td class="alignC">2020-01-01 12:20</td>-->
+<!--                                </tr>-->
+<!--                                <tr>-->
+<!--                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
+<!--                                    <td class="alignC">판매중</td>-->
+<!--                                    <td class="alignC">기타</td>-->
+<!--                                    <td class="alignC">Redmi Note 9S</td>-->
+<!--                                    <td class="alignC">375,000</td>-->
+<!--                                    <td class="alignC">LTE</td>-->
+<!--                                    <td class="alignC">64G</td>-->
+<!--                                    <td class="alignC">SM-001</td>-->
+<!--                                    <td class="alignC">직원2</td>-->
+<!--                                    <td class="alignC">2020-01-01 12:20</td>-->
+<!--                                </tr>-->
+<!--                                <tr class="errorMessage">-->
+<!--                                    <td colspan="10">-->
+<!--                                        <div class="errorTxt">-->
+<!--                                            <span>항목이 없습니다.</span>-->
+<!--                                        </div>-->
+<!--                                    </td>-->
+<!--                                </tr>-->
                                 </tbody>
                             </table>
                         </div>
@@ -823,9 +818,89 @@
     <script>
         var app = new Vue({
             el: "#app",
-            data:{},
-            methods:{
+            data: {
+                deviceCarr: "",
+                carr: "",
+                sellYn: [
+                    {code: "all", value: "전체"},
+                    {code: "y", value: "판매중"},
+                    {code: "n", value: "미판매"}
+                ],
+                selectedSellOpt: "all",
+                pnMkr: [
+                    {code: "all", value: "전체"},
+                    {code: "SAM", value: "삼성전자"},
+                    {code: "APP", value: "애플"},
+                    {code: "LGE", value: "LG전자"},
+                    // {code: "XIA", value: "샤오미"},
+                    {code: "ETC", value: "기타"}
+                ],
+                selectedMkr: "all",
+                searchKey: "",
+                networkType: [
+                    {code: "all", value: "전체"},
+                    {code: "5g", value: "5G"},
+                    {code: "4g", value: "LTE"},
+                    {code: "3g", value: "3G"}
+                ],
+                selectedNetType: "all",
+                sellDeviceList: [],
+                moveCarrList: [],
+                chgDeviceList: [],
+                newSignUpList: [],
+            },
+            mounted: function () {
+                var currentPath = window.location.pathname
+                this.carr = currentPath.substring(currentPath.lastIndexOf('/') + 1)
+                switch (this.carr) {
+                    case 'skt':
+                        this.deviceCarr = 'S'
+                        break
+                    case 'kt':
+                        this.deviceCarr = 'K'
+                        break
+                    case 'lgu':
+                        this.deviceCarr = 'L'
+                        break
+                }
 
+                this.searchList()
+            },
+            methods: {
+                searchList() {
+                    var param = {
+                        mntCarr: this.carr,
+                        deviceCarr: this.deviceCarr,
+                        selectedNetType: this.selectedNetType,
+                        pnMkr: this.selectedMkr,
+                        searchKey: this.searchKey
+                    }
+                    cf_call("/carr/getSellDeviceList", param, this.searchListCB)
+                },
+                searchListCB(data){
+                    console.log(data)
+                    this.sellDeviceList = data.sellDeviceList
+                    for (sell in this.sellDeviceList) {
+                        switch (this.sellDeviceList[sell].pnMkr){
+                            case 'SAM':
+                                this.sellDeviceList[sell].pnMkr = '삼성전자'
+                                break
+                            case 'LGE':
+                                this.sellDeviceList[sell].pnMkr = 'LG전자'
+                                break
+                            case 'APP':
+                                this.sellDeviceList[sell].pnMkr = '애플'
+                                break
+                            case 'XIA':
+                                this.sellDeviceList[sell].pnMkr = '샤오미'
+                                break
+                            case 'ETC':
+                                this.sellDeviceList[sell].pnMkr = '기타'
+                                break
+
+                        }
+                    }
+                }
             }
         })
     </script>
