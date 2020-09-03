@@ -40,4 +40,62 @@
             BN_NO = #{bnNo}
     </update>
 
+    <select id="getEmpList" resultType="DevMap" parameterType="DevMap">
+        SELECT
+            A.BN_MBR_ID
+            ,A.MBR_NM
+            ,A.MST_MBR_YN
+            ,A.SELLER_PRMS
+            ,A.LGIN_AVL_YN
+            ,A.ACTV_YN
+            ,DATE_FORMAT(A.AMD_DT, '%Y-%m-%d %H:%i') AS AMD_DT
+            ,(SELECT B.MBR_NM FROM TBL002 B WHERE B.BN_MBR_ID = A.AMD_MBR_ID) AS AMD_MBR_NM
+            ,DATE_FORMAT(A.AUTH_DT, '%Y-%m-%d %H:%i') AS AUTH_DT
+        FROM TBL002 A
+        WHERE
+            BN_NO = ( SELECT BN_NO FROM TBL002 WHERE BN_MBR_ID = #{bnMbrId} )
+        <choose>
+            <when test="srchOptn == 'BYNM'">
+                AND A.MBR_NM LIKE CONCAT('%',#{srchTerm},'%')
+            </when>
+            <when test="srchOptn == 'BYID'">
+                AND A.BN_MBR_ID LIKE CONCAT('%',#{srchTerm},'%')
+            </when>
+            <otherwise/>
+        </choose>
+        ORDER BY A.MST_MBR_YN DESC, A.INP_DT ASC
+    </select>
+
+    <insert id="addEmpInfo" parameterType="DevMap">
+        INSERT INTO TBL002 (
+            BN_MBR_ID
+            ,PWD_NO
+            ,PWNO_INIT_YN
+            ,PWERR_CNT
+            ,LGIN_AVL_YN
+            ,BN_NO
+            ,MBR_NM
+            ,MST_MBR_YN
+            ,SELLER_PRMS
+            ,ACTV_YN
+            ,AMD_MBR_ID
+        ) VALUES (
+            #{bnMbrId}
+            ,#{pwdNo}
+            ,'Y'
+            ,'0'
+            ,'Y'
+            ,(SELECT BN_NO FROM TBL002 B WHERE BN_MBR_ID = #{amdMbrId})
+            ,#{mbrNm}
+            ,#{mstMbrYn}
+            ,#{sellerPrms}
+            ,'Y'
+            ,#{amdMbrId}
+        )
+    </insert>
+
+    <update id="updateEmpDeact" parameterType="DevMap">
+        UPDATE TBL002 SET ACTV_YN = 'N', AMD_DT = CURRENT_TIMESTAMP, AMD_MBR_ID = #{amdMbrId} WHERE BN_MBR_ID = #{bnMbrId}
+    </update>
+
 </mapper>

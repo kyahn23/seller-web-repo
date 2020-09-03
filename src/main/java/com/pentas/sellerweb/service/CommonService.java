@@ -30,6 +30,15 @@ public class CommonService {
     CmmnDao cmmnDao;
 
     /**
+     * 멤버 ID (이메일) 중복 확인
+     * @param param
+     * @return
+     */
+    public String checkMemberId(DevMap param) {
+        return cmmnDao.selectOne("sellerweb.common.selectCntMbrId", param);
+    }
+
+    /**
      * 파일 업로드
      * @param multipartFile
      * @param param

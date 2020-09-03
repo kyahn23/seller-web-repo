@@ -6,6 +6,7 @@ import com.pentas.sellerweb.common.module.util.json.JsonUtil;
 import com.pentas.sellerweb.service.CommonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +22,21 @@ public class CommonRestController {
 
     @Autowired
     CommonService commonService;
+
+    /**
+     * 멤버 ID (이메일) 중복 확인 (return 객체에 중복 여부)
+     * @param request
+     * @param param
+     * @return
+     */
+    @PostMapping("/member/checkId")
+    public DevMap checkMemberId(HttpServletRequest request, @RequestBody DevMap param) {
+        String chkMbrId = commonService.checkMemberId(param);
+
+        DevMap rslt = new DevMap();
+        rslt.put("chkMbrId", chkMbrId);
+        return rslt;
+    }
 
     /**
      * 이미지 업로드 (return 객체에 새 파일명 filNm 포함)

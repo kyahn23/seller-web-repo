@@ -26,4 +26,8 @@
         )
     </insert>
 
+    <select id="selectCntMbrId" parameterType="DevMap" resultType="string">
+        SELECT COUNT(*) FROM TBL002 WHERE BN_MBR_ID = #{mbrId}
+    </select>
+
 </mapper>

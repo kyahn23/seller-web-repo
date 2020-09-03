@@ -7,6 +7,7 @@ import com.pentas.sellerweb.service.ShopService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
@@ -46,6 +47,53 @@ public class ShopRestController {
         String mbrId = (String) request.getSession().getAttribute("mbrId");
         param.put("mbrId", mbrId);
         shopService.modiShopInfo(param);
+
+        DevMap rslt = new DevMap();
+        rslt.put("rsltStat", "SUCC");
+        return rslt;
+    }
+
+    /**
+     * 직원정보 조회
+     * @param request
+     * @param param
+     * @return
+     */
+    @PostMapping("/shop/getEmpList")
+    public DevMap getEmpList(HttpServletRequest request, @RequestBody DevMap param) {
+        DevMap rslt = new DevMap();
+        List<DevMap> resultList = null;
+        resultList = shopService.getEmpList(param);
+        rslt.put("empList", resultList);
+        return rslt;
+    }
+
+    /**
+     * 직원정보 추가
+     * @param request
+     * @param param
+     * @return
+     * @throws UserException
+     */
+    @PostMapping("/shop/addEmpInfo")
+    public DevMap addEmpInfo(HttpServletRequest request, @RequestBody DevMap param) throws UserException {
+        shopService.addEmpInfo(param);
+
+        DevMap rslt = new DevMap();
+        rslt.put("rsltStat", "SUCC");
+        return rslt;
+    }
+
+    /**
+     * 직원 퇴사처리 (update)
+     * @param request
+     * @param param
+     * @return
+     * @throws UserException
+     */
+    @PostMapping("/shop/modiEmpDeact")
+    public DevMap modiEmpDeact(HttpServletRequest request, @RequestBody DevMap param) throws UserException {
+        shopService.modiEmpDeact(param);
 
         DevMap rslt = new DevMap();
         rslt.put("rsltStat", "SUCC");
