@@ -4,6 +4,7 @@ import com.pentas.sellerweb.common.exception.UserException;
 import com.pentas.sellerweb.common.module.util.DevMap;
 import com.pentas.sellerweb.common.module.util.json.JsonUtil;
 import com.pentas.sellerweb.service.ShopService;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,7 +27,7 @@ public class ShopRestController {
      * 매장정보 조회
      * @param request
      * @param param
-     * @return
+     * @return rslt
      */
     @PostMapping("/shop/getShopInfo")
     public DevMap getShopInfo(HttpServletRequest request, @RequestBody DevMap param) {
@@ -39,11 +40,10 @@ public class ShopRestController {
      * 매장정보 수정
      * @param request
      * @param param
-     * @return
-     * @throws UserException
+     * @return rslt
      */
     @PostMapping("/shop/modiShopInfo")
-    public DevMap modiShopInfo(HttpServletRequest request, @RequestBody DevMap param) throws IllegalStateException, UserException {
+    public DevMap modiShopInfo(HttpServletRequest request, @RequestBody DevMap param) throws IllegalStateException {
         String mbrId = (String) request.getSession().getAttribute("mbrId");
         param.put("mbrId", mbrId);
         shopService.modiShopInfo(param);
@@ -57,7 +57,7 @@ public class ShopRestController {
      * 직원정보 조회
      * @param request
      * @param param
-     * @return
+     * @return rslt
      */
     @PostMapping("/shop/getEmpList")
     public DevMap getEmpList(HttpServletRequest request, @RequestBody DevMap param) {
@@ -72,11 +72,10 @@ public class ShopRestController {
      * 직원정보 추가
      * @param request
      * @param param
-     * @return
-     * @throws UserException
+     * @return rslt
      */
     @PostMapping("/shop/addEmpInfo")
-    public DevMap addEmpInfo(HttpServletRequest request, @RequestBody DevMap param) throws UserException {
+    public DevMap addEmpInfo(HttpServletRequest request, @RequestBody DevMap param) {
         shopService.addEmpInfo(param);
 
         DevMap rslt = new DevMap();
@@ -88,12 +87,41 @@ public class ShopRestController {
      * 직원 퇴사처리 (update)
      * @param request
      * @param param
-     * @return
-     * @throws UserException
+     * @return rslt
      */
     @PostMapping("/shop/modiEmpDeact")
-    public DevMap modiEmpDeact(HttpServletRequest request, @RequestBody DevMap param) throws UserException {
+    public DevMap modiEmpDeact(HttpServletRequest request, @RequestBody DevMap param) {
         shopService.modiEmpDeact(param);
+
+        DevMap rslt = new DevMap();
+        rslt.put("rsltStat", "SUCC");
+        return rslt;
+    }
+
+    /**
+     * 직원 비밀번호 재발급
+     * @param request
+     * @param param
+     * @return rslt
+     */
+    @PostMapping("/shop/modiEmpPwd")
+    public DevMap modiEmpPwd(HttpServletRequest request, @RequestBody DevMap param) {
+        shopService.modiEmpPwd(param);
+
+        DevMap rslt = new DevMap();
+        rslt.put("rsltStat", "SUCC");
+        return rslt;
+    }
+
+    /**
+     * 직원 권한 수정
+     * @param request
+     * @param param
+     * @return
+     */
+    @PostMapping("/shop/modiEmpPrms")
+    public DevMap modiEmpPrms(HttpServletRequest request, @RequestBody DevMap param) {
+        shopService.modiEmpPrms(param);
 
         DevMap rslt = new DevMap();
         rslt.put("rsltStat", "SUCC");

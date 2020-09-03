@@ -24,7 +24,7 @@ public class ShopService {
     /**
      * 매장정보 조회
      * @param param
-     * @return
+     * @return getShopInfo
      */
     public DevMap getShopInfo(DevMap param) {
         return cmmnDao.selectOne("sellerweb.shop.getShopInfo", param);
@@ -33,30 +33,27 @@ public class ShopService {
     /**
      * 매장정보 수정
      * @param param
-     * @throws UserException
      */
-    public void modiShopInfo(DevMap param) throws UserException { cmmnDao.update("sellerweb.shop.updateShopInfo", param); }
+    public void modiShopInfo(DevMap param) { cmmnDao.update("sellerweb.shop.updateShopInfo", param); }
 
     /**
      * 직원정보 조회
      * @param param
-     * @return
+     * @return getEmpList
      */
     public List<DevMap> getEmpList(DevMap param) { return cmmnDao.selectList("sellerweb.shop.getEmpList", param); }
 
     /**
      * 직원추가
      * @param param
-     * @throws UserException
      */
-    public void addEmpInfo(DevMap param) throws UserException { cmmnDao.insert("sellerweb.shop.addEmpInfo", param); }
+    public void addEmpInfo(DevMap param) { cmmnDao.insert("sellerweb.shop.addEmpInfo", param); }
 
     /**
      * 직원 퇴사처리 (update)
      * @param param
-     * @throws UserException
      */
-    public void modiEmpDeact(DevMap param) throws UserException {
+    public void modiEmpDeact(DevMap param) {
         DevMap qParam = new DevMap();
         String amdMbrId = (String) param.get("amdMbrId");
         List<String> bnMbrIdList = (List<String>) param.get("bnMbrIdList");
@@ -66,6 +63,22 @@ public class ShopService {
             cmmnDao.update("sellerweb.shop.updateEmpDeact", qParam);
             qParam.clear();
         }
+    }
+
+    /**
+     * 직원 비밀번호 재발급
+     * @param param
+     */
+    public void modiEmpPwd(DevMap param) {
+        cmmnDao.update("sellerweb.shop.updateEmpPwd", param);
+    }
+
+    /**
+     * 직원 권한 수정
+     * @param param
+     */
+    public void modiEmpPrms(DevMap param) {
+        cmmnDao.update("sellerweb.shop.updateEmpPrms", param);
     }
 
 }

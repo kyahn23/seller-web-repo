@@ -24,8 +24,7 @@
 
     <update id="updateShopInfo" parameterType="DevMap">
         UPDATE TBL003
-        SET
-            BN_REG_NO = #{bnRegNo}
+        SET BN_REG_NO = #{bnRegNo}
             ,BN_NM = #{bnNm}
             ,OWNER_NM = #{ownerNm}
             ,BN_REG_CARD = #{bnRegCard}
@@ -95,7 +94,30 @@
     </insert>
 
     <update id="updateEmpDeact" parameterType="DevMap">
-        UPDATE TBL002 SET ACTV_YN = 'N', AMD_DT = CURRENT_TIMESTAMP, AMD_MBR_ID = #{amdMbrId} WHERE BN_MBR_ID = #{bnMbrId}
+        UPDATE TBL002
+        SET ACTV_YN = 'N'
+            ,AMD_DT = CURRENT_TIMESTAMP
+            ,AMD_MBR_ID = #{amdMbrId}
+        WHERE BN_MBR_ID = #{bnMbrId}
+    </update>
+
+    <update id="updateEmpPwd" parameterType="DevMap">
+        UPDATE TBL002
+        SET PWD_NO = #{pwdNo}
+            ,PWNO_INIT_YN = 'Y'
+            ,PWERR_CNT = 0
+            ,LGIN_AVL_YN = 'Y'
+            ,AMD_DT = CURRENT_TIMESTAMP
+            ,AMD_MBR_ID = #{amdMbrId}
+        WHERE BN_MBR_ID = #{bnMbrId}
+    </update>
+
+    <update id="updateEmpPrms" parameterType="DevMap">
+        UPDATE TBL002
+        SET SELLER_PRMS = #{sellerPrms}
+            ,AMD_DT = CURRENT_TIMESTAMP
+            ,AMD_MBR_ID = #{amdMbrId}
+        WHERE BN_MBR_ID = #{bnMbrId}
     </update>
 
 </mapper>
