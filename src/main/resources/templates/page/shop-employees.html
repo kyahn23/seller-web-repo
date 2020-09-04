@@ -180,7 +180,6 @@
                                         <td scope="col">
                                             <input
                                                 type="checkbox"
-                                                id="checkAll"
                                                 title="전체 선택"
                                                 v-model="checkAll"
                                                 @change="onCheckAll"
@@ -226,7 +225,6 @@
                                     <td class="alignC" :title="infoTitle(empInfo)">
                                         <input
                                             type="checkbox"
-                                            class="checkOne"
                                             v-if="!infoCheck(empInfo)"
                                             v-model="chkEmpList"
                                             :value="empInfo.bnMbrId"
@@ -511,7 +509,7 @@
                 initPage() {
                     this.selEmp = -1
                     this.checkAll = false
-                    this.initSelEmpList()
+                    this.initChkEmpList()
                     this.initSrchCond()
                     this.getEmpList()
                 },
@@ -521,7 +519,7 @@
                         srchTerm: ''
                     }
                 },
-                initSelEmpList() {
+                initChkEmpList() {
                     this.chkEmpList =  []
                 },
                 getEmpList() {
@@ -544,10 +542,10 @@
                         colorSwitch = 'red'
                     }
                     if (empInfo.actvYn === 'N') {
-                        colorSwitch =  'gray'
+                        colorSwitch = 'lightgray'
                     }
                     if (cf_isEmpty(empInfo.authDt)) {
-                        colorSwitch =  'navy'
+                        colorSwitch = 'navy'
                     }
                     return colorSwitch
                 },
@@ -610,14 +608,14 @@
                 },
                 onCheckAll() {
                     if (this.checkAll) {
-                        this.initSelEmpList()
+                        this.initChkEmpList()
                         for (var i=0; i < this.empList.length; i++) {
                             if (this.empList[i].mstMbrYn === 'N') {
                                 this.chkEmpList.push(this.empList[i].bnMbrId)
                             }
                         }
                     } else {
-                        this.initSelEmpList()
+                        this.initChkEmpList()
                     }
                 },
                 onCheckOne() {
@@ -641,7 +639,7 @@
                         }
                         cf_call('/shop/modiEmpDeact', param, this.modiEmpDeactCB)
                     } else {
-                        alert('퇴사로 처리 할 직원을 선택하세요.')
+                        alert('퇴사로 처리 할 직원을 체크하세요.')
                     }
                 },
                 modiEmpDeactCB(rslt) {

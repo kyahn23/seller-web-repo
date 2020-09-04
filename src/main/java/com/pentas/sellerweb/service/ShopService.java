@@ -83,4 +83,27 @@ public class ShopService {
      */
     public void addBnBrd(DevMap param) { cmmnDao.insert("sellerweb.shop.addBnBrd", param); }
 
+    /**
+     * 매장 공지사항 목록 가져오기
+     * @param param
+     * @return
+     */
+    public List<DevMap> getBnBrdList(DevMap param) { return cmmnDao.selectList("sellerweb.shop.getBnBrdList", param); }
+
+    /**
+     * 매장 공지사항 게시여부 수정
+     * @param param
+     */
+    public void modiBnBrdHide(DevMap param) {
+        DevMap qParam = new DevMap();
+        String bnMbrId = (String) param.get("bnMbrId");
+        List<Integer> brdNoList = (List<Integer>) param.get("brdNoList");
+        for (Integer brdNo : brdNoList) {
+            qParam.put("bnMbrId", bnMbrId);
+            qParam.put("brdNo", brdNo);
+            cmmnDao.update("sellerweb.shop.updateBnBrdHide", qParam);
+            qParam.clear();
+        }
+    }
+
 }

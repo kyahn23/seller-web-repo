@@ -128,9 +128,46 @@ public class ShopRestController {
         return rslt;
     }
 
+    /**
+     * 매장 공지사항 글 작성
+     * @param request
+     * @param param
+     * @return
+     */
     @PostMapping("/shop/addBnBrd")
     public DevMap addBnBrd(HttpServletRequest request, @RequestBody DevMap param) {
         shopService.addBnBrd(param);
+
+        DevMap rslt = new DevMap();
+        rslt.put("rsltStat", "SUCC");
+        return rslt;
+    }
+
+    /**
+     * 매장 공지사항 목록 조회
+     * @param request
+     * @param param
+     * @return
+     */
+    @PostMapping("/shop/getBnBrdList")
+    public DevMap getBnBrdList(HttpServletRequest request, @RequestBody DevMap param) {
+        DevMap rslt = new DevMap();
+        List<DevMap> bnBrdList = null;
+
+        bnBrdList = shopService.getBnBrdList(param);
+        rslt.put("bnBrdList", bnBrdList);
+        return rslt;
+    }
+
+    /**
+     * 매장 공지사항 게시여부 숨김으로 변경
+     * @param request
+     * @param param
+     * @return
+     */
+    @PostMapping("/shop/modiBnBrdHide")
+    public DevMap modiBnBrdHide(HttpServletRequest request, @RequestBody DevMap param) {
+        shopService.modiBnBrdHide(param);
 
         DevMap rslt = new DevMap();
         rslt.put("rsltStat", "SUCC");

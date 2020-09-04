@@ -30,18 +30,26 @@
                 <div class="searchArea">
                     <ul>
                         <li class="txtSize2">
-                            <label for="purchaes01">조회조건</label>
-                            <select id="purchaes01">
-                                <option value="">제목</option>
-                                <option value="">작성자</option>
+                            <label for="srchBox01">조회조건</label>
+                            <select id="srchBox01" v-model="srchCond.srchOptn">
+                                <option value="ALL">전체</option>
+                                <option value="BYTT">제목</option>
+                                <option value="BYNM">작성자</option>
                             </select>
                         </li>
                         <li class="txtSize2">
-                            <input type="text" id="purchaes02" placeholder="검색어 입력" value="">
+                            <input
+                                type="text"
+                                id="srchBox02"
+                                placeholder="검색어 입력"
+                                :disabled="srchTermSwitch"
+                                :value="srchCond.srchTerm"
+                                @input="srchCond.srchTerm = $event.target.value"
+                            >
                         </li>
                     </ul>
                     <div class="btnSearch">
-                        <a href="#" class="btnM colorBlue"><span>검색</span></a>
+                        <a href="#;" class="btnM colorBlue" @click="getBnBrdList"><span>검색</span></a>
                     </div>
                 </div>
 
@@ -53,24 +61,33 @@
                         </div>
                         <div class="cTitRight">
                             <a href="#popLayerNoticeAdd" class="btnM colorGreen popLayerNoticeAdd_open"><span>추가</span></a>
-                            <a href="#" class="btnM colorOrg"><span>삭제</span></a>
+                            <a href="#;" class="btnM colorOrg" @click="modiBnBrdHide"><span>숨김</span></a>
                         </div>
                     </div>
                     <!-- slide content -->
-                    <div class="contentDetail slideTogglebox">
+                    <div class="contentDetail slideTogglebox" v-show="initDone">
                         <div class="tHeadScrollBG">
                             <div class="tHeadScroll">
                                 <table class="tblList tHead">
                                     <colgroup>
                                         <col style="width:56px">
                                         <col style="width:*">
-                                        <col style="width:12%">
+                                        <col style="width:6%">
                                         <col style="width:18%">
+                                        <col style="width:15%">
                                     </colgroup>
                                     <tbody>
                                     <tr>
-                                        <td scope="col"><input type="checkbox" title="전체 선택"></td>
+                                        <td scope="col">
+                                            <input
+                                                type="checkbox"
+                                                title="전체 선택"
+                                                v-model="checkAll"
+                                                @change="onCheckAll"
+                                            >
+                                        </td>
                                         <td scope="col">제목</td>
+                                        <td scope="col">게시여부</td>
                                         <td scope="col">작성자</td>
                                         <td scope="col">최종변경일시</td>
                                     </tr>
@@ -84,49 +101,42 @@
                                 <colgroup>
                                     <col style="width:56px">
                                     <col style="width:*">
-                                    <col style="width:12%">
+                                    <col style="width:6%">
                                     <col style="width:18%">
+                                    <col style="width:15%">
                                 </colgroup>
                                 <thead>
                                 <tr>
                                     <td scope="col"><input type="checkbox" title="전체 선택"></td>
                                     <td scope="col">제목</td>
+                                    <td scope="col">게시여부</td>
                                     <td scope="col">작성자</td>
                                     <td scope="col">최종변경일시</td>
                                 </tr>
                                 </thead>
-                                <tbody>
-                                <tr>
-                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>
-                                    <td class="alignC">공지사항 제목1</td>
-                                    <td class="alignC">직원1</td>
-                                    <td class="alignC">2020-06-28 12:00</td>
+                                <tbody v-if="bnBrdList.length">
+                                <tr
+                                    v-for="(bnBrdRow, index) in bnBrdList"
+                                    :class="{ checkedItem: getTrClass(index) }"
+                                    :style="{ color: rowStyle(bnBrdRow) }"
+                                >
+                                    <td class="alignC">
+                                        <input
+                                            type="checkbox"
+                                            title="선택"
+                                            v-model="chkBnBrdList"
+                                            :value="bnBrdRow.brdNo"
+                                            @change="onCheckOne"
+                                        >
+                                    </td>
+                                    <td class="alignC" :title="bnBrdRow.brdTitle" @click="setTrIndex(index)">{{ bnBrdRow.brdTitle }}</td>
+                                    <td class="alignC" @click="setTrIndex(index)">{{ showYnTxt(bnBrdRow.showYn) }}</td>
+                                    <td class="alignC" :title="bnBrdRow.brdWriterNm" @click="setTrIndex(index)">{{ bnBrdRow.brdWriterNm }}</td>
+                                    <td class="alignC" @click="setTrIndex(index)">{{ bnBrdRow.amdDt }}</td>
                                 </tr>
-                                <tr class="checkedItem">
-                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>
-                                    <td class="alignC">공지사항 제목2</td>
-                                    <td class="alignC">직원1</td>
-                                    <td class="alignC">2020-06-28 12:30</td>
-                                </tr>
-                                <tr>
-                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>
-                                    <td class="alignC">공지사항 제목3</td>
-                                    <td class="alignC">직원1</td>
-                                    <td class="alignC">2020-06-28 12:10</td>
-                                </tr>
-                                <tr>
-                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>
-                                    <td class="alignC">공지사항 제목4</td>
-                                    <td class="alignC">직원1</td>
-                                    <td class="alignC">2020-06-28 12:50</td>
-                                </tr>
-                                <tr>
-                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>
-                                    <td class="alignC">공지사항 제목5</td>
-                                    <td class="alignC">직원1</td>
-                                    <td class="alignC">2020-06-28 12:04</td>
-                                </tr>
+                                </tbody>
                                 <!-- 결과없음 -->
+                                <tbody v-else>
                                 <tr class="errorMessage">
                                     <td colspan="4">
                                         <div class="errorTxt">
@@ -290,14 +300,116 @@
             el:"#app",
             data:{
                 bnMbrId: 'qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com',
+                initDone: false,
+                srchCond: {
+                    srchOptn: 'ALL',
+                    srchTerm: ''
+                },
+                checkAll: false,
+                bnBrdList: [],
+                chkBnBrdList: [],
+                selBrd: -1,
                 newBnBrd: {
                     brdTitle: '',
                     brdCont: ''
                 }
             },
-            mounted: function(){},
+            mounted: function(){
+                this.initPage()
+            },
             watch: {},
             methods: {
+                initPage() {
+                    this.selBrd = -1
+                    this.checkAll = false
+                    this.initChkBrdList()
+                    this.initSrchCond()
+                    this.getBnBrdList()
+                },
+                initSrchCond() {
+                    this.srchCond = {
+                        srchOptn: 'ALL',
+                        srchTerm: ''
+                    }
+                },
+                initChkBrdList() {
+                    this.chkBnBrdList = []
+                },
+                getBnBrdList() {
+                    var param = {
+                        bnMbrId: this.bnMbrId,
+                        srchOptn: this.srchCond.srchOptn,
+                        srchTerm: this.srchCond.srchTerm
+                    }
+                    cf_call('/shop/getBnBrdList', param, this.getBnBrdListCB)
+                },
+                getBnBrdListCB(rslt) {
+                    if (rslt.bnBrdList !== undefined) {
+                        this.bnBrdList = rslt.bnBrdList
+                    }
+                    this.initDone = true
+                },
+                rowStyle(bnBrdRow) {
+                    var colorSwitch = ''
+                    if (bnBrdRow.showYn === 'N') {
+                        colorSwitch = 'lightgray'
+                    }
+                    return colorSwitch
+                },
+                setTrIndex(idx) {
+                    if (idx === this.selBrd) {
+                        this.selBrd = -1
+                    } else {
+                        this.selBrd = idx
+                        // 수정 정보 셋팅
+                        // this.newSellerPrmsInfo.sellerPrms = this.empList[idx].sellerPrms
+                    }
+                },
+                getTrClass(idx) {
+                    return (this.selBrd === idx)
+                },
+                onCheckAll() {
+                    if (this.checkAll) {
+                        this.initChkBrdList()
+                        for (var i=0; i < this.bnBrdList.length; i++) {
+                            this.chkBnBrdList.push(this.bnBrdList[i].brdNo)
+                        }
+                    } else {
+                        this.initChkBrdList()
+                    }
+                },
+                onCheckOne() {
+                    var chkCnt = this.chkBnBrdList.length
+                    var lstCnt = this.bnBrdList.length
+                    if (chkCnt === lstCnt) {
+                        this.checkAll = true
+                    } else {
+                        this.checkAll = false
+                    }
+                },
+                showYnTxt(showYn) {
+                    if (showYn === 'Y') {
+                        return '게시'
+                    }
+                    return '숨김'
+                },
+                modiBnBrdHide() {
+                    if (this.chkBnBrdList.length) {
+                        var param = {
+                            bnMbrId: this.bnMbrId,
+                            brdNoList: this.chkBnBrdList
+                        }
+                        cf_call("/shop/modiBnBrdHide", param, this.modiBnBrdHideCB)
+                    } else {
+                        alert('숨김 처리 할 글을 체크하세요.')
+                    }
+                },
+                modiBnBrdHideCB(rslt) {
+                    if (rslt.rsltStat === 'SUCC') {
+                        alert('해당 글이 숨김 처리 되었습니다.')
+                        this.initPage()
+                    }
+                },
                 addBnBrd() {
                     if (this.newBnBrd.brdTitle.trim() === '') {
                         alert('공지사항 제목을 입력하세요.')
@@ -318,10 +430,19 @@
                         $('#popLayerNoticeAdd').popup('hide')
                         this.newBnBrd.brdTitle = ''
                         this.newBnBrd.brdCont = ''
+                        this.initPage()
                     }
                 }
             },
-            computed: {}
+            computed: {
+                srchTermSwitch() {
+                    if (this.srchCond.srchOptn === 'ALL') {
+                        this.srchCond.srchTerm = ''
+                        return true
+                    }
+                    return false
+                }
+            }
         })
     </script>
 </div>
