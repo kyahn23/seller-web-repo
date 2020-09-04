@@ -331,11 +331,47 @@
         on T.PN_MNT_RT_NO = tc.PN_MNT_RT_NO
     </select>
 
+    <update id="stopSaleMvCarr" parameterType="devMap">
+        update `TBL007-A`
+        set SELL_YN = 'N',
+        PN_OFCL_SUBSD = NULL,
+        PN_EXT_SUBSD_DV = NULL,
+        PN_EXT_SUBSD_RT = NULL,
+        PN_ETC = NULL,
+        AMD_DT = sysdate(),
+        AMD_MBR_ID =#{amdMbrId}
+        where BN_NO=#{bnNo}
+        and PN_MDL_NO=#{pnMdlNo}
+        and PN_STOR=#{pnStor}
+    </update>
 
+    <update id="stopSaleChgDev" parameterType="devMap">
+        update `TBL007-B`
+        set SELL_YN = 'N',
+        PN_OFCL_SUBSD = NULL,
+        PN_EXT_SUBSD_DV = NULL,
+        PN_EXT_SUBSD_RT = NULL,
+        PN_ETC = NULL,
+        AMD_DT = sysdate(),
+        AMD_MBR_ID =#{amdMbrId}
+        where BN_NO=#{bnNo}
+        and PN_MDL_NO=#{pnMdlNo}
+        and PN_STOR=#{pnStor}
+    </update>
 
-
-
-
+    <update id="stopSaleNewSignup" parameterType="devMap">
+        update `TBL007-C`
+        set SELL_YN = 'N',
+        PN_OFCL_SUBSD = NULL,
+        PN_EXT_SUBSD_DV = NULL,
+        PN_EXT_SUBSD_RT = NULL,
+        PN_ETC = NULL,
+        AMD_DT = sysdate(),
+        AMD_MBR_ID =#{amdMbrId}
+        where BN_NO=#{bnNo}
+        and PN_MDL_NO=#{pnMdlNo}
+        and PN_STOR=#{pnStor}
+    </update>
 
 
     <!-- 관리자용 요금제사용내역테이블 조회 -->

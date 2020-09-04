@@ -18,6 +18,7 @@ public class CarrRestController {
 
     /**
      * 요금제 현황 목록 가져오기
+     *
      * @param param
      * @return
      */
@@ -33,6 +34,7 @@ public class CarrRestController {
 
     /**
      * 요금제 사용
+     *
      * @param param
      * @return
      */
@@ -49,6 +51,7 @@ public class CarrRestController {
 
     /**
      * 요금제 미사용처리
+     *
      * @param param
      * @return
      */
@@ -63,6 +66,7 @@ public class CarrRestController {
 
     /**
      * 제품현황 리스트 가져오기
+     *
      * @param param
      * @return
      */
@@ -75,11 +79,16 @@ public class CarrRestController {
         rslt.put("sellDeviceList", resultList);
         return rslt;
     }
+
+    /**
+     * 사용중인 요금제 가져오기
+     * @param param
+     * @return
+     */
     @PostMapping("/carr/getUseMntByDevice")
-    public DevMap getUseMntByDevice (@RequestBody DevMap param){
+    public DevMap getUseMntByDevice(@RequestBody DevMap param) {
         param.put("BN_NO", "2020082500000000001");                                          // 업체번호
         param.put("AMD_MBR_ID", "aassddff@naver.com");                                      // 회원아이디
-
 
         DevMap rslt = new DevMap();
         List<DevMap> moveCarrList = null;
@@ -92,6 +101,18 @@ public class CarrRestController {
         rslt.put("moveCarrList", moveCarrList);
         rslt.put("chgDeviceList", chgDeviceList);
         rslt.put("newSignUpList", newSignUpList);
+
+        return rslt;
+    }
+
+    /**
+     * 제품현황-판매중지처리
+     * @param param
+     * @return
+     */
+    @PostMapping("/carr/stopSaleDevice")
+    public DevMap stopSaleDevice(@RequestBody List<DevMap> param){
+        DevMap rslt = new DevMap();
 
         return rslt;
     }

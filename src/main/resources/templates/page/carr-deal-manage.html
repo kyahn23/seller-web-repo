@@ -56,7 +56,7 @@
                             <span class="icon"></span>
                         </div>
                         <div class="cTitRight">
-                            <a href="#" class="btnM colorOrg"><span>판매중지</span></a>
+                            <a href="#none" class="btnM colorOrg" @click="stopSale"><span>판매중지</span></a>
                         </div>
                     </div>
                     <!-- slide content -->
@@ -126,7 +126,7 @@
                                 <tr v-for="(sell,idx) in dpList"
                                     :class="{ checkedItem: getTrClass(idx) }">
                                     <td class="alignC"><input type="checkbox" title="행 선택" v-model="checkedList"
-                                                              :value="idx" @change="chkboxClick"></td>
+                                                              :value="sell" @change="chkboxClick"></td>
                                     <td class="alignC" v-if="sell.sellStatus === 'Y'" @click="rowClick(sell,idx)">판매중
                                     </td>
                                     <td class="alignC" v-else @click="rowClick(sell,idx)">-</td>
@@ -222,7 +222,7 @@
                                            placeholder="선택약정 추가지원금" v-model="list.pnExtSubsdRt">
                                 </td>
                                 <td>
-                                    {{selectDevice.pnMsrp - list.pnExtSubsdRt}}
+                                    {{Number(selectDevice.pnMsrp - list.pnExtSubsdRt).toLocaleString()}}
                                 </td>
                                 <td>
                                     <input style="width: 100%;" type="text" v-model="list.pnEtc">
@@ -307,7 +307,7 @@
                                            placeholder="선택약정 추가지원금" v-model="list.pnExtSubsdRt">
                                 </td>
                                 <td>
-                                    {{selectDevice.pnMsrp - list.pnExtSubsdRt}}
+                                    {{Number(selectDevice.pnMsrp - list.pnExtSubsdRt).toLocaleString()}}
                                 </td>
                                 <td>
                                     <input style="width: 100%;" type="text" v-model="list.pnEtc">
@@ -392,7 +392,7 @@
                                            placeholder="선택약정 추가지원금" v-model="list.pnExtSubsdRt">
                                 </td>
                                 <td>
-                                    {{selectDevice.pnMsrp - list.pnExtSubsdRt}}
+                                    {{Number(selectDevice.pnMsrp - list.pnExtSubsdRt).toLocaleString()}}
                                 </td>
                                 <td>
                                     <input style="width: 100%;" type="text" v-model="list.pnEtc">
@@ -527,6 +527,8 @@
                             break
                     }
                     for (sell in this.dpList) {
+                        this.dpList[sell].idx = sell
+
                         switch (this.dpList[sell].pnMkr) {
                             case 'SAM':
                                 this.dpList[sell].pnMkr = '삼성전자'
@@ -547,7 +549,7 @@
                         }
                     }
                 },
-                getTrClass(idx){
+                getTrClass(idx) {
                     if (idx === this.selectDevice.idx) return true
                     else return false
                 },
@@ -555,9 +557,8 @@
                     this.checkedList = []
 
                     if (this.allchecked) {
-                        console.log(111)
                         for (list in this.dpList) {
-                            this.checkedList.push(list)
+                            this.checkedList.push(this.dpList[list])
                         }
                     }
                 },
@@ -587,6 +588,17 @@
                     this.moveCarrList = data.moveCarrList
                     this.chgDeviceList = data.chgDeviceList
                     this.newSignUpList = data.newSignUpList
+                },
+                stopSale() {
+                    let saleYn = false
+                    for (idx in this.checkedList) {
+                        // sellYn의 값이 없으면(미판매) true
+                        if (!this.checkedList[idx].sellStatus) saleYn = true
+                    }
+                    if (saleYn) alert("선택하신 모델의 판매상태를 확인해주세요.")
+                    else {
+                        alert('판매중지')
+                    }
                 }
             }
         })
