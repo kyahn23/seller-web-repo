@@ -23,10 +23,10 @@ public class CarrService {
 //        String 업체번호 = (String)session.getAttribute("업체번호);
 //        String mbrId = (String)session.getAttribute("회원아이디");
 
-        param.put("BN_NO", "2020082500000000001");                                          // 업체번호
+//        param.put("BN_NO", "2020082500000000001");                                          // 업체번호
 //        param.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com");      // 회원아이디
 
-//        param.put("bnNo", "2020090100000000001");                                          // 업체번호
+        param.put("bnNo", "2020082500000000001");                                          // 업체번호
         param.put("AMD_MBR_ID", "aassddff@naver.com");                                      // 회원아이디
 
         return cmmnDao.selectList("sellerweb.carr.mntrtlist", param);
@@ -82,7 +82,7 @@ public class CarrService {
 //        String 업체번호 = (String)session.getAttribute("업체번호);
 //        String mbrId = (String)session.getAttribute("회원아이디");
 
-        param.put("BN_NO", "2020090100000000001");                                          // 업체번호
+        param.put("BN_NO", "2020082500000000001");                                          // 업체번호
         param.put("AMD_MBR_ID", "aassddff@naver.com");                                      // 회원아이디
 
         List<DevMap> sellDeviceList = new ArrayList<>();
@@ -120,5 +120,23 @@ public class CarrService {
 //        }
 
         return sellDeviceList;
+    }
+
+    public List<DevMap> getmoveCarrList(DevMap param) {
+        List<DevMap> moveCarrList = new ArrayList<>();
+        moveCarrList = cmmnDao.selectList("sellerweb.carr.moveCarrList", param);
+        return moveCarrList;
+    }
+
+    public List<DevMap> getchgDeviceList(DevMap param) {
+        List<DevMap> chgDeviceList = new ArrayList<>();
+        chgDeviceList = cmmnDao.selectList("sellerweb.carr.chgDeviceList", param);
+        return chgDeviceList;
+    }
+
+    public List<DevMap> getnewSignUpList(DevMap param) {
+        List<DevMap> newSignUpList = new ArrayList<>();
+        newSignUpList = cmmnDao.selectList("sellerweb.carr.newSignUpList", param);
+        return newSignUpList;
     }
 }

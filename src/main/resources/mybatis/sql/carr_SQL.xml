@@ -16,21 +16,21 @@
         from TBL010 A left join (select * from TBL013 where BN_NO=#{bnNo}) B
         on A.PN_MNT_RT_NO = B.PN_MNT_RT_NO
         WHERE A.pn_carr = #{carr}
-<!--        select B.MNT_USEYN_NO as MNT_USEYN_NO, /*사용여부 확인을 위한 idx*/-->
-<!--        A.PN_MNT_RT_NO, /*요금제 번호 */-->
-<!--        A.PN_MNT_RT_NM,-->
-<!--        A.PN_NET_TYPE,-->
-<!--        A.PN_MNT_AMT,-->
-<!--        A.PN_MNT_DATA,-->
-<!--        A.PN_MNT_CALL,-->
-<!--        A.PN_MNT_SMS,-->
-<!--        (select BN_NO from TBL013 tb2 where A.PN_MNT_RT_NO = tb2.PN_MNT_RT_NO and tb2.BN_NO = #{bnNo}) as BN_NO,-->
-<!--        B.AMD_MBR_ID, /*요금제사용테이블에 추가한 직원아이디*/-->
-<!--        DATE_FORMAT(B.AMD_DT, '%Y-%m-%d %H:%i') as AMD_DT /*요금제사용테이블에 추가한 날짜*/-->
-<!--        from TBL010 A left outer join TBL013 B-->
-<!--        on A.PN_MNT_RT_NO = B.PN_MNT_RT_NO-->
-<!--        WHERE pn_carr = #{carr}-->
-<!--        and (B.BN_NO = #{bnNo} or B.BN_NO is null)-->
+        <!--        select B.MNT_USEYN_NO as MNT_USEYN_NO, /*사용여부 확인을 위한 idx*/-->
+        <!--        A.PN_MNT_RT_NO, /*요금제 번호 */-->
+        <!--        A.PN_MNT_RT_NM,-->
+        <!--        A.PN_NET_TYPE,-->
+        <!--        A.PN_MNT_AMT,-->
+        <!--        A.PN_MNT_DATA,-->
+        <!--        A.PN_MNT_CALL,-->
+        <!--        A.PN_MNT_SMS,-->
+        <!--        (select BN_NO from TBL013 tb2 where A.PN_MNT_RT_NO = tb2.PN_MNT_RT_NO and tb2.BN_NO = #{bnNo}) as BN_NO,-->
+        <!--        B.AMD_MBR_ID, /*요금제사용테이블에 추가한 직원아이디*/-->
+        <!--        DATE_FORMAT(B.AMD_DT, '%Y-%m-%d %H:%i') as AMD_DT /*요금제사용테이블에 추가한 날짜*/-->
+        <!--        from TBL010 A left outer join TBL013 B-->
+        <!--        on A.PN_MNT_RT_NO = B.PN_MNT_RT_NO-->
+        <!--        WHERE pn_carr = #{carr}-->
+        <!--        and (B.BN_NO = #{bnNo} or B.BN_NO is null)-->
         <if test='selectedSellOpt != "all"'>
             <if test='selectedSellOpt == "y"'>
                 <![CDATA[
@@ -143,6 +143,7 @@
     </select>
 
     <select id="sellDeviceList2" parameterType="DevMap" resultType="DevMap">
+        <![CDATA[
         SELECT
         (
         SELECT bb1.SELL_YN
@@ -231,26 +232,111 @@
         `TBL007-C`
         ) b
         ON a.PN_MDL_NO = b.PN_MDL_NO
-        WHERE a.PN_CARR LIKE '%' || #{deviceCarr} || '%' /* 기기 통신사 */
+        WHERE a.PN_CARR LIKE CONCAT('%', #{deviceCarr}, '%') /* 기기 통신사 */
+        ]]>
         <if test='pnMkr != "all"'>
             <choose>
                 <when test='pnMkr == "ETC"'>
-                    and a.PN_ MKR NOT IN ('SAM','LGE','APP','XIA')
+                    <!--                    and a.PN_ MKR NOT IN ('SAM','LGE','APP','XIA')-->
+                    <![CDATA[
+                    and a.PN_MKR NOT IN ('SAM','LGE','APP') ]]>
                 </when>
                 <otherwise>
-                    and a.PN_MKR = #{pnMkr}
+                    <![CDATA[
+                    and a.PN_MKR = #{pnMkr} ]]>
                 </otherwise>
             </choose>
         </if>
         <if test='selectedNetType != "all"'>
-            AND a.PN_NET_TYPE = #{selectedNetType}
+            <![CDATA[
+            AND a.PN_NET_TYPE = #{selectedNetType} ]]>
         </if>
         <if test='searchKey != ""'>
-            AND a.PN_MDL_NM LIKE '%' || #{searchKey} || '%'
+            <![CDATA[
+            AND a.PN_MDL_NM LIKE CONCAT('%', #{searchKey}, '%') ]]>
         </if>
         group by a.PN_MDL_NO, a.PN_STOR
         order by sellStatus desc, a.INP_DT desc /* 출시일 컬럼 추가후 출시일로 변경 */
     </select>
+
+    <select id="moveCarrList" parameterType="DevMap" resultType="DevMap">
+        select T.*,
+        ta.*
+        from (select a.PN_MNT_RT_NO,
+        a.PN_MNT_RT_NM,
+        a.PN_MNT_AMT
+        from TBL010 a, TBL013 b
+        WHERE a.PN_MNT_RT_NO = b.PN_MNT_RT_NO
+        and b.BN_NO = #{bnNo}
+        and a.PN_CARR =#{pnCarr}
+        and a.PN_NET_TYPE =#{pnNetType}) T left join (
+        select PN_MDL_NO,
+        PN_MNT_RT_NO,
+        PN_OFCL_SUBSD,
+        PN_EXT_SUBSD_DV,
+        PN_EXT_SUBSD_RT,
+        PN_ETC,
+        SELL_YN,
+        PN_STOR
+        from `TBL007-A`
+        where PN_MDL_NO = #{pnMdlNo} and BN_NO = #{bnNo} and PN_STOR=#{pnStor}) ta
+        on T.PN_MNT_RT_NO = ta.PN_MNT_RT_NO
+    </select>
+
+    <select id="chgDeviceList" parameterType="DevMap" resultType="DevMap">
+        select T.*,
+        tb.*
+        from (select a.PN_MNT_RT_NO,
+        a.PN_MNT_RT_NM,
+        a.PN_MNT_AMT
+        from TBL010 a, TBL013 b
+        WHERE a.PN_MNT_RT_NO = b.PN_MNT_RT_NO
+        and b.BN_NO = #{bnNo}
+        and a.PN_CARR =#{pnCarr}
+        and a.PN_NET_TYPE =#{pnNetType}) T left join (
+        select PN_MDL_NO,
+        PN_MNT_RT_NO,
+        PN_OFCL_SUBSD,
+        PN_EXT_SUBSD_DV,
+        PN_EXT_SUBSD_RT,
+        PN_ETC,
+        SELL_YN,
+        PN_STOR
+        from `TBL007-B`
+        where PN_MDL_NO = #{pnMdlNo} and BN_NO = #{bnNo} and PN_STOR=#{pnStor}) tb
+        on T.PN_MNT_RT_NO = tb.PN_MNT_RT_NO
+    </select>
+
+    <select id="newSignUpList" parameterType="DevMap" resultType="DevMap">
+        select T.*,
+        tc.*
+        from (select a.PN_MNT_RT_NO,
+        a.PN_MNT_RT_NM,
+        a.PN_MNT_AMT
+        from TBL010 a, TBL013 b
+        WHERE a.PN_MNT_RT_NO = b.PN_MNT_RT_NO
+        and b.BN_NO = #{bnNo}
+        and a.PN_CARR =#{pnCarr}
+        and a.PN_NET_TYPE =#{pnNetType}) T left join (
+        select PN_MDL_NO,
+        PN_MNT_RT_NO,
+        PN_OFCL_SUBSD,
+        PN_EXT_SUBSD_DV,
+        PN_EXT_SUBSD_RT,
+        PN_ETC,
+        SELL_YN,
+        PN_STOR
+        from `TBL007-C`
+        where PN_MDL_NO = #{pnMdlNo} and BN_NO = #{bnNo} and PN_STOR=#{pnStor}) tc
+        on T.PN_MNT_RT_NO = tc.PN_MNT_RT_NO
+    </select>
+
+
+
+
+
+
+
 
     <!-- 관리자용 요금제사용내역테이블 조회 -->
     <!--    <select id="historyForAdmin">-->

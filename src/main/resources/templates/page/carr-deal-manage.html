@@ -44,7 +44,7 @@
                         </li>
                     </ul>
                     <div class="btnSearch">
-                        <a href="#" class="btnM colorBlue"><span>검색</span></a>
+                        <a href="#none" class="btnM colorBlue" @click="searchList"><span>검색</span></a>
                     </div>
                 </div>
 
@@ -78,7 +78,8 @@
                                     </colgroup>
                                     <thead>
                                     <tr>
-                                        <th scope="col"><input type="checkbox" title="행 선택"></th>
+                                        <th scope="col"><input type="checkbox" title="행 선택" @change="checkAll"
+                                                               v-model="allchecked"></th>
                                         <th scope="col">판매상태</th>
                                         <th scope="col">제조사</th>
                                         <th scope="col">모델명</th>
@@ -95,7 +96,6 @@
                         </div>
                         <div class="tBodyScroll">
                             <table class="tblList tBody trClick">
-                                <caption>납품정보등록 요청현황</caption>
                                 <colgroup>
                                     <col style="width:3%">
                                     <col style="width:7%">
@@ -122,138 +122,38 @@
                                     <th scope="col">최종변경일시</th>
                                 </tr>
                                 </thead>
-                                <tbody>
-                                <tr v-for="sell in sellDeviceList">
-                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>
-                                    <td class="alignC" v-if="sell.sellStatus === 'Y'">판매중</td>
-                                    <td class="alignC" v-else>미판매</td>
-                                    <td class="alignC">{{sell.pnMkr}}</td>
-                                    <td class="alignC">{{sell.pnMdlNm}}</td>
-                                    <td class="alignC">{{Number(sell.pnMsrp).toLocaleString()}}</td>
-                                    <td class="alignC" v-if="sell.pnNetType === '4G'">LTE</td>
-                                    <td class="alignC">{{sell.pnNetType}}</td>
-                                    <td class="alignC">{{sell.pnStor}}</td>
-                                    <td class="alignC">{{sell.pnMdlNo}}</td>
-                                    <td class="alignC" v-if="!sell.lastModiMbr">-</td>
-                                    <td class="alignC" v-else>{{sell.lastModiMbr}}</td>
-                                    <td class="alignC" v-if="!sell.lastModiDate">-</td>
-                                    <td class="alignC" v-else>{{sell.lastModiDate}}</td>
+                                <tbody v-if="dpList.length !== 0">
+                                <tr v-for="(sell,idx) in dpList"
+                                    :class="{ checkedItem: getTrClass(idx) }">
+                                    <td class="alignC"><input type="checkbox" title="행 선택" v-model="checkedList"
+                                                              :value="idx" @change="chkboxClick"></td>
+                                    <td class="alignC" v-if="sell.sellStatus === 'Y'" @click="rowClick(sell,idx)">판매중
+                                    </td>
+                                    <td class="alignC" v-else @click="rowClick(sell,idx)">-</td>
+                                    <td class="alignC" @click="rowClick(sell,idx)">{{sell.pnMkr}}</td>
+                                    <td class="alignC" @click="rowClick(sell,idx)">{{sell.pnMdlNm}}</td>
+                                    <td class="alignC" @click="rowClick(sell,idx)">
+                                        {{Number(sell.pnMsrp).toLocaleString()}}
+                                    </td>
+                                    <td class="alignC" v-if="sell.pnNetType === '4G'" @click="rowClick(sell,idx)">LTE
+                                    </td>
+                                    <td class="alignC" @click="rowClick(sell,idx)">{{sell.pnNetType}}</td>
+                                    <td class="alignC" @click="rowClick(sell,idx)">{{sell.pnStor}}</td>
+                                    <td class="alignC" @click="rowClick(sell,idx)">{{sell.pnMdlNo}}</td>
+                                    <td class="alignC" v-if="!sell.lastModiMbr" @click="rowClick(sell,idx)">-</td>
+                                    <td class="alignC" v-else @click="rowClick(sell,idx)">{{sell.lastModiMbr}}</td>
+                                    <td class="alignC" v-if="!sell.lastModiDate" @click="rowClick(sell,idx)">-</td>
+                                    <td class="alignC" v-else @click="rowClick(sell,idx)">{{sell.lastModiDate}}</td>
                                 </tr>
-<!--                                <tr>-->
-<!--                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
-<!--                                    <td class="alignC">판매중</td>-->
-<!--                                    <td class="alignC">삼성전자</td>-->
-<!--                                    <td class="alignC">갤럭시 S20</td>-->
-<!--                                    <td class="alignC">1,165,000</td>-->
-<!--                                    <td class="alignC">5G</td>-->
-<!--                                    <td class="alignC">128G</td>-->
-<!--                                    <td class="alignC">SM-001</td>-->
-<!--                                    <td class="alignC">직원1</td>-->
-<!--                                    <td class="alignC">2020-01-01 12:20</td>-->
-<!--                                </tr>-->
-<!--                                <tr>-->
-<!--                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
-<!--                                    <td class="alignC">판매중</td>-->
-<!--                                    <td class="alignC">삼성전자</td>-->
-<!--                                    <td class="alignC">갤럭시 Z 폴드2</td>-->
-<!--                                    <td class="alignC">2,189,000</td>-->
-<!--                                    <td class="alignC">5G</td>-->
-<!--                                    <td class="alignC">256G</td>-->
-<!--                                    <td class="alignC">SM-001</td>-->
-<!--                                    <td class="alignC">직원1</td>-->
-<!--                                    <td class="alignC">2020-01-01 12:20</td>-->
-<!--                                </tr>-->
-<!--                                <tr>-->
-<!--                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
-<!--                                    <td class="alignC">판매중</td>-->
-<!--                                    <td class="alignC">LG전자</td>-->
-<!--                                    <td class="alignC">LG V50</td>-->
-<!--                                    <td class="alignC">955,000</td>-->
-<!--                                    <td class="alignC">5G</td>-->
-<!--                                    <td class="alignC">128G</td>-->
-<!--                                    <td class="alignC">SM-001</td>-->
-<!--                                    <td class="alignC">직원1</td>-->
-<!--                                    <td class="alignC">2020-01-01 12:20</td>-->
-<!--                                </tr>-->
-<!--                                <tr>-->
-<!--                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
-<!--                                    <td class="alignC">판매중</td>-->
-<!--                                    <td class="alignC">LG전자</td>-->
-<!--                                    <td class="alignC">LG VELVET</td>-->
-<!--                                    <td class="alignC">890,000</td>-->
-<!--                                    <td class="alignC">5G</td>-->
-<!--                                    <td class="alignC">64G</td>-->
-<!--                                    <td class="alignC">SM-001</td>-->
-<!--                                    <td class="alignC">직원2</td>-->
-<!--                                    <td class="alignC">2020-01-01 12:20</td>-->
-<!--                                </tr>-->
-<!--                                <tr>-->
-<!--                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
-<!--                                    <td class="alignC">판매중</td>-->
-<!--                                    <td class="alignC">APPLE</td>-->
-<!--                                    <td class="alignC">아이폰11</td>-->
-<!--                                    <td class="alignC">890,000</td>-->
-<!--                                    <td class="alignC">LTE</td>-->
-<!--                                    <td class="alignC">128G</td>-->
-<!--                                    <td class="alignC">SM-001</td>-->
-<!--                                    <td class="alignC">직원2</td>-->
-<!--                                    <td class="alignC">2020-01-01 12:20</td>-->
-<!--                                </tr>-->
-<!--                                <tr>-->
-<!--                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
-<!--                                    <td class="alignC">판매중</td>-->
-<!--                                    <td class="alignC">APPLE</td>-->
-<!--                                    <td class="alignC">아이폰11 PRO MAX</td>-->
-<!--                                    <td class="alignC">1,190,000</td>-->
-<!--                                    <td class="alignC">LTE</td>-->
-<!--                                    <td class="alignC">256G</td>-->
-<!--                                    <td class="alignC">SM-001</td>-->
-<!--                                    <td class="alignC">직원2</td>-->
-<!--                                    <td class="alignC">2020-01-01 12:20</td>-->
-<!--                                </tr>-->
-<!--                                <tr>-->
-<!--                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
-<!--                                    <td class="alignC">판매중</td>-->
-<!--                                    <td class="alignC">APPLE</td>-->
-<!--                                    <td class="alignC">아이폰 SE2</td>-->
-<!--                                    <td class="alignC">590,000</td>-->
-<!--                                    <td class="alignC">LTE</td>-->
-<!--                                    <td class="alignC">128G</td>-->
-<!--                                    <td class="alignC">SM-001</td>-->
-<!--                                    <td class="alignC">직원2</td>-->
-<!--                                    <td class="alignC">2020-01-01 12:20</td>-->
-<!--                                </tr>-->
-<!--                                <tr>-->
-<!--                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
-<!--                                    <td class="alignC">판매중</td>-->
-<!--                                    <td class="alignC">기타</td>-->
-<!--                                    <td class="alignC">XIAOMI MI 10 LITE</td>-->
-<!--                                    <td class="alignC">500,000</td>-->
-<!--                                    <td class="alignC">5G</td>-->
-<!--                                    <td class="alignC">128G</td>-->
-<!--                                    <td class="alignC">SM-001</td>-->
-<!--                                    <td class="alignC">직원2</td>-->
-<!--                                    <td class="alignC">2020-01-01 12:20</td>-->
-<!--                                </tr>-->
-<!--                                <tr>-->
-<!--                                    <td class="alignC"><input type="checkbox" title="행 선택"></td>-->
-<!--                                    <td class="alignC">판매중</td>-->
-<!--                                    <td class="alignC">기타</td>-->
-<!--                                    <td class="alignC">Redmi Note 9S</td>-->
-<!--                                    <td class="alignC">375,000</td>-->
-<!--                                    <td class="alignC">LTE</td>-->
-<!--                                    <td class="alignC">64G</td>-->
-<!--                                    <td class="alignC">SM-001</td>-->
-<!--                                    <td class="alignC">직원2</td>-->
-<!--                                    <td class="alignC">2020-01-01 12:20</td>-->
-<!--                                </tr>-->
-<!--                                <tr class="errorMessage">-->
-<!--                                    <td colspan="10">-->
-<!--                                        <div class="errorTxt">-->
-<!--                                            <span>항목이 없습니다.</span>-->
-<!--                                        </div>-->
-<!--                                    </td>-->
-<!--                                </tr>-->
+                                </tbody>
+                                <tbody v-else>
+                                <tr class="errorMessage">
+                                    <td colspan="10">
+                                        <div class="errorTxt">
+                                            <span>항목이 없습니다.</span>
+                                        </div>
+                                    </td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -275,9 +175,8 @@
                     <!-- content -->
                     <div class="contentDetail">
                         <table class="tblList alignC">
-                            <caption>납품 정보</caption>
                             <colgroup>
-                                <col style="width:12%">
+                                <col style="width:16%">
                                 <col style="width:7%">
                                 <col style="width:14%">
                                 <col style="width:14%">
@@ -303,56 +202,43 @@
                                 <th scope="col">할부원금</th>
                             </tr>
                             </thead>
-                            <tbody>
-                            <tr>
-                                <td class="alignC">ㅁㅁㅁㅁ요금제</td>
-                                <td>60,000</td>
-                                <td><input style="width: 100%" class="inMoney" type="text" id=""
-                                           onkeyup="cmaComma(this);"
-                                           onchange="cmaComma(this);" value="">
+                            <tbody v-if="moveCarrList.length !== 0">
+                            <tr v-for="list in moveCarrList">
+                                <td class="alignC">{{list.pnMntRtNm}}</td>
+                                <td>{{Number(list.pnMntAmt).toLocaleString()}}</td>
+                                <td><input style="width: 100%" class="inMoney" type="text" v-model="list.pnOfclSubsd"
+                                           placeholder="공시지원금">
                                 </td>
                                 <td>
-                                    <input style="width: 100%" class="inMoney" type="text" id=""
-                                           onkeyup="cmaComma(this);"
-                                           onchange="cmaComma(this);" value="">
+                                    <input style="width: 100%" class="inMoney" type="text" v-model="list.pnExtSubsdDv"
+                                           placeholder="공시 추가지원금">
                                 </td>
                                 <td>
-                                    450,000
+                                    {{Number(selectDevice.pnMsrp - list.pnOfclSubsd -
+                                    list.pnExtSubsdDv).toLocaleString()}}
                                 </td>
                                 <td>
-                                    <input style="width: 100%" class="wPer inNumber" type="text" id="" placeholder="">
+                                    <input style="width: 100%" class="wPer inNumber" type="text"
+                                           placeholder="선택약정 추가지원금" v-model="list.pnExtSubsdRt">
                                 </td>
                                 <td>
-                                    450,000
+                                    {{selectDevice.pnMsrp - list.pnExtSubsdRt}}
                                 </td>
                                 <td>
-                                    <input style="width: 100%;" type="text" id="">
+                                    <input style="width: 100%;" type="text" v-model="list.pnEtc">
                                 </td>
                             </tr>
+                            </tbody>
+                            <tbody v-else>
                             <tr>
-                                <td class="alignC">ㅁㅁㅁㅁ요금제</td>
-                                <td>80,000</td>
-                                <td><input style="width: 100%" class="inMoney" type="text" id=""
-                                           onkeyup="cmaComma(this);"
-                                           onchange="cmaComma(this);" value="">
-                                </td>
-                                <td>
-                                    <input style="width: 100%" class="inMoney" type="text" id=""
-                                           onkeyup="cmaComma(this);"
-                                           onchange="cmaComma(this);">
-                                </td>
-                                <td>
-                                    450,000
-                                </td>
-                                <td>
-                                    <input style="width: 100%;" type="text" id="">
-                                </td>
-                                <td>
-                                    550,000
-                                </td>
-                                <td>
-                                    <input style="width: 100%;" type="text" id="">
-                                </td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
                             </tr>
                             </tbody>
                         </table>
@@ -374,9 +260,8 @@
                     <!-- content -->
                     <div class="contentDetail">
                         <table class="tblList alignC">
-                            <caption>납품 정보</caption>
                             <colgroup>
-                                <col style="width:12%">
+                                <col style="width:16%">
                                 <col style="width:7%">
                                 <col style="width:14%">
                                 <col style="width:14%">
@@ -387,13 +272,14 @@
                             </colgroup>
                             <thead>
                             <tr>
-                                <th colspan="5">공시지원금</th>
-                                <th colspan="2">공시지원금</th>
+                                <th scope="col" rowspan="2">요금제</th>
+                                <th scope="col" rowspan="2">월 기본요금</th>
+                                <th colspan="3">공시지원금</th>
+                                <th colspan="2">선택약정</th>
                                 <th rowspan="2">부가서비스 정책</th>
                             </tr>
                             <tr>
-                                <th scope="col">요금제</th>
-                                <th scope="col">월 기본요금</th>
+
                                 <th scope="col">공시지원금</th>
                                 <th scope="col">추가지원금</th>
                                 <th scope="col">할부원금</th>
@@ -401,55 +287,43 @@
                                 <th scope="col">할부원금</th>
                             </tr>
                             </thead>
-                            <tbody>
-                            <tr>
-                                <td class="alignC">ㅁㅁㅁㅁ요금제</td>
-                                <td>65,000</td>
-                                <td><input style="width: 100%" class="inMoney" type="text" id=""
-                                           onkeyup="cmaComma(this);"
-                                           onchange="cmaComma(this);"></td>
-                                <td>
-                                    <input style="width: 100%" class="inMoney" type="text" id=""
-                                           onkeyup="cmaComma(this);"
-                                           onchange="cmaComma(this);">
+                            <tbody v-if="chgDeviceList.length !== 0">
+                            <tr v-for="list in chgDeviceList">
+                                <td class="alignC">{{list.pnMntRtNm}}</td>
+                                <td>{{Number(list.pnMntAmt).toLocaleString()}}</td>
+                                <td><input style="width: 100%" class="inMoney" type="text" v-model="list.pnOfclSubsd"
+                                           placeholder="공시지원금">
                                 </td>
                                 <td>
-                                    450,000
+                                    <input style="width: 100%" class="inMoney" type="text" v-model="list.pnExtSubsdDv"
+                                           placeholder="공시 추가지원금">
                                 </td>
                                 <td>
-                                    <input class="wPer inNumber" type="text" id="" placeholder="">
+                                    {{Number(selectDevice.pnMsrp - list.pnOfclSubsd -
+                                    list.pnExtSubsdDv).toLocaleString()}}
                                 </td>
                                 <td>
-                                    450,000
+                                    <input style="width: 100%" class="wPer inNumber" type="text"
+                                           placeholder="선택약정 추가지원금" v-model="list.pnExtSubsdRt">
                                 </td>
                                 <td>
-                                    <input style="width: 100%" class="wS inNumber" type="text" id="" placeholder="">
+                                    {{selectDevice.pnMsrp - list.pnExtSubsdRt}}
+                                </td>
+                                <td>
+                                    <input style="width: 100%;" type="text" v-model="list.pnEtc">
                                 </td>
                             </tr>
+                            </tbody>
+                            <tbody v-else>
                             <tr>
-                                <td class="alignC">ㅁㅁㅁㅁ요금제</td>
-                                <td>110,000</td>
-                                <td><input style="width: 100%" class="inMoney" type="text" id=""
-                                           onkeyup="cmaComma(this);"
-                                           onchange="cmaComma(this);" value="">
-                                </td>
-                                <td>
-                                    <input style="width: 100%;" class="inMoney" type="text" id=""
-                                           onkeyup="cmaComma(this);"
-                                           onchange="cmaComma(this);">
-                                </td>
-                                <td>
-                                    650,000
-                                </td>
-                                <td>
-                                    <input class="wPer inNumber" type="text" id="" placeholder="">
-                                </td>
-                                <td>
-                                    550,000
-                                </td>
-                                <td>
-                                    <input style="width: 100%" class="wS inNumber" type="text" id="" placeholder="">
-                                </td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
                             </tr>
                             </tbody>
                         </table>
@@ -471,9 +345,8 @@
                     <!-- content -->
                     <div class="contentDetail">
                         <table class="tblList alignC">
-                            <caption>납품 정보</caption>
                             <colgroup>
-                                <col style="width:12%">
+                                <col style="width:16%">
                                 <col style="width:7%">
                                 <col style="width:14%">
                                 <col style="width:14%">
@@ -484,13 +357,14 @@
                             </colgroup>
                             <thead>
                             <tr>
-                                <th colspan="5">공시지원금</th>
-                                <th colspan="2">공시지원금</th>
+                                <th scope="col" rowspan="2">요금제</th>
+                                <th scope="col" rowspan="2">월 기본요금</th>
+                                <th colspan="3">공시지원금</th>
+                                <th colspan="2">선택약정</th>
                                 <th rowspan="2">부가서비스 정책</th>
                             </tr>
                             <tr>
-                                <th scope="col">요금제</th>
-                                <th scope="col">월 기본요금</th>
+
                                 <th scope="col">공시지원금</th>
                                 <th scope="col">추가지원금</th>
                                 <th scope="col">할부원금</th>
@@ -498,55 +372,43 @@
                                 <th scope="col">할부원금</th>
                             </tr>
                             </thead>
-                            <tbody>
-                            <tr>
-                                <td class="alignC">ㅁㅁㅁㅁ요금제</td>
-                                <td>65,000</td>
-                                <td><input style="width: 100%" class="inMoney" type="text" id=""
-                                           onkeyup="cmaComma(this);"
-                                           onchange="cmaComma(this);"></td>
-                                <td>
-                                    <input style="width: 100%" class="inMoney" type="text" id=""
-                                           onkeyup="cmaComma(this);"
-                                           onchange="cmaComma(this);">
+                            <tbody v-if="newSignUpList.length !== 0">
+                            <tr v-for="list in newSignUpList">
+                                <td class="alignC">{{list.pnMntRtNm}}</td>
+                                <td>{{Number(list.pnMntAmt).toLocaleString()}}</td>
+                                <td><input style="width: 100%" class="inMoney" type="text" v-model="list.pnOfclSubsd"
+                                           placeholder="공시지원금">
                                 </td>
                                 <td>
-                                    450,000
+                                    <input style="width: 100%" class="inMoney" type="text" v-model="list.pnExtSubsdDv"
+                                           placeholder="공시 추가지원금">
                                 </td>
                                 <td>
-                                    <input class="wPer inNumber" type="text" id="" placeholder="">
+                                    {{Number(selectDevice.pnMsrp - list.pnOfclSubsd -
+                                    list.pnExtSubsdDv).toLocaleString()}}
                                 </td>
                                 <td>
-                                    450,000
+                                    <input style="width: 100%" class="wPer inNumber" type="text"
+                                           placeholder="선택약정 추가지원금" v-model="list.pnExtSubsdRt">
                                 </td>
                                 <td>
-                                    <input style="width: 100%" class="wS inNumber" type="text" id="" placeholder="">
+                                    {{selectDevice.pnMsrp - list.pnExtSubsdRt}}
+                                </td>
+                                <td>
+                                    <input style="width: 100%;" type="text" v-model="list.pnEtc">
                                 </td>
                             </tr>
+                            </tbody>
+                            <tbody v-else>
                             <tr>
-                                <td class="alignC">ㅁㅁㅁㅁ요금제</td>
-                                <td>110,000</td>
-                                <td><input style="width: 100%" class="inMoney" type="text" id=""
-                                           onkeyup="cmaComma(this);"
-                                           onchange="cmaComma(this);" value="">
-                                </td>
-                                <td>
-                                    <input style="width: 100%;" class="inMoney" type="text" id=""
-                                           onkeyup="cmaComma(this);"
-                                           onchange="cmaComma(this);">
-                                </td>
-                                <td>
-                                    650,000
-                                </td>
-                                <td>
-                                    <input class="wPer inNumber" type="text" id="" placeholder="">
-                                </td>
-                                <td>
-                                    550,000
-                                </td>
-                                <td>
-                                    <input style="width: 100%" class="wS inNumber" type="text" id="" placeholder="">
-                                </td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
+                                <td>-</td>
                             </tr>
                             </tbody>
                         </table>
@@ -572,247 +434,6 @@
     </div>
 </div>
 <!-- //footer -->
-
-<!-- 팝업: 납품 제품 추가 -->
-<div class="layerWrapper layerSizeM" id="popLayerSupplyAdd">
-    <div class="layerHeader">
-        <strong>납품 제품 추가</strong>
-        <a href="#" class="btnClose popLayerSupplyAdd_close"><img src="../images/cmmn/btn-layer-close.png"
-                                                                  alt="창닫기"></a>
-    </div>
-    <div class="layerContainer">
-        <div class="layerContent">
-
-            <!-- 제품목록 -->
-            <div class="guidanceWrapper">
-
-                <div class="searchArea mb15">
-                    <ul>
-                        <li class="txtSize3">
-                            <label for="purchaes01">제품명</label>
-                            <select class="sizeAuto" id="purchaes01">
-                                <option value="">선택</option>
-                                <option value="">선택1</option>
-                            </select>
-                        </li>
-                        <li class="txtSize3">
-                            <label for="purchaes02">제조사</label>
-                            <select class="sizeAuto" id="purchaes02">
-                                <option value="">선택</option>
-                                <option value="">선택1</option>
-                            </select>
-                        </li>
-                    </ul>
-                    <div class="btnSearch">
-                        <a href="#" class="btnM colorBlue"><span>검색</span></a>
-                    </div>
-                </div>
-
-                <div class="contentTitle">
-                    <div class="cTit">
-                        협력업체 현황 정보
-                    </div>
-                    <div class="cTitRight">
-                        <a href="#" class="btnM colorSky"><span>추가</span></a>
-                    </div>
-                </div>
-
-                <div class="tHeadScrollBG">
-                    <div class="tHeadScroll">
-                        <table class="tblList tHead">
-                            <colgroup>
-                                <col style="width:10%">
-                                <col style="width:30%">
-                                <col style="width:30%">
-                                <col style="width:30%">
-                            </colgroup>
-                            <tbody>
-                            <tr>
-                                <td><input type="checkbox" title="전체선택"></td>
-                                <td>제품명</td>
-                                <td>제조사</td>
-                                <td>공급단가</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="tBodyScroll heightSize2">
-                    <table class="tblList tBody alignC">
-                        <caption>매입신청목록</caption>
-                        <colgroup>
-                            <col style="width:10%">
-                            <col style="width:30%">
-                            <col style="width:30%">
-                            <col style="width:30%">
-                        </colgroup>
-                        <thead>
-                        <tr>
-                            <td scope="col">선택</td>
-                            <td scope="col">제품명</td>
-                            <td scope="col">제조사</td>
-                            <td scope="col">공급단가</td>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td><input type="checkbox" title="행 선택"></td>
-                            <td>IBM 720</td>
-                            <td>IBM</td>
-                            <td class="numMoney">5,000,000</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" title="행 선택"></td>
-                            <td>IBM 720</td>
-                            <td>IBM</td>
-                            <td class="numMoney">5,000,000</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" title="행 선택"></td>
-                            <td>IBM 720</td>
-                            <td>IBM</td>
-                            <td class="numMoney">5,000,000</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" title="행 선택"></td>
-                            <td>IBM 720</td>
-                            <td>IBM</td>
-                            <td class="numMoney">5,000,000</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" title="행 선택"></td>
-                            <td>IBM 720</td>
-                            <td>IBM</td>
-                            <td class="numMoney">5,000,000</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" title="행 선택"></td>
-                            <td>IBM 720</td>
-                            <td>IBM</td>
-                            <td class="numMoney">5,000,000</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" title="행 선택"></td>
-                            <td>IBM 720</td>
-                            <td>IBM</td>
-                            <td class="numMoney">5,000,000</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" title="행 선택"></td>
-                            <td>IBM 720</td>
-                            <td>IBM</td>
-                            <td class="numMoney">5,000,000</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" title="행 선택"></td>
-                            <td>IBM 720</td>
-                            <td>IBM</td>
-                            <td class="numMoney">5,000,000</td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" title="행 선택"></td>
-                            <td>IBM 720</td>
-                            <td>IBM</td>
-                            <td class="numMoney">5,000,000</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <!-- //제품목록 -->
-        </div>
-        <div class="btnWrapper">
-            <a href="#" class="btnL colorBlue"><span>확인</span></a>
-        </div>
-    </div>
-</div>
-<!-- //팝업: 납품 제품 추가 -->
-
-<!-- 팝업: 반려 사유 정보 -->
-<div class="layerWrapper layerSizeM" id="popLayerReturnInfo">
-    <div class="layerHeader">
-        <strong>반려 사유 정보</strong>
-        <a href="#" class="btnClose popLayerReturnInfo_close"><img src="../images/cmmn/btn-layer-close.png"
-                                                                   alt="창닫기"></a>
-    </div>
-    <div class="layerContainer">
-        <div class="layerContent">
-
-            <!-- content -->
-            <div class="guidanceWrapper">
-                <div class="tblTitle">반려 정보</div>
-                <table class="tblDataRow">
-                    <caption>반려 정보</caption>
-                    <colgroup>
-                        <col style="width:80px">
-                        <col style="width:*">
-                        <col style="width:80px">
-                        <col style="width:*">
-                    </colgroup>
-                    <tbody>
-                    <tr>
-                        <th>소속</th>
-                        <td>우리에프아이에스</td>
-                        <th>담당자명</th>
-                        <td>반려자</td>
-                    </tr>
-                    <tr>
-                        <th>직급</th>
-                        <td>부장</td>
-                        <th>연락처</th>
-                        <td>010-2222-2222</td>
-                    </tr>
-                    <tr>
-                        <th>반려일자</th>
-                        <td>2016-01-02</td>
-                        <th>계약번호</th>
-                        <td>201610-0200010101</td>
-                    </tr>
-                    <tr>
-                        <th>사유</th>
-                        <td colspan="3">
-                            <div class="txtOutput yScroll">
-                                계약 일자 수정 요청 부탁드립니다.<br>
-                                변경전 : 2016-01-02 ~ 2016-11-01<br>
-                                변경후 : 2016-01-02 ~ 2016-12-01<br>
-                                계약 일자 수정 요청 부탁드립니다.<br>
-                                변경전 : 2016-01-02 ~ 2016-11-01<br>
-                                변경후 : 2016-01-02 ~ 2016-12-01<br>
-                                계약 일자 수정 요청 부탁드립니다.<br>
-                                변경전 : 2016-01-02 ~ 2016-11-01<br>
-                                변경후 : 2016-01-02 ~ 2016-12-01<br>
-                                계약 일자 수정 요청 부탁드립니다.<br>
-                                변경전 : 2016-01-02 ~ 2016-11-01<br>
-                                변경후 : 2016-01-02 ~ 2016-12-01<br>
-                                계약 일자 수정 요청 부탁드립니다.<br>
-                                변경전 : 2016-01-02 ~ 2016-11-01<br>
-                                변경후 : 2016-01-02 ~ 2016-12-01<br>
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-            <!-- //content -->
-        </div>
-        <div class="btnWrapper">
-            <a href="#" class="btnL colorBlue"><span>확인</span></a>
-        </div>
-    </div>
-</div>
-<!-- //팝업: 반려 사유 정보 -->
-
-<script type="text/javascript">
-    $(function () {
-        if ($(".layerWrapper").length) {
-            //납품정보추가
-            $('#popLayerSupplyAdd').popup();
-
-            //반려사유정보
-            $('#popLayerReturnInfo').popup();
-        }
-    });
-</script>
 
 <div layout:fragment="script">
     <script>
@@ -844,7 +465,10 @@
                     {code: "3g", value: "3G"}
                 ],
                 selectedNetType: "all",
-                sellDeviceList: [],
+                allchecked: false,
+                checkedList: [],
+                dpList: [],
+                selectDevice: {},
                 moveCarrList: [],
                 chgDeviceList: [],
                 newSignUpList: [],
@@ -875,31 +499,94 @@
                         pnMkr: this.selectedMkr,
                         searchKey: this.searchKey
                     }
+
                     cf_call("/carr/getSellDeviceList", param, this.searchListCB)
                 },
-                searchListCB(data){
-                    console.log(data)
-                    this.sellDeviceList = data.sellDeviceList
-                    for (sell in this.sellDeviceList) {
-                        switch (this.sellDeviceList[sell].pnMkr){
+                searchListCB(data) {
+                    this.dpList = []
+
+                    // this.sellDeviceList = data.sellDeviceList
+
+                    switch (this.selectedSellOpt) {
+                        case 'y' :
+                            for (idx in data.sellDeviceList) {
+                                if (data.sellDeviceList[idx].sellStatus) {
+                                    this.dpList.push(data.sellDeviceList[idx])
+                                }
+                            }
+                            break
+                        case "n" :
+                            for (idx in data.sellDeviceList) {
+                                if (!data.sellDeviceList[idx].sellStatus) {
+                                    this.dpList.push(data.sellDeviceList[idx])
+                                }
+                            }
+                            break
+                        default:
+                            this.dpList = data.sellDeviceList
+                            break
+                    }
+                    for (sell in this.dpList) {
+                        switch (this.dpList[sell].pnMkr) {
                             case 'SAM':
-                                this.sellDeviceList[sell].pnMkr = '삼성전자'
+                                this.dpList[sell].pnMkr = '삼성전자'
                                 break
                             case 'LGE':
-                                this.sellDeviceList[sell].pnMkr = 'LG전자'
+                                this.dpList[sell].pnMkr = 'LG전자'
                                 break
                             case 'APP':
-                                this.sellDeviceList[sell].pnMkr = '애플'
+                                this.dpList[sell].pnMkr = '애플'
                                 break
                             case 'XIA':
-                                this.sellDeviceList[sell].pnMkr = '샤오미'
+                                this.dpList[sell].pnMkr = '샤오미'
                                 break
                             case 'ETC':
-                                this.sellDeviceList[sell].pnMkr = '기타'
+                                this.dpList[sell].pnMkr = '기타'
                                 break
 
                         }
                     }
+                },
+                getTrClass(idx){
+                    if (idx === this.selectDevice.idx) return true
+                    else return false
+                },
+                checkAll() {
+                    this.checkedList = []
+
+                    if (this.allchecked) {
+                        console.log(111)
+                        for (list in this.dpList) {
+                            this.checkedList.push(list)
+                        }
+                    }
+                },
+                chkboxClick() {
+                    this.allchecked = false
+                    if (this.checkedList.length === this.dpList.length) {
+                        this.allchecked = true
+                    }
+                },
+                rowClick(data, idx) {
+                    this.selectDevice = {}
+                    this.selectDevice = data
+                    this.selectDevice.idx = idx
+                    var param = {
+                        pnCarr: this.carr.toUpperCase(),
+                        pnNetType: this.selectDevice.pnNetType,
+                        pnStor: this.selectDevice.pnStor,
+                        pnMdlNo: this.selectDevice.pnMdlNo
+                    }
+                    cf_call("/carr/getUseMntByDevice", param, this.rowClickCB)
+                },
+                rowClickCB(data) {
+                    // console.log(data)
+                    this.moveCarrList = []
+                    this.chgDeviceList = []
+                    this.newSignUpList = []
+                    this.moveCarrList = data.moveCarrList
+                    this.chgDeviceList = data.chgDeviceList
+                    this.newSignUpList = data.newSignUpList
                 }
             }
         })

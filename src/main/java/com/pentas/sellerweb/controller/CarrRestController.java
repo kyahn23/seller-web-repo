@@ -61,6 +61,11 @@ public class CarrRestController {
         return rslt;
     }
 
+    /**
+     * 제품현황 리스트 가져오기
+     * @param param
+     * @return
+     */
     @PostMapping("/carr/getSellDeviceList")
     public DevMap getSellDeviceList(@RequestBody DevMap param) {
         DevMap rslt = new DevMap();
@@ -68,6 +73,26 @@ public class CarrRestController {
 
         resultList = carrService.getSellDeviceList(param);
         rslt.put("sellDeviceList", resultList);
+        return rslt;
+    }
+    @PostMapping("/carr/getUseMntByDevice")
+    public DevMap getUseMntByDevice (@RequestBody DevMap param){
+        param.put("BN_NO", "2020082500000000001");                                          // 업체번호
+        param.put("AMD_MBR_ID", "aassddff@naver.com");                                      // 회원아이디
+
+
+        DevMap rslt = new DevMap();
+        List<DevMap> moveCarrList = null;
+        moveCarrList = carrService.getmoveCarrList(param);
+        List<DevMap> chgDeviceList = null;
+        chgDeviceList = carrService.getchgDeviceList(param);
+        List<DevMap> newSignUpList = null;
+        newSignUpList = carrService.getnewSignUpList(param);
+
+        rslt.put("moveCarrList", moveCarrList);
+        rslt.put("chgDeviceList", chgDeviceList);
+        rslt.put("newSignUpList", newSignUpList);
+
         return rslt;
     }
 
