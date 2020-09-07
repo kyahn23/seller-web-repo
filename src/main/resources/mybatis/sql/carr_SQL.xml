@@ -73,7 +73,7 @@
         and BN_NO = #{bnNo}
     </delete>
 
-    <!-- 요금제사용여부내역 -->
+    <!-- 요금제사용여부내역 log -->
     <insert id="useYnHistory" parameterType="DevMap">
         insert into TBL015 (
         BN_NO,
@@ -337,48 +337,6 @@
         ORDER BY convert(PN_MNT_AMT, decimal) DESC
     </select>
 
-    <update id="stopSaleMvCarr" parameterType="devMap">
-        update `TBL007-A`
-        set SELL_YN = 'N',
-        PN_OFCL_SUBSD = NULL,
-        PN_EXT_SUBSD_DV = NULL,
-        PN_EXT_SUBSD_RT = NULL,
-        PN_ETC = NULL,
-        AMD_DT = sysdate(),
-        AMD_MBR_ID =#{amdMbrId}
-        where BN_NO=#{bnNo}
-        and PN_MDL_NO=#{pnMdlNo}
-        and PN_STOR=#{pnStor}
-    </update>
-
-    <update id="stopSaleChgDev" parameterType="devMap">
-        update `TBL007-B`
-        set SELL_YN = 'N',
-        PN_OFCL_SUBSD = NULL,
-        PN_EXT_SUBSD_DV = NULL,
-        PN_EXT_SUBSD_RT = NULL,
-        PN_ETC = NULL,
-        AMD_DT = sysdate(),
-        AMD_MBR_ID =#{amdMbrId}
-        where BN_NO=#{bnNo}
-        and PN_MDL_NO=#{pnMdlNo}
-        and PN_STOR=#{pnStor}
-    </update>
-
-    <update id="stopSaleNewSignup" parameterType="devMap">
-        update `TBL007-C`
-        set SELL_YN = 'N',
-        PN_OFCL_SUBSD = NULL,
-        PN_EXT_SUBSD_DV = NULL,
-        PN_EXT_SUBSD_RT = NULL,
-        PN_ETC = NULL,
-        AMD_DT = sysdate(),
-        AMD_MBR_ID =#{amdMbrId}
-        where BN_NO=#{bnNo}
-        and PN_MDL_NO=#{pnMdlNo}
-        and PN_STOR=#{pnStor}
-    </update>
-
     <insert id="insertSalePolicyMvCarr" parameterType="devMap">
         insert into `TBL007-A` (
         SELL_COND_NO,
@@ -392,7 +350,7 @@
         PN_EXT_SUBSD_RT,
         PN_EXT_SERV_YN,
         PN_ETC,
-        FLAGSHIP_YN, /* 주력상품여부. 현재 서비스에는 미적용 */
+<!--        FLAGSHIP_YN, /* 주력상품여부. 현재 서비스에는 미적용 */-->
         SELL_YN,
         INP_DT,
         AMD_DT,
@@ -411,7 +369,7 @@
         #{pnExtSubsdRt},
         #{pnExtServYn},
         #{pnEtc},
-        null,				/* #{flagshipYn} 주력상품여부. null 처리*/
+<!--        null,				/* #{flagshipYn} 주력상품여부. null 처리*/-->
         'Y',
         SYSDATE(),
         SYSDATE(),
@@ -432,7 +390,7 @@
         PN_EXT_SUBSD_RT,
         PN_EXT_SERV_YN,
         PN_ETC,
-        FLAGSHIP_YN, /* 주력상품여부. 현재 서비스에는 미적용 */
+<!--        FLAGSHIP_YN, /* 주력상품여부. 현재 서비스에는 미적용 */-->
         SELL_YN,
         INP_DT,
         AMD_DT,
@@ -451,7 +409,7 @@
         #{pnExtSubsdRt},
         #{pnExtServYn},
         #{pnEtc},
-        null,				/* #{flagshipYn} 주력상품여부. null 처리*/
+<!--        null,				/* #{flagshipYn} 주력상품여부. null 처리*/-->
         'Y',
         SYSDATE(),
         SYSDATE(),
@@ -499,6 +457,146 @@
         )
     </insert>
 
+    <update id="updateSalePolicyMvCarr" parameterType="devMap">
+        update `TBL007-A`
+        set SELL_YN = #{sellYn},
+        PN_OFCL_SUBSD = #{pnOfclSubsd},
+        PN_EXT_SUBSD_DV = #{pnExtSubsdDv},
+        PN_EXT_SUBSD_RT = #{pnExtSubsdRt},
+        PN_EXT_SERV_YN = #{pnExtServYn},
+        PN_ETC = #{pnEtc},
+        AMD_DT = sysdate(),
+        AMD_MBR_ID =#{amdMbrId}
+        where BN_NO=#{bnNo}
+        and PN_MDL_NO=#{pnMdlNo}
+        and PN_STOR=#{pnStor}
+        and PN_MNT_RT_NO = #{pnMntRtNo}
+        and MNT_CARR = #{mntCarr}
+    </update>
+
+    <update id="updateSalePolicyChgDev" parameterType="devMap">
+        update `TBL007-B`
+        set SELL_YN = #{sellYn},
+        PN_OFCL_SUBSD = #{pnOfclSubsd},
+        PN_EXT_SUBSD_DV = #{pnExtSubsdDv},
+        PN_EXT_SUBSD_RT = #{pnExtSubsdRt},
+        PN_EXT_SERV_YN = #{pnExtServYn},
+        PN_ETC = #{pnEtc},
+        AMD_DT = sysdate(),
+        AMD_MBR_ID =#{amdMbrId}
+        where BN_NO=#{bnNo}
+        and PN_MDL_NO=#{pnMdlNo}
+        and PN_STOR=#{pnStor}
+        and PN_MNT_RT_NO = #{pnMntRtNo}
+        and MNT_CARR = #{mntCarr}
+    </update>
+
+    <update id="updateSalePolicyNewSignup" parameterType="devMap">
+        update `TBL007-C`
+        set SELL_YN = #{sellYn},
+        PN_OFCL_SUBSD = #{pnOfclSubsd},
+        PN_EXT_SUBSD_DV = #{pnExtSubsdDv},
+        PN_EXT_SUBSD_RT = #{pnExtSubsdRt},
+        PN_EXT_SERV_YN = #{pnExtServYn},
+        PN_ETC = #{pnEtc},
+        AMD_DT = sysdate(),
+        AMD_MBR_ID =#{amdMbrId}
+        where BN_NO=#{bnNo}
+        and PN_MDL_NO=#{pnMdlNo}
+        and PN_STOR=#{pnStor}
+        and PN_MNT_RT_NO = #{pnMntRtNo}
+        and MNT_CARR = #{mntCarr}
+    </update>
+
+    <update id="stopSaleDevMvCarr" parameterType="devMap">
+        update `TBL007-A`
+        set SELL_YN = 'N',
+        PN_OFCL_SUBSD = NULL,
+        PN_EXT_SUBSD_DV = NULL,
+        PN_EXT_SUBSD_RT = NULL,
+        PN_EXT_SERV_YN = NULL,
+        PN_ETC = NULL,
+        AMD_DT = sysdate(),
+        AMD_MBR_ID =#{amdMbrId}
+        where BN_NO=#{bnNo}
+        and PN_MDL_NO=#{pnMdlNo}
+        and PN_STOR=#{pnStor}
+        and MNT_CARR = #{mntCarr}
+    </update>
+
+    <update id="stopSaleDevChgDev" parameterType="devMap">
+        update `TBL007-B`
+        set SELL_YN = 'N',
+        PN_OFCL_SUBSD = NULL,
+        PN_EXT_SUBSD_DV = NULL,
+        PN_EXT_SUBSD_RT = NULL,
+        PN_EXT_SERV_YN = NULL,
+        PN_ETC = NULL,
+        AMD_DT = sysdate(),
+        AMD_MBR_ID =#{amdMbrId}
+        where BN_NO=#{bnNo}
+        and PN_MDL_NO=#{pnMdlNo}
+        and PN_STOR=#{pnStor}
+        and MNT_CARR = #{mntCarr}
+    </update>
+
+    <update id="stopSaleDevNewSignup" parameterType="devMap">
+        update `TBL007-C`
+        set SELL_YN = 'N',
+        PN_OFCL_SUBSD = NULL,
+        PN_EXT_SUBSD_DV = NULL,
+        PN_EXT_SUBSD_RT = NULL,
+        PN_EXT_SERV_YN = NULL,
+        PN_ETC = NULL,
+        AMD_DT = sysdate(),
+        AMD_MBR_ID =#{amdMbrId}
+        where BN_NO=#{bnNo}
+        and PN_MDL_NO=#{pnMdlNo}
+        and PN_STOR=#{pnStor}
+        and MNT_CARR = #{mntCarr}
+    </update>
+
+    <insert id="policySaleHistory" parameterType="devMap">
+        insert into `TBL016` (
+        INP_DT,
+        SELL_COND_TYPE,
+        SELL_COND_NO,
+        SELL_YN,
+        PN_OFCL_SUBSD,
+        PN_EXT_SUBSD_DV,
+        PN_EXT_SUBSD_RT,
+        PN_EXT_SERV_YN,
+        PN_ETC,
+        AMD_MBR_ID
+        ) values (
+        sysdate(),
+        <choose>
+            <when test='policyType == "MoveCarr"'>
+                'A',
+                (SELECT SELL_COND_NO
+                FROM `TBL007-A`
+            </when>
+            <when test='policyType == "ChgDev"'>
+                'B',
+                (SELECT SELL_COND_NO
+                FROM `TBL007-B`
+            </when>
+            <otherwise>
+                'C',
+                (SELECT SELL_COND_NO
+                FROM `TBL007-C`
+            </otherwise>
+        </choose>
+        WHERE PN_MDL_NO = #{pnMdlNo} and PN_STOR = #{pnStor} and PN_MNT_RT_NO = #{pnMntRtNo} and BN_NO = #{bnNo} ),
+        #{sellYn},
+        #{pnOfclSubsd},
+        #{pnExtSubsdDv},
+        #{pnExtSubsdRt},
+        #{sellYn},
+        #{pnEtc},
+        #{amdMbrId}
+        )
+    </insert>
 
     <!-- 관리자용 요금제사용내역테이블 조회 -->
     <!--    <select id="historyForAdmin">-->

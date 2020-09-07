@@ -113,13 +113,23 @@ public class CarrRestController {
      * @param param
      * @return
      */
-    @PostMapping("/carr/stopSaleDevice")
+    @PostMapping("/carr/stopSaleDev")
     public DevMap stopSaleDevice(@RequestBody List<DevMap> param) {
         DevMap rslt = new DevMap();
 
+        carrService.stopSaleDevice(param);
+
+        rslt.put("succ", "Y");
         return rslt;
     }
 
+    /**
+     * 판매정책별 저장
+     *
+     * @param saleType
+     * @param param
+     * @return
+     */
     @PostMapping("/carr/saveSalePolicy/{saleType}")
     public DevMap saveSalePolicy(@PathVariable String saleType, @RequestBody List<DevMap> param) {
         DevMap rslt = new DevMap();
@@ -136,8 +146,6 @@ public class CarrRestController {
                 break;
         }
 
-
-        // 정상적으로 insert
         rslt.put("succ", "Y");
 
         return rslt;

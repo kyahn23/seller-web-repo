@@ -309,15 +309,18 @@
                                 </td>
                                 <td>
                                     <input style="width: 100%" class="wPer inNumber" type="text"
-                                           placeholder="선약 추가지원금" v-model="list.pnExtSubsdRt" :disabled="!list.sellToggle">
+                                           placeholder="선약 추가지원금" v-model="list.pnExtSubsdRt"
+                                           :disabled="!list.sellToggle">
                                 </td>
                                 <td>
                                     {{Number(selectDevice.pnMsrp - list.pnExtSubsdRt).toLocaleString()}}
                                 </td>
                                 <td>
-                                    <input type="radio" :id="'mvCarrY'+idx" value="Y" v-model="list.pnExtServYn" :disabled="!list.sellToggle">
+                                    <input type="radio" :id="'mvCarrY'+idx" value="Y" v-model="list.pnExtServYn"
+                                           :disabled="!list.sellToggle">
                                     <label :for="'mvCarrY'+idx">유</label>
-                                    <input type="radio" :id="'mvCarrN'+idx" value="N" v-model="list.pnExtServYn" :disabled="!list.sellToggle"
+                                    <input type="radio" :id="'mvCarrN'+idx" value="N" v-model="list.pnExtServYn"
+                                           :disabled="!list.sellToggle"
                                            @change="list.pnEtc = ''">
                                     <label :for="'mvCarrN'+idx">무</label>
                                 </td>
@@ -329,6 +332,7 @@
                             </tbody>
                             <tbody v-else>
                             <tr>
+                                <td>-</td>
                                 <td>-</td>
                                 <td>-</td>
                                 <td>-</td>
@@ -418,13 +422,15 @@
                                 </td>
                                 <td>
                                     <input style="width: 100%" class="wPer inNumber" type="text"
-                                           placeholder="선약 추가지원금" v-model="list.pnExtSubsdRt" :disabled="!list.sellToggle">
+                                           placeholder="선약 추가지원금" v-model="list.pnExtSubsdRt"
+                                           :disabled="!list.sellToggle">
                                 </td>
                                 <td>
                                     {{Number(selectDevice.pnMsrp - list.pnExtSubsdRt).toLocaleString()}}
                                 </td>
                                 <td>
-                                    <input type="radio" :id="'idxY'+idx" value="Y" v-model="list.pnExtServYn" :disabled="!list.sellToggle">
+                                    <input type="radio" :id="'idxY'+idx" value="Y" v-model="list.pnExtServYn"
+                                           :disabled="!list.sellToggle">
                                     <label :for="'idxY'+idx">유</label>
                                     <input type="radio" :id="'idxN'+idx" value="N" v-model="list.pnExtServYn"
                                            @change="list.pnEtc = ''" :disabled="!list.sellToggle">
@@ -438,6 +444,7 @@
                             </tbody>
                             <tbody v-else>
                             <tr>
+                                <td>-</td>
                                 <td>-</td>
                                 <td>-</td>
                                 <td>-</td>
@@ -515,11 +522,11 @@
                                     </label>
                                 </td>
                                 <td><input style="width: 100%" class="inMoney" type="text" v-model="list.pnOfclSubsd"
-                                           placeholder="공시지원금">
+                                           placeholder="공시지원금" :disabled="!list.sellToggle">
                                 </td>
                                 <td>
                                     <input style="width: 100%" class="inMoney" type="text" v-model="list.pnExtSubsdDv"
-                                           placeholder="공시 추가지원금">
+                                           placeholder="공시 추가지원금" :disabled="!list.sellToggle">
                                 </td>
                                 <td>
                                     {{Number(selectDevice.pnMsrp - list.pnOfclSubsd -
@@ -527,26 +534,30 @@
                                 </td>
                                 <td>
                                     <input style="width: 100%" class="wPer inNumber" type="text"
-                                           placeholder="선약 추가지원금" v-model="list.pnExtSubsdRt">
+                                           placeholder="선약 추가지원금" v-model="list.pnExtSubsdRt"
+                                           :disabled="!list.sellToggle">
                                 </td>
                                 <td>
                                     {{Number(selectDevice.pnMsrp - list.pnExtSubsdRt).toLocaleString()}}
                                 </td>
                                 <td>
-                                    <input type="radio" :id="'idxY'+idx" value="Y" v-model="list.pnExtServYn">
+                                    <input type="radio" :id="'idxY'+idx" value="Y" v-model="list.pnExtServYn"
+                                           :disabled="!list.sellToggle">
                                     <label :for="'idxY'+idx">유</label>
                                     <input type="radio" :id="'idxN'+idx" value="N" v-model="list.pnExtServYn"
+                                           :disabled="!list.sellToggle"
                                            @change="list.pnEtc = ''">
                                     <label :for="'idxN'+idx">무</label>
                                 </td>
                                 <td>
                                     <input style="width: 100%;" type="text" v-model="list.pnEtc"
-                                           :disabled="list.pnExtServYn === 'N'">
+                                           :disabled="list.pnExtServYn === 'N' || !list.sellToggle">
                                 </td>
                             </tr>
                             </tbody>
                             <tbody v-else>
                             <tr>
+                                <td>-</td>
                                 <td>-</td>
                                 <td>-</td>
                                 <td>-</td>
@@ -662,6 +673,7 @@
                     }
                     for (sell in this.dpList) {
                         this.dpList[sell].idx = sell
+                        this.dpList[sell].mntCarr = this.carr.toUpperCase()
 
                         switch (this.dpList[sell].pnMkr) {
                             case 'SAM':
@@ -717,6 +729,7 @@
                     this.moveCarrList = []
                     this.chgDeviceList = []
                     this.newSignUpList = []
+
                     this.moveCarrList = data.moveCarrList
                     for (idx in this.moveCarrList) {
                         if (this.moveCarrList[idx].sellYn === 'Y') {
@@ -724,6 +737,12 @@
                         } else {
                             this.moveCarrList[idx].sellToggle = false
                         }
+                        this.moveCarrList[idx].sellYnOrg = this.moveCarrList[idx].sellYn
+                        this.moveCarrList[idx].pnOfclSubsdOrg = this.moveCarrList[idx].pnOfclSubsd
+                        this.moveCarrList[idx].pnExtSubsdDvOrg = this.moveCarrList[idx].pnExtSubsdDv
+                        this.moveCarrList[idx].pnExtSubsdRtOrg = this.moveCarrList[idx].pnExtSubsdRt
+                        this.moveCarrList[idx].pnEtcOrg = this.moveCarrList[idx].pnEtc
+                        this.moveCarrList[idx].pnExtServYnOrg = this.moveCarrList[idx].pnExtServYn
                     }
                     this.chgDeviceList = data.chgDeviceList
                     for (idx in this.chgDeviceList) {
@@ -732,6 +751,12 @@
                         } else {
                             this.chgDeviceList[idx].sellToggle = false
                         }
+                        this.chgDeviceList[idx].sellYnOrg = this.chgDeviceList[idx].sellYn
+                        this.chgDeviceList[idx].pnOfclSubsdOrg = this.chgDeviceList[idx].pnOfclSubsd
+                        this.chgDeviceList[idx].pnExtSubsdDvOrg = this.chgDeviceList[idx].pnExtSubsdDv
+                        this.chgDeviceList[idx].pnExtSubsdRtOrg = this.chgDeviceList[idx].pnExtSubsdRt
+                        this.chgDeviceList[idx].pnEtcOrg = this.chgDeviceList[idx].pnEtc
+                        this.chgDeviceList[idx].pnExtServYnOrg = this.chgDeviceList[idx].pnExtServYn
                     }
                     this.newSignUpList = data.newSignUpList
                     for (idx in this.newSignUpList) {
@@ -740,21 +765,41 @@
                         } else {
                             this.newSignUpList[idx].sellToggle = false
                         }
+                        this.newSignUpList[idx].sellYnOrg = this.newSignUpList[idx].sellYn
+                        this.newSignUpList[idx].pnOfclSubsdOrg = this.newSignUpList[idx].pnOfclSubsd
+                        this.newSignUpList[idx].pnExtSubsdDvOrg = this.newSignUpList[idx].pnExtSubsdDv
+                        this.newSignUpList[idx].pnExtSubsdRtOrg = this.newSignUpList[idx].pnExtSubsdRt
+                        this.newSignUpList[idx].pnEtcOrg = this.newSignUpList[idx].pnEtc
+                        this.newSignUpList[idx].pnExtServYnOrg = this.newSignUpList[idx].pnExtServYn
                     }
                 },
                 stopSale() {
                     let saleYn = false
-                    for (idx in this.checkedList) {
-                        // sellYn의 값이 없으면(미판매) true
-                        if (!this.checkedList[idx].sellStatus) saleYn = true
-                    }
-                    if (saleYn) alert("선택하신 모델의 판매상태를 확인해주세요.")
+                    if (!this.checkedList.length) alert('판매중지할 모델을 선택해주세요.')
                     else {
-                        alert('판매중지')
+                        if (confirm('선택하신 모델의 판매를 중지하시겠습니까?')) {
+                            for (idx in this.checkedList) {
+                                // sellYn의 값이 없으면(미판매) true
+                                if (!this.checkedList[idx].sellStatus) saleYn = true
+                            }
+                            // 판매상태 - 미판매중인
+                            if (saleYn) alert("선택하신 모델의 판매상태를 확인해주세요.")
+                            else {
+                                cf_call("/carr/stopSaleDev", this.checkedList, this.stopSaleCB)
+                            }
+                        }
                     }
                 },
                 stopSaleCB(data) {
-
+                    alert('선택하신 모델의 판매가 중지되었습니다.')
+                    if (data.succ === "Y") {
+                        this.selectDevice = {}
+                        this.checkedList = []
+                        this.moveCarrList = []
+                        this.chgDeviceList = []
+                        this.newSignUpList = []
+                        this.searchList()
+                    }
                 },
                 sellToggleBtn(data) {
                     if (data.sellToggle === true) {
@@ -769,48 +814,58 @@
                     }
                 },
                 savePolicy(type) {
-                    alert(type)
                     let tempArr = []
+                    let keyword = ''
                     switch (type) {
                         case 'moveCarr' :
-                            alert('번호이동')
                             tempArr = this.moveCarrList
+                            keyword = '번호이동'
                             break
                         case 'chgDevice' :
-                            alert('기변')
                             tempArr = this.chgDeviceList
+                            keyword = '기기변경'
                             break
                         case 'newSignUp' :
-                            alert('신규')
                             tempArr = this.newSignUpList
+                            keyword = '신규가입'
                             break
                     }
                     if (!tempArr.length) alert('정책을 저장할 모델을 선택해주세요')
                     else {
-                        // console.log(tempArr)
-                        for (idx in tempArr) {
-                            tempArr[idx].pnMdlNo = this.selectDevice.pnMdlNo
-                            tempArr[idx].pnStor = this.selectDevice.pnStor
-                            tempArr[idx].mntCarr = this.carr.toUpperCase()
-                            if (!tempArr[idx].pnOfclSubsd && !tempArr[idx].pnExtSubsdDv && !tempArr[idx].pnExtSubsdRt) {
-                                tempArr[idx].saveYn = 'N'
-                                console.log('스킵할 idx -' + idx)
-                            } else {
-                                tempArr[idx].saveYn = 'Y'
-                                console.log('저장할 idx -' + idx)
+                        if (confirm(keyword + '정책을 저장하시겠습니까?')) {
+                            for (idx in tempArr) {
+                                tempArr[idx].pnMdlNo = this.selectDevice.pnMdlNo
+                                tempArr[idx].pnStor = this.selectDevice.pnStor
+                                tempArr[idx].mntCarr = this.carr.toUpperCase()
+
+                                if (this.changeChk(tempArr[idx])) {
+                                    tempArr[idx].saveYn = 'N' // return true. 값 변동 없음
+                                } else tempArr[idx].saveYn = 'Y' // return false. 값 변동 있음
                             }
+                            cf_call("/carr/saveSalePolicy/" + type, tempArr, this.savePolicyCB);
                         }
-                        console.log(tempArr)
-                        cf_call("/carr/saveSalePolicy/"+type, tempArr, this.savePolicyCB);
                     }
                 },
-                savePolicyCB(data){
+                savePolicyCB(data) {
                     if (data.succ === "Y") {
+                        alert('저장되었습니다.')
+
+                        this.selectDevice = {}
+                        this.checkedList = []
                         this.moveCarrList = []
                         this.chgDeviceList = []
                         this.newSignUpList = []
                         this.searchList()
                     }
+                },
+                changeChk(data) {
+                    let sellYn = data.sellYnOrg === data.sellYn
+                    let pnOfclSubsd = data.pnOfclSubsdOrg === data.pnOfclSubsd
+                    let pnExtSubsdDv = data.pnExtSubsdDvOrg === data.pnExtSubsdDv
+                    let pnExtSubsdRt = data.pnExtSubsdRtOrg === data.pnExtSubsdRt
+                    let pnEtc = data.pnEtcOrg === data.pnEtc
+                    let pnExtServYn = data.pnExtServYnOrg === data.pnExtServYn
+                    return (sellYn && pnOfclSubsd && pnExtSubsdDv && pnExtSubsdRt && pnEtc && pnExtServYn)
                 }
             }
         })
