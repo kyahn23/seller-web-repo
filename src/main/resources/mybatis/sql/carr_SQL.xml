@@ -275,12 +275,14 @@
         PN_OFCL_SUBSD,
         PN_EXT_SUBSD_DV,
         PN_EXT_SUBSD_RT,
+        PN_EXT_SERV_YN,
         PN_ETC,
         SELL_YN,
         PN_STOR
         from `TBL007-A`
         where PN_MDL_NO = #{pnMdlNo} and BN_NO = #{bnNo} and PN_STOR=#{pnStor}) ta
         on T.PN_MNT_RT_NO = ta.PN_MNT_RT_NO
+        ORDER BY convert(PN_MNT_AMT, decimal) DESC
     </select>
 
     <select id="chgDeviceList" parameterType="DevMap" resultType="DevMap">
@@ -299,12 +301,14 @@
         PN_OFCL_SUBSD,
         PN_EXT_SUBSD_DV,
         PN_EXT_SUBSD_RT,
+        PN_EXT_SERV_YN,
         PN_ETC,
         SELL_YN,
         PN_STOR
         from `TBL007-B`
         where PN_MDL_NO = #{pnMdlNo} and BN_NO = #{bnNo} and PN_STOR=#{pnStor}) tb
         on T.PN_MNT_RT_NO = tb.PN_MNT_RT_NO
+        ORDER BY convert(PN_MNT_AMT, decimal) DESC
     </select>
 
     <select id="newSignUpList" parameterType="DevMap" resultType="DevMap">
@@ -323,12 +327,14 @@
         PN_OFCL_SUBSD,
         PN_EXT_SUBSD_DV,
         PN_EXT_SUBSD_RT,
+        PN_EXT_SERV_YN,
         PN_ETC,
         SELL_YN,
         PN_STOR
         from `TBL007-C`
         where PN_MDL_NO = #{pnMdlNo} and BN_NO = #{bnNo} and PN_STOR=#{pnStor}) tc
         on T.PN_MNT_RT_NO = tc.PN_MNT_RT_NO
+        ORDER BY convert(PN_MNT_AMT, decimal) DESC
     </select>
 
     <update id="stopSaleMvCarr" parameterType="devMap">
@@ -372,6 +378,126 @@
         and PN_MDL_NO=#{pnMdlNo}
         and PN_STOR=#{pnStor}
     </update>
+
+    <insert id="insertSalePolicyMvCarr" parameterType="devMap">
+        insert into `TBL007-A` (
+        SELL_COND_NO,
+        PN_MDL_NO,
+        PN_MNT_RT_NO,
+        MNT_CARR,
+        PN_STOR,
+        BN_NO,
+        PN_OFCL_SUBSD,
+        PN_EXT_SUBSD_DV,
+        PN_EXT_SUBSD_RT,
+        PN_EXT_SERV_YN,
+        PN_ETC,
+        FLAGSHIP_YN, /* 주력상품여부. 현재 서비스에는 미적용 */
+        SELL_YN,
+        INP_DT,
+        AMD_DT,
+        AMD_MBR_ID
+        ) values (
+        (SELECT CONCAT(DATE_FORMAT(SYSDATE() , '%Y%m%d'), IFNULL(LPAD(IFNULL(MAX(SUBSTR(SELL_COND_NO,9)),0)+1,8,0), '')) as SELL_COND_NO
+        FROM `TBL007-A` ta
+        WHERE SELL_COND_NO LIKE CONCAT(DATE_FORMAT(SYSDATE(), '%Y%m%d'),'%')),
+        #{pnMdlNo},
+        #{pnMntRtNo},
+        #{mntCarr},
+        #{pnStor},
+        #{bnNo},
+        #{pnOfclSubsd},
+        #{pnExtSubsdDv},
+        #{pnExtSubsdRt},
+        #{pnExtServYn},
+        #{pnEtc},
+        null,				/* #{flagshipYn} 주력상품여부. null 처리*/
+        'Y',
+        SYSDATE(),
+        SYSDATE(),
+        #{amdMbrId}
+        )
+    </insert>
+
+    <insert id="insertSalePolicyChgDev" parameterType="devMap">
+        insert into `TBL007-B` (
+        SELL_COND_NO,
+        PN_MDL_NO,
+        PN_MNT_RT_NO,
+        MNT_CARR,
+        PN_STOR,
+        BN_NO,
+        PN_OFCL_SUBSD,
+        PN_EXT_SUBSD_DV,
+        PN_EXT_SUBSD_RT,
+        PN_EXT_SERV_YN,
+        PN_ETC,
+        FLAGSHIP_YN, /* 주력상품여부. 현재 서비스에는 미적용 */
+        SELL_YN,
+        INP_DT,
+        AMD_DT,
+        AMD_MBR_ID
+        ) values (
+        (SELECT CONCAT(DATE_FORMAT(SYSDATE() , '%Y%m%d'), IFNULL(LPAD(IFNULL(MAX(SUBSTR(SELL_COND_NO,9)),0)+1,8,0), '')) as SELL_COND_NO
+        FROM `TBL007-B` tb
+        WHERE SELL_COND_NO LIKE CONCAT(DATE_FORMAT(SYSDATE(), '%Y%m%d'),'%')),
+        #{pnMdlNo},
+        #{pnMntRtNo},
+        #{mntCarr},
+        #{pnStor},
+        #{bnNo},
+        #{pnOfclSubsd},
+        #{pnExtSubsdDv},
+        #{pnExtSubsdRt},
+        #{pnExtServYn},
+        #{pnEtc},
+        null,				/* #{flagshipYn} 주력상품여부. null 처리*/
+        'Y',
+        SYSDATE(),
+        SYSDATE(),
+        #{amdMbrId}
+        )
+    </insert>
+
+    <insert id="insertSalePolicyNewSignup" parameterType="devMap">
+        insert into `TBL007-C` (
+        SELL_COND_NO,
+        PN_MDL_NO,
+        PN_MNT_RT_NO,
+        MNT_CARR,
+        PN_STOR,
+        BN_NO,
+        PN_OFCL_SUBSD,
+        PN_EXT_SUBSD_DV,
+        PN_EXT_SUBSD_RT,
+        PN_EXT_SERV_YN,
+        PN_ETC,
+<!--        FLAGSHIP_YN, /* 주력상품여부. 현재 서비스에는 미적용 */-->
+        SELL_YN,
+        INP_DT,
+        AMD_DT,
+        AMD_MBR_ID
+        ) values (
+        (SELECT CONCAT(DATE_FORMAT(SYSDATE() , '%Y%m%d'), IFNULL(LPAD(IFNULL(MAX(SUBSTR(SELL_COND_NO,9)),0)+1,8,0), '')) as SELL_COND_NO
+        FROM `TBL007-C` as tc
+        WHERE SELL_COND_NO LIKE CONCAT(DATE_FORMAT(SYSDATE(), '%Y%m%d'),'%')),
+        #{pnMdlNo},
+        #{pnMntRtNo},
+        #{mntCarr},
+        #{pnStor},
+        #{bnNo},
+        #{pnOfclSubsd},
+        #{pnExtSubsdDv},
+        #{pnExtSubsdRt},
+        #{pnExtServYn},
+        #{pnEtc},
+<!--        null,				/* #{flagshipYn} 주력상품여부. null 처리*/-->
+        'Y',
+        SYSDATE(),
+        SYSDATE(),
+        #{amdMbrId}
+        )
+    </insert>
 
 
     <!-- 관리자용 요금제사용내역테이블 조회 -->
