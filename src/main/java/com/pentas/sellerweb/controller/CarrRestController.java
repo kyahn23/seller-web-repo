@@ -3,11 +3,11 @@ package com.pentas.sellerweb.controller;
 import com.pentas.sellerweb.common.module.util.DevMap;
 import com.pentas.sellerweb.service.CarrService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -17,7 +17,7 @@ public class CarrRestController {
     CarrService carrService;
 
     /**
-     * 요금제 현황 목록 가져오기
+     * 요금제현황 가져오기
      *
      * @param param
      * @return
@@ -82,6 +82,7 @@ public class CarrRestController {
 
     /**
      * 사용중인 요금제 가져오기
+     *
      * @param param
      * @return
      */
@@ -107,12 +108,44 @@ public class CarrRestController {
 
     /**
      * 제품현황-판매중지처리
+     *
      * @param param
      * @return
      */
-    @PostMapping("/carr/stopSaleDevice")
-    public DevMap stopSaleDevice(@RequestBody List<DevMap> param){
+    @PostMapping("/carr/stopSaleDev")
+    public DevMap stopSaleDevice(@RequestBody List<DevMap> param) {
         DevMap rslt = new DevMap();
+
+        carrService.stopSaleDevice(param);
+
+        rslt.put("succ", "Y");
+        return rslt;
+    }
+
+    /**
+     * 판매정책별 저장
+     *
+     * @param saleType
+     * @param param
+     * @return
+     */
+    @PostMapping("/carr/saveSalePolicy/{saleType}")
+    public DevMap saveSalePolicy(@PathVariable String saleType, @RequestBody List<DevMap> param) {
+        DevMap rslt = new DevMap();
+
+        switch (saleType) {
+            case "moveCarr":
+                carrService.saveSalePolicyMoveCarr(param);
+                break;
+            case "chgDevice":
+                carrService.saveSalePolicyChgDev(param);
+                break;
+            case "newSignUp":
+                carrService.saveSalePolicyNewSignup(param);
+                break;
+        }
+
+        rslt.put("succ", "Y");
 
         return rslt;
     }
