@@ -51,6 +51,9 @@ public class CarrService {
     }
 
     public void deleteUseMnt(List<DevMap> params) {
+        List<DevMap> mvCarrPolicyList = new ArrayList<>();
+        List<DevMap> chgDevPolicyList = new ArrayList<>();
+        List<DevMap> newSignupPolicyList = new ArrayList<>();
 
         // 세션에서 업체번호 및 회원아이디 가져오기
         // HttpSession session = request.getSession();
@@ -60,10 +63,72 @@ public class CarrService {
         for (DevMap param : params) {
             param.put("BN_NO", "2020082500000000001");                                          // 업체번호
             param.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com");      // 회원아이디
-
 //            param.put("BN_NO", "2020090100000000001");                                          // 업체번호
 //            param.put("AMD_MBR_ID", "aassddff@naver.com");                                      // 회원아이디
 
+            //미사용처리전 해당 요금제 판매중지처리 및 판매중지내역남기기
+            mvCarrPolicyList = cmmnDao.selectList("sellerweb.carr.policyListByMntRtMvCarr", param);
+            if (mvCarrPolicyList.size() != 0) {
+                for (DevMap mvCarr : mvCarrPolicyList) {
+                    // 판매중지처리를 위한 객체 값 설정
+                    mvCarr.put("SELL_YN", "N");
+                    mvCarr.put("PN_OFCL_SUBSD", null);
+                    mvCarr.put("PN_EXT_SUBSD_DV", null);
+                    mvCarr.put("PN_EXT_SUBSD_RT", null);
+                    mvCarr.put("PN_EXT_SERV_YN", null);
+                    mvCarr.put("PN_ETC", null);
+                    mvCarr.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com"); // 로그인한 회원아이디
+
+                    mvCarr.put("policyType", "MoveCarr");
+                    // 판매중지처리
+                    cmmnDao.update("sellerweb.carr.updateSalePolicyMvCarr", mvCarr);
+                    // 판매중지내역남기기
+                    cmmnDao.insert("sellerweb.carr.policySaleHistory", mvCarr);
+                }
+            }
+            //미사용처리전 해당 요금제 판매중지처리 및 판매중지내역남기기  policyListByMntRtNewSignup
+            chgDevPolicyList = cmmnDao.selectList("sellerweb.carr.policyListByMntRtChgDev", param);
+            if (chgDevPolicyList.size() != 0) {
+                for (DevMap chgDev : chgDevPolicyList) {
+                    // 판매중지처리를 위한 객체 값 설정
+                    chgDev.put("SELL_YN", "N");
+                    chgDev.put("PN_OFCL_SUBSD", null);
+                    chgDev.put("PN_EXT_SUBSD_DV", null);
+                    chgDev.put("PN_EXT_SUBSD_RT", null);
+                    chgDev.put("PN_EXT_SERV_YN", null);
+                    chgDev.put("PN_ETC", null);
+                    chgDev.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com"); // 로그인한 회원아이디
+
+                    chgDev.put("policyType", "ChgDev");
+                    // 판매중지처리
+                    cmmnDao.update("sellerweb.carr.updateSalePolicyChgDev", chgDev);
+                    // 판매중지내역남기기
+                    cmmnDao.insert("sellerweb.carr.policySaleHistory", chgDev);
+                }
+            }
+
+            //미사용처리전 해당 요금제 판매중지처리 및 판매중지내역남기기  policyListByMntRtNewSignup
+            newSignupPolicyList = cmmnDao.selectList("sellerweb.carr.policyListByMntRtNewSignup", param);
+            if (newSignupPolicyList.size() != 0) {
+                for (DevMap newSignup : newSignupPolicyList) {
+                    // 판매중지처리를 위한 객체 값 설정
+                    newSignup.put("SELL_YN", "N");
+                    newSignup.put("PN_OFCL_SUBSD", null);
+                    newSignup.put("PN_EXT_SUBSD_DV", null);
+                    newSignup.put("PN_EXT_SUBSD_RT", null);
+                    newSignup.put("PN_EXT_SERV_YN", null);
+                    newSignup.put("PN_ETC", null);
+                    newSignup.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com"); // 로그인한 회원아이디
+
+                    newSignup.put("policyType", "NewSignup");
+                    // 판매중지처리
+                    cmmnDao.update("sellerweb.carr.updateSalePolicyNewSignup", newSignup);
+                    // 판매중지내역남기기
+                    cmmnDao.insert("sellerweb.carr.policySaleHistory", newSignup);
+                }
+            }
+
+            // 요금제 미사용처리
             cmmnDao.delete("sellerweb.carr.nUseMntRt", param);
 
             // 사용여부 내역 남기기
@@ -152,16 +217,14 @@ public class CarrService {
             String saveType = param.getString("saveType");
             String saveYn = param.getString("saveYn");
             if ("Y".equals(saveYn)) {
-                if ("insert".equals(saveType)){
+                if ("insert".equals(saveType)) {
                     cmmnDao.insert("sellerweb.carr.insertSalePolicyMvCarr", param);
-                } else if("update".equals(saveType)){
+                } else if ("update".equals(saveType)) {
                     cmmnDao.update("sellerweb.carr.updateSalePolicyMvCarr", param);
                 }
                 // 정책 저장 내역 남기기
                 cmmnDao.insert("sellerweb.carr.policySaleHistory", param);
             }
-            // 정책 저장 내역 남기기
-//            cmmnDao.insert("sellerweb.carr.policySaleHistory", param);
         }
     }
 
@@ -182,17 +245,14 @@ public class CarrService {
             String saveType = param.getString("saveType");
             String saveYn = param.getString("saveYn");
             if ("Y".equals(saveYn)) {
-                if ("insert".equals(saveType)){
+                if ("insert".equals(saveType)) {
                     cmmnDao.insert("sellerweb.carr.insertSalePolicyChgDev", param);
-                } else if("update".equals(saveType)){
+                } else if ("update".equals(saveType)) {
                     cmmnDao.update("sellerweb.carr.updateSalePolicyChgDev", param);
                 }
                 // 정책 저장 내역 남기기
                 cmmnDao.insert("sellerweb.carr.policySaleHistory", param);
             }
-
-            // 정책 저장 내역 남기기
-//            cmmnDao.insert("sellerweb.carr.salePolicyHistory", param);
         }
     }
 
@@ -213,21 +273,22 @@ public class CarrService {
             String saveType = param.getString("saveType");
             String saveYn = param.getString("saveYn");
             if ("Y".equals(saveYn)) {
-                if ("insert".equals(saveType)){
+                if ("insert".equals(saveType)) {
                     cmmnDao.insert("sellerweb.carr.insertSalePolicyNewSignup", param);
-                } else if("update".equals(saveType)){
+                } else if ("update".equals(saveType)) {
                     cmmnDao.update("sellerweb.carr.updateSalePolicyNewSignup", param);
                 }
                 // 정책 저장 내역 남기기
                 cmmnDao.insert("sellerweb.carr.policySaleHistory", param);
             }
-
-            // 정책 저장 내역 남기기
-//            cmmnDao.insert("sellerweb.carr.salePolicyHistory", param);
         }
     }
 
     public void stopSaleDevice(List<DevMap> params) {
+        List<DevMap> stopSaleDevMvCarrList = new ArrayList<>();
+        List<DevMap> stopSaleDevChgDevList = new ArrayList<>();
+        List<DevMap> stopSaleDevNewSignupList = new ArrayList<>();
+
         for (DevMap param : params) {
             param.put("BN_NO", "2020082500000000001");                                          // 업체번호
             param.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com");      // 회원아이디
@@ -236,14 +297,52 @@ public class CarrService {
 
             // 번호이동
             cmmnDao.update("sellerweb.carr.stopSaleDevMvCarr", param);
+            // SellCondNo 를 얻기위한 리스트
+            stopSaleDevMvCarrList = cmmnDao.selectList("sellerweb.carr.stopSaleDevMvCarrList", param);
+            if (stopSaleDevMvCarrList.size() != 0) {
+                for (DevMap list : stopSaleDevMvCarrList) {
+                    list.put("SELL_COND_TYPE", "A");
+                    list.put("policyType", "MoveCarr");
+                    cmmnDao.insert("sellerweb.carr.policySaleHistory", list);
+                }
+            }
+        }
+
+        for (DevMap param : params) {
+            param.put("BN_NO", "2020082500000000001");                                          // 업체번호
+            param.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com");      // 회원아이디
+//            param.put("BN_NO", "2020090100000000001");                                          // 업체번호
+//            param.put("AMD_MBR_ID", "aassddff@naver.com");                                      // 회원아이디
             // 기기변경
             cmmnDao.update("sellerweb.carr.stopSaleDevChgDev", param);
+
+            stopSaleDevChgDevList = cmmnDao.selectList("sellerweb.carr.stopSaleDevChgDevList", param);
+            if (stopSaleDevChgDevList.size() != 0) {
+                for (DevMap list : stopSaleDevChgDevList) {
+                    list.put("SELL_COND_TYPE", "B");
+                    list.put("policyType", "ChgDev");
+                    cmmnDao.insert("sellerweb.carr.policySaleHistory", list);
+                }
+            }
+        }
+
+        for (DevMap param : params) {
+            param.put("BN_NO", "2020082500000000001");                                          // 업체번호
+            param.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com");      // 회원아이디
+//            param.put("BN_NO", "2020090100000000001");                                          // 업체번호
+//            param.put("AMD_MBR_ID", "aassddff@naver.com");                                      // 회원아이디
             // 신규가입
             cmmnDao.update("sellerweb.carr.stopSaleDevNewSignup", param);
 
-
-            // 정책 저장 내역 남기기
-//            cmmnDao.insert("sellerweb.carr.salePolicyHistory", param);
+            stopSaleDevNewSignupList = cmmnDao.selectList("sellerweb.carr.stopSaleDevNewSignupList", param);
+            if (stopSaleDevNewSignupList.size() != 0) {
+                for (DevMap list : stopSaleDevNewSignupList) {
+                    list.put("SELL_COND_TYPE", "C");
+                    list.put("policyType", "NewSignup");
+                    cmmnDao.insert("sellerweb.carr.policySaleHistory", list);
+                }
+            }
         }
+
     }
 }

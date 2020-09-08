@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -18,7 +17,7 @@ public class CarrRestController {
     CarrService carrService;
 
     /**
-     * 요금제 현황 목록 가져오기
+     * 요금제현황 가져오기
      *
      * @param param
      * @return
