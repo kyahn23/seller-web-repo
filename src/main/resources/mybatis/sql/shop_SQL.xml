@@ -39,28 +39,28 @@
 
     <select id="getEmpList" resultType="DevMap" parameterType="DevMap">
         SELECT
-            A.BN_MBR_ID
-            ,A.MBR_NM
-            ,A.MST_MBR_YN
-            ,A.SELLER_PRMS
-            ,A.LGIN_AVL_YN
-            ,A.ACTV_YN
-            ,DATE_FORMAT(A.AMD_DT, '%Y-%m-%d %H:%i') AS AMD_DT
-            ,(SELECT B.MBR_NM FROM TBL002 B WHERE B.BN_MBR_ID = A.AMD_MBR_ID) AS AMD_MBR_NM
-            ,DATE_FORMAT(A.AUTH_DT, '%Y-%m-%d %H:%i') AS AUTH_DT
-        FROM TBL002 A
+            BN_MBR_ID
+            ,MBR_NM
+            ,MST_MBR_YN
+            ,SELLER_PRMS
+            ,LGIN_AVL_YN
+            ,ACTV_YN
+            ,DATE_FORMAT(AMD_DT, '%Y-%m-%d %H:%i') AS AMD_DT
+            ,(SELECT cf_get_mbr_nm(AMD_MBR_ID)) AS AMD_MBR_NM
+            ,DATE_FORMAT(AUTH_DT, '%Y-%m-%d %H:%i') AS AUTH_DT
+        FROM TBL002
         WHERE
             BN_NO = (SELECT cf_get_bn_no(#{bnMbrId}))
         <choose>
             <when test="srchOptn == 'BYNM'">
-                AND A.MBR_NM LIKE CONCAT('%',#{srchTerm},'%')
+                AND MBR_NM LIKE CONCAT('%',#{srchTerm},'%')
             </when>
             <when test="srchOptn == 'BYID'">
-                AND A.BN_MBR_ID LIKE CONCAT('%',#{srchTerm},'%')
+                AND BN_MBR_ID LIKE CONCAT('%',#{srchTerm},'%')
             </when>
             <otherwise/>
         </choose>
-        ORDER BY A.MST_MBR_YN DESC, A.INP_DT ASC
+        ORDER BY MST_MBR_YN DESC, INP_DT ASC
     </select>
 
     <insert id="addEmpInfo" parameterType="DevMap">
@@ -124,12 +124,16 @@
             ,BN_NO
             ,BRD_TITLE
             ,BRD_CONT
+            ,BRD_ATT_FILE_1
+            ,BRD_ATT_FILE_2
             ,BRD_WRITER
         ) VALUES (
             IFNULL((SELECT MAX(BRD_NO) FROM TBL012 B WHERE BN_NO = (SELECT cf_get_bn_no(#{bnMbrId}))), 0) + 1
             ,(SELECT cf_get_bn_no(#{bnMbrId}))
             ,#{brdTitle}
             ,#{brdCont}
+            ,#{brdAttFile1}
+            ,#{brdAttFile2}
             ,#{bnMbrId}
         )
     </insert>
@@ -139,7 +143,7 @@
             BRD_NO
             ,BRD_TITLE
             ,SHOW_YN
-            ,AMD_DT
+            ,BRD_REG_DT
             ,BRD_WRITER_NM
         FROM (
             SELECT
@@ -147,7 +151,7 @@
                 ,BRD_NO
                 ,BRD_TITLE
                 ,SHOW_YN
-                ,DATE_FORMAT(AMD_DT, '%Y-%m-%d %H:%i') AS AMD_DT
+                ,DATE_FORMAT(BRD_REG_DT, '%Y-%m-%d %H:%i') AS BRD_REG_DT
                 ,(SELECT cf_get_mbr_nm(SRCTBL.BRD_WRITER)) AS BRD_WRITER_NM
             FROM TBL012 SRCTBL
         ) SELTBL
@@ -162,12 +166,45 @@
             </when>
             <otherwise/>
         </choose>
-        ORDER BY SELTBL.BRD_NO DESC
+        ORDER BY SELTBL.BRD_REG_DT DESC
     </select>
 
     <update id="updateBnBrdHide" parameterType="DevMap">
         UPDATE TBL012
         SET SHOW_YN = 'N'
+            ,AMD_DT = CURRENT_TIMESTAMP
+        WHERE
+            BN_NO = (
+                SELECT cf_get_bn_no(#{bnMbrId})
+            )
+            AND BRD_NO = #{brdNo}
+    </update>
+
+    <select id="getBnBrdOne" resultType="DevMap" parameterType="DevMap">
+        SELECT
+            BRD_TITLE
+            ,BRD_CONT
+            ,BRD_ATT_FILE_1
+            ,BRD_ATT_FILE_2
+            ,SHOW_YN
+            ,DATE_FORMAT(INP_DT, '%Y-%m-%d %H:%i') AS INP_DT
+            ,DATE_FORMAT(BRD_REG_DT, '%Y-%m-%d %H:%i') AS BRD_REG_DT
+            ,BRD_WRITER AS BRD_WRITER_ID
+            ,(SELECT cf_get_mbr_nm(BRD_WRITER)) AS BRD_WRITER_NM
+        FROM TBL012
+        WHERE
+            BN_NO = (SELECT cf_get_bn_no(#{bnMbrId}))
+            AND BRD_NO = #{brdNo}
+    </select>
+
+    <update id="updateBnBrdOne" parameterType="DevMap">
+        UPDATE TBL012
+        SET BRD_TITLE = #{brdTitle}
+            ,SHOW_YN = #{showYn}
+            ,BRD_REG_DT = CURRENT_TIMESTAMP
+            ,BRD_ATT_FILE_1 = #{brdAttFile1}
+            ,BRD_ATT_FILE_2 = #{brdAttFile2}
+            ,BRD_CONT = #{brdCont}
             ,AMD_DT = CURRENT_TIMESTAMP
         WHERE
             BN_NO = (

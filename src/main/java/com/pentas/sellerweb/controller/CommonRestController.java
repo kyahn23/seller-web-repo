@@ -50,8 +50,8 @@ public class CommonRestController {
     @PostMapping("/upload/image")
     public DevMap uploadImage(HttpServletRequest request, MultipartRequest multipartRequest) throws IOException, IllegalStateException, UserException {
         String mbrId = (String) request.getSession().getAttribute("mbrId");
-        String paramstr = request.getParameter("param");
-        DevMap param = JsonUtil.fromJsonStr(DevMap.class, paramstr);
+        String paramStr = request.getParameter("param");
+        DevMap param = JsonUtil.fromJsonStr(DevMap.class, paramStr);
         param.put("mbrId", mbrId);
 
         List<MultipartFile> multipartFileList = multipartRequest.getFiles("fileList");
@@ -74,6 +74,18 @@ public class CommonRestController {
     public void downloadImage(HttpServletRequest request, HttpServletResponse response) throws UserException {
         String fileName = request.getParameter("fileName");
         commonService.imageSrc(response, fileName);
+    }
+
+    /**
+     * 파일 다운로드
+     * @param request
+     * @param response
+     * @throws UserException
+     */
+    @RequestMapping("/downloadFile")
+    public void downloadFile(HttpServletRequest request, HttpServletResponse response) throws UserException {
+        String fileName = request.getParameter("fileName");
+        commonService.downloadFile(response, fileName);
     }
 
 }

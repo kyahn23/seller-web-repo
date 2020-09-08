@@ -9,6 +9,12 @@
             border: 1px solid #a3daff;
             color: #0093e4;
         }
+
+        .btnS.colorOrg {
+            background-color: #fff;
+            border: 1px solid #f7941d;
+            color: #f7941d;
+        }
     </style>
 </th:block>
 
@@ -132,7 +138,7 @@
                                     <td class="alignC" :title="bnBrdRow.brdTitle" @click="setTrIndex(index)">{{ bnBrdRow.brdTitle }}</td>
                                     <td class="alignC" @click="setTrIndex(index)">{{ showYnTxt(bnBrdRow.showYn) }}</td>
                                     <td class="alignC" :title="bnBrdRow.brdWriterNm" @click="setTrIndex(index)">{{ bnBrdRow.brdWriterNm }}</td>
-                                    <td class="alignC" @click="setTrIndex(index)">{{ bnBrdRow.amdDt }}</td>
+                                    <td class="alignC" @click="setTrIndex(index)">{{ bnBrdRow.brdRegDt }}</td>
                                 </tr>
                                 </tbody>
                                 <!-- 결과없음 -->
@@ -161,7 +167,17 @@
                             공지사항 내용
                         </div>
                         <div class="cTitRight">
-                            <a href="#" class="btnM colorSky"><span>수정</span></a>
+                            <a
+                                href="#;"
+                                class="btnM"
+                                :class="{
+                                    colorSky:!brdOneDisabled(bnBrdOne.brdWriterId),
+                                    disabled: brdOneDisabled(bnBrdOne.brdWriterId)
+                                }"
+                                @click="modiBnBrdOne"
+                            >
+                                <span>수정</span>
+                            </a>
                         </div>
                     </div>
                     <!-- content -->
@@ -176,16 +192,154 @@
                             <tbody>
                             <tr>
                                 <th>제목</th>
-                                <td colspan="3"><input class="wPer" type="text" id="" placeholder="제목 기입" value="공지사항 제목2"></td>
+                                <td colspan="3">
+                                    <input
+                                        class="wPer"
+                                        type="text"
+                                        placeholder="공지사항 제목"
+                                        :disabled="brdOneDisabled(bnBrdOne.brdWriterId)"
+                                        :value="bnBrdOne.brdTitle"
+                                        @input="bnBrdOne.brdTitle = $event.target.value"
+                                        maxlength="100"
+                                    >
+                                </td>
                             </tr>
                             <tr>
-                                <th style="color: #ff0000;">첨부파일</th>
+                                <th>게시여부</th>
+                                <td colspan="3">
+                                    <input type="radio" id="showYes" value="Y" v-model="bnBrdOne.showYn" :disabled="brdOneDisabled(bnBrdOne.brdWriterId)">
+                                    <label for="showYes">게시</label>
+                                    <span style="width: 8px;"></span>
+                                    <input type="radio" id="showNo" value="N" v-model="bnBrdOne.showYn" :disabled="brdOneDisabled(bnBrdOne.brdWriterId)">
+                                    <label for="showNo">숨김</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>작성자</th>
+                                <td colspan="3">{{ bnBrdOne.brdWriterNm }}</td>
+                            </tr>
+                            <tr>
+                                <th>최초작성일시</th>
+                                <td>{{ bnBrdOne.inpDt }}</td>
+                                <th>최종변경일시</th>
+                                <td>{{ bnBrdOne.brdRegDt }}</td>
+                            </tr>
+                            <tr>
+                                <th>첨부파일</th>
                                 <td>
-													<span style="width: 92%; text-decoration: underline; font-weight: bold;">첨부파일
-														2020.01.20.pdf</span>
-                                    <a href="#" class="btnS colorWhite"><span>-</span></a><br />
-                                    <input class="wPer" style="width: 92% !important;" type="text" id="" value="">
-                                    <a href="#" class="btnS colorWhite"><span>+</span></a>
+                                    <div v-if="brdOneFileShow && brdOneCurFileInfo.length === 0">
+                                        <div>
+                                            <input
+                                                class="wPer"
+                                                style="width: 84% !important; padding-top: 0.5px;"
+                                                type="file"
+                                                id="newFileInput1"
+                                                name="newFileInput1"
+                                                placeholder="첨부파일"
+                                                :disabled="brdOneDisabled(bnBrdOne.brdWriterId)"
+                                            >
+                                            <a
+                                                v-if="!showFilePlus1"
+                                                href="#;"
+                                                class="btnS"
+                                                :class="{
+                                                    colorOrg:!brdOneDisabled(bnBrdOne.brdWriterId),
+                                                    disabled: brdOneDisabled(bnBrdOne.brdWriterId)
+                                                }"
+                                                @click="toggleFilePlus1"
+                                            ><span>-</span></a>
+                                            <a
+                                                v-if="showFilePlus1"
+                                                href="#;"
+                                                class="btnS"
+                                                :class="{
+                                                    colorWhite:!brdOneDisabled(bnBrdOne.brdWriterId),
+                                                    disabled: brdOneDisabled(bnBrdOne.brdWriterId)
+                                                }"
+                                                @click="toggleFilePlus1"
+                                            ><span>+</span></a>
+                                        </div>
+                                        <div v-if="!showFilePlus1">
+                                            <input
+                                                class="wPer"
+                                                style="width: 84% !important; padding-top: 0.5px;"
+                                                type="file"
+                                                id="newFileInput2"
+                                                name="newFileInput2"
+                                                placeholder="첨부파일"
+                                                :disabled="brdOneDisabled(bnBrdOne.brdWriterId)"
+                                            >
+                                            <a
+                                                v-if="!showFilePlus1"
+                                                href="#;"
+                                                class="btnS"
+                                                :class="{
+                                                    colorOrg:!brdOneDisabled(bnBrdOne.brdWriterId),
+                                                    disabled: brdOneDisabled(bnBrdOne.brdWriterId)
+                                                }"
+                                                @click="toggleFilePlus1"
+                                            ><span>-</span></a>
+                                            <a
+                                                v-if="showFilePlus1"
+                                                href="#;"
+                                                class="btnS"
+                                                :class="{
+                                                    colorWhite:!brdOneDisabled(bnBrdOne.brdWriterId),
+                                                    disabled: brdOneDisabled(bnBrdOne.brdWriterId)
+                                                }"
+                                                @click="toggleFilePlus1"
+                                            ><span>+</span></a>
+                                        </div>
+                                    </div>
+                                    <div v-else-if="brdOneFileShow && brdOneCurFileInfo.length > 0">
+                                        <div v-for="brdOneFile in brdOneCurFileInfo">
+                                            <span style="
+                                                width: 84%;
+                                                text-decoration: underline;
+                                                font-weight: bold;"
+                                                @click="getFile(brdOneFile.storFilNm)"
+                                            >{{ brdOneFile.origFilNm }} ({{ brdOneFile.filSizNo | mbSize }} MB)</span>
+                                            <a
+                                                href="#;"
+                                                class="btnS"
+                                                :class="{
+                                                    colorOrg:!brdOneDisabled(bnBrdOne.brdWriterId),
+                                                    disabled: brdOneDisabled(bnBrdOne.brdWriterId)
+                                                }"
+                                                @click="delOneFile(brdOneFile.storFilNm)"
+                                            ><span>-</span></a>
+                                            <a
+                                                v-if="showFilePlus2"
+                                                href="#;"
+                                                class="btnS"
+                                                :class="{
+                                                    colorWhite:!brdOneDisabled(bnBrdOne.brdWriterId),
+                                                    disabled: brdOneDisabled(bnBrdOne.brdWriterId)
+                                                }"
+                                                @click="toggleFileInput2"
+                                            ><span>+</span></a>
+                                        </div>
+                                        <div v-if="showFileInput2">
+                                            <input
+                                                class="wPer"
+                                                style="width: 84% !important; padding-top: 0.5px;"
+                                                type="file"
+                                                id="newFileInput3"
+                                                name="newFileInput3"
+                                                placeholder="첨부파일"
+                                                :disabled="brdOneDisabled(bnBrdOne.brdWriterId)"
+                                            >
+                                            <a
+                                                href="#;"
+                                                class="btnS"
+                                                :class="{
+                                                    colorOrg:!brdOneDisabled(bnBrdOne.brdWriterId),
+                                                    disabled: brdOneDisabled(bnBrdOne.brdWriterId)
+                                                }"
+                                                @click="toggleFilePlus2"
+                                            ><span>-</span></a>
+                                        </div>
+                                    </div>
                                 </td>
                                 <td></td>
                                 <td></td>
@@ -193,12 +347,15 @@
                             <tr>
                                 <th>내용</th>
                                 <td colspan="3" style="height: 100px">
-													<textarea style="width: 100%; height: 100%;">공지사항 내용 2....
-
-
-
-
-</textarea>
+									<textarea
+                                        style="width: 100%; height: 100%;"
+                                        rows="6"
+                                        placeholder="공지사항 내용"
+                                        :disabled="brdOneDisabled(bnBrdOne.brdWriterId)"
+                                        :value="bnBrdOne.brdCont"
+                                        @input="bnBrdOne.brdCont = $event.target.value"
+                                        maxlength="1000"
+                                    ></textarea>
                                 </td>
                             </tr>
                             </tbody>
@@ -250,11 +407,48 @@
                         <tr>
                             <th>첨부파일<br />(최대 2개)</th>
                             <td>
-                                <input class="txtSize0" type="text" id="" value="">
-                                <a href="#" class="btnS colorWhite"><span>찾기</span></a>
-                                <a href="#" class="btnS colorOrg"><span>삭제</span></a><br />
-                                <input class="txtSize0" type="text" id="" value="">
-                                <a href="#" class="btnS colorWhite"><span>찾기</span></a>
+                                <div>
+                                    <input
+                                            style="width: 84% !important; padding-top: 0.5px;"
+                                            type="file"
+                                            id="popFileInput1"
+                                            name="popFileInput1"
+                                            placeholder="첨부파일"
+                                    >
+                                    <a
+                                            v-if="!showPopFilePlus"
+                                            href="#;"
+                                            class="btnS colorOrg"
+                                            @click="togglePopFilePlus"
+                                    ><span>-</span></a>
+                                    <a
+                                            v-if="showPopFilePlus"
+                                            href="#;"
+                                            class="btnS colorWhite"
+                                            @click="togglePopFilePlus"
+                                    ><span>+</span></a>
+                                </div>
+                                <div v-if="!showPopFilePlus" style="margin-top: 5px;">
+                                    <input
+                                            style="width: 84% !important; padding-top: 0.5px;"
+                                            type="file"
+                                            id="popFileInput2"
+                                            name="popFileInput2"
+                                            placeholder="첨부파일"
+                                    >
+                                    <a
+                                            v-if="!showPopFilePlus"
+                                            href="#;"
+                                            class="btnS colorOrg"
+                                            @click="togglePopFilePlus"
+                                    ><span>-</span></a>
+                                    <a
+                                            v-if="showPopFilePlus"
+                                            href="#;"
+                                            class="btnS colorWhite"
+                                            @click="togglePopFilePlus"
+                                    ><span>+</span></a>
+                                </div>
                             </td>
                             <td></td>
                         </tr>
@@ -309,6 +503,14 @@
                 bnBrdList: [],
                 chkBnBrdList: [],
                 selBrd: -1,
+                bnBrdOne: {},
+                brdOneFileShow: false,
+                brdOneCurFileInfo: [],
+                brdOneNewFileInfo: [],
+                showFilePlus1: true,
+                showFilePlus2: true,
+                showFileInput2: false,
+                showPopFilePlus: true,
                 newBnBrd: {
                     brdTitle: '',
                     brdCont: ''
@@ -318,6 +520,12 @@
                 this.initPage()
             },
             watch: {},
+            filters: {
+                mbSize(value) {
+                    if (!value) return ''
+                    return (Number.parseFloat(value) / 1000000).toFixed(2)
+                }
+            },
             methods: {
                 initPage() {
                     this.selBrd = -1
@@ -325,6 +533,8 @@
                     this.initChkBrdList()
                     this.initSrchCond()
                     this.getBnBrdList()
+                    this.initBnBrdOne()
+                    this.initPop()
                 },
                 initSrchCond() {
                     this.srchCond = {
@@ -334,6 +544,27 @@
                 },
                 initChkBrdList() {
                     this.chkBnBrdList = []
+                },
+                initBnBrdOne() {
+                    this.bnBrdOne = {}
+                    this.initBrdOneFileList()
+                },
+                initBrdOneFileList() {
+                    this.brdOneCurFileInfo = []
+                    this.brdOneNewFileInfo = []
+                    this.brdOneFileShow = false
+                },
+                initPop() {
+                    this.newBnBrd = {
+                        brdTitle: '',
+                        brdCont: ''
+                    }
+                    for (var i=1; i < 3; i++) {
+                        if ($('#popFileInput' + i) !== undefined) {
+                            $('#popFileInput' + i).attr({ value: '' })
+                        }
+                    }
+                    this.showPopFilePlus = true
                 },
                 getBnBrdList() {
                     var param = {
@@ -359,10 +590,10 @@
                 setTrIndex(idx) {
                     if (idx === this.selBrd) {
                         this.selBrd = -1
+                        this.initBnBrdOne()
                     } else {
                         this.selBrd = idx
-                        // 수정 정보 셋팅
-                        // this.newSellerPrmsInfo.sellerPrms = this.empList[idx].sellerPrms
+                        this.getBnBrdOne()
                     }
                 },
                 getTrClass(idx) {
@@ -399,7 +630,7 @@
                             bnMbrId: this.bnMbrId,
                             brdNoList: this.chkBnBrdList
                         }
-                        cf_call("/shop/modiBnBrdHide", param, this.modiBnBrdHideCB)
+                        cf_call('/shop/modiBnBrdHide', param, this.modiBnBrdHideCB)
                     } else {
                         alert('숨김 처리 할 글을 체크하세요.')
                     }
@@ -410,26 +641,118 @@
                         this.initPage()
                     }
                 },
+                getBnBrdOne() {
+                    var param = {
+                        bnMbrId: this.bnMbrId,
+                        brdNo: this.bnBrdList[this.selBrd].brdNo
+                    }
+                    cf_call('/shop/getBnBrdOne', param, this.getBnBrdOneCB)
+                },
+                getBnBrdOneCB(rslt) {
+                    if (rslt !== undefined) {
+                        this.brdOneFileShow = true
+                        this.bnBrdOne = rslt.bnBrdOne
+                        this.brdOneCurFileInfo = rslt.brdOneCurFileInfo
+
+                        if (this.brdOneCurFileInfo.length === 1) {
+                            this.showFilePlus2 = true
+                        } else {
+                            this.showFilePlus2 = false
+                        }
+                        this.showFileInput2 = false
+                    }
+                },
+                brdOneDisabled(brdWriterId) {
+                    return brdWriterId !== this.bnMbrId
+                },
+                getFile(fileName) {
+                    cf_downloadFile(fileName)
+                },
+                toggleFilePlus1() {
+                    this.showFilePlus1 = !this.showFilePlus1
+                },
+                toggleFilePlus2() {
+                    this.showFilePlus2 = !this.showFilePlus2
+                    if (this.showFilePlus2) this.showFileInput2 =  false
+                },
+                toggleFileInput2() {
+                    this.showFileInput2 = !this.showFileInput2
+                    if (this.showFileInput2) this.showFilePlus2 = false
+                },
+                togglePopFilePlus() {
+                    this.showPopFilePlus = !this.showPopFilePlus
+                },
+                delOneFile(storFilNm) {
+                    for (var i=0; i < this.brdOneCurFileInfo.length; i++) {
+                        if (this.brdOneCurFileInfo[i].storFilNm === storFilNm) {
+                            var delFile = this.brdOneCurFileInfo.splice(i, 1)[0]
+                            delFile.filStat = 'DEL'
+                            this.brdOneNewFileInfo.push(delFile)
+                        }
+                    }
+                    this.toggleFilePlus2()
+                },
+                modiBnBrdOne() {
+                    if (!this.brdOneDisabled(this.bnBrdOne.brdWriterId)) {
+                        if (this.bnBrdOne.brdTitle.trim() === '') {
+                            alert('공지사항 제목을 입력하세요.')
+                        } else if (this.bnBrdOne.brdCont.trim() === '') {
+                            alert('공지사항 내용을 입력하세요.')
+                        } else {
+                            var param = this.bnBrdOne
+                            param.bnMbrId = this.bnMbrId
+                            param.brdNo = this.bnBrdList[this.selBrd].brdNo
+
+                            var i = 0
+                            for (i; i < this.brdOneCurFileInfo.length; i++) {
+                                this.brdOneNewFileInfo.splice(i, 0, this.brdOneCurFileInfo[i])
+                            }
+                            param.brdOneNewFileInfo = this.brdOneNewFileInfo
+
+                            var fileList = []
+                            for (var j=1; j < 4; j++) {
+                                if ($('#newFileInput' + j)[0] !== undefined && $('#newFileInput' + j)[0].files[0] !== undefined) {
+                                    fileList.push($('#newFileInput' + j)[0].files[0])
+                                }
+                            }
+
+                            cf_callWithFiles("/shop/modiBnBrdOne", fileList, param, this.modiBnBrdOneCB)
+                        }
+
+                    }
+                },
+                modiBnBrdOneCB(rslt) {
+                    if (rslt.rsltStat === 'SUCC') {
+                        alert('해당 글이 수정 되었습니다.')
+                        this.initPage()
+                    }
+                },
                 addBnBrd() {
                     if (this.newBnBrd.brdTitle.trim() === '') {
                         alert('공지사항 제목을 입력하세요.')
                     } else if (this.newBnBrd.brdCont.trim() === '') {
                         alert('공지사항 내용을 입력하세요.')
                     } else {
+                        var fileList = []
+                        for (var i=1; i < 3; i++) {
+                            if ($('#popFileInput' + i)[0] !== undefined && $('#popFileInput' + i)[0].files[0] !== undefined) {
+                                fileList.push($('#popFileInput' + i)[0].files[0])
+                            }
+                        }
+
                         var param = {
                             bnMbrId: this.bnMbrId,
                             brdTitle: this.newBnBrd.brdTitle,
                             brdCont: this.newBnBrd.brdCont
                         }
-                        cf_call('/shop/addBnBrd', param, this.addBnBrdCB)
+
+                        cf_callWithFiles('/shop/addBnBrd', fileList, param, this.addBnBrdCB)
                     }
                 },
                 addBnBrdCB(rslt) {
                     if (rslt.rsltStat === 'SUCC') {
                         alert('공지사항이 작성되었습니다.')
                         $('#popLayerNoticeAdd').popup('hide')
-                        this.newBnBrd.brdTitle = ''
-                        this.newBnBrd.brdCont = ''
                         this.initPage()
                     }
                 }

@@ -12,8 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -64,8 +66,8 @@ public class CommonService {
         String filExtNm = origFilNm.substring(origFilNm.lastIndexOf(".")); // 파일 확장자
         String filStorPthTxt = settingProperties.getFileStorePath(); // 파일 저장경로
         long filSizNo = multipartFile.getSize(); // 파일크기
-        if (filSizNo > 1000000) {
-            throw new UserException("파일크기가 10MB를 초과할 수 없습니다.");
+        if (filSizNo > 100000000) {
+            throw new UserException("파일크기가 100MB를 초과할 수 없습니다.");
         }
 
         File file = new File(filStorPthTxt + storFilNm);
@@ -94,6 +96,24 @@ public class CommonService {
     }
 
     /**
+     * 파일 정보 조회
+     * @param param : 파일저장명
+     * @return
+     */
+    public DevMap getFileInfo(String param) {
+        return cmmnDao.selectOne("sellerweb.common.selectFileInfo", param);
+    }
+
+    /**
+     * 업로드한 파일 삭제 처리 (update)
+     * @param param
+     * @throws UserException
+     */
+    public void updateFileDelYn(DevMap param) throws UserException {
+        cmmnDao.update("sellerweb.common.updateFileDelYn", param);
+    }
+
+    /**
      * 이미지 태그의 src에 소스정보를 제공한다.
      * @param response
      * @param fileName
@@ -110,7 +130,8 @@ public class CommonService {
 
         byte[] b = new byte[BUFFER_SIZE];
 
-        String mimeType = cmmnDao.selectOne("sellerweb.common.selectFileType", fileName);
+        DevMap fileInfo = getFileInfo(fileName);
+        String mimeType = fileInfo.getString("filTyp");
         if(mimeType == null || mimeType.equals("")) {
             mimeType = "application/octet-stream;";
         }
@@ -131,6 +152,64 @@ public class CommonService {
         } catch (Exception e) {
             log.error(CmmnUtil.getExceptionMsg(e));
             throw new UserException("이미지파일 로딩중 오류가 발생했습니다.");
+        }
+    }
+
+    /**
+     * 파일 다운로드
+     * @param response
+     * @param fileName
+     * @throws UserException
+     */
+    public void downloadFile(HttpServletResponse response, String fileName) throws UserException {
+        DevMap fileInfo = getFileInfo(fileName);
+        if (fileInfo == null) {
+            throw new UserException("파일정보가 존재하지 않습니다.");
+        }
+        String origFilNm = fileInfo.getString("origFilNm");
+        String storFilNm = fileInfo.getString("storFilNm");
+        String filTyp = fileInfo.getString("filTyp");
+
+        String fileStorePath = settingProperties.getFileStorePath();
+
+        File file = new File(fileStorePath + filePathBlackList(storFilNm));
+
+        if(!file.exists() || !file.isFile()) {
+            throw new UserException("파일이 존재하지 않습니다.");
+        }
+
+        byte[] bufByte = new byte[BUFFER_SIZE];
+
+        try {
+            origFilNm = URLEncoder.encode(origFilNm, "UTF-8");
+        } catch (UnsupportedEncodingException e1) {
+            throw new UserException("파일 다운로드 중 오류가 발생했습니다.");
+        }
+
+        response.setContentType(filTyp);
+        StringBuffer strBuf = new StringBuffer();
+        strBuf.append("attachment; filename=\"");
+        strBuf.append(origFilNm);
+        strBuf.append("\";");
+        response.setHeader("Content-Disposition", strBuf.toString());
+        response.setHeader("Content-Transfer-Encoding", "binary");
+        response.setHeader("Pragma", "no-cache");
+        response.setHeader("Expires", "0");
+
+        try (BufferedInputStream bufIS = new BufferedInputStream(new FileInputStream(file));
+            BufferedOutputStream bufOS = new BufferedOutputStream(response.getOutputStream())
+        ){
+            int read = 0;
+
+            while (true) {
+                read = bufIS.read(bufByte);
+                if (read == -1) {
+                    break;
+                }
+                bufOS.write(bufByte, 0, read);
+            }
+        } catch (Exception e) {
+            throw new UserException("파일 로딩 중 오류가 발생했습니다.");
         }
     }
 

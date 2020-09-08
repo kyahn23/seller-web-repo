@@ -1,20 +1,23 @@
 package com.pentas.sellerweb.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pentas.sellerweb.common.exception.UserException;
 import com.pentas.sellerweb.common.module.util.DevMap;
 import com.pentas.sellerweb.common.module.util.json.JsonUtil;
+import com.pentas.sellerweb.service.CommonService;
 import com.pentas.sellerweb.service.ShopService;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -22,6 +25,9 @@ public class ShopRestController {
 
     @Autowired
     ShopService shopService;
+
+    @Autowired
+    CommonService commonService;
 
     /**
      * 매장정보 조회
@@ -43,7 +49,7 @@ public class ShopRestController {
      * @return rslt
      */
     @PostMapping("/shop/modiShopInfo")
-    public DevMap modiShopInfo(HttpServletRequest request, @RequestBody DevMap param) throws IllegalStateException {
+    public DevMap modiShopInfo(HttpServletRequest request, @RequestBody DevMap param) throws IllegalStateException, UserException {
         String mbrId = (String) request.getSession().getAttribute("mbrId");
         param.put("mbrId", mbrId);
         shopService.modiShopInfo(param);
@@ -131,11 +137,35 @@ public class ShopRestController {
     /**
      * 매장 공지사항 글 작성
      * @param request
-     * @param param
+     * @param multipartRequest
      * @return
+     * @throws IOException
+     * @throws IllegalStateException
+     * @throws UserException
      */
     @PostMapping("/shop/addBnBrd")
-    public DevMap addBnBrd(HttpServletRequest request, @RequestBody DevMap param) {
+    public DevMap addBnBrd(HttpServletRequest request, MultipartRequest multipartRequest) throws IOException, IllegalStateException, UserException {
+        String paramStr = request.getParameter("param");
+        DevMap param = JsonUtil.fromJsonStr(DevMap.class, paramStr);
+        String bnMbrId = param.getString("bnMbrId");
+
+        DevMap fileUploadParam = new DevMap();
+        fileUploadParam.put("bnMbrId", bnMbrId);
+
+        List<DevMap> insFileInfoList = new ArrayList<>();
+        List<MultipartFile> multipartFileList = multipartRequest.getFiles("fileList");
+        for (MultipartFile multipartFile : multipartFileList) {
+            DevMap fileProcRslt = new DevMap();
+            fileProcRslt = commonService.uploadFile(multipartFile, fileUploadParam);
+            insFileInfoList.add(fileProcRslt);
+        }
+
+        int filCnt = 0;
+        for (DevMap insFileInfo : insFileInfoList) {
+            filCnt++;
+            param.put("brdAttFile" + filCnt, insFileInfo.getString("storFilNm"));
+        }
+
         shopService.addBnBrd(param);
 
         DevMap rslt = new DevMap();
@@ -168,6 +198,75 @@ public class ShopRestController {
     @PostMapping("/shop/modiBnBrdHide")
     public DevMap modiBnBrdHide(HttpServletRequest request, @RequestBody DevMap param) {
         shopService.modiBnBrdHide(param);
+
+        DevMap rslt = new DevMap();
+        rslt.put("rsltStat", "SUCC");
+        return rslt;
+    }
+
+    /**
+     * 매장 공지사항 글 가져오기
+     * @param request
+     * @param param
+     * @return
+     */
+    @PostMapping("/shop/getBnBrdOne")
+    public DevMap getBnBrdOne(HttpServletRequest request, @RequestBody DevMap param) {
+        DevMap rslt = new DevMap();
+        rslt = shopService.getBnBrdOne(param);
+        return rslt;
+    }
+
+    /**
+     * 매장 공자사항 글 수정
+     * @param request
+     * @param multipartRequest
+     * @return
+     * @throws IOException
+     * @throws IllegalStateException
+     * @throws UserException
+     */
+    @PostMapping("/shop/modiBnBrdOne")
+    public DevMap modiBnBrdOne(HttpServletRequest request, MultipartRequest multipartRequest) throws IOException, IllegalStateException, UserException {
+//        String mbrId = (String) request.getSession().getAttribute("mbrId");
+        String paramStr = request.getParameter("param");
+        DevMap param = JsonUtil.fromJsonStr(DevMap.class, paramStr);
+        String bnMbrId = param.getString("bnMbrId");
+
+        DevMap fileUploadParam = new DevMap();
+        fileUploadParam.put("bnMbrId", bnMbrId);
+
+        List<DevMap> insFileInfoList = new ArrayList<>();
+        List<MultipartFile> multipartFileList = multipartRequest.getFiles("fileList");
+        for (MultipartFile multipartFile : multipartFileList) {
+            DevMap fileProcRslt = new DevMap();
+            fileProcRslt = commonService.uploadFile(multipartFile, fileUploadParam);
+            fileProcRslt.put("filStat", "NEW");
+            insFileInfoList.add(fileProcRslt);
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        List<DevMap> newFileInfo =  mapper.convertValue(param.get("brdOneNewFileInfo"), new TypeReference<List<DevMap>>() {});
+        int filCnt = 0;
+        for (DevMap fileInfo : newFileInfo) {
+            String filStat = fileInfo.getString("filStat");
+            if (filStat.equals("DEL")) {
+                commonService.updateFileDelYn(fileInfo);
+            } else if (filStat.equals("CUR")) {
+                filCnt++;
+                param.put("brdAttFile" + filCnt, fileInfo.getString("storFilNm"));
+            }
+        }
+        for (DevMap insFileInfo : insFileInfoList) {
+            filCnt++;
+            param.put("brdAttFile" + filCnt, insFileInfo.getString("storFilNm"));
+        }
+
+        if (filCnt == 1) {
+            param.put("brdAttFile2", null);
+        }
+
+        shopService.modiBnBrdOne(param);
 
         DevMap rslt = new DevMap();
         rslt.put("rsltStat", "SUCC");

@@ -10,7 +10,7 @@ public class CustomConfiguration {
 	@Bean
 	public CommonsMultipartResolver multipartResolver() {
 		CommonsMultipartResolver bean = new CommonsMultipartResolver();
-		bean.setMaxUploadSize(10000000);
+		bean.setMaxUploadSize(1000000000);
 		return bean;
 	}
 

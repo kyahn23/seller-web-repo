@@ -256,8 +256,8 @@ function cf_call(url, param, callback, options, isloadingbar) {
  * @param fileName
  * @returns
  */
-function cf_fileDownload(fileName) {
-    location.href = g_cxt + "/fileDownload?fileName=" + fileName;
+function cf_downloadFile(fileName) {
+    location.href = g_cxt + "/downloadFile?fileName=" + fileName;
 }
 
 function cf_excelDown(url, param) {

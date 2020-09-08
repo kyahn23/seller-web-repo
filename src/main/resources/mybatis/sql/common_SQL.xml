@@ -2,8 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
 <mapper namespace="sellerweb.common">
 
-    <select id="selectFileType" parameterType="string" resultType="string">
-        SELECT FIL_TYP FROM TBL014 WHERE STOR_FIL_NM = #{storFilNm}
+    <select id="selectFileInfo" parameterType="string" resultType="DevMap">
+        SELECT
+            STOR_FIL_NM
+            ,ORIG_FIL_NM
+            ,FIL_SIZ_NO
+            ,FIL_TYP
+        FROM TBL014 WHERE STOR_FIL_NM = #{storFilNm}
     </select>
 
     <insert id="insertFileDetail" parameterType="DevMap">
@@ -25,6 +30,13 @@
             #{inpMbrId}
         )
     </insert>
+
+    <update id="updateFileDelYn" parameterType="DevMap">
+        UPDATE TBL014
+        SET DEL_YN = 'Y'
+            ,AMD_DT = CURRENT_TIMESTAMP
+        WHERE STOR_FIL_NM = #{storFilNm}
+    </update>
 
     <select id="selectCntMbrId" parameterType="DevMap" resultType="string">
         SELECT COUNT(*) FROM TBL002 WHERE BN_MBR_ID = #{mbrId}
