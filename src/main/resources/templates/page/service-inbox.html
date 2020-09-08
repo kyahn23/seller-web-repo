@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/default">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/default">
 
 <div layout:fragment="content">
     <!-- contents -->
@@ -19,25 +20,20 @@
                     <ul>
                         <li class="txtSize2">
                             <label for="purchaes01">통신사</label>
-                            <select id="purchaes01">
-                                <option value="">전체</option>
-                                <option value="">SKT</option>
-                                <option value="">KT</option>
-                                <option value="">LGU+</option>
+                            <select id="purchaes01" v-model="selectedCarr">
+                                <option v-for="carr in carrArr" :value="carr.code">{{carr.value}}</option>
                             </select>
+
                         </li>
                         <li class="txtSize3">
                             <label for="purchaes02">개통유형</label>
-                            <select id="purchaes02">
-                                <option value="">전체</option>
-                                <option value="">번호이동</option>
-                                <option value="">기기변경</option>
-                                <option value="">신규가입</option>
+                            <select id="purchaes02" v-model="selectedType">
+                                <option v-for="type in counselType" :value="type.code">{{type.value}}</option>
                             </select>
                         </li>
                         <li class="txtSize5">
                             <label for="purchaes03">고객명</label>
-                            <input type="text" id="purchaes03" placeholder="고객명 입력" value="">
+                            <input type="text" id="purchaes03" placeholder="고객명 입력" v-model="clientNm">
                         </li>
                     </ul>
                     <div class="btnSearch">
@@ -53,7 +49,7 @@
                         </div>
                         <div class="cTitRight">
                             <div class="SelectBoxBasic selectPaging">
-                                <input type="hidden" value="1page" />
+                                <input type="hidden" value="1page"/>
                                 <div class="DefaultName">선택하세요</div>
                                 <ul>
                                     <li id="1page">1 page</li>
@@ -218,10 +214,14 @@
                             </colgroup>
                             <tbody>
                             <tr>
-                                <th colspan="2" style="padding: 6px 10px 6px 12px; text-align: center; background: #ebf3fd;">
-                                    접수 시 판매 정책</th>
-                                <th colspan="2" style="padding: 6px 10px 6px 12px; text-align: center; background: #fdebed;">
-                                    현재 판매 정책</th>
+                                <th colspan="2"
+                                    style="padding: 6px 10px 6px 12px; text-align: center; background: #ebf3fd;">
+                                    접수 시 판매 정책
+                                </th>
+                                <th colspan="2"
+                                    style="padding: 6px 10px 6px 12px; text-align: center; background: #fdebed;">
+                                    현재 판매 정책
+                                </th>
                             </tr>
                             <tr>
                                 <th style="background: #ebf3fd;">출고가</th>
@@ -271,5 +271,32 @@
         </div>
     </div>
     <!-- //contents -->
+</div>
+
+<div layout:fragment="script">
+    <script>
+        var app = new Vue({
+            el: "#app",
+            data: {
+                carrArr: [
+                    {code: "all", value: "전체"},
+                    {code: "s", value: "SKT"},
+                    {code: "k", value: "KT"},
+                    {code: "l", value: "LGU"}
+                ],
+                selectedCarr: "all",
+                counselType: [
+                    {code: "all", value: "전체"},
+                    {code: "moveCarr", value: "번호이동"},
+                    {code: "chgDev", value: "기기변경"},
+                    {code: "newSignup", value: "신규가입"},
+                ],
+                selectedType: "all",
+                clientNm: "",
+                counselList: [],
+                selectedCs: {}
+            }
+        })
+    </script>
 </div>
 </html>
