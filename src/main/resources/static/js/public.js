@@ -162,14 +162,14 @@ function SelectBoxBasic() {
 	$(".SelectBoxBasic").each(function () {
 		var SelectVal = $(this).children('input').val();
 		var SelectDefault = $(this).children('ul').children("#" + SelectVal);
-		if (SelectVal) { // INPUT TRUE 
-			if ($(SelectDefault).html()) {
-				$(this).children('.DefaultName').html($(SelectDefault).html());
-			} else {
-				$(this).children('.DefaultName').html("VALUE ERROR");
-				$(this).children('input').val("");
-			}
-		}
+		// if (SelectVal) { // INPUT TRUE
+		// 	if ($(SelectDefault).html()) {
+		// 		$(this).children('.DefaultName').html($(SelectDefault).html());
+		// 	} else {
+		// 		$(this).children('.DefaultName').html("VALUE ERROR");
+		// 		$(this).children('input').val("");
+		// 	}
+		// }
 	});
 	$(".SelectBoxBasic").click(function () {
 		$(this).children('ul').css("width", $(".SelectBoxBasic").width() - 2 + "px");

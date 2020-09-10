@@ -37,7 +37,7 @@
                         </li>
                     </ul>
                     <div class="btnSearch">
-                        <a href="#" class="btnM colorBlue"><span>검색</span></a>
+                        <a href="#" class="btnM colorBlue" @click="searchList"><span>검색</span></a>
                     </div>
                 </div>
 
@@ -49,23 +49,12 @@
                         </div>
                         <div class="cTitRight">
                             <div class="SelectBoxBasic selectPaging">
-                                <input type="hidden" value="1page"/>
-                                <div class="DefaultName">선택하세요</div>
+                                <!--                                <input type="hidden" value="1page"/>-->
+                                <div class="DefaultName">{{pageInfo.page}} page</div>
                                 <ul>
-                                    <li id="1page">1 page</li>
-                                    <li id="2page">2 page</li>
-                                    <li id="3page">3 page</li>
-                                    <li id="4page">4 page</li>
-                                    <li id="5page">5 page</li>
-                                    <li id="6page">6 page</li>
-                                    <li id="7page">7 page</li>
-                                    <li id="8page">8 page</li>
-                                    <li id="9page">9 page</li>
-                                    <li id="10page">10 page</li>
-                                    <li id="11page">11 page</li>
-                                    <li id="12page">12 page</li>
-                                    <li id="13page">13 page</li>
-                                    <li id="14page">14 page</li>
+                                    <li v-for="item in pageInfo.slider" :id='item+"page"' @click="goToPage(item)">
+                                        {{item}} page
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -118,53 +107,16 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td class="alignC">SKT</td>
-                                    <td class="alignC">번호이동</td>
-                                    <td class="alignC">LTE 55</td>
-                                    <td class="alignC">갤럭시 S20</td>
-                                    <td class="alignC">홍길동</td>
-                                    <td class="alignC">2020-06-21 15:00</td>
-                                </tr>
-                                <tr class="checkedItem">
-                                    <td class="alignC">KT</td>
-                                    <td class="alignC">번호이동</td>
-                                    <td class="alignC">LTE 56</td>
-                                    <td class="alignC">갤럭시 S20</td>
-                                    <td class="alignC">고길동</td>
-                                    <td class="alignC">2020-06-21 15:10</td>
-                                </tr>
-                                <tr>
-                                    <td class="alignC">LGU+</td>
-                                    <td class="alignC">기기변경</td>
-                                    <td class="alignC">5G 55</td>
-                                    <td class="alignC">갤럭시 S10</td>
-                                    <td class="alignC">이효리</td>
-                                    <td class="alignC">2020-06-21 15:20</td>
-                                </tr>
-                                <tr>
-                                    <td class="alignC">LGU+</td>
-                                    <td class="alignC">기기변경</td>
-                                    <td class="alignC">5G 76</td>
-                                    <td class="alignC">갤럭시 S20 Plus</td>
-                                    <td class="alignC">삼순이</td>
-                                    <td class="alignC">2020-06-21 15:30</td>
-                                </tr>
-                                <tr>
-                                    <td class="alignC">SKT</td>
-                                    <td class="alignC">신규가입</td>
-                                    <td class="alignC">5G 90</td>
-                                    <td class="alignC">갤럭시 S10 Plus</td>
-                                    <td class="alignC">아무개</td>
-                                    <td class="alignC">2020-06-21 15:40</td>
-                                </tr>
-                                <!-- 결과없음 -->
-                                <tr class="errorMessage">
-                                    <td colspan="6">
-                                        <div class="errorTxt">
-                                            <span>항목이 없습니다.</span>
-                                        </div>
-                                    </td>
+                                <tr v-for="(list,idx) in counselList" @click="selectCs(list, idx)"
+                                    :class="{ checkedItem: getTrClass(idx) }">
+                                    <td class="alignC">{{list.mntCarr}}</td>
+                                    <td class="alignC" v-if="list.pnRegDis === 'A'">번호이동</td>
+                                    <td class="alignC" v-else-if="list.pnRegDis === 'B'">기기변경</td>
+                                    <td class="alignC" v-else>신규가입</td>
+                                    <td class="alignC">{{list.pnMntRtNm}}</td>
+                                    <td class="alignC">{{list.pnMdlNm}}</td>
+                                    <td class="alignC">{{list.clMbrNm}}</td>
+                                    <td class="alignC">{{list.inpDt}}</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -173,7 +125,6 @@
                     <!-- //content -->
                 </div>
                 <!-- //content group1 -->
-
 
                 <!-- content group2 -->
                 <div class="contentBlock">
@@ -194,18 +145,21 @@
                             <tbody>
                             <tr>
                                 <th>통신사 / 개통유형</th>
-                                <td>KT / 번호이동</td>
+                                <td v-if="!selectedCs.callNo">-</td>
+                                <td v-else>{{selectedCs.mntCarr}} / {{selectedCs.pnRegDisNm}}</td>
                                 <th>상담요금제</th>
-                                <td>LTE 56</td>
+                                <td v-if="!selectedCs.callNo">-</td>
+                                <td v-else>{{selectedCs.pnMntRtNm}}</td>
                             </tr>
                             <tr>
                                 <th>휴대폰</th>
-                                <td colspan="3">갤럭시 S20</td>
+                                <td colspan="3" v-if="!selectedCs.callNo">-</td>
+                                <td colspan="3" v-else>{{selectedCs.pnMdlNm}} {{selectedCs.pnStor}}</td>
                             </tr>
                             </tbody>
                         </table>
 
-                        <table class="tblDataRow mb15">
+                        <table class="tblDataRow mb15" v-if="selectedCs.callNo">
                             <colgroup>
                                 <col style="width:140px">
                                 <col style="width:*">
@@ -225,33 +179,58 @@
                             </tr>
                             <tr>
                                 <th style="background: #ebf3fd;">출고가</th>
-                                <td style="text-align: right;">1,248,000 원</td>
+                                <td style="text-align: right;">{{Number(selectedCs.pnMsrp).toLocaleString()}} 원</td>
                                 <th style="background: #fdebed;">출고가</th>
-                                <td style="text-align: right;">1,248,000 원</td>
+                                <td style="text-align: right;">{{Number(currPolicy.pnMsrp).toLocaleString()}} 원</td>
                             </tr>
                             <tr>
                                 <th style="background: #ebf3fd;">공시지원금</th>
-                                <td style="text-align: right;">400,000 원</td>
+                                <td style="text-align: right;">{{Number(selectedCs.oldOfclSubsd).toLocaleString()}} 원
+                                </td>
                                 <th style="background: #fdebed;">공시지원금</th>
-                                <td style="text-align: right;">400,000 원</td>
+                                <td style="text-align: right;">{{Number(currPolicy.pnOfclSubsd).toLocaleString()}} 원
+                                </td>
                             </tr>
                             <tr>
-                                <th style="background: #ebf3fd;">추가지원금</th>
-                                <td style="color: #ff0000; text-align: right;">300,000 원</td>
-                                <th style="background: #fdebed;">추가지원금</th>
-                                <td style="text-align: right;">400,000 원</td>
+                                <th style="background: #ebf3fd;">추가지원금(공시/선약)</th>
+                                <td style="color: #ff0000; text-align: right;">
+                                    {{Number(selectedCs.oldExtSubsdDv).toLocaleString()}} 원 &nbsp; / &nbsp;
+                                    {{Number(selectedCs.oldExtSubsdRt).toLocaleString()}} 원
+                                </td>
+                                <th style="background: #fdebed;">추가지원금(공시/선약)</th>
+                                <td style="text-align: right;">
+                                    {{Number(currPolicy.pnExtSubsdDv).toLocaleString()}} 원
+                                    &nbsp; / &nbsp;
+                                    {{Number(currPolicy.pnExtSubsdRt).toLocaleString()}} 원
+                                </td>
                             </tr>
                             <tr>
-                                <th style="background: #ebf3fd;">실구매가</th>
-                                <td style="color: #ff0000; text-align: right;">546,000 원</td>
-                                <th style="background: #fdebed;">실구매가</th>
-                                <td style="text-align: right;">446,000 원</td>
+                                <th style="background: #ebf3fd;">할부원금(공시/선약)</th>
+                                <td style="color: #ff0000; text-align: right;">{{Number(selectedCs.pnMsrp -
+                                    selectedCs.oldOfclSubsd -
+                                    selectedCs.oldExtSubsdDv).toLocaleString()}} 원 &nbsp; / &nbsp;
+                                    {{Number(selectedCs.pnMsrp -
+                                    selectedCs.oldExtSubsdRt).toLocaleString()}} 원
+                                </td>
+                                <th style="background: #fdebed;">할부원금(공시/선약)</th>
+                                <td style="text-align: right;">{{Number(currPolicy.pnMsrp -
+                                    currPolicy.pnOfclSubsd -
+                                    currPolicy.pnExtSubsdDv).toLocaleString()}} 원 &nbsp; / &nbsp;
+                                    {{Number(currPolicy.pnMsrp -
+                                    currPolicy.pnExtSubsdRt).toLocaleString()}} 원
+                                </td>
                             </tr>
                             <tr>
                                 <th style="background: #ebf3fd;">부가서비스</th>
-                                <td style="color: #ff0000; text-align: right;">있음</td>
+                                <td style="color: #ff0000; text-align: right;" v-if="selectedCs.oldExtServYn === 'Y'">
+                                    있음
+                                </td>
+                                <td style="color: #ff0000; text-align: right;" v-else>없음</td>
                                 <th style="background: #fdebed;">부가서비스</th>
-                                <td style="text-align: right;">없음</td>
+                                <td style="color: #ff0000; text-align: right;" v-if="currPolicy.pnExtServYn === 'Y'">
+                                    있음
+                                </td>
+                                <td style="color: #ff0000; text-align: right;" v-else>없음</td>
                             </tr>
                             </tbody>
                         </table>
@@ -260,7 +239,7 @@
                     <!-- //content -->
                 </div>
                 <!-- //content group2 -->
-                <div class="contentTitle">
+                <div class="contentTitle" v-if="selectedCs.callNo">
                     <div class="cTit"></div>
                     <div class="cTitRight">
                         <div id="btn2"><a href="#" class="btnM colorSky"><span>상담결과 저장</span></a></div>
@@ -280,21 +259,100 @@
             data: {
                 carrArr: [
                     {code: "all", value: "전체"},
-                    {code: "s", value: "SKT"},
-                    {code: "k", value: "KT"},
-                    {code: "l", value: "LGU"}
+                    {code: "SKT", value: "SKT"},
+                    {code: "KT", value: "KT"},
+                    {code: "LGU", value: "LGU"}
                 ],
                 selectedCarr: "all",
                 counselType: [
                     {code: "all", value: "전체"},
-                    {code: "moveCarr", value: "번호이동"},
-                    {code: "chgDev", value: "기기변경"},
-                    {code: "newSignup", value: "신규가입"},
+                    {code: "A", value: "번호이동"},
+                    {code: "B", value: "기기변경"},
+                    {code: "C", value: "신규가입"},
                 ],
                 selectedType: "all",
                 clientNm: "",
-                counselList: [],
-                selectedCs: {}
+                searchOptChg: false,
+                counselList: [],        // 현재 페이지 상담 리스트
+                pageNo: "1",
+                pageInfo: [],     // 현재 페이지 정보
+                selectedCs: {},
+                currPolicy: {}
+            },
+            // watch:{
+            //     selectedCarr(){
+            //         this.searchOptChg = true    // 값 변경됨
+            //     },
+            //     selectedType(){
+            //         this.searchOptChg = true    // 값 변경됨
+            //     },
+            //     clientNm(){
+            //         this.searchOptChg = true    // 값 변경됨
+            //     }
+            // },
+            mounted: function () {
+                let type = 'init'
+                this.searchList(type)
+            },
+            methods: {
+                searchList(data) {
+                    var param = {
+                        mntCarr: this.selectedCarr,
+                        counselType: this.selectedType,
+                        clientNm: this.clientNm,
+                        page: "1"
+                    }
+                    if (data === 'page') param.page = this.pageNo
+                    this.selectedCs = {}
+                    this.counselList = []
+                    cf_call("/service/getCounselList", param, this.searchListCB)
+                },
+                searchListCB(data) {
+                    this.pageInfo = data.pageInfo
+                    for (idx in this.counselList) {
+                        this.counselList[idx].idx = idx
+                        switch (this.counselList[idx].pnRegDis) {
+                            case 'A':
+                                this.counselList[idx].pnRegDisNm = '번호이동'
+                                break
+                            case 'B':
+                                this.counselList[idx].pnRegDisNm = '번호이동'
+                                break
+                            case 'C':
+                                this.counselList[idx].pnRegDisNm = '신규가입'
+                                break
+                        }
+                    }
+                    this.counselList = data.counselList
+                },
+                goToPage(data) {
+                    this.pageNo = "" + data
+                    let type = 'page'
+                    this.searchList(type)
+                },
+                selectCs(data, idx) {
+                    this.selectedCs = {}
+                    this.selectedCs = data
+                    this.selectedCs.idx = idx
+
+                    this.getCurrPolicy()
+                },
+                getTrClass(idx) {
+                    if (idx === this.selectedCs.idx) return true
+                    else return false
+                },
+                getCurrPolicy() {
+                    var param = {
+                        pnRegDis: this.selectedCs.pnRegDis,
+                        pnMdlNo: this.selectedCs.pnMdlNo,
+                        pnStor: this.selectedCs.pnStor,
+                        pnMntRtNo: this.selectedCs.pnMntRtNo
+                    }
+                    cf_call("/service/getCurrPolicy", param, this.getCurrPolicyCB)
+                },
+                getCurrPolicyCB(data) {
+                    this.currPolicy = data
+                }
             }
         })
     </script>

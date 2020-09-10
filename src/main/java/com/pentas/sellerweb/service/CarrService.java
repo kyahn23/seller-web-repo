@@ -22,9 +22,10 @@ public class CarrService {
 
         param.put("BN_NO", "2020082500000000001");                                          // 업체번호
         param.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com");      // 회원아이디
-
-//        param.put("bnNo", "2020090100000000001");                                          // 업체번호
+//        param.put("BN_NO", "2020090100000000001");                                          // 업체번호
 //        param.put("AMD_MBR_ID", "aassddff@naver.com");                                      // 회원아이디
+//        param.put("BN_NO", "2020090900000000001");                                          // 업체번호
+//        param.put("AMD_MBR_ID", "zzxxcc@naver.com");                                      // 회원아이디
 
         return cmmnDao.selectList("sellerweb.carr.mntrtlist", param);
     }
@@ -41,6 +42,8 @@ public class CarrService {
             param.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com");      // 회원아이디
 //            param.put("BN_NO", "2020090100000000001");                                          // 업체번호
 //            param.put("AMD_MBR_ID", "aassddff@naver.com");                                      // 회원아이디
+//            param.put("BN_NO", "2020090900000000001");                                          // 업체번호
+//            param.put("AMD_MBR_ID", "zzxxcc@naver.com");                                      // 회원아이디
             cmmnDao.insert("sellerweb.carr.useMntRt", param);
 
             // 사용여부 내역 남기기
@@ -65,6 +68,8 @@ public class CarrService {
             param.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com");      // 회원아이디
 //            param.put("BN_NO", "2020090100000000001");                                          // 업체번호
 //            param.put("AMD_MBR_ID", "aassddff@naver.com");                                      // 회원아이디
+//            param.put("BN_NO", "2020090900000000001");                                          // 업체번호
+//            param.put("AMD_MBR_ID", "zzxxcc@naver.com");                                      // 회원아이디
 
             //미사용처리전 해당 요금제 판매중지처리 및 판매중지내역남기기
             mvCarrPolicyList = cmmnDao.selectList("sellerweb.carr.policyListByMntRtMvCarr", param);
@@ -143,9 +148,12 @@ public class CarrService {
 //        HttpSession session = request.getSession();
 //        String 업체번호 = (String)session.getAttribute("업체번호);
 //        String mbrId = (String)session.getAttribute("회원아이디");
-
         param.put("BN_NO", "2020082500000000001");                                          // 업체번호
-        param.put("AMD_MBR_ID", "aassddff@naver.com");                                      // 회원아이디
+        param.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com");      // 회원아이디
+//        param.put("BN_NO", "2020090100000000001");                                          // 업체번호
+//        param.put("AMD_MBR_ID", "aassddff@naver.com");                                      // 회원아이디
+//        param.put("BN_NO", "2020090900000000001");                                          // 업체번호
+//        param.put("AMD_MBR_ID", "zzxxcc@naver.com");                                      // 회원아이디
 
         List<DevMap> sellDeviceList = new ArrayList<>();
 
@@ -211,6 +219,8 @@ public class CarrService {
             param.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com");      // 회원아이디
 //            param.put("BN_NO", "2020090100000000001");                                          // 업체번호
 //            param.put("AMD_MBR_ID", "aassddff@naver.com");                                      // 회원아이디
+//            param.put("BN_NO", "2020090900000000001");                                          // 업체번호
+//            param.put("AMD_MBR_ID", "zzxxcc@naver.com");                                      // 회원아이디
 
             param.put("policyType", "MoveCarr");    // 정책유형
 
@@ -239,6 +249,8 @@ public class CarrService {
             param.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com");      // 회원아이디
 //            param.put("BN_NO", "2020090100000000001");                                          // 업체번호
 //            param.put("AMD_MBR_ID", "aassddff@naver.com");                                      // 회원아이디
+//            param.put("BN_NO", "2020090900000000001");                                          // 업체번호
+//            param.put("AMD_MBR_ID", "zzxxcc@naver.com");                                      // 회원아이디
 
             param.put("policyType", "ChgDev");    // 정책유형
 
@@ -267,6 +279,8 @@ public class CarrService {
             param.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com");      // 회원아이디
 //            param.put("BN_NO", "2020090100000000001");                                          // 업체번호
 //            param.put("AMD_MBR_ID", "aassddff@naver.com");                                      // 회원아이디
+//            param.put("BN_NO", "2020090900000000001");                                          // 업체번호
+//            param.put("AMD_MBR_ID", "zzxxcc@naver.com");                                      // 회원아이디
 
             param.put("policyType", "NewSignup");    // 정책유형
 
@@ -294,6 +308,8 @@ public class CarrService {
             param.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com");      // 회원아이디
 //            param.put("BN_NO", "2020090100000000001");                                          // 업체번호
 //            param.put("AMD_MBR_ID", "aassddff@naver.com");                                      // 회원아이디
+//            param.put("BN_NO", "2020090900000000001");                                          // 업체번호
+//            param.put("AMD_MBR_ID", "zzxxcc@naver.com");                                      // 회원아이디
 
             // 번호이동
             cmmnDao.update("sellerweb.carr.stopSaleDevMvCarr", param);
@@ -313,6 +329,8 @@ public class CarrService {
             param.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com");      // 회원아이디
 //            param.put("BN_NO", "2020090100000000001");                                          // 업체번호
 //            param.put("AMD_MBR_ID", "aassddff@naver.com");                                      // 회원아이디
+//            param.put("BN_NO", "2020090900000000001");                                          // 업체번호
+//            param.put("AMD_MBR_ID", "zzxxcc@naver.com");                                      // 회원아이디
             // 기기변경
             cmmnDao.update("sellerweb.carr.stopSaleDevChgDev", param);
 
@@ -331,6 +349,8 @@ public class CarrService {
             param.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com");      // 회원아이디
 //            param.put("BN_NO", "2020090100000000001");                                          // 업체번호
 //            param.put("AMD_MBR_ID", "aassddff@naver.com");                                      // 회원아이디
+//            param.put("BN_NO", "2020090900000000001");                                          // 업체번호
+//            param.put("AMD_MBR_ID", "zzxxcc@naver.com");                                      // 회원아이디
             // 신규가입
             cmmnDao.update("sellerweb.carr.stopSaleDevNewSignup", param);
 

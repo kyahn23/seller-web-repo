@@ -89,7 +89,11 @@ public class CarrRestController {
     @PostMapping("/carr/getUseMntByDevice")
     public DevMap getUseMntByDevice(@RequestBody DevMap param) {
         param.put("BN_NO", "2020082500000000001");                                          // 업체번호
-        param.put("AMD_MBR_ID", "aassddff@naver.com");                                      // 회원아이디
+        param.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com");      // 회원아이디
+//        param.put("BN_NO", "2020090100000000001");                                          // 업체번호
+//        param.put("AMD_MBR_ID", "aassddff@naver.com");                                      // 회원아이디
+//        param.put("BN_NO", "2020090900000000001");                                          // 업체번호
+//        param.put("AMD_MBR_ID", "zzxxcc@naver.com");                                      // 회원아이디
 
         DevMap rslt = new DevMap();
         List<DevMap> moveCarrList = null;

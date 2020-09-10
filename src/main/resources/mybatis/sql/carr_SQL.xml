@@ -647,48 +647,6 @@
         and PN_MNT_RT_NO=#{pnMntRtNo}
     </select>
 
-    <!--    <insert id="policyHistoryByDeleteMntrt" parameterType="devMap">-->
-    <!--        insert into `TBL016` (-->
-    <!--        INP_DT,-->
-    <!--        SELL_COND_TYPE,-->
-    <!--        SELL_COND_NO,-->
-    <!--        SELL_YN,-->
-    <!--        PN_OFCL_SUBSD,-->
-    <!--        PN_EXT_SUBSD_DV,-->
-    <!--        PN_EXT_SUBSD_RT,-->
-    <!--        PN_EXT_SERV_YN,-->
-    <!--        PN_ETC,-->
-    <!--        AMD_MBR_ID-->
-    <!--        ) values (-->
-    <!--        sysdate(),-->
-    <!--        <choose>-->
-    <!--            <when test='policyType == "MoveCarr"'>-->
-    <!--                'A',-->
-    <!--                (SELECT SELL_COND_NO-->
-    <!--                FROM `TBL007-A`-->
-    <!--            </when>-->
-    <!--            <when test='policyType == "ChgDev"'>-->
-    <!--                'B',-->
-    <!--                (SELECT SELL_COND_NO-->
-    <!--                FROM `TBL007-B`-->
-    <!--            </when>-->
-    <!--            <when test='policyType == "NewSignup"'>-->
-    <!--                'C',-->
-    <!--                (SELECT SELL_COND_NO-->
-    <!--                FROM `TBL007-C`-->
-    <!--            </when>-->
-    <!--        </choose>-->
-    <!--        WHERE PN_MNT_RT_NO = #{pnMntRtNo} and BN_NO = #{bnNo} ),-->
-    <!--        'N',-->
-    <!--        NULL,-->
-    <!--        NULL,-->
-    <!--        NULL,-->
-    <!--        NULL,-->
-    <!--        NULL,-->
-    <!--        #{amdMbrId}-->
-    <!--        )-->
-    <!--    </insert>-->
-
     <!-- 관리자용 요금제사용내역테이블 조회 -->
     <!--    <select id="historyForAdmin">-->
     <!--        select A.BN_NO,-->
