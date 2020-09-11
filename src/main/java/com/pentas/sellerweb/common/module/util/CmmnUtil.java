@@ -1,7 +1,9 @@
 package com.pentas.sellerweb.common.module.util;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.net.URLEncoder;
+import java.security.MessageDigest;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -9,13 +11,17 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 
 import com.google.common.base.Throwables;
 import com.pentas.sellerweb.common.module.ApplicationContextProvider;
 
 public class CmmnUtil {
+	private static final Logger log = LoggerFactory.getLogger(CmmnUtil.class);
 	
 	/**
 	 * DevMap 리스트를 key 값에 의거해서 정렬하는 함수
@@ -88,7 +94,14 @@ public class CmmnUtil {
 		}
 		return "Firefox";
 	}
-	
+
+	/**
+	 * 브라우저 별 URL 인코더
+	 * @param request
+	 * @param str
+	 * @return
+	 * @throws IOException
+	 */
 	public static String encodeString4Browser(HttpServletRequest request, String str) throws IOException {
 		String browser = getBrowser(request);
 		
@@ -115,13 +128,43 @@ public class CmmnUtil {
 		}
 		return rslt;
 	}
+
+	/**
+	 * SHA256 암호화 인코딩
+	 * @param data
+	 * @return
+	 */
+	public static String encryptSHA256(String data) {
+		if (data == null) {
+			return "";
+		}
+		/** fortify apply **/
+		MessageDigest msgDig = null;
+		try {
+			msgDig = MessageDigest.getInstance("SHA-256");
+
+			byte[] plainText = null; // 평문
+			byte[] hashValue = null; // 해쉬값
+			plainText = data.getBytes();
+
+			if (plainText != null) {
+				hashValue = msgDig.digest(plainText);
+				return String.format("%064x", new BigInteger(1, hashValue));
+			} else {
+				return "";
+			}
+		} catch (Exception e) {
+			log.error("error : " + getExceptionMsg(e));
+		}
+
+		return "";
+	}
 	
 	/**
 	 * 클라이언트 아이피 주소 획득
 	 * @param request
 	 * @return
 	 */
-	@SuppressWarnings("unused")
 	private static String getIpAddr(HttpServletRequest request) {
 		return StringUtils.defaultIfEmpty(request.getHeader("X-Forwarded-For"), request.getRemoteAddr());
 	}

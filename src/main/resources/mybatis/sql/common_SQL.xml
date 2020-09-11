@@ -2,6 +2,19 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
 <mapper namespace="sellerweb.common">
 
+    <select id="selectUserInfo" parameterType="string" resultType="UserVO">
+        SELECT
+            BN_MBR_ID
+            ,PWD_NO
+            ,MBR_NM
+            ,PWNO_INIT_YN
+            ,PWERR_CNT
+            ,LGIN_AVL_YN
+            ,ACTV_YN
+        FROM TBL002
+        WHERE BN_MBR_ID = #{userId}
+    </select>
+
     <select id="selectFileInfo" parameterType="string" resultType="DevMap">
         SELECT
             STOR_FIL_NM
@@ -41,5 +54,54 @@
     <select id="selectCntMbrId" parameterType="DevMap" resultType="string">
         SELECT COUNT(*) FROM TBL002 WHERE BN_MBR_ID = #{mbrId}
     </select>
+
+    <update id="updatePwerrCntZero" parameterType="string">
+        UPDATE TBL002
+        SET PWERR_CNT = '0'
+            ,AMD_DT = CURRENT_TIMESTAMP
+        WHERE BN_MBR_ID = #{bnMbrId}
+    </update>
+
+    <update id="updatePwerrCntPlus" parameterType="string">
+        UPDATE TBL002
+        SET PWERR_CNT = (
+            SELECT PWERR_CNT + 1 FROM (
+                SELECT * FROM TBL002
+            ) B WHERE B.BN_MBR_ID = #{bnMbrId})
+            ,AMD_DT = CURRENT_TIMESTAMP
+        WHERE BN_MBR_ID = #{bnMbrId}
+    </update>
+
+    <update id="updateLginAvlY" parameterType="string">
+        UPDATE TBL002
+        SET LGIN_AVL_YN = 'Y'
+            ,AMD_DT = CURRENT_TIMESTAMP
+        WHERE BN_MBR_ID = #{bnMbrId}
+    </update>
+
+    <update id="updateLginAvlN" parameterType="string">
+        UPDATE TBL002
+        SET LGIN_AVL_YN = 'N'
+            ,AMD_DT = CURRENT_TIMESTAMP
+        WHERE BN_MBR_ID = #{bnMbrId}
+    </update>
+
+    <update id="updateMstPwInit" parameterType="DevMap">
+        UPDATE TBL002
+            SET PWD_NO = #{tempPwd}
+                ,PWNO_INIT_YN = 'Y'
+                ,PWERR_CNT = '0'
+                ,LGIN_AVL_YN = 'Y'
+                ,AMD_DT = CURRENT_TIMESTAMP
+        WHERE BN_MBR_ID = #{mstMbrId}
+            AND BN_NO = (
+                SELECT BN_NO
+                FROM TBL003
+                WHERE BN_REG_NO = #{bnRegNo}
+                    AND OWNER_NM = #{ownerNm}
+                    AND MST_MBR_ID = #{mstMbrId}
+            )
+            AND MST_MBR_YN = 'Y'
+    </update>
 
 </mapper>

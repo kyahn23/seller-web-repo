@@ -29,7 +29,7 @@ html,body { background:url('../../images/cmmn/login-bg.jpg') center top !importa
 .loginBox .etcLink a { color:#fff; padding:0 1px; }
 .loginBox .etcLink .linkJoin { float:right;font-weight:bold; }
 .loginBox .formWrapper > p {margin-bottom:6px;}
-.loginBox .btnLogin { position:absolute; top:90px; right:0;border-radius:3px; border:1px solid #00aaec; width:106px; height:84px;
+.loginBox .btnLogin { position:absolute; top:90px; right:0;border-radius:3px; border:1px solid #00aaec; width:106px; height:78px;
 	background-color:#0093e4;
 	background-image: -moz-linear-gradient(top, #00bef2 50%, #009fec 100%);
 	background-image: -webkit-linear-gradient(top,#00bef2 50%, #009fec 100%);

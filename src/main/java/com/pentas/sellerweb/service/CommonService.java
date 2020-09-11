@@ -1,10 +1,12 @@
 package com.pentas.sellerweb.service;
 
+import com.pentas.sellerweb.common.conf.properties.EmailProperties;
 import com.pentas.sellerweb.common.conf.properties.SettingProperties;
 import com.pentas.sellerweb.common.dao.CmmnDao;
 import com.pentas.sellerweb.common.exception.UserException;
 import com.pentas.sellerweb.common.module.util.CmmnUtil;
 import com.pentas.sellerweb.common.module.util.DevMap;
+import com.pentas.sellerweb.common.module.util.email.EmailUtil;
 import com.pentas.sellerweb.common.module.util.uuid.UuidUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,12 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 @Service
 public class CommonService {
@@ -29,7 +31,11 @@ public class CommonService {
     SettingProperties settingProperties;
 
     @Autowired
+    EmailProperties emailProperties;
+
+    @Autowired
     CmmnDao cmmnDao;
+
 
     /**
      * 멤버 ID (이메일) 중복 확인
@@ -38,6 +44,61 @@ public class CommonService {
      */
     public String checkMemberId(DevMap param) {
         return cmmnDao.selectOne("sellerweb.common.selectCntMbrId", param);
+    }
+
+
+    /**
+     * 비밀번호 오류 횟수 초기화
+     * @param bnMbrId
+     */
+    public void updatePwerrCntZero(String bnMbrId) { cmmnDao.update("sellerweb.common.updatePwerrCntZero", bnMbrId); }
+
+    /**
+     * 비밀번호 오류 횟수 추가
+     * @param bnMbrId
+     */
+    public void updatePwerrCntPlus(String bnMbrId) { cmmnDao.update("sellerweb.common.updatePwerrCntPlus", bnMbrId); }
+
+    /**
+     * 로그인 가능여부 가능으로 변경
+     * @param bnMbrId
+     */
+    public void updateLginAvlY(String bnMbrId) { cmmnDao.update("sellerweb.common.updateLginAvlY", bnMbrId); }
+
+    /**
+     * 로그인 가능여부 불가로 변경
+     * @param bnMbrId
+     */
+    public void updateLginAvlN(String bnMbrId) { cmmnDao.update("sellerweb.common.updateLginAvlN", bnMbrId); }
+
+    /**
+     * 마스터 회원 비밀번호 변경
+     * @param param
+     */
+    public void updateMstPwInit(DevMap param) {
+        String tempPwd = (new Random().nextInt(900000) + 100000) + "";
+        String hashPwd = CmmnUtil.encryptSHA256(tempPwd.toString());
+
+        param.put("tempPwd", hashPwd);
+
+        String mstMbrId = (String) param.get("mstMbrId");
+        String ownerNm = (String) param.get("ownerNm");
+
+        EmailUtil.sendMailAuthSSL(
+                emailProperties.getSmtpHost(),
+                emailProperties.getSmtpPort(),
+                emailProperties.getSmtpUser(),
+                emailProperties.getSmtpPassword(),
+                "[Pentaworks Service] 임시 비밀번호 발급 안내",
+                "<html><p>" + ownerNm + "님의 임시 비밀번호가 발급되었습니다.<br>" +
+                        "임시 비밀번호로 로그인 후 새 비밀번호로 변경해주세요.<br></p>" +
+                        "<h4>임시 비밀번호 : " + tempPwd + "</h4></html>",
+                mstMbrId + "",
+                emailProperties.getFromEmail(),
+                emailProperties.getFromName()
+        );
+
+        cmmnDao.update("sellerweb.common.updateMstPwInit", param);
     }
 
     /**

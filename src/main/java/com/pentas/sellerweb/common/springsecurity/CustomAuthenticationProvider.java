@@ -26,25 +26,22 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 	@Override
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
-        String userId = authentication.getName();
+		String userId = authentication.getName();
         String userPw = authentication.getCredentials().toString();
-        
+
         // 사용자 정보 가져오기
-        DevMap userInfo = null;
-        try {
-        	userInfo = cmmnDao.selectOne("e1happy.member.getUserInfo", userId);
+		UserVO userVO = new UserVO();
+		try {
+        	userVO = cmmnDao.selectOne("sellerweb.common.selectUserInfo", userId);
         } catch(RuntimeException ex) {
         	log.error(CmmnUtil.getExceptionMsg(ex));
-        	throw new BadCredentialsException("로그확인이 필요합니다.");
+        	throw new BadCredentialsException("로그 확인이 필요합니다.");
         }
-        if(userInfo == null || !StringUtils.equals(userPw, userInfo.getString("password"))) {
-        	throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
+        if(userVO == null) {
+        	throw new BadCredentialsException("로그인 실패");
         }
-        
-        UserVO userVO = new UserVO();
-        userVO.setUsername(userId);
-        userVO.setPassword(userPw);
-        userVO.setNickname(userInfo.getString("nickname"));
+
+        userVO.setInputPwdNo(userPw);
         
         // 사용자 role(auth) 가져오기
         // List<String> authList = cmmnDao.selectList("com.pentas.member.getUserAuth", userId);
@@ -55,7 +52,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         // 	auths.add(new SimpleGrantedAuthority(auth));
         // }
         // userVO.setAuthorities(auths);
-		
+
 		return new UsernamePasswordAuthenticationToken(userVO, userPw);
 	}
 

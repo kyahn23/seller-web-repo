@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Pentaworks Service</title>
+    <!-- cmmnFragment -->
+    <th:block th:replace="fragment/cmmn :: cmmnFragment" ></th:block>
+</head>
+
+<body>
+<div id="app" v-cloak>
+    <!-- content -->
+    <th:block layout:fragment="content"></th:block>
+    <!-- layerFragment -->
+    <th:block layout:fragment="layer"></th:block>
+</div>
+<!-- layerFragment -->
+<th:block layout:fragment="script"></th:block>
+</body>
+
+</html>
