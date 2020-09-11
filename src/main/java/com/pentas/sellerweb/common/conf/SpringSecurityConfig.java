@@ -47,7 +47,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.csrf().disable()
+    	http.csrf().disable()
+			.headers()
+				.frameOptions()
+				.sameOrigin()
+				.and()
             .formLogin() // 로그인 페이지 및 성공 url, handler 그리고 로그인시 사용되는 id, password 파라미터 정의
 	            .loginPage("/login") // 밑의 authorizeRequests 에 설정한 규칙에 어긋난경우 로그인페이지 호출 URL
 	            .loginProcessingUrl("/loginProc") // 로그인처리시 호출할 URL
