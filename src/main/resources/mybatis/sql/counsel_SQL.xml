@@ -11,25 +11,34 @@
         t1.PN_MDL_NO,
         (select PN_MDL_NM FROM TBL011 tt2 where tt2.PN_MDL_NO = t1.PN_MDL_NO) as PN_MDL_NM,
         t1.PN_STOR,
-        (SELECT MBR_NM FROM TBL001 tt3 where tt3.CL_MBR_ID = t1.CL_MBR_ID) as CL_MBR_NM,
         (select PN_MSRP FROM TBL011 tt4 where tt4.PN_MDL_NO = t1.PN_MDL_NO) as PN_MSRP,
+        (SELECT MBR_NM FROM TBL001 tt3 where tt3.CL_MBR_ID = t1.CL_MBR_ID) as CL_MBR_NM,
+        DATE_FORMAT(T.VISIT_DT, '%Y-%m-%d %H:%i') as VISIT_DT,
+        T.MBR_PN_NO,
         T.OLD_OFCL_SUBSD,
         T.OLD_EXT_SUBSD_DV,
         T.OLD_EXT_SUBSD_RT,
         T.OLD_EXT_SERV_YN,
         T.CALL_NO,
+        T.BN_MBR_ID,
+        (SELECT MBR_NM FROM TBL002 tt5 WHERE tt5.BN_MBR_ID = T.BN_MBR_ID) as MBR_NM,
         DATE_FORMAT(T.INP_DT, '%Y-%m-%d %H:%i') as INP_DT
         from TBL008 T left join TBL006 t1 on T.DEAL_NO = t1.DEAL_NO
         where T.BN_NO = #{bnNo}
+        <if test='callStCd != null and !callStCd.equals("all")'>
             and T.CALL_ST_CD = #{callStCd}
-        <if test='mntCarr !="all"'>
+        </if>
+        <if test='mntCarr != null and !mntCarr.equals("all")'>
             and t1.MNT_CARR = #{mntCarr}
         </if>
-        <if test='counselType != "all"'>
+        <if test='counselType != null and !counselType.equals("all")'>
             and t1.PN_REG_DIS = #{counselType}
         </if>
-        <if test='clientNm != ""'>
+        <if test='clientNm != "" and clientNm != null'>
             and (SELECT MBR_NM FROM TBL001 tt5 where tt5.CL_MBR_ID = t1.CL_MBR_ID) LIKE CONCAT('%', #{clientNm}, '%')
+        </if>
+        <if test='bnMbr !="all"'>
+            and T.BN_MBR_ID = #{bnMbr}
         </if>
 
     </select>
@@ -55,6 +64,13 @@
         and PN_STOR = #{pnStor}
         and PN_MNT_RT_NO = #{pnMntRtNo}
         and BN_NO = #{bnNo}
+    </select>
+    
+    <select id="bnMbrList" parameterType="DevMap" resultType="DevMap">
+        SELECT BN_MBR_ID, MBR_NM
+          FROM TBL002 t
+         WHERE BN_NO = #{bnNo}
+            AND ACTV_YN  = 'Y'
     </select>
 
 </mapper>

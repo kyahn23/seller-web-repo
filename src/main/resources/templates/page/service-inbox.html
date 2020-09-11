@@ -49,7 +49,6 @@
                         </div>
                         <div class="cTitRight">
                             <div class="SelectBoxBasic selectPaging">
-                                <!--                                <input type="hidden" value="1page"/>-->
                                 <div class="DefaultName">{{pageInfo.page}} page</div>
                                 <ul>
                                     <li v-for="item in pageInfo.slider" :id='item+"page"' @click="goToPage(item)">
@@ -107,7 +106,8 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr v-for="(list,idx) in counselList" @click="selectCs(list, idx)"
+                                <tr v-if="counselList.length!=0" v-for="(list,idx) in counselList"
+                                    @click="selectCs(list, idx)"
                                     :class="{ checkedItem: getTrClass(idx) }">
                                     <td class="alignC">{{list.mntCarr}}</td>
                                     <td class="alignC" v-if="list.pnRegDis === 'A'">번호이동</td>
@@ -117,6 +117,15 @@
                                     <td class="alignC">{{list.pnMdlNm}}</td>
                                     <td class="alignC">{{list.clMbrNm}}</td>
                                     <td class="alignC">{{list.inpDt}}</td>
+                                </tr>
+
+                                <!-- 결과없음 -->
+                                <tr v-if="counselList.length == 0" :class="{errorMessage : counselList.length == 0 }">
+                                    <td colspan="6">
+                                        <div class="errorTxt">
+                                            <span>항목이 없습니다.</span>
+                                        </div>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -272,24 +281,12 @@
                 ],
                 selectedType: "all",
                 clientNm: "",
-                searchOptChg: false,
                 counselList: [],        // 현재 페이지 상담 리스트
                 pageNo: "1",
                 pageInfo: [],     // 현재 페이지 정보
                 selectedCs: {},
                 currPolicy: {}
             },
-            // watch:{
-            //     selectedCarr(){
-            //         this.searchOptChg = true    // 값 변경됨
-            //     },
-            //     selectedType(){
-            //         this.searchOptChg = true    // 값 변경됨
-            //     },
-            //     clientNm(){
-            //         this.searchOptChg = true    // 값 변경됨
-            //     }
-            // },
             mounted: function () {
                 let type = 'init'
                 this.searchList(type)
@@ -300,6 +297,7 @@
                         mntCarr: this.selectedCarr,
                         counselType: this.selectedType,
                         clientNm: this.clientNm,
+                        bnMbr: "all",
                         page: "1"
                     }
                     if (data === 'page') param.page = this.pageNo
