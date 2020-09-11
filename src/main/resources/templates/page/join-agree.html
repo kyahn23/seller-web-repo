@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/full-page">
+
+<!-- join-agree 고유 css -->
+<th:block layout:fragment="css">
+    <style>
+        .btnM.colorWhite {
+            background-color: #fff;
+            border: 1px solid #a3daff;
+            color: #0093e4;
+        }
+
+        .tblList,
+        .tBody tr:hover td {
+            background: #fff !important;
+        }
+
+        .checkedItem {
+            background: #fff !important;
+        }
+
+        table th,
+        table td {
+            border-left: none;
+            border-right: none;
+        }
+
+        #container {
+            text-align: center;
+        }
+
+        .fixedWidth {
+            display: inline-block;
+            width: 1080px !important;
+        }
+
+        .onlyWideView {
+            text-align: center;
+        }
+
+        .subHeader {
+            position: relative;
+            padding-top: 30px;
+            height: 45px;
+            text-align: center;
+        }
+
+        .contentBlock {
+            width: 800px;
+            display: inline-block;
+        }
+
+        .contentDetail {
+            width: 600px;
+            display: inline-block;
+        }
+
+        .alignL {
+            text-align: left;
+        }
+
+        .layerSizeXL {
+            width: 1200px;
+            height: 800px;
+        }
+    </style>
+</th:block>
+
+<!-- join-agree 고유 js -->
+<th:block layout:fragment="js">
+    <script type="text/javascript" th:src="@{/js/lib/pdfobject.min.js}"></script>
+</th:block>
+
+<div layout:fragment="content">
+    <div class="wrapper">
+        <!-- header -->
+        <div class="header">
+            <div class="fixedWidth">
+                <h1 class="logo">
+                    <a href="login.html"><img th:src="@{/images/cmmn/logo.png}" alt="PentaWorks" style="height: 30px;" /></a>
+                </h1>
+            </div>
+        </div>
+        <!-- //header -->
+
+        <!-- container -->
+        <div id="container">
+            <div class="fixedWidth">
+                <!-- contents -->
+                <div class="sectionRight" id="content">
+                    <div class="contentWrap">
+                        <div class="onlyWideView">
+                            <div class="subHeader">
+                                <h2 class="h2"><img th:src="@{/images/cmmn/hidden.png}" class="ico-plus" alt="아이콘">이용약관 동의</h2>
+                                <div class="pageLocation">
+                                    <span>회원가입</span>&gt;<strong>이용약관 동의</strong>
+                                </div>
+                            </div>
+
+                            <!-- content group1 -->
+                            <div class="contentBlock">
+                                <div class="contentTitle">
+                                    <div class="cTit">
+                                        이용약관 동의
+                                    </div>
+                                    <div class="cTitRight"></div>
+                                </div>
+                                <div style="height: 20px;"></div>
+                                <!-- slide content -->
+                                <div class="contentDetail slideTogglebox">
+                                    <div class="tHeadScrollBG">
+                                        <!-- <div class="tHeadScroll"> -->
+                                        <table class="tblList tHead">
+                                            <colgroup>
+                                                <col style="width:56px">
+                                                <col style="width:*">
+                                                <col style="width:100px">
+                                            </colgroup>
+                                            <tbody>
+                                            <tr>
+                                                <td scope="col" style="height: 32px;">
+                                                    <input
+                                                            type="checkbox"
+                                                            title="전체 선택"
+                                                            v-model="checkAll"
+                                                            @change="onCheckAll"
+                                                    >
+                                                </td>
+                                                <td scope="col" style="text-align: left;">PentaWorks Service 전체 약관에 동의합니다.</td>
+                                                <td scope="col"></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                        <!-- </div> -->
+                                    </div>
+                                    <!-- <div class="tBodyScroll"> -->
+                                    <table class="tblList tBody trClick">
+                                        <caption>이용약관 동의</caption>
+                                        <colgroup>
+                                            <col style="width:56px">
+                                            <col style="width:*">
+                                            <col style="width:100px">
+                                        </colgroup>
+                                        <tbody>
+                                        <tr>
+                                            <td colspan="3" style="height: 10px;"></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="alignC">
+                                                <input
+                                                    type="checkbox"
+                                                    title="선택"
+                                                    v-model="agreeCheckList"
+                                                    value="SVC"
+                                                    @change="onCheckOne"
+                                                >
+                                            </td>
+                                            <td class="alignL">서비스 이용약관 <span style="color: #ff0000;">(필수)</span></td>
+                                            <td class="alignC"><a href="#;" class="btnS colorWhite" @click="setLayerType('SVC')"><span>전문보기</span></a></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="alignC">
+                                                <input
+                                                        type="checkbox"
+                                                        title="선택"
+                                                        v-model="agreeCheckList"
+                                                        value="PVC"
+                                                        @change="onCheckOne"
+                                                >
+                                            </td>
+                                            <td class="alignL">개인정보 수집 및 이용에 대한 안내 <span style="color: #ff0000;">(필수)</span></td>
+                                            <td class="alignC"><a href="#;" class="btnS colorWhite" @click="setLayerType('PVC')"><span>전문보기</span></a></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="alignC">
+                                                <input
+                                                        type="checkbox"
+                                                        title="선택"
+                                                        v-model="agreeCheckList"
+                                                        value="MKT"
+                                                        @change="onCheckOne"
+                                                >
+                                            </td>
+                                            <td class="alignL">광고성 정보 수신 <span style="color: #2b4f91;">(선택)</span></td>
+                                            <td class="alignC"><a href="#;" class="btnS colorWhite" @click="setLayerType('MKT')"><span>전문보기</span></a></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <!-- </div> -->
+                                </div>
+                                <!-- //slide content -->
+                            </div>
+                            <!-- //content group1 -->
+
+                            <div class="btnWrapper">
+                                <a href="/login" class="btnL colorGray"><span>이전</span></a>
+                                <a href="#;" class="btnL colorBlue" @click="validateAgree"><span>다음</span></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- //contents -->
+            </div>
+        </div>
+        <!-- //container -->
+    </div>
+
+    <!-- footer -->
+    <div id="footer">
+        <div class="fixedWidth">
+            copyrights PENTAS. all rights reserved.
+            <div class="goTop"><a href="#" class="btnGoTop"><img th:src="@{/images/cmmn/btn-top.png}" alt="위로이동"></a></div>
+        </div>
+    </div>
+    <!-- //footer -->
+</div>
+
+<div layout:fragment="layer">
+    <!-- 팝업: 약관 보기 -->
+    <div class="layerWrapper layerSizeXL" id="popLayerViewTOC" style="display:inherit !important;">
+        <div class="layerHeader">
+            <strong>{{ layerHeaderTxt }}</strong>
+            <a href="#" class="btnClose popLayerViewTOC_close">
+                <img th:src="@{/images/cmmn/btn-layer-close.png}" alt="창닫기">
+            </a>
+        </div>
+        <div class="layerContainer" style="display: inline-block; width: 1176px; height: 734px">
+            <div class="layerContent">
+                <!-- 컨텐츠 -->
+                <div class="guidanceWrapper">
+                    <div id="pdfContainer" style="height: 664px;"></div>
+                </div>
+                <!-- //컨텐츠 -->
+                <div class="btnWrapper">
+                    <a href="#;" class="btnL colorBlue" @click="agreeLayer()"><span>동의</span></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- //팝업: 약관 보기 -->
+</div>
+
+<div layout:fragment="script">
+    <script type="text/javascript">
+        var g_cxt = '/'
+        g_cxt = g_cxt.substring(0, g_cxt.length-1);
+
+        $(function () {
+            if ($(".layerWrapper").length) {
+                $('#popLayerViewTOC').popup();
+            }
+        });
+
+        var app = new Vue({
+            el:"#app",
+            data: {
+                checkAll: false,
+                agreeCheckList: [],
+                layerType: '',
+                pdfOptions: {
+                    pdfOpenParams: {
+                        view: 'FitH',
+                        scrollbar: '1',
+                        toolbar: '0',
+                        statusbar: '0',
+                        messages: '0',
+                        navpanes: '0'
+                    },
+                    fallbackLink: '<p>본 브라우저 내에서 PDF를 표시할 수 없습니다.'
+                        + '<br>다음 링크에서 PDF 파일을 다운로드 후 '
+                        + this.layerHeaderTxt + ' 내용을 확인해주세요: '
+                        + '<a href="[url]">PDF 다운로드 링크</a></p>'
+                }
+            },
+            methods: {
+                initCheckList() {
+                    this.agreeCheckList = []
+                },
+                onCheckAll() {
+                    if (this.checkAll) {
+                        this.initCheckList()
+                        this.agreeCheckList.push('SVC');
+                        this.agreeCheckList.push('PVC');
+                        this.agreeCheckList.push('MKT');
+                    } else {
+                        this.initCheckList()
+                    }
+                },
+                onCheckOne() {
+                    var checkCnt = this.agreeCheckList.length
+                    if (checkCnt === 3) {
+                        this.checkAll = true
+                    } else {
+                        this.checkAll = false
+                    }
+                },
+                setLayerType(layerType) {
+                    this.layerType = layerType
+                    PDFObject.embed(this.layerPdfUrl, '#pdfContainer', this.pdfOptions);
+                    $('#popLayerViewTOC').popup('show')
+                },
+                agreeLayer() {
+                    $('#popLayerViewTOC').popup('hide')
+
+                    var inCheckList = false
+                    for (var i=0; i < this.agreeCheckList.length; i++) {
+                        if (this.agreeCheckList[i] === this.layerType) inCheckList = true
+                    }
+                    if (!inCheckList) this.agreeCheckList.push(this.layerType)
+
+                    this.onCheckOne()
+                    this.layerType = ''
+                },
+                validateAgree() {
+                    var svcChecked = false
+                    var pvcChecked = false
+                    var mktChecked = false
+                    for (var i=0; i < this.agreeCheckList.length; i++) {
+                        if (this.agreeCheckList[i] === "SVC") svcChecked = true
+                        if (this.agreeCheckList[i] === "PVC") pvcChecked = true
+                        if (this.agreeCheckList[i] === "MKT") mktChecked = true
+                    }
+                    if (svcChecked && pvcChecked) {
+                        alert(this.mktAlertMsg(mktChecked))
+                        var currentLocation = window.location.href.replaceAll('#', '').replaceAll(';', '')
+                        window.location.href = currentLocation + '/form'
+                    } else {
+                        alert('필수 약관에 동의해주세요.')
+                    }
+                },
+                mktAlertMsg(mktBool) {
+                    if (mktBool) {
+                        return '광고성 정보 수신에 동의하셨습니다.'
+                    }
+                    return '광고성 정보 수신에 동의하지 않으셨습니다.'
+                }
+            },
+            computed: {
+                layerHeaderTxt() {
+                    switch (this.layerType) {
+                        case 'SVC' : return '서비스 이용약관'
+                        case 'PVC' : return '개인정보 수집 및 이용에 대한 안내'
+                        case 'MKT' : return '광고성 정보 수신'
+                        default : return ''
+                    }
+                },
+                layerPdfUrl() {
+                    switch (this.layerType) {
+                        case 'SVC' : return '/images/agree/service.pdf'
+                        case 'PVC' : return '/images/agree/privacy.pdf'
+                        case 'MKT' : return '/images/agree/marketing.pdf'
+                        default : return ''
+                    }
+                }
+            }
+        })
+    </script>
+</div>
+</html>

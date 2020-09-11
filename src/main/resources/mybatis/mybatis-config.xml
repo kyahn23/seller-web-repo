@@ -9,6 +9,7 @@
 	</settings>
     <typeAliases>
         <typeAlias alias="DevMap" type="com.pentas.sellerweb.common.module.util.DevMap"/>
+        <typeAlias alias="UserVO" type="com.pentas.sellerweb.vo.UserVO"/>
     </typeAliases>
     <plugins>
         <plugin interceptor="com.pentas.sellerweb.common.module.mybatis.paginator.OffsetLimitInterceptor" >

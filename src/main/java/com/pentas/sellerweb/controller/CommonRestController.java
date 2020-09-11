@@ -38,6 +38,15 @@ public class CommonRestController {
         return rslt;
     }
 
+    @PostMapping("/member/resetMstPw")
+    public DevMap resetMstPw(HttpServletRequest request, @RequestBody DevMap param) {
+        commonService.updateMstPwInit(param);
+
+        DevMap rslt = new DevMap();
+        rslt.put("rsltStat", "SUCC");
+        return rslt;
+    }
+
     /**
      * 이미지 업로드 (return 객체에 새 파일명 filNm 포함)
      * @param request

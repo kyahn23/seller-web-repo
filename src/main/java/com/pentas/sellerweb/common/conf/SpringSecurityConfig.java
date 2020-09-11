@@ -47,16 +47,16 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http.csrf().disable()
-//          .headers().frameOptions().disable() // h2콘솔때문에 임시설정
-//            	.and()
+    	http.csrf().disable()
+			.headers()
+				.frameOptions()
+				.sameOrigin()
+				.and()
             .formLogin() // 로그인 페이지 및 성공 url, handler 그리고 로그인시 사용되는 id, password 파라미터 정의
 	            .loginPage("/login") // 밑의 authorizeRequests 에 설정한 규칙에 어긋난경우 로그인페이지 호출 URL
-	            .loginProcessingUrl("/loginproc") // 로그인처리시 호출할 URL
+	            .loginProcessingUrl("/loginProc") // 로그인처리시 호출할 URL
 	            .defaultSuccessUrl("/afterLoginProc", true) // 로그인 성공후 이동할 URL
 	            .failureUrl("/loginFail")  // 로그인 실패후 이동할 URL
-//	            .successHandler(authSuccessHandler) // 로그인 성공시 처리할 핸들러(spring을 단지 api용의 백앤드개념으로만 사용할때 활용)
-//	            .failureHandler(authFailureHandler) // 로그인 실패시 처리할 핸들러(spring을 단지 api용의 백앤드개념으로만 사용할때 활용)
 	            .usernameParameter("userId") // 로그인페이지에서 로그인 ID 파라메타 명
 	            .passwordParameter("userPw") // 로그인페이지에서 로그인 password 파라메타 명
 	            .and()
@@ -65,14 +65,12 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
             	.invalidateHttpSession(true)
             	.and()
             .authorizeRequests()
-//              .antMatchers("/home", "/registration", "/error", "/blog/**", "/post/**", "/h2-console/**", "/webjars/**", "/css/**").permitAll()
-//              .antMatchers("/newPost/**", "/commentPost/**", "/createComment/**").hasAnyRole("USER")
-//              .anyRequest().authenticated()
-//            	.antMatchers("/h2-console/**").permitAll() // h2콘솔때문에 임시설정
-            	.antMatchers("/hsbnd/test2/**").authenticated()
-           		.antMatchers("/mypage").authenticated()
-           		.antMatchers("/**").permitAll()	
-            	// .antMatchers("/board/**").authenticated()
+				.antMatchers("/images/**", "/js/**", "/css/**").permitAll()
+				.antMatchers("/login").permitAll()
+				.antMatchers("/loginFail").permitAll()
+				.antMatchers("/join", "/join/**").permitAll()
+				.antMatchers("/member/resetMstPw").permitAll()
+				.antMatchers("/", "/**").authenticated()
             	.and()
             .authenticationProvider(authenticationProvider);
 	}

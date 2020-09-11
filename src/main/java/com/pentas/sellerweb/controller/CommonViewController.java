@@ -11,9 +11,10 @@ public class CommonViewController {
         return "main";
     }
 
-    @GetMapping("/login")
-    public String login() {
-        return "login";
-    }
+    @GetMapping("/join")
+    public String join() { return "page/join-agree"; }
+
+    @GetMapping("/join/form")
+    public String joinForm() { return "page/join-form"; }
 
 }
