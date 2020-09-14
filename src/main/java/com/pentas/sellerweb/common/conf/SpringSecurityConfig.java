@@ -65,11 +65,12 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
             	.invalidateHttpSession(true)
             	.and()
             .authorizeRequests()
+				.antMatchers("/sample/**").permitAll()
 				.antMatchers("/images/**", "/js/**", "/css/**").permitAll()
 				.antMatchers("/login").permitAll()
 				.antMatchers("/loginFail").permitAll()
 				.antMatchers("/join", "/join/**").permitAll()
-				.antMatchers("/member/resetMstPw").permitAll()
+				.antMatchers("/member/**").permitAll()
 				.antMatchers("/", "/**").authenticated()
             	.and()
             .authenticationProvider(authenticationProvider);
