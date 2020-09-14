@@ -76,29 +76,63 @@ public class CommonService {
      * @param param
      */
     public void updateMstPwInit(DevMap param) {
-        String tempPwd = (new Random().nextInt(900000) + 100000) + "";
-        String hashPwd = CmmnUtil.encryptSHA256(tempPwd.toString());
-
-        param.put("tempPwd", hashPwd);
+//        String tempPwd = (new Random().nextInt(900000) + 100000) + "";
+//        String hashPwd = CmmnUtil.encryptSHA256(tempPwd.toString());
+//
+//        param.put("tempPwd", hashPwd);
 
         String mstMbrId = (String) param.get("mstMbrId");
         String ownerNm = (String) param.get("ownerNm");
 
-        EmailUtil.sendMailAuthSSL(
-                emailProperties.getSmtpHost(),
-                emailProperties.getSmtpPort(),
-                emailProperties.getSmtpUser(),
-                emailProperties.getSmtpPassword(),
-                "[Pentaworks Service] 임시 비밀번호 발급 안내",
-                "<html><p>" + ownerNm + "님의 임시 비밀번호가 발급되었습니다.<br>" +
-                        "임시 비밀번호로 로그인 후 새 비밀번호로 변경해주세요.<br></p>" +
-                        "<h4>임시 비밀번호 : " + tempPwd + "</h4></html>",
-                mstMbrId + "",
-                emailProperties.getFromEmail(),
-                emailProperties.getFromName()
-        );
+        String hashPwd = generateTempPwd(mstMbrId, ownerNm);
+        param.put("tempPwd", hashPwd);
+
+//        EmailUtil.sendMailAuthSSL(
+//                emailProperties.getSmtpHost(),
+//                emailProperties.getSmtpPort(),
+//                emailProperties.getSmtpUser(),
+//                emailProperties.getSmtpPassword(),
+//                "[Pentaworks Service] 임시 비밀번호 발급 안내",
+//                "<html><p>" + ownerNm + "님의 임시 비밀번호가 발급되었습니다.<br>" +
+//                        "임시 비밀번호로 로그인 후 새 비밀번호로 변경해주세요.<br></p>" +
+//                        "<h4>임시 비밀번호 : " + tempPwd + "</h4></html>",
+//                mstMbrId + "",
+//                emailProperties.getFromEmail(),
+//                emailProperties.getFromName()
+//        );
 
         cmmnDao.update("sellerweb.common.updateMstPwInit", param);
+    }
+
+    public void addMstAcc(DevMap param) {
+        cmmnDao.insert("sellerweb.common.insertNewBnAcc", param);
+
+//        String tempPwd = (new Random().nextInt(900000) + 100000) + "";
+//        String hashPwd = CmmnUtil.encryptSHA256(tempPwd.toString());
+//
+//        param.put("tempPwd", hashPwd);
+
+        String mstMbrId = (String) param.get("mstMbrId");
+        String ownerNm = (String) param.get("ownerNm");
+
+        String hashPwd = generateTempPwd(mstMbrId, ownerNm);
+        param.put("tempPwd", hashPwd);
+
+//        EmailUtil.sendMailAuthSSL(
+//                emailProperties.getSmtpHost(),
+//                emailProperties.getSmtpPort(),
+//                emailProperties.getSmtpUser(),
+//                emailProperties.getSmtpPassword(),
+//                "[Pentaworks Service] 임시 비밀번호 발급 안내",
+//                "<html><p>" + ownerNm + "님의 임시 비밀번호가 발급되었습니다.<br>" +
+//                        "임시 비밀번호로 로그인 후 새 비밀번호로 변경해주세요.<br></p>" +
+//                        "<h4>임시 비밀번호 : " + tempPwd + "</h4></html>",
+//                mstMbrId + "",
+//                emailProperties.getFromEmail(),
+//                emailProperties.getFromName()
+//        );
+
+        cmmnDao.insert("sellerweb.common.insertNewMstAcc", param);
     }
 
     /**
@@ -301,6 +335,33 @@ public class CommonService {
      */
     public static String removeCRLF(String parameter) {
         return parameter.replaceAll("\r", "").replaceAll("\n", "");
+    }
+
+    /**
+     * 임시 비밀번호 생성 후 이메일 발송
+     * @param mstMbrId
+     * @param ownerNm
+     * @return
+     */
+    private String generateTempPwd(String mstMbrId, String ownerNm) {
+        String tempPwd = (new Random().nextInt(900000) + 100000) + "";
+        String hashPwd = CmmnUtil.encryptSHA256(tempPwd.toString());
+
+        EmailUtil.sendMailAuthSSL(
+                emailProperties.getSmtpHost(),
+                emailProperties.getSmtpPort(),
+                emailProperties.getSmtpUser(),
+                emailProperties.getSmtpPassword(),
+                "[Pentaworks Service] 임시 비밀번호 발급 안내",
+                "<html><p>" + ownerNm + "님의 임시 비밀번호가 발급되었습니다.<br>" +
+                        "임시 비밀번호로 로그인 후 새 비밀번호로 변경해주세요.<br></p>" +
+                        "<h4>임시 비밀번호 : " + tempPwd + "</h4></html>",
+                mstMbrId + "",
+                emailProperties.getFromEmail(),
+                emailProperties.getFromName()
+        );
+
+        return hashPwd;
     }
 
 }

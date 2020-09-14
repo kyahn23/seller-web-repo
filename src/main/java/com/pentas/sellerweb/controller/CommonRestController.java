@@ -38,9 +38,29 @@ public class CommonRestController {
         return rslt;
     }
 
+    /**
+     * 마스터 회원 비밀번호 재설정
+     * @param request
+     * @param param
+     * @return
+     */
     @PostMapping("/member/resetMstPw")
     public DevMap resetMstPw(HttpServletRequest request, @RequestBody DevMap param) {
         commonService.updateMstPwInit(param);
+
+        DevMap rslt = new DevMap();
+        rslt.put("rsltStat", "SUCC");
+        return rslt;
+    }
+
+    /**
+     * 마스터 회원 가입
+     * @param param
+     * @return
+     */
+    @PostMapping("/member/newMstAcc")
+    public DevMap newMstAcc(@RequestBody DevMap param) {
+        commonService.addMstAcc(param);
 
         DevMap rslt = new DevMap();
         rslt.put("rsltStat", "SUCC");

@@ -104,4 +104,70 @@
             AND MST_MBR_YN = 'Y'
     </update>
 
+    <insert id="insertNewBnAcc" parameterType="DevMap">
+        INSERT INTO TBL003 (
+            BN_NO
+            ,BN_REG_NO
+            ,BN_NM
+            ,OWNER_NM
+            ,BN_REG_CARD
+            ,BN_ADDR_SIDO
+            ,BN_ADDR_SIGG
+            ,BN_ADDR_DTL
+            ,MST_MBR_ID
+            ,BN_PN_NO
+            ,BN_IMG
+            ,MKT_YN
+        ) VALUES (
+            (SELECT CAST(
+                (SELECT(
+                    IFNULL(
+                        (SELECT MAX(BN_NO) FROM TBL003 B WHERE BN_NO LIKE CONCAT(
+                            (SELECT DATE_FORMAT(CURRENT_TIMESTAMP, '%Y%m%d')), '%'
+                        )), CONCAT(
+                            (SELECT DATE_FORMAT(CURRENT_TIMESTAMP, '%Y%m%d')), '0000'
+                        )
+                    ) + 1
+                ))
+            AS CHAR))
+            ,#{bnRegNo}
+            ,#{bnNm}
+            ,#{ownerNm}
+            ,#{bnRegCard}
+            ,#{bnAddrSido}
+            ,#{bnAddrSigg}
+            ,#{bnAddrDtl}
+            ,#{mstMbrId}
+            ,#{bnPnNo}
+            ,#{bnImg}
+            ,#{mktYn}
+        )
+    </insert>
+
+    <insert id="insertNewMstAcc" parameterType="DevMap">
+        INSERT INTO TBL002 (
+            BN_MBR_ID
+            ,PWD_NO
+            ,PWNO_INIT_YN
+            ,PWERR_CNT
+            ,LGIN_AVL_YN
+            ,BN_NO
+            ,MBR_NM
+            ,MST_MBR_YN
+            ,SELLER_PRMS
+            ,ACTV_YN
+        ) VALUES (
+            #{mstMbrId}
+            ,#{tempPwd}
+            ,'Y'
+            ,'0'
+            ,'Y'
+            ,(SELECT BN_NO FROM TBL003 WHERE MST_MBR_ID = #{mstMbrId})
+            ,#{ownerNm}
+            ,'Y'
+            ,'MASTER'
+            ,'Y'
+        )
+    </insert>
+
 </mapper>

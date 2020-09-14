@@ -77,7 +77,7 @@
         <div class="header">
             <div class="fixedWidth">
                 <h1 class="logo">
-                    <a href="login.html"><img th:src="@{/images/cmmn/logo.png}" alt="PentaWorks" style="height: 30px;" /></a>
+                    <a href="/"><img th:src="@{/images/cmmn/logo.png}" alt="PentaWorks" style="height: 30px;" /></a>
                 </h1>
             </div>
         </div>
@@ -315,15 +315,17 @@
                     var svcChecked = false
                     var pvcChecked = false
                     var mktChecked = false
+                    var mktYn = 'N';
                     for (var i=0; i < this.agreeCheckList.length; i++) {
                         if (this.agreeCheckList[i] === "SVC") svcChecked = true
                         if (this.agreeCheckList[i] === "PVC") pvcChecked = true
                         if (this.agreeCheckList[i] === "MKT") mktChecked = true
                     }
+                    if (mktChecked) mktYn = 'Y';
                     if (svcChecked && pvcChecked) {
                         alert(this.mktAlertMsg(mktChecked))
                         var currentLocation = window.location.href.replaceAll('#', '').replaceAll(';', '')
-                        window.location.href = currentLocation + '/form'
+                        window.location.href = currentLocation + '/form?mkt=' + mktYn
                     } else {
                         alert('필수 약관에 동의해주세요.')
                     }

@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/full-page">
+
+<!-- join-form 고유 css -->
+<th:block layout:fragment="css">
+    <style>
+        .tblList th,
+        .tblList td {
+            padding: 6px 8px;
+            height: 40px;
+        }
+
+        table th,
+        table td {
+            padding: 6px 0;
+            border: 1px solid #e1e3e8;
+            border-width: 0 0 1px 1px;
+        }
+
+        table th,
+        table td {
+            padding: 6px 0;
+            font-size: 14px;
+            border: 1px solid #e1e3e8;
+            border-width: 0 0 1px 1px;
+        }
+
+        input {
+            height: 30px;
+            width: auto;
+            padding: 0;
+            padding-bottom: 5px;
+            padding: 0 6px;
+            margin: 2px 0;
+        }
+
+        #container {
+            margin: auto;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        #container>.fixedWidth {
+            position: relative;
+            overflow: hidden;
+            background: #fff;
+        }
+
+        #container>.fixedWidth>div {
+            float: none;
+        }
+
+        .fixedWidth {
+            display: inline-block;
+            width: 1080px !important;
+        }
+
+        .onlyWideView {
+            text-align: center;
+        }
+
+        .contentDetail {
+            /* width: 600px; */
+            display: inline-block;
+        }
+
+        .sectionRight {
+            width: 1060px;
+            margin: auto;
+            text-align: center;
+        }
+
+        .contentWrap {
+            background: #fff;
+            display: inline-block;
+        }
+
+        .subHeader {
+            position: relative;
+            padding-top: 30px;
+            height: 45px;
+            text-align: center;
+        }
+
+        .tblList a {
+            color: #333;
+            display: inline-block;
+        }
+
+        .alignL {
+            text-align: left;
+        }
+
+        .btnS {
+            height: 28px;
+            padding: 0 8px;
+            font-size: 12px;
+            font-family: dotum, '돋움', Sans-serif;
+        }
+
+        .btnS>span {
+            padding: 6px 0;
+            line-height: 1.5;
+        }
+
+        .passform {
+            border-bottom: 0;
+        }
+
+        .desBr {
+            font-size: initial;
+            font-weight: bold;
+        }
+
+        .tblList tr {
+            cursor: initial;
+        }
+
+        .tblList tr:hover {
+            background-color: white;
+        }
+
+        #popLayerDaumPostcodeSrch {
+            height: 340px;
+        }
+
+        .layerContainer {
+            padding: 0;
+            padding-left: 1px;
+        }
+
+        .guidanceWrapper {
+            margin: 0;
+        }
+
+        .vue-daum-postcode-container {
+            height: 300px !important;
+        }
+    </style>
+</th:block>
+
+<!-- join-form 고유 js -->
+<th:block layout:fragment="js">
+</th:block>
+
+<div layout:fragment="content">
+    <div class="wrapper">
+        <!-- header -->
+        <div class="header">
+            <div class="fixedWidth">
+                <h1 class="logo">
+                    <a href="/"><img th:src="@{/images/cmmn/logo.png}" alt="PentaWorks" style="height: 30px;" /></a>
+                </h1>
+            </div>
+        </div>
+        <!-- //header -->
+
+
+        <!-- container -->
+        <div id="container">
+            <div class="fixedWidth">
+                <!-- contents -->
+                <div class="sectionRight" id="content">
+                    <div class="contentWrap">
+                        <div class="onlyWideView">
+
+                            <div class="subHeader">
+                                <h2 class="h2"><img th:src="@{/images/cmmn/hidden.png}" class="ico-plus" alt="아이콘">회원정보 입력</h2>
+                                <div class="pageLocation">
+                                    <span>회원가입</span>&gt;<strong>회원정보 입력</strong>
+                                </div>
+                            </div>
+
+                            <!-- content group1 -->
+                            <div class="contentBlock">
+                                <!-- content -->
+                                <div class="contentDetail">
+                                    <table class="tblList alignL">
+                                        <caption>기본정보</caption>
+                                        <colgroup>
+                                            <col style="width:20%">
+                                            <col style="width:*">
+                                            <col style="width:20%">
+                                            <col style="width:*">
+                                        </colgroup>
+                                        <tbody>
+                                        <tr>
+                                            <th>아이디<span class="icoMust"><em>필수</em></span></th>
+                                            <td colspan="3">
+                                                <input
+                                                    style="width: 30%;"
+                                                    type="text"
+                                                    id="emailId"
+                                                    v-model="emailId"
+                                                    placeholder="이메일 ID 기입"
+                                                    maxlength="50"
+                                                    @change="setChkMbrId"
+                                                >
+                                                <span>@</span>
+                                                <input
+                                                        style="width: 30%;"
+                                                        type="text"
+                                                        id="emailDomainTxt"
+                                                        v-model="emailDomain"
+                                                        placeholder="이메일 도메인 기입"
+                                                        maxlength="18"
+                                                        @change="setChkMbrId"
+                                                >
+                                                <select id="emailDomainSel" style="width: 25%; height: 30px;" @change="emailDomain = $event.target.value">
+                                                    <option value="naver.com">네이버</option>
+                                                    <option value="hanmail.net">다음</option>
+                                                    <option value="gmail.com">구글</option>
+                                                    <option value="nate.com">네이트</option>
+                                                    <option value="" selected>직접입력</option>
+                                                </select>
+                                                <span style="width: 2%;"></span>
+                                                <a href="#;" class="btnS colorWhite" @click="chkMbrId"><span>중복확인</span></a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>대표자명<span class="icoMust"><em>필수</em></span></th>
+                                            <td colspan="3">
+                                                <input
+                                                    type="text"
+                                                    class="wPer"
+                                                    id="ownerNm"
+                                                    :value="shopInfo.ownerNm"
+                                                    @input="shopInfo.ownerNm = $event.target.value"
+                                                    placeholder="사업자 대표자명 기입"
+                                                    maxlength="20"
+                                                >
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>회사명<span class="icoMust"><em>필수</em></span></th>
+                                            <td colspan="3">
+                                                <input
+                                                    type="text"
+                                                    class="wPer"
+                                                    id="bnNm"
+                                                    :value="shopInfo.bnNm"
+                                                    @input="shopInfo.bnNm = $event.target.value"
+                                                    placeholder="사업자 회사명 기입"
+                                                    maxlength="50"
+                                                >
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>사업자등록번호<span class="icoMust"><em>필수</em></span></th>
+                                            <td colspan="3">
+                                                <input
+                                                    type="text"
+                                                    class="wPer"
+                                                    id="bnRegNo"
+                                                    placeholder="'-'없이 숫자 10자리 입력"
+                                                    v-mask="'###-##-#####'"
+                                                    v-model="bnRegNo"
+                                                >
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>사업자등록증<span class="icoMust"><em>필수</em></span></th>
+                                            <td colspan="3">
+                                                <p class="desBr">
+                                                    신청 정보를 증명할 수 있는 사업자등록증 사본을 제출해 주세요
+                                                </p>
+                                                <p class="br">
+                                                    일반과세자(개인사업자)의 경우, 사업자등록증에 주민등록번호가 포함되어 있으면<br>뒷자리 7자리를
+                                                    음영처리(masking)하여 제출 바랍니다.<br>첨부파일은 육안으로 식별 가능해야 하며, 서류 검토 후 문제가
+                                                    있을
+                                                    경우 서비스 이용에 제한을 받을 수 있습니다.
+                                                </p>
+                                                <br>
+                                                <p class="br" v-if="shopInfo.bnRegCard">
+                                                    <img :src="getImagePath(shopInfo.bnRegCard)" alt="사업자등록증 사본" style="width: 300px; height: auto;">
+                                                    <br>
+                                                </p>
+                                                <input
+                                                    type="file"
+                                                    name="bnRegCard"
+                                                    id="bnRegCard"
+                                                    placeholder="사업자등록증 사본"
+                                                    style="padding-top: 2px; width: 88%;"
+                                                >
+                                                <span style="width: 2%;"></span>
+                                                <a
+                                                        href="#;"
+                                                        class="btnS colorWhite"
+                                                        @click="uploadImage('bnRegCard')"
+                                                >
+                                                    <span>파일첨부</span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>주소<span class="icoMust"><em>필수</em></span></th>
+                                            <td colspan="3">
+                                                <input
+                                                    type="text"
+                                                    class="wZipcode"
+                                                    style="width: 120px !important;"
+                                                    placeholder="우편번호"
+                                                    v-model="daumPostcodeRslt.zonecode"
+                                                >
+                                                <a
+                                                    href="#;"
+                                                    class="btnS colorWhite popLayerDaumPostcodeSrch_open"
+                                                    onclick="layer_execDaumPostcode(); return false;"
+                                                >
+                                                    <span>주소 검색</span>
+                                                </a>
+                                                <p class="br">
+                                                    <input
+                                                        type="text"
+                                                        class="wAddr"
+                                                        style="width: 49.5% !important;"
+                                                        id="bnAddrStr"
+                                                        placeholder="주소 입력"
+                                                        :value="bnAddrStr"
+                                                        @input="bnAddrStr = $event.target.value"
+                                                    >
+                                                    <input
+                                                        type="text"
+                                                        class="wAddr"
+                                                        style="width: 50% !important;"
+                                                        id="bnAddrBldg"
+                                                        placeholder="상세주소 입력"
+                                                        :value="bnAddrBldg"
+                                                        @input="bnAddrBldg = $event.target.value"
+                                                    >
+                                                </p>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>연락처<span class="icoMust"><em>필수</em></span></th>
+                                            <td colspan="3">
+                                                <input
+                                                    style="width: 100%;"
+                                                    type="text"
+                                                    placeholder="'-'없이 숫자 9-11자리 입력"
+                                                    v-mask="phoneMask"
+                                                    v-model="bnPnNo"
+                                                >
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>대표사진</th>
+                                            <td colspan="3">
+                                                <p class="br" v-if="shopInfo.bnImg">
+                                                    <img :src="getImagePath(shopInfo.bnImg)" alt="매장 대표사진" style="width: 300px; height: auto;">
+                                                    <br>
+                                                </p>
+                                                <input
+                                                    type="file"
+                                                    name="bnImg"
+                                                    id="bnImg"
+                                                    placeholder="매장 대표사진"
+                                                    style="padding-top: 2px; width: 88%;"
+                                                >
+                                                <span style="width: 2%;"></span>
+                                                <a
+                                                        href="#;"
+                                                        class="btnS colorWhite"
+                                                        @click="uploadImage('bnImg')"
+                                                >
+                                                    <span>파일첨부</span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- //content -->
+                                <div class="btnWrapper">
+                                    <a href="/login" class="btnL colorGray"><span>취소</span></a>
+                                    <a href="#;" class="btnL colorBlue" @click="addNewBnInfo"><span>가입</span></a>
+                                </div>
+                            </div>
+                            <!-- //content group1 -->
+                        </div>
+                    </div>
+                </div>
+                <!-- //contents -->
+            </div>
+        </div>
+        <!-- //container -->
+    </div>
+
+    <!-- footer -->
+    <div id="footer">
+        <div class="fixedWidth">
+            copyrights PENTAS. all rights reserved.
+            <div class="goTop"><a href="#" class="btnGoTop"><img th:src="@{/images/cmmn/btn-top.png}" alt="위로이동"></a></div>
+        </div>
+    </div>
+    <!-- //footer -->
+</div>
+
+<div layout:fragment="layer">
+    <!-- 팝업: 우편번호 찾기 -->
+    <div class="layerWrapper layerSizeM" id="popLayerDaumPostcodeSrch" style="display:inherit !important;">
+        <div class="layerHeader">
+            <strong>우편번호 찾기</strong>
+            <a href="#" class="btnClose popLayerDaumPostcodeSrch_close">
+                <img th:src="@{/images/cmmn/btn-layer-close.png}" alt="창닫기">
+            </a>
+        </div>
+        <div class="layerContainer" style="display: inline-block;">
+            <div class="layerContent">
+
+                <!-- 컨텐츠 -->
+                <div class="guidanceWrapper">
+                    <vue-daum-postcode style="width: 559px; height: 300px;" @complete="daumPostcodeCB($event)" />
+                </div>
+                <!-- //컨텐츠 -->
+            </div>
+
+        </div>
+    </div>
+    <!-- //팝업: 우편번호 찾기 -->
+</div>
+
+<div layout:fragment="script">
+    <script type="text/javascript">
+        document.cookie = '_TI_NID=1; SameSite=None; Secure';
+        document.cookie = '_kadu=2; SameSite=None; Secure';
+        document.cookie = '_kdt=3; SameSite=None; Secure';
+        document.cookie = 'TIARA=4; SameSite=None; Secure';
+        document.cookie = 'kd_lang=5; SameSite=None; Secure';
+        // document.cookie = 'safeCookie6="webid_ts"; SameSite=Lax;';
+        // document.cookie = 'safeCookie7="webid"; SameSite=Lax;';
+    </script>
+
+    <script type="text/javascript" th:src="@{/js/lib/vue-daum-postcode/index.js}"></script>
+
+    <script type="text/javascript">
+        var g_cxt = '/'
+        g_cxt = g_cxt.substring(0, g_cxt.length-1);
+
+        var mktYnIdx = location.search.indexOf('?')+5
+        var mktYn = location.search.substring(mktYnIdx, mktYnIdx+1)
+        if (mktYn === undefined || (mktYn !== 'Y' && mktYn !== 'N')) {
+            alert('잘못된 접근입니다.')
+            window.location.href = "/"
+        }
+
+        $(function () {
+            if ($(".layerWrapper").length) {
+                $('#popLayerDaumPostcodeSrch').popup();
+            }
+        });
+
+        var app = new Vue({
+            el:"#app",
+            data: {
+                shopInfo: {
+                    ownerNm: '',
+                    bnNm: '',
+                    bnRegCard: '',
+                    bnAddrSido: '',
+                    bnAddrSigg: '',
+                    bnImg: '',
+                    mktYn: mktYn
+                },
+                emailId: '',
+                emailDomain: '',
+                idChk: false,
+                bnRegNo: '',
+                cardAttm: false,
+                daumPostcodeRslt: {},
+                bnAddrStr: '',
+                bnAddrBldg: '',
+                bnPnNo: '',
+                phoneMask: ['##'],
+                phoneMaskSeoul: ['##-###-####', '##-####-####'],
+                phoneMaskOther: ['###-###-####', '###-####-####'],
+                uploadTgtNm: ''
+            },
+            watch: {
+                bnPnNo (newPhoneNo) {
+                    if (newPhoneNo.length === 2) {
+                        this.setPhoneMask(newPhoneNo)
+                    }
+                }
+            },
+            methods: {
+                addNewBnInfo() {
+                    if (
+                        this.emailId.trim() === ''
+                        || this.emailDomain.trim() === ''
+                        || this.shopInfo.ownerNm.trim() === ''
+                        || this.shopInfo.bnNm.trim() === ''
+                        || this.bnRegNo.trim() === ''
+                        || this.shopInfo.bnAddrSido.trim() === ''
+                        || this.shopInfo.bnAddrSigg.trim() === ''
+                        || this.bnAddrBldg.trim() === ''
+                        || this.bnPnNo.trim() === ''
+                    ) {
+                        alert('빈 항목을 입력해주세요.')
+                    } else if (!this.idChk) {
+                        alert('가입하지 않은 이메일을 입력 후\n아이디 중복체크를 해주세요.')
+                    } else if (!this.cardAttm) {
+                        alert('사업자등록증 이미지를 선택 후\n우측 \'파일첨부\' 버튼을 눌러주세요.')
+                    } else {
+                        var param = this.shopInfo
+                        param.mstMbrId = this.newBnMbrId
+                        param.bnRegNo = this.bnRegNoND
+                        param.bnAddrDtl = this.bnAddrFull
+                        param.bnPnNo = this.bnPnNoND
+
+                        console.log(param)
+                        cf_call('/member/newMstAcc', param, this.addNewBnInfoCB)
+                    }
+                },
+                addNewBnInfoCB(rslt) {
+                    if (rslt.rsltStat === 'SUCC') {
+                        alert('YEET')
+                    }
+                },
+                setChkMbrId() {
+                    this.idChk = false
+                },
+                chkMbrId() {
+                    var param = {
+                        mbrId: this.newBnMbrId
+                    }
+                    cf_call('/member/checkId', param, this.chkMbrIdCB);
+                },
+                uploadImage(tgtNm) {
+                    this.uploadTgtNm = tgtNm
+                    var fileList = []
+                    var param = {}
+                    if ($("#" + tgtNm)[0].files[0] !== undefined) {
+                        fileList.push($("#" + tgtNm)[0].files[0])
+                        param.bnMbrId = this.bnMbrId
+                        cf_callWithFiles("/upload/image", fileList, param, this.uploadImageCB)
+                    }
+                },
+                uploadImageCB(rslt) {
+                    if (this.uploadTgtNm === 'bnRegCard') {
+                        this.shopInfo.bnRegCard = rslt.filNm
+                        $("#bnRegCard")[0].value = ''
+                        this.cardAttm = true
+                    }``
+                    if (this.uploadTgtNm === 'bnImg') {
+                        this.shopInfo.bnImg = rslt.filNm
+                        $("#bnImg")[0].value = ''
+                    }
+                    alert('사진이 업로드 되었습니다.')
+                },
+                chkMbrIdCB(rslt) {
+                    var mbrIdChk = rslt.chkMbrId
+                    if (mbrIdChk === '0') {
+                        alert('사용 가능한 이메일입니다.')
+                        this.idChk = true
+                    } else {
+                        alert('이미 가입한 이메일입니다.\n다른 이메일을 입력해주세요.')
+                        this.idChk = false
+                        this.emailId = ''
+                        this.emailDomain = ''
+                        $('#emailDomainSel')[0].value = ''
+                    }
+                },
+                daumPostcodeCB(e) {
+                    this.daumPostcodeRslt = e
+                    this.shopInfo.bnAddrSido = this.daumPostcodeRslt.sido
+                    this.shopInfo.bnAddrSigg = this.daumPostcodeRslt.sigungu
+                    this.bnAddrStr = this.daumPostcodeRslt.address
+                    $('#popLayerDaumPostcodeSrch').popup('hide')
+                },
+                setPhoneMask(phoneNo) {
+                    var areaCode = phoneNo.substring(0, 2)
+                    if (areaCode === '02') {
+                        this.phoneMask = this.phoneMaskSeoul
+                    } else {
+                        this.phoneMask = this.phoneMaskOther
+                    }
+                },
+                getImagePath(fileName) {
+                    if (fileName !== undefined) {
+                        return '/imageSrc?fileName=' + fileName
+                    }
+                }
+            },
+            computed: {
+                newBnMbrId() {
+                    return this.emailId + '@' + this.emailDomain
+                },
+                bnAddrFull() {
+                    return this.bnAddrStr + ' ' + this.bnAddrBldg
+                },
+                bnRegNoND() {
+                    return this.bnRegNo.replaceAll('-', '')
+                },
+                bnPnNoND() {
+                    return this.bnPnNo.replaceAll('-', '')
+                }
+            }
+        })
+    </script>
+</div>
+</html>

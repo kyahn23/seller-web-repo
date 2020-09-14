@@ -378,9 +378,9 @@
                         <tr>
                             <th>아이디<span class="icoMust"><em>필수</em></span></th>
                             <td>
-                                <input type="text" id="emailId" placeholder="이메일 ID 기입" v-model="newEmpInfo.emailId" style="width:38%!important;" maxlength="50">
+                                <input type="text" id="emailId" placeholder="이메일 ID 기입" v-model="newEmpInfo.emailId" style="width:38%!important;" maxlength="50" @change="setChkMbrId">
                                 <span>@</span>
-                                <input type="text" id="emailDomainTxt" placeholder="도메인 기입" style="width:28%!important;" v-model="newEmpInfo.emailDomain" maxlength="18">
+                                <input type="text" id="emailDomainTxt" placeholder="도메인 기입" style="width:28%!important;" v-model="newEmpInfo.emailDomain" maxlength="18" @change="setChkMbrId">
                                 <select id="emailDomainSel" style="width:25%!important;" @change="newEmpInfo.emailDomain = $event.target.value">
                                     <option value="naver.com">네이버</option>
                                     <option value="hanmail.net">다음</option>
@@ -739,6 +739,9 @@
                         $('#popLayerEmployeeAdd').popup('hide')
                         this.initPage()
                     }
+                },
+                setChkMbrId() {
+                    this.newEmpInfo.idChk = false
                 },
                 chkMbrId() {
                     var param = {

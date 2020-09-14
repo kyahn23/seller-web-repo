@@ -71,6 +71,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/loginFail").permitAll()
 				.antMatchers("/join", "/join/**").permitAll()
 				.antMatchers("/member/**").permitAll()
+				.antMatchers("/upload/image", "/imageSrc").permitAll()
 				.antMatchers("/", "/**").authenticated()
             	.and()
             .authenticationProvider(authenticationProvider);

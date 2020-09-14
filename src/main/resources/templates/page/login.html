@@ -303,6 +303,7 @@
             $("#btnLogin").click(function() {
                 var userPw = $("#userPw").val();
                 var hashedPw = CryptoJS.SHA256(userPw).toString();
+                console.log(hashedPw);
                 $("#userPw").val(hashedPw);
                 document.loginPostForm.submit();
             });
