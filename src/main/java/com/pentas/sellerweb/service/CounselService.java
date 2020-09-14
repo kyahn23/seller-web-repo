@@ -7,6 +7,8 @@ import com.pentas.sellerweb.common.module.util.DevMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CounselService {
 
@@ -30,5 +32,10 @@ public class CounselService {
 
         return cmmnDao.selectOne("sellerweb.counsel.currPolicy", param);
 
+    }
+
+    public List<DevMap> bnMbrList(DevMap param) {
+
+        return cmmnDao.selectList("sellerweb.counsel.bnMbrList", param);
     }
 }
