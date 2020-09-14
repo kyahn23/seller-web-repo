@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/full-page">
+
+<!-- join-form 고유 css -->
+<th:block layout:fragment="css">
+</th:block>
+
+<!-- join-form 고유 js -->
+<th:block layout:fragment="js">
+</th:block>
+
+<div layout:fragment="content">
+    <vuejs-datepicker :language="ko"></vuejs-datepicker>
+</div>
+
+<div layout:fragment="layer">
+</div>
+
+<div layout:fragment="script"><script type="text/javascript" th:src="@{/js/lib/vuejs-datepicker-1.6.2/vuejs-datepicker.js}"></script>
+    <script type="text/javascript" th:src="@{/js/lib/vuejs-datepicker-1.6.2/locale/translations/ko.js}"></script>
+
+    <script type="text/javascript">
+        var g_cxt = '/'
+        g_cxt = g_cxt.substring(0, g_cxt.length-1);
+
+        var app = new Vue({
+            el:"#app",
+            data: {
+                ko: vdp_translation_ko.js
+            },
+            components: {
+                vuejsDatepicker
+            }
+        })
+    </script>
+</div>
+</html>
