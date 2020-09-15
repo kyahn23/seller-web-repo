@@ -16,7 +16,7 @@ public class CounselService {
     CmmnDao cmmnDao;
 
     public PageList<DevMap> counselList(DevMap param) {
-        param.put("BN_NO", "2020082500000000001");                                          // 업체번호
+        param.put("BN_NO", "202008250001");                                          // 업체번호
         param.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com");      // 회원아이디
 
         int page = Integer.parseInt(param.getString("page"));
@@ -27,7 +27,7 @@ public class CounselService {
     }
 
     public DevMap getCurrPolicy(DevMap param) {
-        param.put("BN_NO", "2020082500000000001");                                          // 업체번호
+        param.put("BN_NO", "202008250001");                                          // 업체번호
         param.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com");      // 회원아이디
 
         return cmmnDao.selectOne("sellerweb.counsel.currPolicy", param);
@@ -37,5 +37,33 @@ public class CounselService {
     public List<DevMap> bnMbrList(DevMap param) {
 
         return cmmnDao.selectList("sellerweb.counsel.bnMbrList", param);
+    }
+
+    public void saveCounsel(DevMap param) {
+        String visitDt = param.getString("visitDt");
+        visitDt = visitDt.concat("00");
+        param.put("VISIT_DT", visitDt);
+
+        cmmnDao.update("sellerweb.counsel.saveCounsel", param);
+    }
+
+    public void modiVisitDt(DevMap param) {
+        String visitDt = param.getString("visitDt");
+        visitDt = visitDt.concat("00");
+        param.put("VISIT_DT", visitDt);
+
+        cmmnDao.update("sellerweb.counsel.modiVisitDt", param);
+    }
+
+    public List<DevMap> useAllCarrMntRt(DevMap param) {
+        //        세션에서 업체번호 및 회원아이디 가져오기
+//        HttpSession session = request.getSession();
+//        String 업체번호 = (String)session.getAttribute("업체번호);
+//        String mbrId = (String)session.getAttribute("회원아이디");
+
+        param.put("BN_NO", "202008250001");                                          // 업체번호
+
+        return cmmnDao.selectList("sellerweb.counsel.useAllCarrMntRt", param);
+
     }
 }

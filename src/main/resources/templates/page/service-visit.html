@@ -2,6 +2,26 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/default">
 
+<th:block layout:fragment="css">
+    <style>
+        #container > .fixedWidth {
+            overflow: visible;
+        }
+
+        .searchArea .txtSize2 input, .searchArea .txtSize2 select {
+            width: 100%;
+        }
+
+        div.dpWrapWidth {
+            width: 82px;
+        }
+
+        input.dpInputWidth {
+            width: 100%;
+        }
+    </style>
+</th:block>
+
 <div layout:fragment="content">
     <!-- contents -->
     <div class="sectionRight" id="content">
@@ -20,11 +40,19 @@
                     <ul>
                         <li class="txtSize2">
                             <label>방문예정일</label>
-                            <input type="text" class="wDate" id="" placeholder="방문예정일 선택" value="2020-06-21">
-                            <span class="datePickerUI">
-											<input type="hidden" id="srchDate" title="방문예정일 선택">
-											<a href="#" class="btnCalender" id="btnSrchDate"><em>조회 날짜 선택</em></a>
-										</span>
+                            <span>
+                                <vuejs-datepicker ref="programaticOpen1" :language="ko" placeholder="방문예정일자"
+                                                  name="calendar01"
+                                                  :input-class="'dpInputWidth'" :wrapper-class="'dpWrapWidth'"
+                                                  :disabled-dates="disabledFn"
+                                                  :format="format" v-model="searchDay">
+                                </vuejs-datepicker>
+                            </span>
+                            <span>
+                                <button @click="openPicker1"
+                                        style="vertical-align: middle; width: 19px; height: 23px; background: url('../../images/cmmn/bg_ico_calender.gif') 0 0 no-repeat;">
+                                </button>
+                            </span>
                         </li>
                         <li class="txtSize5">
                             <label for="visit01">고객명</label>
@@ -148,7 +176,8 @@
                         <div class="cTitRight">
                             <!-- !!! 여기가 팝업 버튼 !!! -->
                             <div id="btn2" v-if="selectedCs.callNo"><a href="#popLayerServiceResultAdd"
-                                              class="btnM colorGreen popLayerServiceResultAdd_open"><span>개통결과 등록</span></a>
+                                                                       class="btnM colorGreen popLayerServiceResultAdd_open"
+                                                                       @click="rsltLayerMntRtInit"><span>개통결과 등록</span></a>
                             </div>
                         </div>
                     </div>
@@ -260,7 +289,8 @@
                             상담결과정보
                         </div>
                         <div class="cTitRight">
-                            <div id="btn2"><a href="#" class="btnM colorSky"><span>방문예정일시 변경</span></a></div>
+                            <div id="btn2"><a href="#" class="btnM colorSky" @click="modiVisitDt"><span>방문예정일시 변경</span></a>
+                            </div>
                         </div>
                     </div>
                     <!-- content -->
@@ -284,13 +314,26 @@
                                 <td>{{selectedCs.mbrPnNo}}</td>
                                 <th>방문예정일시<span class="icoMust"><em>필수</em></span></th>
                                 <td>
-                                    <input type="text" class="wDate" id="" placeholder="방문예정일시 선택" value="2020-06-21">
-                                    <span class="datePickerUI">
-														<input type="hidden" id="visitDate" title="방문예정일시 선택">
-														<a href="#" class="btnCalender"
-                                                           id="btnVisitDate"><em>방문예정일시 선택</em></a>
-													</span>
-                                    <input type="text" class="wDate" id="" placeholder="방문예정일시 선택" value="15 : 10">
+                                    <span>
+                                    <vuejs-datepicker ref="programaticOpen2" :language="ko" placeholder="방문예정일자"
+                                                      :input-class="'dpInputWidth'" :wrapper-class="'dpWrapWidth'"
+                                                      name="calendar02" :disabled-dates="disabledFn"
+                                                      :format="format" v-model="selectedCs.visitDt">
+                                    </vuejs-datepicker></span>
+                                    <span>
+                                        <button @click="openPicker2"
+                                                style="vertical-align: middle; width: 19px; height: 23px; background: url('../../images/cmmn/bg_ico_calender.gif') 0 0 no-repeat;"></button>
+                                    </span>
+                                    <span>
+                                    <select style="width: 50px" v-model="modiHH">
+                                        <option v-for="hh in hour" :value="hh.code">{{hh.value}}</option>
+                                    </select>
+                                </span> :
+                                    <span>
+                                    <select style="width: 50px" v-model="modiMM">
+                                        <option v-for="mm in minute" :value="mm.code">{{mm.value}}</option>
+                                    </select>
+                                </span>
                                 </td>
                             </tr>
                             <tr>
@@ -304,11 +347,8 @@
                                 </th>
                             </tr>
                             <tr>
-                                <td colspan="2">고객이 요청한 내용이
-                                    출력됨<br/><br/><br/><br/><br/>
-                                </td>
-                                <td colspan="2">갤럭시 S20 PLUS로 기기 변경 가능<br/>요금제 변경
-                                    가능<br/><br/><br/><br/></td>
+                                <td colspan="2" style="height: 60px">{{selectedCs.dealReq}}</td>
+                                <td colspan="2" style="height: 60px">{{selectedCs.callCont}}</td>
                             </tr>
                             </tbody>
                         </table>
@@ -348,46 +388,40 @@
                         <tr>
                             <th>개통담당자</th>
                             <td colspan="3">
-                                <select class="wPer" id="">
-                                    <option value="">매장판매원1</option>
-                                    <option value="">매장판매원2</option>
-                                    <option value="">매장판매원3</option>
-                                    <option value="">매장판매원4</option>
-                                    <option value="">매장판매원5</option>
+                                <select class="wPer" v-model="selectedCs.bnMbrId">
+                                    <option v-for="mbr in bnMbr" :value="mbr.bnMbrId">{{mbr.mbrNm}}</option>
                                 </select>
                             </td>
                         </tr>
                         <tr>
                             <th>구분</th>
                             <td colspan="3">
-                                <input type="radio" id="saleSucc" name="saleRslt" value="saleSucc"><label
+                                <input type="radio" id="saleSucc" name="saleRslt" value="T"
+                                       v-model="modiCallStCd"><label
                                     for="saleSucc">개통완료</label>&nbsp;
-                                <input type="radio" id="saleFail" name="saleRslt" value="saleFail"><label
+                                <input type="radio" id="saleFail" name="saleRslt" value="E"
+                                       v-model="modiCallStCd"><label
                                     for="saleFail">미개통처리(블랙고객
                                 등록)</label>
                             </td>
                         </tr>
                         <tr>
                             <th>고객명</th>
-                            <td><input class="wPer" type="text" id="" placeholder="고객명" value="고길동"></td>
+                            <td><input class="wPer" type="text" placeholder="고객명" v-model="selectedCs.clMbrNm"></td>
                             <th>개통번호</th>
-                            <td><input class="wPer" type="text" id="" placeholder="개통번호" value="010-1111-1110"></td>
+                            <td><input class="wPer" type="text" placeholder="개통번호" v-model="selectedCs.mbrPnNo"></td>
                         </tr>
                         <tr>
                             <th>통신사</th>
                             <td>
-                                <select class="wPer" id="">
-                                    <option value="">SKT</option>
-                                    <option value="">KT</option>
-                                    <option value="">LGU+</option>
+                                <select class="wPer" v-model="selectedCs.mntCarr">
+                                    <option v-for="carr in carrArr" :value="carr.code">{{carr.value}}</option>
                                 </select>
                             </td>
                             <th>조건</th>
                             <td>
-                                <select class="wPer" id="">
-                                    <option value="">번호이동</option>
-                                    <option value="">기기변경</option>
-                                    <option value="">신규가입</option>
+                                <select class="wPer" v-model="selectedCs.pnRegDis">
+                                    <option v-for="type in counselType" :value="type.code">{{type.value}}</option>
                                 </select>
                             </td>
                         </tr>
@@ -467,24 +501,133 @@
             }
         });
     </script>
+    <script type="text/javascript" th:src="@{/js/lib/vuejs-datepicker-1.6.2/vuejs-datepicker.js}"></script>
+    <script type="text/javascript" th:src="@{/js/lib/vuejs-datepicker-1.6.2/locale/translations/ko.js}"></script>
     <script>
         var app = new Vue({
             el: "#app",
             data: {
-                visitDay: "",
+                ko: vdp_translation_ko.js,
+                format: "yyyy-MM-dd",
+                hour: [
+                    {code: "all", value: "선택"},
+                    {code: "09", value: "09"},
+                    {code: "10", value: "10"},
+                    {code: "11", value: "11"},
+                    {code: "12", value: "12"},
+                    {code: "13", value: "13"},
+                    {code: "14", value: "14"},
+                    {code: "15", value: "15"},
+                    {code: "16", value: "16"},
+                    {code: "17", value: "17"},
+                    {code: "18", value: "18"},
+                ],
+                minute: [
+                    {code: "all", value: "선택"},
+                    {code: "00", value: "00"},
+                    {code: "10", value: "10"},
+                    {code: "20", value: "20"},
+                    {code: "30", value: "30"},
+                    {code: "40", value: "40"},
+                    {code: "50", value: "50"},
+                ],
+                modiHH: "",
+                modiMM: "",
+                searchDay: "",
                 clientNm: "",
                 bnMbr: [],
                 selectedBnMbr: "all",
+                modiCallStCd: "",
+                carrArr: [
+                    {code: "all", value: "선택"},
+                    {code: "SKT", value: "SKT"},
+                    {code: "KT", value: "KT"},
+                    {code: "LGU", value: "LGU"}
+                ],
+                counselType: [
+                    {code: "all", value: "선택"},
+                    {code: "A", value: "번호이동"},
+                    {code: "B", value: "기기변경"},
+                    {code: "C", value: "신규가입"},
+                ],
+                mntrtList: [],
                 counselList: [],        // 현재 페이지 상담 리스트
                 pageNo: "1",
                 pageInfo: [],     // 현재 페이지 정보
                 selectedCs: {},
-                currPolicy: {}
+                currPolicy: {},
+                today: "",
+                disabledDates: {},
+                disabledFn: {
+                    customPredictor(date) {
+                        let t = new Date()
+                        if (date.getDate() < t.getDate()) {
+                            return true;
+                        }
+                    }
+                },
+            },
+            components: {
+                vuejsDatepicker
             },
             mounted: function () {
-                this.getBnMbrList()
+                this.getToday()
+            },
+            watch: {
+                selectedCs: function (data) {
+                    // if (this.selectedCs.mntCarr === 'SKT') {
+                    //     let tempArr = []
+                    //     for (list in this.mntrtList) {
+                    //         if (this.mntrtList[list].pnCarr === 'SKT') {
+                    //             tempArr.push(this.mntrtList[list])
+                    //         }
+                    //     }
+                    // }
+                    console.log(data)
+                    let tempArr = []
+                    switch (this.selectedCs.mntCarr) {
+                        case 'SKT':
+                            for (list in this.mntrtList) {
+                                if (this.mntrtList[list].pnCarr === 'SKT') {
+                                    tempArr.push(this.mntrtList[list])
+                                }
+                            }
+                            break
+                        case 'KT':
+                            for (list in this.mntrtList) {
+                                if (this.mntrtList[list].pnCarr === 'KT') {
+                                    tempArr.push(this.mntrtList[list])
+                                }
+                            }
+                            break
+                        case 'LGU':
+                            for (list in this.mntrtList) {
+                                if (this.mntrtList[list].pnCarr === 'LGU') {
+                                    tempArr.push(this.mntrtList[list])
+                                }
+                            }
+                            break
+                    }
+                    this.mntrtList = tempArr
+                },
             },
             methods: {
+                getToday() {
+                    let today = new Date()
+                    let year = today.getFullYear()
+                    let month = today.getMonth() + 1
+                    let day = today.getDate();
+
+                    if (("" + month).length == 1) {
+                        month = "0" + month
+                    }
+                    if (("" + day).length == 1) {
+                        day = "0" + day
+                    }
+                    this.today = "" + year + '-' + month + '-' + day
+                    console.log(this.today)
+                    this.getBnMbrList()
+                },
                 getBnMbrList() {
                     var param = {}
                     cf_call("/service/bnMbrList", param, this.getBnMbrListCB)
@@ -496,20 +639,38 @@
                     this.searchList(type)
                 },
                 searchList(data) {
+                    let t = new Date(this.searchDay)
+                    let yy = "" + t.getFullYear()
+                    let mm = t.getMonth() + 1
+                    let dd = t.getDate();
+                    if (("" + mm).length == 1) {
+                        mm = "0" + mm
+                    }
+                    if (("" + dd).length == 1) {
+                        dd = "0" + dd
+                    }
+                    yy = yy.concat("-", mm, "-", dd)
+
                     var param = {
                         mntCarr: "all",
                         counselType: "all",
+                        visitDt: yy,
                         clientNm: this.clientNm,
                         bnMbr: this.selectedBnMbr,
                         page: "1"
                     }
-                    if (data === 'page') param.page = this.pageNo
+                    if (data === 'page') {
+                        param.page = this.pageNo
+                    }
+                    if (data === 'init') {
+                        this.searchDay = this.today
+                        param.visitDt = this.today
+                    }
                     this.selectedCs = {}
                     this.counselList = []
                     cf_call("/service/getVisitCounselList", param, this.searchListCB)
                 },
                 searchListCB(data) {
-                    console.log(data)
                     this.pageInfo = data.pageInfo
                     let tempArr = []
 
@@ -539,6 +700,15 @@
                     this.selectedCs = data
                     this.selectedCs.idx = idx
 
+                    let t = new Date(this.selectedCs.visitDt)
+                    let hh = "" + t.getHours()
+                    let mm = "" + t.getMinutes()
+                    if (("" + mm).length == 1) {
+                        mm = "0" + mm
+                    }
+
+                    this.modiHH = hh
+                    this.modiMM = mm
                     this.getCurrPolicy()
                 },
                 getTrClass(idx) {
@@ -556,6 +726,53 @@
                 },
                 getCurrPolicyCB(data) {
                     this.currPolicy = data
+                },
+                openPicker1() {
+                    this.$refs.programaticOpen1.showCalendar();
+                },
+                openPicker2() {
+                    this.$refs.programaticOpen2.showCalendar();
+                },
+                rsltLayerMntRtInit() {
+                    let param = {}
+                    cf_call("/service/useAllCarrMntRt", param, this.rsltLayerMntRtInitCB)
+                },
+                rsltLayerMntRtInitCB(data) {
+                    this.mntrtList = data.mntrtList
+                },
+                rsltLayerDeviceInit() {
+                },
+                rsltLayerDeviceInitCB(data) {
+                },
+                modiVisitDt() {
+                    if (confirm('방문예정일시를 변경하시겠습니까?')) {
+                        let modiDate = new Date(this.selectedCs.visitDt)
+                        let temp = "" + modiDate.getFullYear()
+                        let m = modiDate.getMonth() + 1
+                        let d = modiDate.getDate()
+                        if (("" + m).length == 1) {
+                            m = "0" + m
+                        }
+                        if (("" + d).length == 1) {
+                            d = "0" + d
+                        }
+                        temp = temp.concat("", m, "", d, this.modiHH, this.modiMM)
+
+                        let param = {
+                            callNo: this.selectedCs.callNo,
+                            visitDt: temp
+                        }
+                        cf_call("/service/modiVisitDt", param, this.modiVisitDtCB)
+                    }
+                },
+                modiVisitDtCB(data) {
+                    if (data.succ === "Y") {
+                        alert('방문예정일시가 변경되었습니다.')
+                        let type = 'page'
+                        this.visitHH = "all"
+                        this.visitMM = "all"
+                        this.searchList(type)
+                    }
                 }
             }
         })

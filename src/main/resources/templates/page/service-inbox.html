@@ -2,6 +2,18 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/default">
 
+<th:block layout:fragment="css">
+    <style>
+        div.dpWrapWidth {
+            width: 82px;
+        }
+
+        input.dpInputWidth {
+            width: 100%;
+        }
+    </style>
+</th:block>
+
 <div layout:fragment="content">
     <!-- contents -->
     <div class="sectionRight" id="content">
@@ -251,7 +263,9 @@
                 <div class="contentTitle" v-if="selectedCs.callNo">
                     <div class="cTit"></div>
                     <div class="cTitRight">
-                        <div id="btn2"><a href="#" class="btnM colorSky"><span>상담결과 저장</span></a></div>
+                        <div id="btn2"><a href="#popLayerServiceResultAdd"
+                                          class="btnM colorSky popLayerServiceResultAdd_open"><span>상담결과 저장</span></a>
+                        </div>
                     </div>
                 </div>
 
@@ -261,11 +275,102 @@
     <!-- //contents -->
 </div>
 
+<div layout:fragment="layer">
+    <!-- 팝업: 개통결과등록 -->
+    <div class="layerWrapper layerSizeM" id="popLayerServiceResultAdd" style="display:inherit !important">
+        <div class="layerHeader">
+            <strong>상담결과저장</strong>
+            <a href="#" class="btnClose popLayerServiceResultAdd_close"><img src="../images/cmmn/btn-layer-close.png"
+                                                                             alt="창닫기"></a>
+        </div>
+        <div class="layerContainer">
+            <div class="layerContent">
+
+                <!-- 컨텐츠 -->
+                <div class="guidanceWrapper">
+                    <table class="tblDataRow">
+                        <caption>상담결과저장</caption>
+                        <colgroup>
+                            <col style="width:85px">
+                            <col style="width:*">
+                            <col style="width:85px">
+                            <col style="width:*">
+                        </colgroup>
+                        <tbody>
+                        <tr>
+                            <th>고객명</th>
+                            <td>{{selectedCs.clMbrNm}}</td>
+                            <th>고객번호</th>
+                            <td>{{selectedCs.mbrPnNo}}</td>
+                        </tr>
+                        <tr>
+                            <th>방문예정일시</th>
+                            <td colspan="3">
+                                <span>
+                                <vuejs-datepicker ref="programaticOpen1" :language="ko" placeholder="방문예정일자"
+                                                  name="calendar01"
+                                                  :input-class="'dpInputWidth'" :wrapper-class="'dpWrapWidth'"
+                                                  :disabled-dates="disabledFn"
+                                                  :format="format" v-model="visitDd">
+                                </vuejs-datepicker>
+                            </span>
+                                <span>
+                                <button @click="openPicker1"
+                                        style="vertical-align: middle; width: 19px; height: 23px; background: url('../../images/cmmn/bg_ico_calender.gif') 0 0 no-repeat;">
+                                </button>
+                            </span>
+                                <span>
+                                    <select style="width: 50px" v-model="visitHh">
+                                        <option v-for="hh in hour" :value="hh.code">{{hh.value}}</option>
+                                    </select>
+                                </span> :
+                                <span>
+                                    <select style="width: 50px" v-model="visitMm">
+                                        <option v-for="mm in minute" :value="mm.code">{{mm.value}}</option>
+                                    </select>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>상담내용</th>
+                            <td colspan="3" style="height: 85px">
+                                <textarea
+                                        style="width: 100%; height: 100%;" v-model="csContent"></textarea>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- //컨텐츠 -->
+                <div class="btnWrapper">
+                    <a href="#none" class="btnL colorBlue"
+                       @click="saveCs"><span>저장</span></a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
 <div layout:fragment="script">
+    <!-- //팝업: 상담내용등록 -->
+    <script type="text/javascript">
+        $(function () {
+            if ($(".layerWrapper").length) {
+                //상담내용등록
+                $('#popLayerServiceResultAdd').popup();
+            }
+        });
+    </script>
+    <script type="text/javascript" th:src="@{/js/lib/vuejs-datepicker-1.6.2/vuejs-datepicker.js}"></script>
+    <script type="text/javascript" th:src="@{/js/lib/vuejs-datepicker-1.6.2/locale/translations/ko.js}"></script>
     <script>
         var app = new Vue({
             el: "#app",
             data: {
+                ko: vdp_translation_ko.js,
+                format: "yyyy-MM-dd",
                 carrArr: [
                     {code: "all", value: "전체"},
                     {code: "SKT", value: "SKT"},
@@ -285,12 +390,72 @@
                 pageNo: "1",
                 pageInfo: [],     // 현재 페이지 정보
                 selectedCs: {},
-                currPolicy: {}
+                currPolicy: {},
+                hour: [
+                    {code: "all", value: "시"},
+                    {code: "09", value: "09"},
+                    {code: "10", value: "10"},
+                    {code: "11", value: "11"},
+                    {code: "12", value: "12"},
+                    {code: "13", value: "13"},
+                    {code: "14", value: "14"},
+                    {code: "15", value: "15"},
+                    {code: "16", value: "16"},
+                    {code: "17", value: "17"},
+                    {code: "18", value: "18"},
+                ],
+                minute: [
+                    {code: "all", value: "분"},
+                    {code: "00", value: "00"},
+                    {code: "10", value: "10"},
+                    {code: "20", value: "20"},
+                    {code: "30", value: "30"},
+                    {code: "40", value: "40"},
+                    {code: "50", value: "50"},
+                ],
+                visitDd: "",
+                visitHh: "all",
+                visitMm: "all",
+                csContent: "",
+                disabledDates: {},
+                disabledFn: {
+                    customPredictor(date) {
+                        let t = new Date()
+                        if (date.getDate() < t.getDate()) {
+                            return true;
+                        }
+                    }
+                },
+            },
+            components: {
+                vuejsDatepicker
             },
             mounted: function () {
                 let type = 'init'
                 this.searchList(type)
             },
+            // watch:{
+            //     visitDd(){
+            //         let t = new Date(this.visitDd)
+            //         let year = ""+t.getFullYear()
+            //         let month = t.getMonth() + 1
+            //         let day = t.getDate();
+            //
+            //         if (("" + month).length == 1) {
+            //             month = "0" + month
+            //         }
+            //         if (("" + day).length == 1) {
+            //             day = "0" + day
+            //         }
+            //         let visitDt = year.concat("",month,"",day,this.visitHh,this.visitMm)
+            //         let today = this.getToday()
+            //
+            //         if (visitDt.substr(0,8)<today){
+            //             alert('이전날짜 선택 불가')
+            //             this.visitDd = ""
+            //         }
+            //     }
+            // },
             methods: {
                 searchList(data) {
                     var param = {
@@ -350,6 +515,64 @@
                 },
                 getCurrPolicyCB(data) {
                     this.currPolicy = data
+                },
+                openPicker1() {
+                    this.$refs.programaticOpen1.showCalendar();
+                },
+                getToday() {
+                    let today = new Date()
+                    let year = '' + today.getFullYear()
+                    let month = today.getMonth() + 1
+                    let day = today.getDate();
+
+                    if (("" + month).length == 1) {
+                        month = "0" + month
+                    }
+                    if (("" + day).length == 1) {
+                        day = "0" + day
+                    }
+                    return year.concat('', month, '', day)
+                },
+                saveCs() {
+                    let t = new Date(this.visitDd)
+                    let year = "" + t.getFullYear()
+                    let month = t.getMonth() + 1
+                    let day = t.getDate()
+
+                    if (("" + month).length == 1) {
+                        month = "0" + month
+                    }
+                    if (("" + day).length == 1) {
+                        day = "0" + day
+                    }
+                    if (this.visitDd.length === 0 || this.visitHh === "all" || this.visitMm === "all") {
+                        alert('방문예정일을 선택해주세요')
+                        // $('#popLayerPW').popup("hide");
+                        return
+                    }
+                    if (this.csContent.length === 0 ){
+                        alert('상담내용을 작성해주세요')
+                        return
+                    }
+                    let visitDt = year.concat("", month, "", day, this.visitHh, this.visitMm)
+                    let param = {
+                        callNo: this.selectedCs.callNo,
+                        visitDt: visitDt,
+                        csContent: this.csContent
+                    }
+                    console.log(param)
+                    cf_call("/service/saveCounsel", param, this.saveCsCB)
+                },
+                saveCsCB(data) {
+                    if (data.succ === "Y") {
+                        alert('상담결과가 저장되었습니다.')
+                        let type = 'init'
+                        this.visitDd = ""
+                        this.visitHh = "all"
+                        this.visitMm = "all"
+                        $('#popLayerServiceResultAdd').popup("hide");
+                        this.searchList(type)
+                    }
                 }
             }
         })

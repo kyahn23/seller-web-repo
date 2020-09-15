@@ -14,12 +14,14 @@
         (select PN_MSRP FROM TBL011 tt4 where tt4.PN_MDL_NO = t1.PN_MDL_NO) as PN_MSRP,
         (SELECT MBR_NM FROM TBL001 tt3 where tt3.CL_MBR_ID = t1.CL_MBR_ID) as CL_MBR_NM,
         DATE_FORMAT(T.VISIT_DT, '%Y-%m-%d %H:%i') as VISIT_DT,
+        t1.DEAL_REQ,
         T.MBR_PN_NO,
         T.OLD_OFCL_SUBSD,
         T.OLD_EXT_SUBSD_DV,
         T.OLD_EXT_SUBSD_RT,
         T.OLD_EXT_SERV_YN,
         T.CALL_NO,
+        T.CALL_CONT,
         T.BN_MBR_ID,
         (SELECT MBR_NM FROM TBL002 tt5 WHERE tt5.BN_MBR_ID = T.BN_MBR_ID) as MBR_NM,
         DATE_FORMAT(T.INP_DT, '%Y-%m-%d %H:%i') as INP_DT
@@ -27,6 +29,9 @@
         where T.BN_NO = #{bnNo}
         <if test='callStCd != null and !callStCd.equals("all")'>
             and T.CALL_ST_CD = #{callStCd}
+            <if test='visitDt != null'>
+                and DATE_FORMAT(T.VISIT_DT, '%Y-%m-%d') = #{visitDt}
+            </if>
         </if>
         <if test='mntCarr != null and !mntCarr.equals("all")'>
             and t1.MNT_CARR = #{mntCarr}
@@ -71,6 +76,35 @@
           FROM TBL002 t
          WHERE BN_NO = #{bnNo}
             AND ACTV_YN  = 'Y'
+    </select>
+
+    <update id="saveCounsel" parameterType="DevMap">
+        update `TBL008`
+        set VISIT_DT = #{visitDt},
+        CALL_ST_CD = #{callStCd},
+        CALL_CONT = #{csContent},
+        BN_MBR_ID = #{bnMbrId}
+        where BN_NO=#{bnNo}
+        and CALL_NO=#{callNo}
+    </update>
+
+    <update id="modiVisitDt" parameterType="DevMap">
+        update `TBL008`
+        set VISIT_DT = #{visitDt},
+        BN_MBR_ID = #{bnMbrId}
+        where BN_NO=#{bnNo}
+        and CALL_NO=#{callNo}
+    </update>
+
+    <select id="useAllCarrMntRt" parameterType="DevMap" resultType="DevMap">
+        select B.MNT_USEYN_NO as MNT_USEYN_NO, /*사용여부 확인을 위한 idx*/
+        A.PN_MNT_RT_NO, /*요금제 번호 */
+        A.PN_MNT_RT_NM,
+        A.PN_NET_TYPE,
+        A.PN_CARR
+        from TBL010 A left join (select * from TBL013 where BN_NO=#{bnNo}) B
+        on A.PN_MNT_RT_NO = B.PN_MNT_RT_NO
+        WHERE B.MNT_USEYN_NO is not null
     </select>
 
 </mapper>
