@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/default">
 
+<!-- service-marketing 고유 css -->
+<th:block layout:fragment="css">
+    <style>
+        .datePickerInput {
+            display: inline-block;
+        }
+    </style>
+</th:block>
+
 <div layout:fragment="content">
     <!-- contents -->
     <div class="sectionRight" id="content">
@@ -19,28 +28,42 @@
                     <ul>
                         <li class="txtSize3">
                             <label for="marketing01">구분</label>
-                            <select id="marketing01">
-                                <option value="">전체</option>
-                                <option value="">미진행</option>
-                                <option value="">성공</option>
-                                <option value="">실패</option>
+                            <select id="marketing01" v-model="srchType">
+                                <option value="A">전체</option>
+                                <option value="N">미진행</option>
+                                <option value="S">성공</option>
+                                <option value="F">실패</option>
                             </select>
                         </li>
                         <li class="txtSize2">
                             <label>대상월</label>
-                            <input type="text" class="wDate" id="" placeholder="대상월 선택" value="2020-06">
+                            <vuejs-datepicker
+                                ref="srchDatePicker"
+                                :input-class="'wDate'"
+                                :wrapper-class="'datePickerInput'"
+                                :language="ko"
+                                :format="'yyyy-MM'"
+                                :minimum-view="'month'"
+                                :maximum-view="'month'"
+                                v-model="srchDate"
+                            ></vuejs-datepicker>
                             <span class="datePickerUI">
-											<input type="hidden" id="srchMktDate" title="대상월 선택">
-											<a href="#" class="btnCalender" id="btnSrchMktDate"><em>조회 월 선택</em></a>
-										</span>
+                                <a href="#;" class="btnCalender" id="btnSrchMktDate" @click="openSrchDatePicker"><em>조회 월 선택</em></a>
+                            </span>
                         </li>
                         <li class="txtSize5">
                             <label for="marketing02">고객명</label>
-                            <input type="text" id="marketing02" placeholder="고객명 입력" value="">
+                            <input
+                                type="text"
+                                id="marketing02"
+                                placeholder="고객명 입력"
+                                :value="srchName"
+                                @input="srchName = $event.target.value"
+                            >
                         </li>
                     </ul>
                     <div class="btnSearch">
-                        <a href="#" class="btnM colorBlue"><span>검색</span></a>
+                        <a href="#;" class="btnM colorBlue" @click="getMarketingList('1')"><span>검색</span></a>
                     </div>
                 </div>
 
@@ -52,23 +75,11 @@
                         </div>
                         <div class="cTitRight">
                             <div class="SelectBoxBasic selectPaging">
-                                <input type="hidden" value="1page" />
-                                <div class="DefaultName">선택하세요</div>
+                                <div class="DefaultName">{{pageInfo.page}} page</div>
                                 <ul>
-                                    <li id="1page">1 page</li>
-                                    <li id="2page">2 page</li>
-                                    <li id="3page">3 page</li>
-                                    <li id="4page">4 page</li>
-                                    <li id="5page">5 page</li>
-                                    <li id="6page">6 page</li>
-                                    <li id="7page">7 page</li>
-                                    <li id="8page">8 page</li>
-                                    <li id="9page">9 page</li>
-                                    <li id="10page">10 page</li>
-                                    <li id="11page">11 page</li>
-                                    <li id="12page">12 page</li>
-                                    <li id="13page">13 page</li>
-                                    <li id="14page">14 page</li>
+                                    <li v-for="item in pageInfo.slider" :id='item+"page"' @click="getMarketingList(item)">
+                                        {{item}} page
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -93,8 +104,8 @@
                                         <td>고객명</td>
                                         <td>개통번호</td>
                                         <td>개통일</td>
-                                        <td>통신사</td>
-                                        <td>휴대폰</td>
+                                        <td>이전 통신사</td>
+                                        <td>이전 휴대폰</td>
                                         <td>최종등록일시</td>
                                     </tr>
                                     </tbody>
@@ -119,57 +130,27 @@
                                     <td>고객명</td>
                                     <td>개통번호</td>
                                     <td>개통일</td>
-                                    <td>통신사</td>
-                                    <td>휴대폰</td>
+                                    <td>이전 통신사</td>
+                                    <td>이전 휴대폰</td>
                                     <td>최종등록일시</td>
                                 </tr>
                                 </thead>
-                                <tbody>
-                                <tr>
-                                    <td class="alignC">미진행</td>
-                                    <td class="alignC">홍길동</td>
-                                    <td class="alignC">010-1111-1111</td>
-                                    <td class="alignC">2020-06-21</td>
-                                    <td class="alignC">SKT</td>
-                                    <td class="alignC">갤럭시 S20</td>
-                                    <td class="alignC">2020-06-21 15:00</td>
+                                <tbody v-if="mktList.length">
+                                <tr
+                                    v-for="(mktRow, index) in mktList"
+                                    :class="{ checkedItem: getTrClass(index) }"
+                                    @click="setTrIndex(index)"
+                                >
+                                    <td class="alignC">{{ mktRow.mktRsltTxt }}</td>
+                                    <td class="alignC">{{ mktRow.mbrNm }}</td>
+                                    <td class="alignC">{{ mktRow.mbrPnNo }}</td>
+                                    <td class="alignC">{{ mktRow.pnRegDt }}</td>
+                                    <td class="alignC">{{ mktRow.mntCarr }}</td>
+                                    <td class="alignC">{{ mktRow.pnMdlNm }}</td>
+                                    <td class="alignC">{{ mktRow.amdDt }}</td>
                                 </tr>
-                                <tr class="checkedItem">
-                                    <td class="alignC">미진행</td>
-                                    <td class="alignC">고길동</td>
-                                    <td class="alignC">010-1111-1110</td>
-                                    <td class="alignC">2020-06-21</td>
-                                    <td class="alignC">KT</td>
-                                    <td class="alignC">갤럭시 S20</td>
-                                    <td class="alignC">2020-06-21 15:10</td>
-                                </tr>
-                                <tr>
-                                    <td class="alignC">미진행</td>
-                                    <td class="alignC">이효리</td>
-                                    <td class="alignC">010-1111-1120</td>
-                                    <td class="alignC">2020-06-22</td>
-                                    <td class="alignC">LGU+</td>
-                                    <td class="alignC">갤럭시 S10</td>
-                                    <td class="alignC">2020-06-21 15:20</td>
-                                </tr>
-                                <tr>
-                                    <td class="alignC">성공</td>
-                                    <td class="alignC">삼순이</td>
-                                    <td class="alignC">010-1111-1130</td>
-                                    <td class="alignC">2020-06-23</td>
-                                    <td class="alignC">LGU+</td>
-                                    <td class="alignC">갤럭시 S20 Plus</td>
-                                    <td class="alignC">2020-06-21 15:30</td>
-                                </tr>
-                                <tr>
-                                    <td class="alignC">실패</td>
-                                    <td class="alignC">아무개</td>
-                                    <td class="alignC">010-1111-1140</td>
-                                    <td class="alignC">2020-06-24</td>
-                                    <td class="alignC">SKT</td>
-                                    <td class="alignC">갤럭시 S10 Plus</td>
-                                    <td class="alignC">2020-06-21 15:40</td>
-                                </tr>
+                                </tbody>
+                                <tbody v-else>
                                 <!-- 결과없음 -->
                                 <tr class="errorMessage">
                                     <td colspan="6">
@@ -193,7 +174,19 @@
                             마케팅 결과 등록
                         </div>
                         <div class="cTitRight">
-                            <div id="btn2"><a href="#" class="btnM colorSky"><span>마케팅 결과 저장</span></a></div>
+                            <div id="btn2">
+                                <a
+                                    href="#;"
+                                    class="btnM"
+                                    :class="{
+                                        colorSky:!mktOneDisabled,
+                                        disabled: mktOneDisabled
+                                    }"
+                                    @click="saveMktOne"
+                                >
+                                    <span>마케팅 결과 저장</span>
+                                </a>
+                            </div>
                         </div>
                     </div>
                     <!-- content -->
@@ -208,26 +201,42 @@
                             <tbody>
                             <tr>
                                 <th>개통고객명</th>
-                                <td>고길동</td>
+                                <td>{{ mktOne.mbrNm }}</td>
                                 <th>개통번호</th>
-                                <td>0100-1111-1110</td>
+                                <td>{{ mktOne.mbrPnNo }}</td>
                             </tr>
                             <tr>
                                 <th>마케팅 결과<span class="icoMust"><em>필수</em></span></th>
                                 <td>
-                                    <input type="radio" id="mktSucc" name="mktRslt" value="mktSucc"><label
-                                        for="mktSucc">성공</label>&nbsp;
-                                    <input type="radio" id="mktFail" name="mktRslt" value="mktFail"><label
-                                        for="mktFail">실패</label>
+                                    <input type="radio" id="mktSucc" name="mktRslt" value="S" v-model="mktOne.mktRslt" :disabled="mktOneDisabled">
+                                    <label for="mktSucc">성공&ensp;</label>&nbsp;
+                                    <input type="radio" id="mktFail" name="mktRslt" value="F" v-model="mktOne.mktRslt" :disabled="mktOneDisabled">
+                                    <label for="mktFail">실패&ensp;</label>
                                 </td>
                                 <th>방문예정일시<span class="icoMust"><em>필수</em></span></th>
                                 <td>
-                                    <input type="text" class="wDate" id="" placeholder="방문예정일시 선택" value="2020-06-25">
+                                    <vuejs-datepicker
+                                            ref="oneDatePicker"
+                                            :input-class="'wDate'"
+                                            :wrapper-class="'datePickerInput'"
+                                            :language="ko"
+                                            :format="'yyyy-MM-dd'"
+                                            :minimum-view="'day'"
+                                            :maximum-view="'day'"
+                                            :disabled="mktOneDisabled"
+                                            v-model="oneDate"
+                                    ></vuejs-datepicker>
                                     <span class="datePickerUI">
-														<input type="hidden" id="visitDate" title="방문예정일시 선택">
-														<a href="#" class="btnCalender" id="btnVisitDate"><em>방문예정일시 선택</em></a>
-													</span>
-                                    <input type="text" class="wDate" id="" placeholder="방문예정일시 선택" value="13 : 00">
+										<a href="#;" class="btnCalender" id="btnVisitDate" @click="openOneDatePicker"><em>방문예정일시 선택</em></a>
+									</span>
+                                    <span style="width: 12px;"></span>
+                                    <select id="oneHour" style="width: 62px !important;" :disabled="mktOneDisabled" v-model="oneHour">
+                                        <option v-for="hour in setOneHour" :value="hour">{{ hour }}</option>
+                                    </select>
+                                    <span> : </span>
+                                    <select id="oneMin" style="width: 62px !important;" :disabled="mktOneDisabled" v-model="oneMin">
+                                        <option v-for="min in setOneMin" :value="min">{{ min }}</option>
+                                    </select>
                                 </td>
                             </tr>
                             <tr>
@@ -239,48 +248,59 @@
                             <tr>
                                 <th>통신사</th>
                                 <td>
-                                    <input type="radio" id="mktSkt" name="mktTelco" value="mktSkt"><label
-                                        for="mktSkt">SKT</label>&nbsp;
-                                    <input type="radio" id="mktKt" name="mktTelco" value="mktKt"><label
-                                        for="mktKt">KT</label>&nbsp;
-                                    <input type="radio" id="mktLgu" name="mktTelco" value="mktLgu"><label
-                                        for="mktLgu">LGU+</label>
+                                    <input type="radio" id="mktSkt" name="pnCarr" value="SKT" v-model="mktOne.pnCarr" :disabled="mktOneDisabled">&nbsp;
+                                    <label for="mktSkt">SKT&ensp;</label>
+                                    <input type="radio" id="mktKt" name="pnCarr" value="KT" v-model="mktOne.pnCarr" :disabled="mktOneDisabled">&nbsp;
+                                    <label for="mktKt">KT&ensp;</label>
+                                    <input type="radio" id="mktLgu" name="pnCarr" value="LGU" v-model="mktOne.pnCarr" :disabled="mktOneDisabled">&nbsp;
+                                    <label for="mktLgu">LGU+&ensp;</label>
                                 </td>
                                 <td colspan="2" rowspan="5">
-                                    <textarea style="width: 100%; height: 100%;">마케팅 처리 결과 내용 등록 입력란</textarea>
+                                    <textarea
+                                        style="width: 100%; height: 100%;"
+                                        placeholder="마케팅 처리 결과 내용 등록 입력란"
+                                        :value="mktOne.mktCmnt"
+                                        @input="mktOne.mktCmnt = $event.target.value"
+                                        maxlength="100"
+                                        :disabled="mktOneDisabled"
+                                    ></textarea>
                                 </td>
                             </tr>
                             <tr>
                                 <th>개통유형</th>
                                 <td>
-                                    <input type="radio" id="mktNum" name="mktType" value="mktNum"><label
-                                        for="mktNum">번호이동</label>&nbsp;
-                                    <input type="radio" id="mktPhone" name="mktType" value="mktPhone"><label
-                                        for="mktPhone">기기변경</label>&nbsp;
-                                    <input type="radio" id="mktNew" name="mktType" value="mktNew"><label for="mktNew">신규가입</label>
+                                    <input type="radio" id="mktNum" name="pnRegDis" value="A" v-model="mktOne.pnRegDis" :disabled="mktOneDisabled">&nbsp;
+                                    <label for="mktNum">번호이동&ensp;</label>&nbsp;
+                                    <input type="radio" id="mktPhone" name="pnRegDis" value="B" v-model="mktOne.pnRegDis" :disabled="mktOneDisabled">&nbsp;
+                                    <label for="mktPhone">기기변경&ensp;</label>&nbsp;
+                                    <input type="radio" id="mktNew" name="pnRegDis" value="C" v-model="mktOne.pnRegDis" :disabled="mktOneDisabled">&nbsp;
+                                    <label for="mktNew">신규가입&ensp;</label>
                                 </td>
                             </tr>
                             <tr>
                                 <th>요금제</th>
                                 <td>
-                                    <select id="">
-                                        <option value="">5G 790000</option>
+                                    <select id="selMonthlyRate" :disabled="mktOneDisabled" v-model="mktOne.pnMntRtNo">
+                                        <option v-if="monthlyRateList.length" value="-1">- 요금제를 선택하세요 -</option>
+                                        <option v-for="(plan, index) in monthlyRateList" :value="plan.pnMntRtNo">{{ plan.pnMntRtNm }} | {{ addCommaToPrice(plan.pnMntAmt) }}원</option>
                                     </select>
                                 </td>
                             </tr>
                             <tr>
                                 <th>휴대폰 제조사</th>
                                 <td>
-                                    <select id="">
-                                        <option value="">삼성전자</option>
+                                    <select id="pnMkr" :disabled="mktOneDisabled" v-model="mktOne.pnMkr">
+                                        <option v-if="pnMkrList.length" value="-1">- 제조사를 선택하세요 -</option>
+                                        <option v-for="pnMkr in pnMkrList" :value="pnMkr">{{ setPnMkrNm(pnMkr) }}</option>
                                     </select>
                                 </td>
                             </tr>
                             <tr>
                                 <th>휴대폰 모델</th>
                                 <td>
-                                    <select id="">
-                                        <option value="">갤럭시 S40 PLUS</option>
+                                    <select id="device" :disabled="mktOneDisabled" v-model="mktOne.pnMdl">
+                                        <option v-if="deviceList.length" value="-1">- 모델을 선택하세요 -</option>
+                                        <option v-for="deviceOne in deviceList" :value="setDeviceOne(deviceOne.pnMdlNm, deviceOne.pnStor)">{{ deviceOne.pnMdlNm }} {{ deviceOne.pnStor }}</option>
                                     </select>
                                 </td>
                             </tr>
@@ -298,11 +318,228 @@
 </div>
 
 <div layout:fragment="script">
+    <script type="text/javascript" th:src="@{/js/lib/vuejs-datepicker-1.6.2/vuejs-datepicker.js}"></script>
+    <script type="text/javascript" th:src="@{/js/lib/vuejs-datepicker-1.6.2/locale/translations/ko.js}"></script>
+
     <script>
         var app = new Vue({
             el: "#app",
             data: {
+                bnMbrId: 'qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com',
+                ko: vdp_translation_ko.js,
+                srchType: 'A',
+                srchDate: '',
+                srchName: '',
+                pageNo: '0',
+                pageInfo: [],
+                mktList: [],
+                mktOne: {
+                    pnMntRtNo: -1,
+                    pnMkr: -1,
+                    pnMdl: -1
+                },
+                oneDate: '',
+                oneHour: '00',
+                oneMin: '00',
+                monthlyRateList: [],
+                pnMkrData: [
+                    {
+                        mkrCd: 'SAM',
+                        mkrNm: '삼성전자'
+                    },
+                    {
+                        mkrCd: 'LGE',
+                        mkrNm: 'LG전자'
+                    },
+                    {
+                        mkrCd: 'XIA',
+                        mkrNm: '샤오미'
+                    },
+                    {
+                        mkrCd: 'APL',
+                        mkrNm: '애플'
+                    },
+                ],
+                pnMkrList: [],
+                deviceList: [],
+                selRow: -1,
+            },
+            components: {
+                vuejsDatepicker
+            },
+            mounted: function(){
+                this.srchDate = new Date()
+                this.oneDate = new Date()
+                this.getMarketingList('1')
+            },
+            watch: {
+                'mktOne.pnCarr': function (val) {
+                    this.getMonthlyRate(val)
+                },
+                'mktOne.pnMntRtNo': function (val) {
+                    var pnNetType = this.monthlyRateList[val].pnNetType
+                    this.getPnMkr(pnNetType)
+                },
+                'mktOne.pnMkr': function (val) {
+                    this.getDevice(val)
+                }
+            },
+            methods: {
+                openSrchDatePicker() {
+                    this.$refs.srchDatePicker.showCalendar()
+                },
+                openOneDatePicker() {
+                    this.$refs.oneDatePicker.showCalendar()
+                },
+                getMarketingList(n) {
+                    this.pageNo = n + ""
+                    var param = {
+                        bnMbrId: this.bnMbrId,
+                        srchType: this.srchType,
+                        srchDate: this.paramDate,
+                        srchName: this.srchName,
+                        page: this.pageNo,
+                    }
+                    cf_call("/service/getMarketingList", param, this.getMarketingListCB)
+                },
+                getMarketingListCB(rslt) {
+                    this.pageInfo = rslt.pageInfo
+                    this.mktList = rslt.mktList
+                },
+                setTrIndex(idx) {
+                    if (idx === this.selRow) {
+                        this.selRow = -1
+                        this.initMktOne()
+                    } else {
+                        this.selRow = idx
+                        this.getMktOne()
+                    }
+                },
+                getTrClass(idx) {
+                    return (this.selRow === idx)
+                },
+                initMktOne() {
+                    this.mktOne = {
+                        pnMntRtNo: -1,
+                        pnMkr: -1,
+                        pnMdl: -1
+                    }
+                    this.monthlyRateList = []
+                    this.pnMkrList = []
+                    this.deviceList = []
+                },
+                getMktOne(){
+                    var param = {
+                        dealNo: this.mktList[this.selRow].dealNo
+                    }
+                    cf_call("/service/getMarketingOne", param, this.getMktOneCB)
+                },
+                getMktOneCB(rslt) {
+                    this.mktOne = rslt.mktOne
+                },
+                getMonthlyRate(val) {
+                    var param = {
+                        bnMbrId: this.bnMbrId,
+                        pnCarr: val
+                    }
+                    cf_call("/service/getMonthlyRate", param, this.getMonthlyRateCB)
+                },
+                getMonthlyRateCB(rslt) {
+                    this.monthlyRateList = rslt.monthlyRate
+                },
+                addCommaToPrice(val) {
+                    var num = Number(val)
+                    return num.toLocaleString()
+                },
+                getPnMkr(val) {
+                    var param = {
+                        pnNetType: val
+                    }
+                    cf_call("/service/getPnMkr", param, this.getPnMkrCB)
+                },
+                getPnMkrCB(rslt) {
+                    this.pnMkrList = rslt.pnMkr
+                },
+                setPnMkrNm(val) {
+                    for (var i=0; i < this.pnMkrData.length; i++) {
+                        if (this.pnMkrData[i].mkrCd === val) return this.pnMkrData[i].mkrNm
+                    }
+                },
+                getDevice(val) {
+                    var pnCarrAbbr = this.mktOne.pnCarr.substring(0, 1)
+                    var pnNetType = ''
+                    for (var i=0; i < this.monthlyRateList.length; i++) {
+                        if (this.monthlyRateList[i].pnMntRtNo === this.mktOne.pnMntRtNo) pnNetType = this.monthlyRateList[i].pnNetType
+                    }
 
+                    var param = {
+                        pnMkr: val,
+                        pnNetType: pnNetType,
+                        pnCarrAbbr: pnCarrAbbr
+                    }
+                    cf_call("/service/getDeviceList", param, this.getDeviceCB)
+                },
+                getDeviceCB(rslt) {
+                    this.deviceList = rslt.deviceList
+                },
+                setDeviceOne(a, b) {
+                    return a + ' ' + b
+                },
+                saveMktOne() {
+                    if (!this.mktOneDisabled) {
+                        if (this.mktOne.mktRslt !== 'S' && this.mktOne.mktRslt !== 'F') {
+                            alert('마케팅 결과를 지정해주세요.')
+                        } else {
+                            var param = this.mktOne
+                            param.dealNo = this.mktList[this.selRow].dealNo
+                            param.visitDt = this.setVisitDt
+                            console.log(param)
+                            cf_call("/service/saveMarketingOne", param, this.saveMktOneCB)
+                        }
+                    }
+                },
+                saveMktOneCB(rslt) {
+                    if (rslt.rsltStat === 'SUCC') {
+                        alert('마케팅 정보가 저장되었습니다.')
+                        this.srchType = 'A'
+                        this.srchName = ''
+                        this.srchDate = new Date()
+                        this.oneDate = new Date()
+                        this.getMarketingList('1')
+                        this.selRow = -1
+                        this.initMktOne()
+                    }
+                }
+            },
+            computed: {
+                paramDate() {
+                    var srchYear = this.srchDate.getFullYear() - 2
+                    var srchMonth = ((this.srchDate.getMonth() + 1) + "").padStart(2, '0')
+                    return srchYear + "-" + srchMonth + "-"
+                },
+                mktOneDisabled() {
+                    return !(this.selRow >= 0)
+                },
+                setOneHour() {
+                    var oneHourList = []
+                    for (var i=0; i < 24; i++) {
+                        oneHourList.push((i + "").padStart(2, '0'))
+                    }
+                    return oneHourList
+                },
+                setOneMin() {
+                    var oneMinList = []
+                    for (var i=0; i < 60; i+=10) {
+                        oneMinList.push((i + "").padStart(2, '0'))
+                    }
+                    return oneMinList
+                },
+                setVisitDt() {
+                    return this.oneDate.getFullYear()
+                        + '-' + ((this.oneDate.getMonth() + 1) + "").padStart(2, '0')
+                        + '-' + this.oneDate.getDate()
+                        + ' ' + this.oneHour + ':' + this.oneMin + ':00'
+                }
             }
         })
     </script>

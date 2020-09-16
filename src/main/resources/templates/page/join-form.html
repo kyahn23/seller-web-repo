@@ -515,7 +515,8 @@
                 },
                 addNewBnInfoCB(rslt) {
                     if (rslt.rsltStat === 'SUCC') {
-                        alert('YEET')
+                        alert('가입이 완료되었습니다.\n가입하신 이메일로 전송된 임시 비밀번호로 로그인 해주세요.')
+                        window.location.href = "/"
                     }
                 },
                 setChkMbrId() {
