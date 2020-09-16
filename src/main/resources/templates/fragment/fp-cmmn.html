@@ -1,0 +1,26 @@
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<!-- cmmnFragment -->
+<th:block th:fragment="fpCmmnFragment">
+    <link rel="stylesheet" th:href="@{/css/cmmn/public.css}">
+    <style>
+        [v-cloak] > * {
+            display: none;
+        }
+    </style>
+    <th:block layout:fragment="css"></th:block>
+    <script type="text/javascript" th:src="@{/js/lib/jquery-1.10.2.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/lib/jquery-migrate-1.2.1.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/lib/jquery-ui.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/lib/jquery-ui-datepicker-ko.js}"></script>
+    <script type="text/javascript" th:src="@{/js/lib/jquery.mtz.monthpicker.js}"></script>
+    <script type="text/javascript" th:src="@{/js/lib/jquery.popupoverlay.js}"></script>
+    <script type="text/javascript" th:src="@{/js/lib/jquery.placeholder.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/lib/vue.js}"></script>
+    <script type="text/javascript" th:src="@{/js/lib/vue-the-mask/vue-the-mask.js}"></script>
+    <script type="text/javascript" th:src="@{/js/lib/axios.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/lnb.js}"></script>
+    <script type="text/javascript" th:src="@{/js/common.js}"></script>
+    <th:block layout:fragment="js"></th:block>
+</th:block>
+<!-- //cmmnFragment -->
+</html>

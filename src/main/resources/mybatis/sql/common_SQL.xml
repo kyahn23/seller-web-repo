@@ -10,6 +10,7 @@
             ,PWNO_INIT_YN
             ,PWERR_CNT
             ,LGIN_AVL_YN
+            ,MST_MBR_YN
             ,ACTV_YN
         FROM TBL002
         WHERE BN_MBR_ID = #{userId}

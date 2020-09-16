@@ -8,7 +8,7 @@ public class CommonViewController {
 
     @GetMapping("/")
     public String index() {
-        return "main";
+        return "page/main";
     }
 
     @GetMapping("/join")

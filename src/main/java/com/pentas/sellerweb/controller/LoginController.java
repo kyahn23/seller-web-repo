@@ -72,6 +72,8 @@ public class LoginController {
 
             session.setAttribute("bnMbrId", userVO.getBnMbrId());
             session.setAttribute("mbrNm", userVO.getMbrNm());
+            session.setAttribute("pwnoInitYn", userVO.getPwnoInitYn());
+            session.setAttribute("mstMbrYn", userVO.getMstMbrYn());
             redirect.addFlashAttribute("loginStat", "SUCC");
             return "redirect:/";
         }

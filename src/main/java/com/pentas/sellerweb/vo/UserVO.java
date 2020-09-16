@@ -34,6 +34,9 @@ public class UserVO implements UserDetails {
 	/* 로그인 가능 여부 */
 	private String lginAvlYn;
 
+	/* 마스터 회원 여부 */
+	private String mstMbrYn;
+
 	/* 퇴사 회원 여부 */
 	private String actvYn;
 
@@ -73,6 +76,10 @@ public class UserVO implements UserDetails {
 	public String getLginAvlYn() { return lginAvlYn; }
 
 	public void setLginAvlYn(String lginAvlYn) { this.lginAvlYn = lginAvlYn; }
+
+	public String getMstMbrYn() { return mstMbrYn; }
+
+	public void setMstMbrYn(String mstMbrYn) { this.mstMbrYn = mstMbrYn; }
 
 	public String getActvYn() { return actvYn; }
 
