@@ -76,61 +76,35 @@ public class CommonService {
      * @param param
      */
     public void updateMstPwInit(DevMap param) {
-//        String tempPwd = (new Random().nextInt(900000) + 100000) + "";
-//        String hashPwd = CmmnUtil.encryptSHA256(tempPwd.toString());
-//
-//        param.put("tempPwd", hashPwd);
-
         String mstMbrId = (String) param.get("mstMbrId");
         String ownerNm = (String) param.get("ownerNm");
 
         String hashPwd = generateTempPwd(mstMbrId, ownerNm);
         param.put("tempPwd", hashPwd);
-
-//        EmailUtil.sendMailAuthSSL(
-//                emailProperties.getSmtpHost(),
-//                emailProperties.getSmtpPort(),
-//                emailProperties.getSmtpUser(),
-//                emailProperties.getSmtpPassword(),
-//                "[Pentaworks Service] 임시 비밀번호 발급 안내",
-//                "<html><p>" + ownerNm + "님의 임시 비밀번호가 발급되었습니다.<br>" +
-//                        "임시 비밀번호로 로그인 후 새 비밀번호로 변경해주세요.<br></p>" +
-//                        "<h4>임시 비밀번호 : " + tempPwd + "</h4></html>",
-//                mstMbrId + "",
-//                emailProperties.getFromEmail(),
-//                emailProperties.getFromName()
-//        );
 
         cmmnDao.update("sellerweb.common.updateMstPwInit", param);
     }
 
+    /**
+     * 초기화 비밀번호 변경
+     * @param param
+     */
+    public void updateMbrPw(DevMap param) {
+        cmmnDao.update("sellerweb.common.updateMbrPw", param);
+    }
+
+    /**
+     * 마스터 회원 가입
+     * @param param
+     */
     public void addMstAcc(DevMap param) {
         cmmnDao.insert("sellerweb.common.insertNewBnAcc", param);
-
-//        String tempPwd = (new Random().nextInt(900000) + 100000) + "";
-//        String hashPwd = CmmnUtil.encryptSHA256(tempPwd.toString());
-//
-//        param.put("tempPwd", hashPwd);
 
         String mstMbrId = (String) param.get("mstMbrId");
         String ownerNm = (String) param.get("ownerNm");
 
         String hashPwd = generateTempPwd(mstMbrId, ownerNm);
         param.put("tempPwd", hashPwd);
-
-//        EmailUtil.sendMailAuthSSL(
-//                emailProperties.getSmtpHost(),
-//                emailProperties.getSmtpPort(),
-//                emailProperties.getSmtpUser(),
-//                emailProperties.getSmtpPassword(),
-//                "[Pentaworks Service] 임시 비밀번호 발급 안내",
-//                "<html><p>" + ownerNm + "님의 임시 비밀번호가 발급되었습니다.<br>" +
-//                        "임시 비밀번호로 로그인 후 새 비밀번호로 변경해주세요.<br></p>" +
-//                        "<h4>임시 비밀번호 : " + tempPwd + "</h4></html>",
-//                mstMbrId + "",
-//                emailProperties.getFromEmail(),
-//                emailProperties.getFromName()
-//        );
 
         cmmnDao.insert("sellerweb.common.insertNewMstAcc", param);
     }

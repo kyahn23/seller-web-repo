@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @RestController
@@ -24,6 +25,10 @@ public class CounselTwoRestController {
      */
     @PostMapping("/service/getMarketingList")
     public DevMap getMarketingList(HttpServletRequest request, @RequestBody DevMap param) {
+        HttpSession session = request.getSession();
+        String bnMbrId = (String) session.getAttribute("bnMbrId");
+        param.put("bnMbrId", bnMbrId);
+
         DevMap rslt = new DevMap();
 
         PageList<DevMap> listPage = counselTwoService.marketingList(param);
@@ -54,6 +59,10 @@ public class CounselTwoRestController {
      */
     @PostMapping("/service/getMonthlyRate")
     public DevMap getMonthlyRate(HttpServletRequest request, @RequestBody DevMap param) {
+        HttpSession session = request.getSession();
+        String bnMbrId = (String) session.getAttribute("bnMbrId");
+        param.put("bnMbrId", bnMbrId);
+
         DevMap rslt = new DevMap();
         List<DevMap> monthlyRate = counselTwoService.monthlyRateList(param);
         rslt.put("monthlyRate", monthlyRate);

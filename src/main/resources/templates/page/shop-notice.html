@@ -493,7 +493,6 @@
         var app = new Vue({
             el:"#app",
             data:{
-                bnMbrId: 'qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com',
                 initDone: false,
                 srchCond: {
                     srchOptn: 'ALL',
@@ -568,7 +567,6 @@
                 },
                 getBnBrdList() {
                     var param = {
-                        bnMbrId: this.bnMbrId,
                         srchOptn: this.srchCond.srchOptn,
                         srchTerm: this.srchCond.srchTerm
                     }
@@ -627,7 +625,6 @@
                 modiBnBrdHide() {
                     if (this.chkBnBrdList.length) {
                         var param = {
-                            bnMbrId: this.bnMbrId,
                             brdNoList: this.chkBnBrdList
                         }
                         cf_call('/shop/modiBnBrdHide', param, this.modiBnBrdHideCB)
@@ -643,7 +640,6 @@
                 },
                 getBnBrdOne() {
                     var param = {
-                        bnMbrId: this.bnMbrId,
                         brdNo: this.bnBrdList[this.selBrd].brdNo
                     }
                     cf_call('/shop/getBnBrdOne', param, this.getBnBrdOneCB)
@@ -663,7 +659,7 @@
                     }
                 },
                 brdOneDisabled(brdWriterId) {
-                    return brdWriterId !== this.bnMbrId
+                    return brdWriterId !== '[[${session.bnMbrId}]]'
                 },
                 getFile(fileName) {
                     cf_downloadFile(fileName)
@@ -700,7 +696,6 @@
                             alert('공지사항 내용을 입력하세요.')
                         } else {
                             var param = this.bnBrdOne
-                            param.bnMbrId = this.bnMbrId
                             param.brdNo = this.bnBrdList[this.selBrd].brdNo
 
                             var i = 0
@@ -741,7 +736,6 @@
                         }
 
                         var param = {
-                            bnMbrId: this.bnMbrId,
                             brdTitle: this.newBnBrd.brdTitle,
                             brdCont: this.newBnBrd.brdCont
                         }

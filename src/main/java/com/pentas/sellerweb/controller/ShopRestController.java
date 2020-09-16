@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartRequest;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,10 @@ public class ShopRestController {
      */
     @PostMapping("/shop/getShopInfo")
     public DevMap getShopInfo(HttpServletRequest request, @RequestBody DevMap param) {
+        HttpSession session = request.getSession();
+        String bnMbrId = (String) session.getAttribute("bnMbrId");
+        param.put("bnMbrId", bnMbrId);
+
         DevMap rslt = new DevMap();
         rslt = shopService.getShopInfo(param);
         return rslt;
@@ -50,8 +55,9 @@ public class ShopRestController {
      */
     @PostMapping("/shop/modiShopInfo")
     public DevMap modiShopInfo(HttpServletRequest request, @RequestBody DevMap param) throws IllegalStateException, UserException {
-        String mbrId = (String) request.getSession().getAttribute("mbrId");
-        param.put("mbrId", mbrId);
+        HttpSession session = request.getSession();
+        String bnMbrId = (String) session.getAttribute("bnMbrId");
+        param.put("mbrId", bnMbrId);
         shopService.modiShopInfo(param);
 
         DevMap rslt = new DevMap();
@@ -67,6 +73,10 @@ public class ShopRestController {
      */
     @PostMapping("/shop/getEmpList")
     public DevMap getEmpList(HttpServletRequest request, @RequestBody DevMap param) {
+        HttpSession session = request.getSession();
+        String bnMbrId = (String) session.getAttribute("bnMbrId");
+        param.put("bnMbrId", bnMbrId);
+
         DevMap rslt = new DevMap();
         List<DevMap> resultList = null;
         resultList = shopService.getEmpList(param);
@@ -82,6 +92,10 @@ public class ShopRestController {
      */
     @PostMapping("/shop/addEmpInfo")
     public DevMap addEmpInfo(HttpServletRequest request, @RequestBody DevMap param) {
+        HttpSession session = request.getSession();
+        String bnMbrId = (String) session.getAttribute("bnMbrId");
+        param.put("amdMbrId", bnMbrId);
+
         shopService.addEmpInfo(param);
 
         DevMap rslt = new DevMap();
@@ -97,6 +111,10 @@ public class ShopRestController {
      */
     @PostMapping("/shop/modiEmpDeact")
     public DevMap modiEmpDeact(HttpServletRequest request, @RequestBody DevMap param) {
+        HttpSession session = request.getSession();
+        String bnMbrId = (String) session.getAttribute("bnMbrId");
+        param.put("amdMbrId", bnMbrId);
+
         shopService.modiEmpDeact(param);
 
         DevMap rslt = new DevMap();
@@ -112,6 +130,10 @@ public class ShopRestController {
      */
     @PostMapping("/shop/modiEmpPwd")
     public DevMap modiEmpPwd(HttpServletRequest request, @RequestBody DevMap param) {
+        HttpSession session = request.getSession();
+        String bnMbrId = (String) session.getAttribute("bnMbrId");
+        param.put("amdMbrId", bnMbrId);
+
         shopService.modiEmpPwd(param);
 
         DevMap rslt = new DevMap();
@@ -127,6 +149,10 @@ public class ShopRestController {
      */
     @PostMapping("/shop/modiEmpPrms")
     public DevMap modiEmpPrms(HttpServletRequest request, @RequestBody DevMap param) {
+        HttpSession session = request.getSession();
+        String bnMbrId = (String) session.getAttribute("bnMbrId");
+        param.put("amdMbrId", bnMbrId);
+
         shopService.modiEmpPrms(param);
 
         DevMap rslt = new DevMap();
@@ -145,9 +171,12 @@ public class ShopRestController {
      */
     @PostMapping("/shop/addBnBrd")
     public DevMap addBnBrd(HttpServletRequest request, MultipartRequest multipartRequest) throws IOException, IllegalStateException, UserException {
+        HttpSession session = request.getSession();
+        String bnMbrId = (String) session.getAttribute("bnMbrId");
+
         String paramStr = request.getParameter("param");
         DevMap param = JsonUtil.fromJsonStr(DevMap.class, paramStr);
-        String bnMbrId = param.getString("bnMbrId");
+        param.put("bnMbrId", bnMbrId);
 
         DevMap fileUploadParam = new DevMap();
         fileUploadParam.put("bnMbrId", bnMbrId);
@@ -181,6 +210,10 @@ public class ShopRestController {
      */
     @PostMapping("/shop/getBnBrdList")
     public DevMap getBnBrdList(HttpServletRequest request, @RequestBody DevMap param) {
+        HttpSession session = request.getSession();
+        String bnMbrId = (String) session.getAttribute("bnMbrId");
+        param.put("bnMbrId", bnMbrId);
+
         DevMap rslt = new DevMap();
         List<DevMap> bnBrdList = null;
 
@@ -197,6 +230,10 @@ public class ShopRestController {
      */
     @PostMapping("/shop/modiBnBrdHide")
     public DevMap modiBnBrdHide(HttpServletRequest request, @RequestBody DevMap param) {
+        HttpSession session = request.getSession();
+        String bnMbrId = (String) session.getAttribute("bnMbrId");
+        param.put("bnMbrId", bnMbrId);
+
         shopService.modiBnBrdHide(param);
 
         DevMap rslt = new DevMap();
@@ -212,6 +249,10 @@ public class ShopRestController {
      */
     @PostMapping("/shop/getBnBrdOne")
     public DevMap getBnBrdOne(HttpServletRequest request, @RequestBody DevMap param) {
+        HttpSession session = request.getSession();
+        String bnMbrId = (String) session.getAttribute("bnMbrId");
+        param.put("bnMbrId", bnMbrId);
+
         DevMap rslt = new DevMap();
         rslt = shopService.getBnBrdOne(param);
         return rslt;
@@ -228,10 +269,12 @@ public class ShopRestController {
      */
     @PostMapping("/shop/modiBnBrdOne")
     public DevMap modiBnBrdOne(HttpServletRequest request, MultipartRequest multipartRequest) throws IOException, IllegalStateException, UserException {
-//        String mbrId = (String) request.getSession().getAttribute("mbrId");
+        HttpSession session = request.getSession();
+        String bnMbrId = (String) session.getAttribute("bnMbrId");
+
         String paramStr = request.getParameter("param");
         DevMap param = JsonUtil.fromJsonStr(DevMap.class, paramStr);
-        String bnMbrId = param.getString("bnMbrId");
+        param.put("bnMbrId", bnMbrId);
 
         DevMap fileUploadParam = new DevMap();
         fileUploadParam.put("bnMbrId", bnMbrId);

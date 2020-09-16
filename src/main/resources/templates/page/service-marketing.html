@@ -325,7 +325,6 @@
         var app = new Vue({
             el: "#app",
             data: {
-                bnMbrId: 'qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com',
                 ko: vdp_translation_ko.js,
                 srchType: 'A',
                 srchDate: '',
@@ -394,7 +393,6 @@
                 getMarketingList(n) {
                     this.pageNo = n + ""
                     var param = {
-                        bnMbrId: this.bnMbrId,
                         srchType: this.srchType,
                         srchDate: this.paramDate,
                         srchName: this.srchName,
@@ -439,7 +437,6 @@
                 },
                 getMonthlyRate(val) {
                     var param = {
-                        bnMbrId: this.bnMbrId,
                         pnCarr: val
                     }
                     cf_call("/service/getMonthlyRate", param, this.getMonthlyRateCB)

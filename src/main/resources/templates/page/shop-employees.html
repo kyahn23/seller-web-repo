@@ -446,6 +446,7 @@
 </div>
 
 <div layout:fragment="script">
+    <script type="text/javascript" th:src="@{/js/lib/CryptoJS/3.1.2/rollups/sha256.js}"></script>
     <script type="text/javascript">
         var g_cxt = '/'
         g_cxt = g_cxt.substring(0, g_cxt.length-1);
@@ -472,7 +473,6 @@
         var app = new Vue({
             el:"#app",
             data:{
-                bnMbrId: 'qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com',
                 srchCond: {
                     srchOptn: 'ALL',
                     srchTerm: ''
@@ -524,7 +524,6 @@
                 },
                 getEmpList() {
                     var param = {
-                        bnMbrId: this.bnMbrId,
                         srchOptn: this.srchCond.srchOptn,
                         srchTerm: this.srchCond.srchTerm
                     }
@@ -634,8 +633,7 @@
                 modiEmpDeact() {
                     if (this.chkEmpList.length) {
                         var param = {
-                            bnMbrIdList: this.chkEmpList,
-                            amdMbrId: this.bnMbrId
+                            bnMbrIdList: this.chkEmpList
                         }
                         cf_call('/shop/modiEmpDeact', param, this.modiEmpDeactCB)
                     } else {
@@ -660,10 +658,10 @@
                     } else if (!this.newPwdInfo.newPwdChk) {
                         alert('비밀번호 확인을 완료하세요.')
                     } else {
+                        var hashedPw = CryptoJS.SHA256(this.newPwdInfo.newPwdStr).toString()
                         var param = {
                             bnMbrId: this.empList[this.selEmp].bnMbrId,
-                            pwdNo: this.newPwdInfo.newPwdStr,
-                            amdMbrId: this.bnMbrId
+                            pwdNo: hashedPw
                         }
                         cf_call('/shop/modiEmpPwd', param, this.modiEmpPwdCB)
                     }
@@ -688,8 +686,7 @@
                     } else {
                         var param = {
                             bnMbrId: this.empList[this.selEmp].bnMbrId,
-                            sellerPrms: this.newSellerPrmsInfo.sellerPrms,
-                            amdMbrId: this.bnMbrId
+                            sellerPrms: this.newSellerPrmsInfo.sellerPrms
                         }
                         cf_call('/shop/modiEmpPrms', param, this.modiEmpPrmsCB)
                     }
@@ -717,7 +714,6 @@
                     } else {
                         var param = this.newEmpInfo
                         param.bnMbrId = this.newBnMbrId
-                        param.amdMbrId = this.bnMbrId
                         cf_call('/shop/addEmpInfo', param, this.addNewEmpInfoCB)
                     }
                 },

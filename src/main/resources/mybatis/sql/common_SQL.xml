@@ -171,4 +171,13 @@
         )
     </insert>
 
+    <update id="updateMbrPw" parameterType="DevMap">
+        UPDATE TBL002
+        SET PWD_NO = #{pwdNo}
+            ,PWNO_INIT_YN = 'N'
+            ,AMD_DT = CURRENT_TIMESTAMP
+            ,AUTH_DT = CURRENT_TIMESTAMP
+        WHERE BN_MBR_ID = #{bnMbrId}
+    </update>
+
 </mapper>

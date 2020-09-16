@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
@@ -54,6 +55,24 @@ public class CommonRestController {
     }
 
     /**
+     * 초기화 비밀번호 변경
+     * @param request
+     * @param param
+     * @return
+     */
+    @PostMapping("/member/updateMbrPw")
+    public DevMap updateMbrPw(HttpServletRequest request, @RequestBody DevMap param) {
+        HttpSession session = request.getSession();
+        String bnMbrId = (String) session.getAttribute("bnMbrId");
+        param.put("bnMbrId", bnMbrId);
+        commonService.updateMbrPw(param);
+
+        DevMap rslt = new DevMap();
+        rslt.put("rsltStat", "SUCC");
+        return rslt;
+    }
+
+    /**
      * 마스터 회원 가입
      * @param param
      * @return
@@ -78,10 +97,12 @@ public class CommonRestController {
      */
     @PostMapping("/upload/image")
     public DevMap uploadImage(HttpServletRequest request, MultipartRequest multipartRequest) throws IOException, IllegalStateException, UserException {
-        String mbrId = (String) request.getSession().getAttribute("mbrId");
+        HttpSession session = request.getSession();
+        String bnMbrId = (String) session.getAttribute("bnMbrId");
+
         String paramStr = request.getParameter("param");
         DevMap param = JsonUtil.fromJsonStr(DevMap.class, paramStr);
-        param.put("mbrId", mbrId);
+        param.put("bnMbrId", bnMbrId);
 
         List<MultipartFile> multipartFileList = multipartRequest.getFiles("fileList");
         MultipartFile multipartFile = multipartFileList.get(0);

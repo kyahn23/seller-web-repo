@@ -297,7 +297,6 @@
             el:"#app",
             data:{
                 initDone: false,
-                bnMbrId: 'qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com',
                 shopInfo: {},
                 oldImageList: [],
                 daumPostcodeRslt: {},
@@ -322,9 +321,7 @@
             methods: {
                 getShopInfo() {
                     this.initDone = false
-                    var param = {
-                        bnMbrId: this.bnMbrId
-                    }
+                    var param = {}
                     cf_call("/shop/getShopInfo", param, this.getShopInfoCB);
                 },
                 getShopInfoCB(rslt){
@@ -342,7 +339,6 @@
                     var param = {}
                     if ($("#" + tgtNm)[0].files[0] !== undefined) {
                         fileList.push($("#" + tgtNm)[0].files[0])
-                        param.bnMbrId = this.bnMbrId
                         cf_callWithFiles("/upload/image", fileList, param, this.uploadImageCB)
                     }
                 },
@@ -362,7 +358,6 @@
                 },
                 modiShopInfo() {
                     var param = this.shopInfo
-                    param.bnMbrId = this.bnMbrId
                     param.oldImageList = this.oldImageList
                     param.bnAddrDtl = this.bnAddrFull
                     param.bnRegNo = this.bnRegNoND
