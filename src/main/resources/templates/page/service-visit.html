@@ -407,7 +407,9 @@
                         </tr>
                         <tr>
                             <th>고객명</th>
-                            <td><input class="wPer" type="text" placeholder="고객명" v-model="rsltToReg.clMbrNm"></td>
+                            <td>{{rsltToReg.clMbrNm}}
+                                <!--                                <input class="wPer" type="text" placeholder="고객명" v-model="rsltToReg.clMbrNm">-->
+                            </td>
                             <th>개통번호</th>
                             <td><input class="wPer" type="text" placeholder="개통번호" v-model="rsltToReg.mbrPnNo"></td>
                         </tr>
@@ -453,10 +455,10 @@
                         <tr>
                             <th>부가서비스</th>
                             <td colspan="3">
-                                <input type="radio" id="extServY"  value="Y"
-                                       v-model="rsltToReg.oldExtServYn"><label for="extServY">개통완료</label>&nbsp;
-                                <input type="radio" id="extServN"  value="N"
-                                       v-model="rsltToReg.oldExtServYn"><label for="extServN">미개통처리(블랙고객 등록)</label>
+                                <input type="radio" id="extServY" value="Y"
+                                       v-model="rsltToReg.oldExtServYn"><label for="extServY">유</label>&nbsp;
+                                <input type="radio" id="extServN" value="N"
+                                       v-model="rsltToReg.oldExtServYn"><label for="extServN">무</label>
                             </td>
                         </tr>
                         <tr>
@@ -476,13 +478,11 @@
                 </div>
                 <!-- //컨텐츠 -->
                 <div class="btnWrapper">
-                    <a href="#" class="btnL colorBlue"><span>저장</span></a>
+                    <a href="#" class="btnL colorBlue" @click="registerRslt"><span>저장</span></a>
                 </div>
             </div>
-
         </div>
     </div>
-
 </div>
 
 <div layout:fragment="script">
@@ -557,7 +557,7 @@
                     // {code: "XIA", value: "샤오미"},
                     {code: "ETC", value: "기타"}
                 ],
-                rsltTxt:"",                 // 개통결과등록 기타사항
+                rsltTxt: "",                 // 개통결과등록 기타사항
                 counselList: [],            // 현재 페이지 상담 리스트
                 pageNo: "1",
                 pageInfo: [],              // 현재 페이지 정보
@@ -583,8 +583,9 @@
             },
             watch: {
                 'rsltToReg.mntCarr': {
-                    handler(value, oldValue) {
-                        // this.testMethod(value, oldValue)
+                    handler(value) {
+                        this.rsltLayerDeviceInit()
+
                         let tempArr = []
                         this.useMntrtListByCarr = []
                         switch (value) {
@@ -616,32 +617,44 @@
                     immediate: true
                 },
                 selectedMkr: function (data) {
+                    let mntCarr = this.rsltToReg.mntCarr
+                    switch (this.rsltToReg.mntCarr) {
+                        case 'SKT':
+                            mntCarr = 'S'
+                            break
+                        case 'KT':
+                            mntCarr = 'K'
+                            break
+                        case 'SKT':
+                            mntCarr = 'L'
+                            break
+                    }
                     let tempArr = []
                     switch (data) {
                         case 'SAM':
                             for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'SAM') {
+                                if (this.deviceList[list].pnMkr === 'SAM' && this.deviceList[list].pnCarr.includes(mntCarr)) {
                                     tempArr.push(this.deviceList[list])
                                 }
                             }
                             break
                         case 'LGE':
                             for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'LGE') {
+                                if (this.deviceList[list].pnMkr === 'LGE' && this.deviceList[list].pnCarr.includes(mntCarr)) {
                                     tempArr.push(this.deviceList[list])
                                 }
                             }
                             break
                         case 'APP':
                             for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'APP') {
+                                if (this.deviceList[list].pnMkr === 'APP' && this.deviceList[list].pnCarr.includes(mntCarr)) {
                                     tempArr.push(this.deviceList[list])
                                 }
                             }
                             break
                         case 'XIA':
                             for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'XIA') {
+                                if (this.deviceList[list].pnMkr === 'XIA' && this.deviceList[list].pnCarr.includes(mntCarr)) {
                                     tempArr.push(this.deviceList[list])
                                 }
                             }
@@ -664,7 +677,6 @@
                         day = "0" + day
                     }
                     this.today = "" + year + '-' + month + '-' + day
-                    console.log(this.today)
                     this.getBnMbrList()
                 },
                 getBnMbrList() {
@@ -785,7 +797,7 @@
                 rsltLayerMntRtInitCB(data) {
                     this.mntrtList = data.mntrtList
                     let temp = ''
-                    this.useMntRtList(this.rsltToReg.mntCarr, temp)
+                    this.useMntRtList(this.rsltToReg.mntCarr, this.rsltToReg.pnNetType)
                     this.rsltLayerDeviceInit()
                 },
                 rsltLayerDeviceInit() {
@@ -808,33 +820,33 @@
                 },
                 rsltLayerDeviceInitCB(data) {
                     this.deviceList = data.deviceList
-
+                    let netType = this.rsltToReg.pnNetType
                     let tempArr = []
                     switch (this.selectedMkr) {
                         case 'SAM':
                             for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'SAM') {
+                                if (this.deviceList[list].pnMkr === 'SAM' && this.deviceList[list].pnNetType === netType) {
                                     tempArr.push(this.deviceList[list])
                                 }
                             }
                             break
                         case 'LGE':
                             for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'LGE') {
+                                if (this.deviceList[list].pnMkr === 'LGE' && this.deviceList[list].pnNetType === netType) {
                                     tempArr.push(this.deviceList[list])
                                 }
                             }
                             break
                         case 'APP':
                             for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'APP') {
+                                if (this.deviceList[list].pnMkr === 'APP' && this.deviceList[list].pnNetType === netType) {
                                     tempArr.push(this.deviceList[list])
                                 }
                             }
                             break
                         case 'XIA':
                             for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'XIA') {
+                                if (this.deviceList[list].pnMkr === 'XIA' && this.deviceList[list].pnNetType === netType) {
                                     tempArr.push(this.deviceList[list])
                                 }
                             }
@@ -879,27 +891,69 @@
                     switch (data1) {
                         case 'SKT':
                             for (list in this.mntrtList) {
-                                if (this.mntrtList[list].pnCarr === 'SKT') {
+                                if (this.mntrtList[list].pnCarr === 'SKT' && this.mntrtList[list].pnNetType === data2) {
                                     tempArr.push(this.mntrtList[list])
                                 }
                             }
                             break
                         case 'KT':
                             for (list in this.mntrtList) {
-                                if (this.mntrtList[list].pnCarr === 'KT') {
+                                if (this.mntrtList[list].pnCarr === 'KT' && this.mntrtList[list].pnNetType === data2) {
                                     tempArr.push(this.mntrtList[list])
                                 }
                             }
                             break
                         case 'LGU':
                             for (list in this.mntrtList) {
-                                if (this.mntrtList[list].pnCarr === 'LGU') {
+                                if (this.mntrtList[list].pnCarr === 'LGU' && this.mntrtList[list].pnNetType === data2) {
                                     tempArr.push(this.mntrtList[list])
                                 }
                             }
                             break
                     }
                     this.useMntrtListByCarr = tempArr
+                },
+                registerRslt() {
+                    let param = {}
+                    if (this.modiCallStCd === 'T') {
+                        param = {
+                            bnMbrId: this.rsltToReg.bnMbrId,
+                            callStCd: this.modiCallStCd,
+                            regMbrPnNo: this.rsltToReg.mbrPnNo,
+                            regCarr: this.rsltToReg.mntCarr,
+                            regType: this.rsltToReg.pnRegDis,
+                            regMntRtNo: this.rsltToReg.pnMntRtNo,
+                            regPnMdlNo: this.rsltToReg.pnMdlNo,
+                            dealCont: this.rsltTxt,
+                            pnRegYn: 'Y',
+                            callNo: this.rsltToReg.callNo
+
+                        }
+                    } else if (this.modiCallStCd === 'E') {
+                        param = {
+                            bnMbrId: this.rsltToReg.bnMbrId,
+                            callStCd: this.modiCallStCd,
+                            pnRegYn: 'N',
+                            cnclCmnt: this.rsltTxt,
+                            callNo: this.rsltToReg.callNo
+                        }
+                    } else {
+                        alert('개통여부를 선택해주세요.')
+                        return
+                    }
+                    cf_call("/service/registerRslt", param, this.registerRsltCB)
+                },
+                registerRsltCB(data) {
+                    if (data.succ === "Y") {
+                        alert('결과가 등록되었습니다.')
+                        // let type = 'init'
+                        this.visitHH = "all"
+                        this.visitMM = "all"
+                        // this.searchList(type)
+                        $('#popLayerServiceResultAdd').popup("hide");
+                        console.log(this.today)
+                        this.getToday()
+                    }
                 }
 
             }

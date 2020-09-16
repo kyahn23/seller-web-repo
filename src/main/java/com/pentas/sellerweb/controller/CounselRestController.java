@@ -93,7 +93,7 @@ public class CounselRestController {
     @PostMapping("/service/getAllCounselList")
     public DevMap getAllCounselList(@RequestBody DevMap param) {
         DevMap rslt = new DevMap();
-        param.put("CALL_ST_CD", "all");   // 방문예정(상담상태 진행중-P) 상담만 보기위해
+        param.put("CALL_ST_CD", "all");
 
         PageList<DevMap> listPage = counselService.counselList(param);
 
@@ -162,6 +162,18 @@ public class CounselRestController {
         resultList = counselService.allDeviceListByCarr(param);
 
         rslt.put("deviceList",resultList);
+        return rslt;
+    }
+
+    @PostMapping("/service/registerRslt")
+    public DevMap registerRslt(@RequestBody DevMap param) {
+        DevMap rslt = new DevMap();
+
+        param.put("BN_NO", "202008250001");
+        counselService.registerRslt(param);
+
+        rslt.put("succ", "Y");
+
         return rslt;
     }
 }

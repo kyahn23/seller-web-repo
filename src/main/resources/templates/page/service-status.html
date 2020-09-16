@@ -1,6 +1,21 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/default">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/default">
+<th:block layout:fragment="css">
+    <style>
+        .searchArea .txtSize2 input, .searchArea .txtSize2 select {
+            width: 100%;
+        }
 
+        div.dpWrapWidth {
+            width: 82px;
+        }
+
+        input.dpInputWidth {
+            width: 100%;
+        }
+    </style>
+</th:block>
 <div layout:fragment="content">
     <!-- contents -->
     <div class="sectionRight" id="content">
@@ -19,24 +34,29 @@
                     <ul>
                         <li class="txtSize2">
                             <label>등록일</label>
-                            <input type="text" class="wDate" id="" placeholder="등록일 선택" value="2020-06-21">
-                            <span class="datePickerUI">
-											<input type="hidden" id="srchSrvcDate" title="등록일 선택">
-											<a href="#" class="btnCalender" id="btnSrchSrvcDate"><em>조회 등록일 선택</em></a>
-										</span>
+                            <span>
+                                <vuejs-datepicker ref="programaticOpen1" :language="ko" placeholder="등록일"
+                                                  name="calendar01"
+                                                  :input-class="'dpInputWidth'" :wrapper-class="'dpWrapWidth'"
+                                                  :format="format" v-model="searchDay">
+                                </vuejs-datepicker>
+                            </span>
+                            <span>
+                                <button @click="openPicker1"
+                                        style="vertical-align: middle; width: 19px; height: 23px; background: url('../../images/cmmn/bg_ico_calender.gif') 0 0 no-repeat;">
+                                </button>
+                            </span>
                         </li>
                         <li class="txtSize3">
                             <label for="marketing01">등록자</label>
-                            <select id="marketing01">
-                                <option value="">전체</option>
-                                <option value="">매장판매원1</option>
-                                <option value="">매장판매원2</option>
-                                <option value="">매장판매원3</option>
+                            <select id="marketing01" v-model="selectedBnMbr">
+                                <option value="all">전체</option>
+                                <option v-for="mbr in bnMbr" :value="mbr.bnMbrId">{{mbr.mbrNm}}</option>
                             </select>
                         </li>
                     </ul>
                     <div class="btnSearch">
-                        <a href="#" class="btnM colorBlue"><span>검색</span></a>
+                        <a href="#" class="btnM colorBlue" @click="searchList"><span>검색</span></a>
                     </div>
                 </div>
 
@@ -48,23 +68,12 @@
                         </div>
                         <div class="cTitRight">
                             <div class="SelectBoxBasic selectPaging">
-                                <input type="hidden" value="1page" />
-                                <div class="DefaultName">선택하세요</div>
+                                <input type="hidden" value="1page"/>
+                                <div class="DefaultName">{{pageInfo.page}} page</div>
                                 <ul>
-                                    <li id="1page">1 page</li>
-                                    <li id="2page">2 page</li>
-                                    <li id="3page">3 page</li>
-                                    <li id="4page">4 page</li>
-                                    <li id="5page">5 page</li>
-                                    <li id="6page">6 page</li>
-                                    <li id="7page">7 page</li>
-                                    <li id="8page">8 page</li>
-                                    <li id="9page">9 page</li>
-                                    <li id="10page">10 page</li>
-                                    <li id="11page">11 page</li>
-                                    <li id="12page">12 page</li>
-                                    <li id="13page">13 page</li>
-                                    <li id="14page">14 page</li>
+                                    <li v-for="item in pageInfo.slider" :id='item+"page"' @click="goToPage(item)">
+                                        {{item}} page
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -125,78 +134,19 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td class="alignC">방문예정</td>
-                                    <td class="alignC">홍길동</td>
-                                    <td class="alignC">SKT</td>
-                                    <td class="alignC">번호이동</td>
-                                    <td class="alignC">5G 76</td>
-                                    <td class="alignC">갤럭시 S20</td>
-                                    <td class="alignC">매장판매원1</td>
-                                    <td class="alignC">2020-06-21 15:00</td>
-                                </tr>
-                                <tr class="checkedItem">
-                                    <td class="alignC">방문예정</td>
-                                    <td class="alignC">고길동</td>
-                                    <td class="alignC">KT</td>
-                                    <td class="alignC">기기변경</td>
-                                    <td class="alignC">5G 55</td>
-                                    <td class="alignC">갤럭시 S10</td>
-                                    <td class="alignC">매장판매원1</td>
-                                    <td class="alignC">2020-06-21 15:10</td>
-                                </tr>
-                                <tr>
-                                    <td class="alignC">방문예정</td>
-                                    <td class="alignC">이효리</td>
-                                    <td class="alignC">LGU+</td>
-                                    <td class="alignC">기기변경</td>
-                                    <td class="alignC">5G 55</td>
-                                    <td class="alignC">갤럭시 S20 Plus</td>
-                                    <td class="alignC">매장판매원1</td>
-                                    <td class="alignC">2020-06-21 15:20</td>
-                                </tr>
-                                <tr>
-                                    <td class="alignC">블랙고객</td>
-                                    <td class="alignC">삼순이</td>
-                                    <td class="alignC">SKT</td>
-                                    <td class="alignC">신규가입</td>
-                                    <td class="alignC">5G 90</td>
-                                    <td class="alignC">갤럭시 S10 Plus</td>
-                                    <td class="alignC">매장판매원2</td>
-                                    <td class="alignC">2020-06-21 15:30</td>
-                                </tr>
-                                <tr>
-                                    <td class="alignC">블랙고객</td>
-                                    <td class="alignC">아무개</td>
-                                    <td class="alignC">SKT</td>
-                                    <td class="alignC">신규가입</td>
-                                    <td class="alignC">5G 90</td>
-                                    <td class="alignC">갤럭시 S10 Plus</td>
-                                    <td class="alignC">매장판매원3</td>
-                                    <td class="alignC">2020-06-21 15:40</td>
-                                </tr>
-                                <tr>
-                                    <td class="alignC">개통완료</td>
-                                    <td class="alignC">슈퍼맨</td>
-                                    <td class="alignC">KT</td>
-                                    <td class="alignC">번호이동</td>
-                                    <td class="alignC">5G 76</td>
-                                    <td class="alignC">갤럭시 S10 Plus</td>
-                                    <td class="alignC">매장판매원1</td>
-                                    <td class="alignC">2020-06-21 15:40</td>
-                                </tr>
-                                <tr>
-                                    <td class="alignC">개통완료</td>
-                                    <td class="alignC">아이언맨</td>
-                                    <td class="alignC">LGU+</td>
-                                    <td class="alignC">기기변경</td>
-                                    <td class="alignC">5G 55</td>
-                                    <td class="alignC">갤럭시 S10</td>
-                                    <td class="alignC">매장판매원2</td>
-                                    <td class="alignC">2020-06-21 15:40</td>
+                                <tr v-for="(list,idx) in counselList">
+                                    <td class="alignC">{{list.callStNm}}</td>
+                                    <td class="alignC">{{list.clMbrNm}}</td>
+                                    <td class="alignC">{{list.mntCarr}}</td>
+                                    <td class="alignC">{{list.pnRegDisNm}}</td>
+                                    <td class="alignC">{{list.pnMntRtNm}}</td>
+                                    <td class="alignC">{{list.pnMdlNm}}</td>
+                                    <td class="alignC">{{list.mbrNm}}</td>
+                                    <td class="alignC">{{list.amdDt}}</td>
                                 </tr>
                                 <!-- 결과없음 -->
-                                <tr class="errorMessage">
+                                <!-- 결과없음 -->
+                                <tr v-if="counselList.length == 0" :class="{errorMessage : counselList.length == 0 }">
                                     <td colspan="6">
                                         <div class="errorTxt">
                                             <span>항목이 없습니다.</span>
@@ -218,11 +168,127 @@
 </div>
 
 <div layout:fragment="script">
+    <script type="text/javascript" th:src="@{/js/lib/vuejs-datepicker-1.6.2/vuejs-datepicker.js}"></script>
+    <script type="text/javascript" th:src="@{/js/lib/vuejs-datepicker-1.6.2/locale/translations/ko.js}"></script>
     <script>
         var app = new Vue({
             el: "#app",
             data: {
+                ko: vdp_translation_ko.js,
+                format: "yyyy-MM-dd",
+                searchDay: "",
+                today : "",
+                bnMbr: [],
+                selectedBnMbr: "all",
+                counselList: [],            // 현재 페이지 상담 리스트
+                pageNo: "1",
+                pageInfo: [],              // 현재 페이지 정보
+            },
+            components: {
+                vuejsDatepicker
+            },
+            mounted: function () {
+                this.getToday()
+            },
+            methods: {
+                openPicker1() {
+                    this.$refs.programaticOpen1.showCalendar();
+                },
+                getToday() {
+                    let today = new Date()
+                    let year = today.getFullYear()
+                    let month = today.getMonth() + 1
+                    let day = today.getDate();
 
+                    if (("" + month).length == 1) {
+                        month = "0" + month
+                    }
+                    if (("" + day).length == 1) {
+                        day = "0" + day
+                    }
+                    this.today = "" + year + '-' + month + '-' + day
+                    this.getBnMbrList()
+                },
+                getBnMbrList() {
+                    var param = {}
+                    cf_call("/service/bnMbrList", param, this.getBnMbrListCB)
+                },
+                getBnMbrListCB(data) {
+                    this.bnMbr = data
+
+                    let type = 'init'
+                    this.searchList(type)
+                },
+                searchList(data) {
+                    let t = new Date(this.searchDay)
+                    let yy = "" + t.getFullYear()
+                    let mm = t.getMonth() + 1
+                    let dd = t.getDate();
+                    if (("" + mm).length == 1) {
+                        mm = "0" + mm
+                    }
+                    if (("" + dd).length == 1) {
+                        dd = "0" + dd
+                    }
+                    yy = yy.concat("-", mm, "-", dd)
+
+                    var param = {
+                        mntCarr: "all",
+                        counselType: "all",
+                        searchDay: yy,
+                        clientNm: "",
+                        bnMbr: this.selectedBnMbr,
+                        page: "1"
+                    }
+                    if (data === 'page') {
+                        param.page = this.pageNo
+                    }
+                    if (data === 'init') {
+                        this.searchDay = this.today
+                        param.searchDay = this.today
+                    }
+                    this.counselList = []
+                    cf_call("/service/getAllCounselList", param, this.searchListCB)
+                },
+                searchListCB(data) {
+                    this.pageInfo = data.pageInfo
+                    let tempArr = []
+
+                    for (idx in data.counselList) {
+                        data.counselList[idx].idx = idx
+                        switch (data.counselList[idx].pnRegDis) {
+                            case "A":
+                                data.counselList[idx].pnRegDisNm = '번호이동'
+                                break
+                            case "B":
+                                data.counselList[idx].pnRegDisNm = '번호이동'
+                                break
+                            case "C":
+                                data.counselList[idx].pnRegDisNm = '신규가입'
+                                break
+                        }
+                        switch (data.counselList[idx].callStCd) {
+                            case "R":
+                                data.counselList[idx].callStNm = '상담접수'
+                                break
+                            case "P":
+                                data.counselList[idx].callStNm = '방문예정'
+                                break
+                            case "T":
+                                data.counselList[idx].callStNm = '개통완료'
+                                break
+                            case "E":
+                                data.counselList[idx].callStNm = '블랙고객'
+                                break
+                        }
+                    }
+                    this.counselList = data.counselList
+                },
+                goToPage(data) {
+                    this.pageNo = "" + data
+                    let type = 'page'
+                    this.searchList(type)
+                },
             }
         })
     </script>

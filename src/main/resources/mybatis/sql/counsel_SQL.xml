@@ -7,6 +7,7 @@
         t1.MNT_CARR,
         t1.PN_REG_DIS,
         (select PN_MNT_RT_NM FROM TBL010 tt1 where tt1.PN_MNT_RT_NO = t1.PN_MNT_RT_NO) as PN_MNT_RT_NM,
+        (select PN_NET_TYPE FROM TBL010 tt1 where tt1.PN_MNT_RT_NO = t1.PN_MNT_RT_NO) as PN_NET_TYPE,
         t1.PN_MNT_RT_NO,
         t1.PN_MDL_NO,
         (select PN_MDL_NM FROM TBL011 tt2 where tt2.PN_MDL_NO = t1.PN_MDL_NO) as PN_MDL_NM,
@@ -25,7 +26,8 @@
         T.CALL_CONT,
         T.BN_MBR_ID,
         (SELECT MBR_NM FROM TBL002 tt5 WHERE tt5.BN_MBR_ID = T.BN_MBR_ID) as MBR_NM,
-        DATE_FORMAT(T.INP_DT, '%Y-%m-%d %H:%i') as INP_DT
+        DATE_FORMAT(T.INP_DT, '%Y-%m-%d %H:%i') as INP_DT,
+        DATE_FORMAT(T.AMD_DT, '%Y-%m-%d %H:%i') as AMD_DT
         from TBL008 T left join TBL006 t1 on T.DEAL_NO = t1.DEAL_NO
         where T.BN_NO = #{bnNo}
         <if test='callStCd != null and !callStCd.equals("all")'>
@@ -46,7 +48,9 @@
         <if test='bnMbr !="all"'>
             and T.BN_MBR_ID = #{bnMbr}
         </if>
-
+        <if test='searchDay != null'>
+            and DATE_FORMAT(T.AMD_DT, '%Y-%m-%d') = #{searchDay}
+        </if>
     </select>
 
     <select id="currPolicy" parameterType="DevMap" resultType="Devmap">
@@ -84,7 +88,8 @@
         set VISIT_DT = #{visitDt},
         CALL_ST_CD = #{callStCd},
         CALL_CONT = #{csContent},
-        BN_MBR_ID = #{bnMbrId}
+        BN_MBR_ID = #{bnMbrId},
+        AMD_DT = SYSDATE()
         where BN_NO=#{bnNo}
         and CALL_NO=#{callNo}
     </update>
@@ -92,7 +97,8 @@
     <update id="modiVisitDt" parameterType="DevMap">
         update `TBL008`
         set VISIT_DT = #{visitDt},
-        BN_MBR_ID = #{bnMbrId}
+        BN_MBR_ID = #{bnMbrId},
+        AMD_DT = SYSDATE()
         where BN_NO=#{bnNo}
         and CALL_NO=#{callNo}
     </update>
@@ -112,5 +118,29 @@
         SELECT * from TBL011 t
         where PN_CARR LIKE CONCAT('%', #{mntCarr}, '%') /* 기기 통신사 */
     </select>
+
+    <update id="registerRslt" parameterType="DevMap">
+        update `TBL008`
+        <if test='callStCd == "T"'>
+            set BN_MBR_ID = #{bnMbrId},
+                CALL_ST_CD = #{callStCd},
+                DEAL_CONT = #{dealCont},
+                PN_REG_YN = #{pnRegYn},
+                REG_CARR = #{regCarr},
+                REG_MBR_PN_NO = #{regMbrPnNo},
+                REG_MNT_RT_NO = #{regMntRtNo},
+                REG_PN_MDL_NO = #{regPnMdlNo},
+                REG_TYPE = #{regType},
+        </if>
+        <if test='callStCd == "E"'>
+            set BN_MBR_ID = #{bnMbrId},
+                CALL_ST_CD = #{callStCd},
+                CNCL_CMNT = #{cnclCmnt},
+                PN_REG_YN = #{pnRegYn},
+        </if>
+        AMD_DT = SYSDATE()
+        where BN_NO=#{bnNo}
+        and CALL_NO=#{callNo}
+    </update>
 
 </mapper>

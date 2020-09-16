@@ -71,4 +71,9 @@ public class CounselService {
 
         return cmmnDao.selectList("sellerweb.counsel.allDeviceListByCarr", param);
     }
+
+    public void registerRslt(DevMap param) {
+
+        cmmnDao.update("sellerweb.counsel.registerRslt", param);
+    }
 }
