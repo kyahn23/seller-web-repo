@@ -13,6 +13,7 @@
         t1.PN_STOR,
         (select PN_MSRP FROM TBL011 tt4 where tt4.PN_MDL_NO = t1.PN_MDL_NO) as PN_MSRP,
         (SELECT MBR_NM FROM TBL001 tt3 where tt3.CL_MBR_ID = t1.CL_MBR_ID) as CL_MBR_NM,
+        (SELECT PN_MKR FROM TBL011 pnmkr where pnmkr.PN_MDL_NO = t1.PN_MDL_NO) as PN_MKR,
         DATE_FORMAT(T.VISIT_DT, '%Y-%m-%d %H:%i') as VISIT_DT,
         t1.DEAL_REQ,
         T.MBR_PN_NO,
@@ -105,6 +106,11 @@
         from TBL010 A left join (select * from TBL013 where BN_NO=#{bnNo}) B
         on A.PN_MNT_RT_NO = B.PN_MNT_RT_NO
         WHERE B.MNT_USEYN_NO is not null
+    </select>
+
+    <select id="allDeviceListByCarr" parameterType="DevMap" resultType="DevMap">
+        SELECT * from TBL011 t
+        where PN_CARR LIKE CONCAT('%', #{mntCarr}, '%') /* 기기 통신사 */
     </select>
 
 </mapper>

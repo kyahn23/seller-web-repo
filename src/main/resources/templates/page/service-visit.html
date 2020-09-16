@@ -388,7 +388,7 @@
                         <tr>
                             <th>개통담당자</th>
                             <td colspan="3">
-                                <select class="wPer" v-model="selectedCs.bnMbrId">
+                                <select class="wPer" v-model="rsltToReg.bnMbrId">
                                     <option v-for="mbr in bnMbr" :value="mbr.bnMbrId">{{mbr.mbrNm}}</option>
                                 </select>
                             </td>
@@ -407,20 +407,20 @@
                         </tr>
                         <tr>
                             <th>고객명</th>
-                            <td><input class="wPer" type="text" placeholder="고객명" v-model="selectedCs.clMbrNm"></td>
+                            <td><input class="wPer" type="text" placeholder="고객명" v-model="rsltToReg.clMbrNm"></td>
                             <th>개통번호</th>
-                            <td><input class="wPer" type="text" placeholder="개통번호" v-model="selectedCs.mbrPnNo"></td>
+                            <td><input class="wPer" type="text" placeholder="개통번호" v-model="rsltToReg.mbrPnNo"></td>
                         </tr>
                         <tr>
                             <th>통신사</th>
                             <td>
-                                <select class="wPer" v-model="selectedCs.mntCarr">
+                                <select class="wPer" v-model="rsltToReg.mntCarr">
                                     <option v-for="carr in carrArr" :value="carr.code">{{carr.value}}</option>
                                 </select>
                             </td>
                             <th>조건</th>
                             <td>
-                                <select class="wPer" v-model="selectedCs.pnRegDis">
+                                <select class="wPer" v-model="rsltToReg.pnRegDis">
                                     <option v-for="type in counselType" :value="type.code">{{type.value}}</option>
                                 </select>
                             </td>
@@ -428,53 +428,47 @@
                         <tr>
                             <th>요금제</th>
                             <td colspan="3">
-                                <select class="wPer" id="">
-                                    <option value="">5GX 플래티넘</option>
-                                    <option value="">5GX 프라임</option>
-                                    <option value="">5GX 스탠다드</option>
-                                    <option value="">슬림</option>
+                                <select class="wPer" v-model="rsltToReg.pnMntRtNo">
+                                    <option v-for="mntrt in useMntrtListByCarr" :value="mntrt.pnMntRtNo">
+                                        {{mntrt.pnMntRtNm}}
+                                    </option>
                                 </select>
                             </td>
                         </tr>
                         <tr>
                             <th>제조사</th>
                             <td>
-                                <select class="wPer" id="">
-                                    <option value="">삼성</option>
-                                    <option value="">LG</option>
-                                    <option value="">애플</option>
-                                    <option value="">샤오미</option>
-                                    <option value="">ZTC</option>
+                                <select class="wPer" v-model="selectedMkr">
+                                    <option v-for="mkr in pnMkr" :value="mkr.code">{{mkr.value}}</option>
                                 </select>
                             </td>
                             <th>모델</th>
                             <td>
-                                <select class="wPer" id="">
-                                    <option value="">갤럭시 S20</option>
-                                    <option value="">갤럭시 S20 Plus</option>
-                                    <option value="">갤럭시 S20 Ultra</option>
-                                    <option value="">갤럭시 S20 Ultra 5G</option>
+                                <select class="wPer" v-model="rsltToReg.pnMdlNo">
+                                    <option v-for="device in devListByMkr" :value="device.pnMdlNo">{{device.pnMdlNm}}
+                                    </option>
                                 </select>
                             </td>
                         </tr>
                         <tr>
                             <th>부가서비스</th>
                             <td colspan="3">
-                                <input type="checkbox" id="addService" name="addService" value="include">
-                                <label for="addService">포함</label>
+                                <input type="radio" id="extServY"  value="Y"
+                                       v-model="rsltToReg.oldExtServYn"><label for="extServY">개통완료</label>&nbsp;
+                                <input type="radio" id="extServN"  value="N"
+                                       v-model="rsltToReg.oldExtServYn"><label for="extServN">미개통처리(블랙고객 등록)</label>
                             </td>
                         </tr>
                         <tr>
                             <th>비고</th>
                             <td colspan="3">
-                                <input class="wPer" type="text" id="" placeholder="비고" value="부가서비스 3개월 유지">
+                                <input class="wPer" type="text" placeholder="상담결과내용" v-model="rsltToReg.callCont">
                             </td>
                         </tr>
                         <tr>
                             <th>기타사항</th>
                             <td colspan="3" style="height: 85px">
-                                <textarea
-                                        style="width: 100%; height: 100%;">기타사항 입력란미개통처리 및 블랙고객 등록 사유 입력란</textarea>
+                                <textarea style="width: 100%; height: 100%;" v-model="rsltTxt"></textarea>
                             </td>
                         </tr>
                         </tbody>
@@ -482,7 +476,7 @@
                 </div>
                 <!-- //컨텐츠 -->
                 <div class="btnWrapper">
-                    <a href="#" class="btnL colorBlue popLayerServiceResultAdd_close"><span>저장</span></a>
+                    <a href="#" class="btnL colorBlue"><span>저장</span></a>
                 </div>
             </div>
 
@@ -550,11 +544,25 @@
                     {code: "B", value: "기기변경"},
                     {code: "C", value: "신규가입"},
                 ],
-                mntrtList: [],
-                counselList: [],        // 현재 페이지 상담 리스트
+                mntrtList: [],          // 사용중인 전체 요금제 리스트
+                useMntrtListByCarr: [],     //  통신사에 따른 사용 요금제 리스트
+                deviceList: [],              // 전체 디바이스 목록
+                devListByMkr: [],
+                selectedMkr: "",              // 개통결과등록레이어팝업 내에 제조사 항목
+                pnMkr: [
+                    {code: "all", value: "선택"},
+                    {code: "SAM", value: "삼성전자"},
+                    {code: "APP", value: "애플"},
+                    {code: "LGE", value: "LG전자"},
+                    // {code: "XIA", value: "샤오미"},
+                    {code: "ETC", value: "기타"}
+                ],
+                rsltTxt:"",                 // 개통결과등록 기타사항
+                counselList: [],            // 현재 페이지 상담 리스트
                 pageNo: "1",
-                pageInfo: [],     // 현재 페이지 정보
+                pageInfo: [],              // 현재 페이지 정보
                 selectedCs: {},
+                rsltToReg: {},
                 currPolicy: {},
                 today: "",
                 disabledDates: {},
@@ -574,42 +582,73 @@
                 this.getToday()
             },
             watch: {
-                selectedCs: function (data) {
-                    // if (this.selectedCs.mntCarr === 'SKT') {
-                    //     let tempArr = []
-                    //     for (list in this.mntrtList) {
-                    //         if (this.mntrtList[list].pnCarr === 'SKT') {
-                    //             tempArr.push(this.mntrtList[list])
-                    //         }
-                    //     }
-                    // }
-                    console.log(data)
+                'rsltToReg.mntCarr': {
+                    handler(value, oldValue) {
+                        // this.testMethod(value, oldValue)
+                        let tempArr = []
+                        this.useMntrtListByCarr = []
+                        switch (value) {
+                            case 'SKT':
+                                for (list in this.mntrtList) {
+                                    if (this.mntrtList[list].pnCarr === 'SKT') {
+                                        tempArr.push(this.mntrtList[list])
+                                    }
+                                }
+                                break
+                            case 'KT':
+                                for (list in this.mntrtList) {
+                                    if (this.mntrtList[list].pnCarr === 'KT') {
+                                        tempArr.push(this.mntrtList[list])
+                                    }
+                                }
+                                break
+                            case 'LGU':
+                                for (list in this.mntrtList) {
+                                    if (this.mntrtList[list].pnCarr === 'LGU') {
+                                        tempArr.push(this.mntrtList[list])
+                                    }
+                                }
+                                break
+                        }
+                        this.useMntrtListByCarr = tempArr
+
+                    },
+                    immediate: true
+                },
+                selectedMkr: function (data) {
                     let tempArr = []
-                    switch (this.selectedCs.mntCarr) {
-                        case 'SKT':
-                            for (list in this.mntrtList) {
-                                if (this.mntrtList[list].pnCarr === 'SKT') {
-                                    tempArr.push(this.mntrtList[list])
+                    switch (data) {
+                        case 'SAM':
+                            for (list in this.deviceList) {
+                                if (this.deviceList[list].pnMkr === 'SAM') {
+                                    tempArr.push(this.deviceList[list])
                                 }
                             }
                             break
-                        case 'KT':
-                            for (list in this.mntrtList) {
-                                if (this.mntrtList[list].pnCarr === 'KT') {
-                                    tempArr.push(this.mntrtList[list])
+                        case 'LGE':
+                            for (list in this.deviceList) {
+                                if (this.deviceList[list].pnMkr === 'LGE') {
+                                    tempArr.push(this.deviceList[list])
                                 }
                             }
                             break
-                        case 'LGU':
-                            for (list in this.mntrtList) {
-                                if (this.mntrtList[list].pnCarr === 'LGU') {
-                                    tempArr.push(this.mntrtList[list])
+                        case 'APP':
+                            for (list in this.deviceList) {
+                                if (this.deviceList[list].pnMkr === 'APP') {
+                                    tempArr.push(this.deviceList[list])
+                                }
+                            }
+                            break
+                        case 'XIA':
+                            for (list in this.deviceList) {
+                                if (this.deviceList[list].pnMkr === 'XIA') {
+                                    tempArr.push(this.deviceList[list])
                                 }
                             }
                             break
                     }
-                    this.mntrtList = tempArr
-                },
+                    this.devListByMkr = tempArr
+                }
             },
             methods: {
                 getToday() {
@@ -698,6 +737,7 @@
                 selectCs(data, idx) {
                     this.selectedCs = {}
                     this.selectedCs = data
+                    this.rsltToReg = data
                     this.selectedCs.idx = idx
 
                     let t = new Date(this.selectedCs.visitDt)
@@ -706,9 +746,9 @@
                     if (("" + mm).length == 1) {
                         mm = "0" + mm
                     }
-
                     this.modiHH = hh
                     this.modiMM = mm
+
                     this.getCurrPolicy()
                 },
                 getTrClass(idx) {
@@ -734,15 +774,74 @@
                     this.$refs.programaticOpen2.showCalendar();
                 },
                 rsltLayerMntRtInit() {
+                    let tempObj = {}
+                    tempObj = this.selectedCs
+                    this.rsltToReg = JSON.parse(JSON.stringify(tempObj))
+                    this.selectedMkr = this.rsltToReg.pnMkr
+
                     let param = {}
                     cf_call("/service/useAllCarrMntRt", param, this.rsltLayerMntRtInitCB)
                 },
                 rsltLayerMntRtInitCB(data) {
                     this.mntrtList = data.mntrtList
+                    let temp = ''
+                    this.useMntRtList(this.rsltToReg.mntCarr, temp)
+                    this.rsltLayerDeviceInit()
                 },
                 rsltLayerDeviceInit() {
+                    let carr = ''
+                    switch (this.rsltToReg.mntCarr) {
+                        case "SKT":
+                            carr = 'S'
+                            break
+                        case "KT":
+                            carr = 'K'
+                            break
+                        case "LGU":
+                            carr = 'L'
+                            break
+                    }
+                    let param = {
+                        mntCarr: carr
+                    }
+                    cf_call("/service/allDeviceListByCarr", param, this.rsltLayerDeviceInitCB)
                 },
                 rsltLayerDeviceInitCB(data) {
+                    this.deviceList = data.deviceList
+
+                    let tempArr = []
+                    switch (this.selectedMkr) {
+                        case 'SAM':
+                            for (list in this.deviceList) {
+                                if (this.deviceList[list].pnMkr === 'SAM') {
+                                    tempArr.push(this.deviceList[list])
+                                }
+                            }
+                            break
+                        case 'LGE':
+                            for (list in this.deviceList) {
+                                if (this.deviceList[list].pnMkr === 'LGE') {
+                                    tempArr.push(this.deviceList[list])
+                                }
+                            }
+                            break
+                        case 'APP':
+                            for (list in this.deviceList) {
+                                if (this.deviceList[list].pnMkr === 'APP') {
+                                    tempArr.push(this.deviceList[list])
+                                }
+                            }
+                            break
+                        case 'XIA':
+                            for (list in this.deviceList) {
+                                if (this.deviceList[list].pnMkr === 'XIA') {
+                                    tempArr.push(this.deviceList[list])
+                                }
+                            }
+                            break
+                    }
+                    this.devListByMkr = tempArr
+
                 },
                 modiVisitDt() {
                     if (confirm('방문예정일시를 변경하시겠습니까?')) {
@@ -773,7 +872,36 @@
                         this.visitMM = "all"
                         this.searchList(type)
                     }
+                },
+                useMntRtList(data1, data2) {
+                    let tempArr = []
+                    this.useMntrtListByCarr = []
+                    switch (data1) {
+                        case 'SKT':
+                            for (list in this.mntrtList) {
+                                if (this.mntrtList[list].pnCarr === 'SKT') {
+                                    tempArr.push(this.mntrtList[list])
+                                }
+                            }
+                            break
+                        case 'KT':
+                            for (list in this.mntrtList) {
+                                if (this.mntrtList[list].pnCarr === 'KT') {
+                                    tempArr.push(this.mntrtList[list])
+                                }
+                            }
+                            break
+                        case 'LGU':
+                            for (list in this.mntrtList) {
+                                if (this.mntrtList[list].pnCarr === 'LGU') {
+                                    tempArr.push(this.mntrtList[list])
+                                }
+                            }
+                            break
+                    }
+                    this.useMntrtListByCarr = tempArr
                 }
+
             }
         })
     </script>

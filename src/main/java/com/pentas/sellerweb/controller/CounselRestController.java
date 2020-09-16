@@ -153,4 +153,15 @@ public class CounselRestController {
         rslt.put("mntrtList",resultList);
         return rslt;
     }
+
+    @PostMapping("/service/allDeviceListByCarr")
+    public DevMap allDeviceListByCarr(@RequestBody DevMap param){
+        DevMap rslt = new DevMap();
+        List<DevMap> resultList = null;
+
+        resultList = counselService.allDeviceListByCarr(param);
+
+        rslt.put("deviceList",resultList);
+        return rslt;
+    }
 }

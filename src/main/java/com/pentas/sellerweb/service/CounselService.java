@@ -66,4 +66,9 @@ public class CounselService {
         return cmmnDao.selectList("sellerweb.counsel.useAllCarrMntRt", param);
 
     }
+
+    public List<DevMap> allDeviceListByCarr(DevMap param) {
+
+        return cmmnDao.selectList("sellerweb.counsel.allDeviceListByCarr", param);
+    }
 }
