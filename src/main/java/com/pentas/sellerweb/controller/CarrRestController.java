@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @RestController
@@ -23,7 +25,12 @@ public class CarrRestController {
      * @return
      */
     @PostMapping("/carr/getMntrtList")
-    public DevMap getMntrtList(@RequestBody DevMap param) {
+    public DevMap getMntrtList(@RequestBody DevMap param, HttpServletRequest request) {
+//        세션에서 회원아이디 가져오기
+        HttpSession session = request.getSession();
+        String mbrId = (String) session.getAttribute("bnMbrId");
+        param.put("BN_MBR_ID", mbrId);      // 회원아이디
+
         DevMap rslt = new DevMap();
         List<DevMap> resultList = null;
 
@@ -39,13 +46,18 @@ public class CarrRestController {
      * @return
      */
     @PostMapping("/carr/insertUseMnt")
-    public DevMap insertUseMnt(@RequestBody List<DevMap> param) {
+    public DevMap insertUseMnt(@RequestBody List<DevMap> param, HttpServletRequest request) {
+        //        세션에서 회원아이디 가져오기
+        HttpSession session = request.getSession();
+        String mbrId = (String) session.getAttribute("bnMbrId");
         DevMap rslt = new DevMap();
+        for (DevMap list : param) {
+            list.put("BN_MBR_ID", mbrId);      // 회원아이디
+        }
         carrService.insertUseMnt(param);
 
         // 정상적으로 insert
         rslt.put("succ", "Y");
-
         return rslt;
     }
 
@@ -56,8 +68,15 @@ public class CarrRestController {
      * @return
      */
     @PostMapping("/carr/deleteUseMnt")
-    public DevMap deleteUseMnt(@RequestBody List<DevMap> param) {
+    public DevMap deleteUseMnt(@RequestBody List<DevMap> param, HttpServletRequest request) {
+        //        세션에서 회원아이디 가져오기
+        HttpSession session = request.getSession();
+        String mbrId = (String) session.getAttribute("bnMbrId");
         DevMap rslt = new DevMap();
+        for (DevMap list : param) {
+            list.put("BN_MBR_ID", mbrId);      // 회원아이디
+        }
+
         carrService.deleteUseMnt(param);
         rslt.put("succ", "Y");
 
@@ -71,7 +90,12 @@ public class CarrRestController {
      * @return
      */
     @PostMapping("/carr/getSellDeviceList")
-    public DevMap getSellDeviceList(@RequestBody DevMap param) {
+    public DevMap getSellDeviceList(@RequestBody DevMap param, HttpServletRequest request) {
+        //        세션에서 회원아이디 가져오기
+        HttpSession session = request.getSession();
+        String mbrId = (String) session.getAttribute("bnMbrId");
+        param.put("BN_MBR_ID", mbrId);      // 회원아이디
+
         DevMap rslt = new DevMap();
         List<DevMap> resultList = null;
 
@@ -87,13 +111,11 @@ public class CarrRestController {
      * @return
      */
     @PostMapping("/carr/getUseMntByDevice")
-    public DevMap getUseMntByDevice(@RequestBody DevMap param) {
-        param.put("BN_NO", "202008250001");                                          // 업체번호
-        param.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com");      // 회원아이디
-//        param.put("BN_NO", "2020090100000000001");                                          // 업체번호
-//        param.put("AMD_MBR_ID", "aassddff@naver.com");                                      // 회원아이디
-//        param.put("BN_NO", "2020090900000000001");                                          // 업체번호
-//        param.put("AMD_MBR_ID", "zzxxcc@naver.com");                                      // 회원아이디
+    public DevMap getUseMntByDevice(@RequestBody DevMap param, HttpServletRequest request) {
+        //        세션에서 회원아이디 가져오기
+        HttpSession session = request.getSession();
+        String mbrId = (String) session.getAttribute("bnMbrId");
+        param.put("BN_MBR_ID", mbrId);      // 회원아이디                               // 회원아이디
 
         DevMap rslt = new DevMap();
         List<DevMap> moveCarrList = null;
@@ -117,9 +139,15 @@ public class CarrRestController {
      * @return
      */
     @PostMapping("/carr/stopSaleDev")
-    public DevMap stopSaleDevice(@RequestBody List<DevMap> param) {
-        DevMap rslt = new DevMap();
+    public DevMap stopSaleDevice(@RequestBody List<DevMap> param, HttpServletRequest request) {
+        //        세션에서 회원아이디 가져오기
+        HttpSession session = request.getSession();
+        String mbrId = (String) session.getAttribute("bnMbrId");
+        for (DevMap list : param) {
+            list.put("BN_MBR_ID", mbrId);      // 회원아이디
+        }
 
+        DevMap rslt = new DevMap();
         carrService.stopSaleDevice(param);
 
         rslt.put("succ", "Y");
@@ -134,9 +162,15 @@ public class CarrRestController {
      * @return
      */
     @PostMapping("/carr/saveSalePolicy/{saleType}")
-    public DevMap saveSalePolicy(@PathVariable String saleType, @RequestBody List<DevMap> param) {
-        DevMap rslt = new DevMap();
+    public DevMap saveSalePolicy(@PathVariable String saleType, @RequestBody List<DevMap> param, HttpServletRequest request) {
+        //        세션에서 회원아이디 가져오기
+        HttpSession session = request.getSession();
+        String mbrId = (String) session.getAttribute("bnMbrId");
+        for (DevMap list : param) {
+            list.put("BN_MBR_ID", mbrId);      // 회원아이디
+        }
 
+        DevMap rslt = new DevMap();
         switch (saleType) {
             case "moveCarr":
                 carrService.saveSalePolicyMoveCarr(param);
@@ -150,7 +184,6 @@ public class CarrRestController {
         }
 
         rslt.put("succ", "Y");
-
         return rslt;
     }
 

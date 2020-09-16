@@ -411,18 +411,18 @@
                                 <!--                                <input class="wPer" type="text" placeholder="고객명" v-model="rsltToReg.clMbrNm">-->
                             </td>
                             <th>개통번호</th>
-                            <td><input class="wPer" type="text" placeholder="개통번호" v-model="rsltToReg.mbrPnNo"></td>
+                            <td><input class="wPer" type="text" placeholder="개통번호" v-model="rsltToReg.mbrPnNo" :disabled='modiCallStCd==="E"'></td>
                         </tr>
                         <tr>
                             <th>통신사</th>
                             <td>
-                                <select class="wPer" v-model="rsltToReg.mntCarr">
+                                <select class="wPer" v-model="rsltToReg.mntCarr" :disabled='modiCallStCd==="E"'>
                                     <option v-for="carr in carrArr" :value="carr.code">{{carr.value}}</option>
                                 </select>
                             </td>
                             <th>조건</th>
                             <td>
-                                <select class="wPer" v-model="rsltToReg.pnRegDis">
+                                <select class="wPer" v-model="rsltToReg.pnRegDis" :disabled='modiCallStCd==="E"'>
                                     <option v-for="type in counselType" :value="type.code">{{type.value}}</option>
                                 </select>
                             </td>
@@ -430,7 +430,7 @@
                         <tr>
                             <th>요금제</th>
                             <td colspan="3">
-                                <select class="wPer" v-model="rsltToReg.pnMntRtNo">
+                                <select class="wPer" v-model="rsltToReg.pnMntRtNo" :disabled='modiCallStCd==="E"'>
                                     <option v-for="mntrt in useMntrtListByCarr" :value="mntrt.pnMntRtNo">
                                         {{mntrt.pnMntRtNm}}
                                     </option>
@@ -440,13 +440,13 @@
                         <tr>
                             <th>제조사</th>
                             <td>
-                                <select class="wPer" v-model="selectedMkr">
+                                <select class="wPer" v-model="selectedMkr" :disabled='modiCallStCd==="E"'>
                                     <option v-for="mkr in pnMkr" :value="mkr.code">{{mkr.value}}</option>
                                 </select>
                             </td>
                             <th>모델</th>
                             <td>
-                                <select class="wPer" v-model="rsltToReg.pnMdlNo">
+                                <select class="wPer" v-model="rsltToReg.pnMdlNo" :disabled='modiCallStCd==="E"'>
                                     <option v-for="device in devListByMkr" :value="device.pnMdlNo">{{device.pnMdlNm}}
                                     </option>
                                 </select>
@@ -455,16 +455,16 @@
                         <tr>
                             <th>부가서비스</th>
                             <td colspan="3">
-                                <input type="radio" id="extServY" value="Y"
+                                <input type="radio" id="extServY" value="Y" :disabled='modiCallStCd==="E"'
                                        v-model="rsltToReg.oldExtServYn"><label for="extServY">유</label>&nbsp;
-                                <input type="radio" id="extServN" value="N"
+                                <input type="radio" id="extServN" value="N" :disabled='modiCallStCd==="E"'
                                        v-model="rsltToReg.oldExtServYn"><label for="extServN">무</label>
                             </td>
                         </tr>
                         <tr>
                             <th>비고</th>
                             <td colspan="3">
-                                <input class="wPer" type="text" placeholder="상담결과내용" v-model="rsltToReg.callCont">
+                                <input class="wPer" type="text" placeholder="상담결과내용" v-model="rsltToReg.callCont" :disabled='modiCallStCd==="E"'>
                             </td>
                         </tr>
                         <tr>

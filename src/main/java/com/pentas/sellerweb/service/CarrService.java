@@ -15,35 +15,11 @@ public class CarrService {
     CmmnDao cmmnDao;
 
     public List<DevMap> mntrtList(DevMap param) {
-//        세션에서 업체번호 및 회원아이디 가져오기
-//        HttpSession session = request.getSession();
-//        String 업체번호 = (String)session.getAttribute("업체번호);
-//        String mbrId = (String)session.getAttribute("회원아이디");
-
-        param.put("BN_NO", "202008250001");                                          // 업체번호
-        param.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com");      // 회원아이디
-//        param.put("BN_NO", "2020090100000000001");                                          // 업체번호
-//        param.put("AMD_MBR_ID", "aassddff@naver.com");                                      // 회원아이디
-//        param.put("BN_NO", "2020090900000000001");                                          // 업체번호
-//        param.put("AMD_MBR_ID", "zzxxcc@naver.com");                                      // 회원아이디
-
         return cmmnDao.selectList("sellerweb.carr.mntrtlist", param);
     }
 
     public void insertUseMnt(List<DevMap> params) {
-
-//        세션에서 업체번호 및 회원아이디 가져오기
-//        HttpSession session = request.getSession();
-//        String 업체번호 = (String)session.getAttribute("업체번호);
-//        String mbrId = (String)session.getAttribute("회원아이디");
-
         for (DevMap param : params) {
-            param.put("BN_NO", "202008250001");                                          // 업체번호
-            param.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com");      // 회원아이디
-//            param.put("BN_NO", "2020090100000000001");                                          // 업체번호
-//            param.put("AMD_MBR_ID", "aassddff@naver.com");                                      // 회원아이디
-//            param.put("BN_NO", "2020090900000000001");                                          // 업체번호
-//            param.put("AMD_MBR_ID", "zzxxcc@naver.com");                                      // 회원아이디
             cmmnDao.insert("sellerweb.carr.useMntRt", param);
 
             // 사용여부 내역 남기기
@@ -58,19 +34,7 @@ public class CarrService {
         List<DevMap> chgDevPolicyList = new ArrayList<>();
         List<DevMap> newSignupPolicyList = new ArrayList<>();
 
-        // 세션에서 업체번호 및 회원아이디 가져오기
-        // HttpSession session = request.getSession();
-        // String 업체번호 = (String)session.getAttribute("업체번호);
-        // String mbrId = (String)session.getAttribute("회원아이디");
-
         for (DevMap param : params) {
-            param.put("BN_NO", "202008250001");                                          // 업체번호
-            param.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com");      // 회원아이디
-//            param.put("BN_NO", "2020090100000000001");                                          // 업체번호
-//            param.put("AMD_MBR_ID", "aassddff@naver.com");                                      // 회원아이디
-//            param.put("BN_NO", "2020090900000000001");                                          // 업체번호
-//            param.put("AMD_MBR_ID", "zzxxcc@naver.com");                                      // 회원아이디
-
             //미사용처리전 해당 요금제 판매중지처리 및 판매중지내역남기기
             mvCarrPolicyList = cmmnDao.selectList("sellerweb.carr.policyListByMntRtMvCarr", param);
             if (mvCarrPolicyList.size() != 0) {
@@ -82,7 +46,7 @@ public class CarrService {
                     mvCarr.put("PN_EXT_SUBSD_RT", null);
                     mvCarr.put("PN_EXT_SERV_YN", null);
                     mvCarr.put("PN_ETC", null);
-                    mvCarr.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com"); // 로그인한 회원아이디
+                    mvCarr.put("BN_MBR_ID", param.getString("bnMbrId"));
 
                     mvCarr.put("policyType", "MoveCarr");
                     // 판매중지처리
@@ -102,7 +66,7 @@ public class CarrService {
                     chgDev.put("PN_EXT_SUBSD_RT", null);
                     chgDev.put("PN_EXT_SERV_YN", null);
                     chgDev.put("PN_ETC", null);
-                    chgDev.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com"); // 로그인한 회원아이디
+                    chgDev.put("AMD_MBR_ID", param.getString("bnMbrId")); // 로그인한 회원아이디
 
                     chgDev.put("policyType", "ChgDev");
                     // 판매중지처리
@@ -123,7 +87,7 @@ public class CarrService {
                     newSignup.put("PN_EXT_SUBSD_RT", null);
                     newSignup.put("PN_EXT_SERV_YN", null);
                     newSignup.put("PN_ETC", null);
-                    newSignup.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com"); // 로그인한 회원아이디
+                    newSignup.put("AMD_MBR_ID", param.getString("bnMbrId")); // 로그인한 회원아이디
 
                     newSignup.put("policyType", "NewSignup");
                     // 판매중지처리
@@ -144,22 +108,7 @@ public class CarrService {
     }
 
     public List<DevMap> getSellDeviceList(DevMap param) {
-//        세션에서 업체번호 및 회원아이디 가져오기
-//        HttpSession session = request.getSession();
-//        String 업체번호 = (String)session.getAttribute("업체번호);
-//        String mbrId = (String)session.getAttribute("회원아이디");
-        param.put("BN_NO", "202008250001");                                          // 업체번호
-        param.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com");      // 회원아이디
-//        param.put("BN_NO", "2020090100000000001");                                          // 업체번호
-//        param.put("AMD_MBR_ID", "aassddff@naver.com");                                      // 회원아이디
-//        param.put("BN_NO", "2020090900000000001");                                          // 업체번호
-//        param.put("AMD_MBR_ID", "zzxxcc@naver.com");                                      // 회원아이디
-
-        List<DevMap> sellDeviceList = new ArrayList<>();
-
-        sellDeviceList = cmmnDao.selectList("sellerweb.carr.sellDeviceList2", param);
-
-        return sellDeviceList;
+        return cmmnDao.selectList("sellerweb.carr.sellDeviceList", param);
     }
 
     public List<DevMap> getmoveCarrList(DevMap param) {
@@ -209,19 +158,7 @@ public class CarrService {
     }
 
     public void saveSalePolicyMoveCarr(List<DevMap> params) {
-        //        세션에서 업체번호 및 회원아이디 가져오기
-//        HttpSession session = request.getSession();
-//        String 업체번호 = (String)session.getAttribute("업체번호);
-//        String mbrId = (String)session.getAttribute("회원아이디");
-
         for (DevMap param : params) {
-            param.put("BN_NO", "202008250001");                                          // 업체번호
-            param.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com");      // 회원아이디
-//            param.put("BN_NO", "2020090100000000001");                                          // 업체번호
-//            param.put("AMD_MBR_ID", "aassddff@naver.com");                                      // 회원아이디
-//            param.put("BN_NO", "2020090900000000001");                                          // 업체번호
-//            param.put("AMD_MBR_ID", "zzxxcc@naver.com");                                      // 회원아이디
-
             param.put("policyType", "MoveCarr");    // 정책유형
 
             String saveType = param.getString("saveType");
@@ -239,19 +176,7 @@ public class CarrService {
     }
 
     public void saveSalePolicyChgDev(List<DevMap> params) {
-        //        세션에서 업체번호 및 회원아이디 가져오기
-//        HttpSession session = request.getSession();
-//        String 업체번호 = (String)session.getAttribute("업체번호);
-//        String mbrId = (String)session.getAttribute("회원아이디");
-
         for (DevMap param : params) {
-            param.put("BN_NO", "202008250001");                                          // 업체번호
-            param.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com");      // 회원아이디
-//            param.put("BN_NO", "2020090100000000001");                                          // 업체번호
-//            param.put("AMD_MBR_ID", "aassddff@naver.com");                                      // 회원아이디
-//            param.put("BN_NO", "2020090900000000001");                                          // 업체번호
-//            param.put("AMD_MBR_ID", "zzxxcc@naver.com");                                      // 회원아이디
-
             param.put("policyType", "ChgDev");    // 정책유형
 
             String saveType = param.getString("saveType");
@@ -269,19 +194,7 @@ public class CarrService {
     }
 
     public void saveSalePolicyNewSignup(List<DevMap> params) {
-        //        세션에서 업체번호 및 회원아이디 가져오기
-//        HttpSession session = request.getSession();
-//        String 업체번호 = (String)session.getAttribute("업체번호);
-//        String mbrId = (String)session.getAttribute("회원아이디");
-
         for (DevMap param : params) {
-            param.put("BN_NO", "202008250001");                                          // 업체번호
-            param.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com");      // 회원아이디
-//            param.put("BN_NO", "2020090100000000001");                                          // 업체번호
-//            param.put("AMD_MBR_ID", "aassddff@naver.com");                                      // 회원아이디
-//            param.put("BN_NO", "2020090900000000001");                                          // 업체번호
-//            param.put("AMD_MBR_ID", "zzxxcc@naver.com");                                      // 회원아이디
-
             param.put("policyType", "NewSignup");    // 정책유형
 
             String saveType = param.getString("saveType");
@@ -304,13 +217,6 @@ public class CarrService {
         List<DevMap> stopSaleDevNewSignupList = new ArrayList<>();
 
         for (DevMap param : params) {
-            param.put("BN_NO", "202008250001");                                          // 업체번호
-            param.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com");      // 회원아이디
-//            param.put("BN_NO", "2020090100000000001");                                          // 업체번호
-//            param.put("AMD_MBR_ID", "aassddff@naver.com");                                      // 회원아이디
-//            param.put("BN_NO", "2020090900000000001");                                          // 업체번호
-//            param.put("AMD_MBR_ID", "zzxxcc@naver.com");                                      // 회원아이디
-
             // 번호이동
             cmmnDao.update("sellerweb.carr.stopSaleDevMvCarr", param);
             // SellCondNo 를 얻기위한 리스트
@@ -325,12 +231,6 @@ public class CarrService {
         }
 
         for (DevMap param : params) {
-            param.put("BN_NO", "202008250001");                                          // 업체번호
-            param.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com");      // 회원아이디
-//            param.put("BN_NO", "2020090100000000001");                                          // 업체번호
-//            param.put("AMD_MBR_ID", "aassddff@naver.com");                                      // 회원아이디
-//            param.put("BN_NO", "2020090900000000001");                                          // 업체번호
-//            param.put("AMD_MBR_ID", "zzxxcc@naver.com");                                      // 회원아이디
             // 기기변경
             cmmnDao.update("sellerweb.carr.stopSaleDevChgDev", param);
 
@@ -345,12 +245,6 @@ public class CarrService {
         }
 
         for (DevMap param : params) {
-            param.put("BN_NO", "202008250001");                                          // 업체번호
-            param.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com");      // 회원아이디
-//            param.put("BN_NO", "2020090100000000001");                                          // 업체번호
-//            param.put("AMD_MBR_ID", "aassddff@naver.com");                                      // 회원아이디
-//            param.put("BN_NO", "2020090900000000001");                                          // 업체번호
-//            param.put("AMD_MBR_ID", "zzxxcc@naver.com");                                      // 회원아이디
             // 신규가입
             cmmnDao.update("sellerweb.carr.stopSaleDevNewSignup", param);
 
