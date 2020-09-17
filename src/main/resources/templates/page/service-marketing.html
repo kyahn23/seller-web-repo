@@ -291,6 +291,7 @@
                                 <td>
                                     <select id="pnMkr" :disabled="mktOneDisabled" v-model="mktOne.pnMkr">
                                         <option v-if="pnMkrList.length" value="-1">- 제조사를 선택하세요 -</option>
+                                        <option v-if="!pnMkrList.length" value="mktOne.pnMkr">{{ mktOne.pnMkr }}</option>
                                         <option v-for="pnMkr in pnMkrList" :value="pnMkr">{{ setPnMkrNm(pnMkr) }}</option>
                                     </select>
                                 </td>

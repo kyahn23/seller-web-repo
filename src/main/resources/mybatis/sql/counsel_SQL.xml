@@ -238,6 +238,12 @@
         WHERE PN_NET_TYPE = #{pnNetType}
     </select>
 
+    <select id="selectPnMkrOne" resultType="string" parameterType="DevMap">
+        SELECT DISTINCT PN_MKR
+        FROM TBL001
+        WHERE PN_DML_NM = #{pnMdlNm}
+    </select>
+
     <select id="selectDevice" resultType="DevMap" parameterType="DevMap">
         SELECT PN_MDL_NO
         ,PN_MDL_NM

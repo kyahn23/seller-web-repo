@@ -115,6 +115,13 @@ public class CounselService {
     }
 
     /**
+     * 기기 모델명으로 제조사 조회
+     * @param param
+     * @return
+     */
+    public String pnMkrOne(String param) { return cmmnDao.selectOne("sellerweb.counsel.selectPnMkrOne", param); }
+
+    /**
      * 기기 목록 조회
      * @param param
      * @return

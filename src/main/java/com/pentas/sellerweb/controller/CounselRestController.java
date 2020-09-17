@@ -244,6 +244,11 @@ public class CounselRestController {
     public DevMap getMarketingOne(@RequestBody DevMap param) {
         DevMap rslt = new DevMap();
         DevMap marketingOne = counselService.marketingOne(param);
+        String pnMkrOne = "";
+        if (param.getString("pnMdl") != null) {
+            pnMkrOne = counselService.pnMkrOne(param.getString("pnMdl"));
+            marketingOne.put("pnMkr", pnMkrOne);
+        }
         rslt.put("mktOne", marketingOne);
         return rslt;
     }
