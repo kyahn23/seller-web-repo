@@ -300,6 +300,7 @@
                                 <td>
                                     <select id="device" :disabled="mktOneDisabled" v-model="mktOne.pnMdl">
                                         <option v-if="deviceList.length" value="-1">- 모델을 선택하세요 -</option>
+                                        <option v-if="!deviceList.length" :value="mktOne.pnMdl">{{ mktOne.pnMdl }}</option>
                                         <option v-for="deviceOne in deviceList" :value="setDeviceOne(deviceOne.pnMdlNm, deviceOne.pnStor)">{{ deviceOne.pnMdlNm }} {{ deviceOne.pnStor }}</option>
                                     </select>
                                 </td>
