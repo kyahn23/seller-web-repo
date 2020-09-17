@@ -143,4 +143,87 @@
         and CALL_NO=#{callNo}
     </update>
 
+    <select id="selectMarketingList" resultType="DevMap" parameterType="DevMap">
+        SELECT A.DEAL_NO
+        ,A.MBR_NM
+        ,A.MBR_PN_NO
+        ,DATE_FORMAT(A.PN_REG_DT, '%Y-%m-%d') AS PN_REG_DT
+        ,(SELECT CASE
+        WHEN B.MKT_RSLT = 'S' THEN '성공'
+        WHEN B.MKT_RSLT = 'F' THEN '실패'
+        ELSE '미진행' END MKT_RSLT_TXT
+        FROM TBL009 B
+        WHERE B.DEAL_NO = A.DEAL_NO) AS MKT_RSLT_TXT
+        ,DATE_FORMAT(A.AMD_DT, '%Y-%m-%d %H:%i') AS AMD_DT
+        ,C.MNT_CARR
+        ,(SELECT D.PN_MDL_NM
+        FROM TBL011 D
+        WHERE D.PN_MDL_NO = C.PN_MDL_NO
+        AND D.PN_STOR = C.PN_STOR) AS PN_MDL_NM
+        FROM TBL009 A, TBL006 C
+        WHERE A.BN_NO = (SELECT cf_get_bn_no(#{bnMbrId}))
+        AND A.DEAL_NO = C.DEAL_NO
+        <if test='!(srchType.equals("A"))'>
+            AND A.MKT_RSLT = #{srchType}
+        </if>
+        AND A.MBR_NM LIKE CONCAT('%', #{srchName}, '%')
+        AND PN_REG_DT LIKE CONCAT(#{srchDate}, '%')
+    </select>
+
+    <select id="selectMarketingOne" resultType="DevMap" parameterType="DevMap">
+        SELECT MBR_NM
+        ,MBR_PN_NO
+        ,MKT_RSLT
+        ,VISIT_DT
+        ,PN_CARR
+        ,PN_REG_DIS
+        ,PN_MNT_RT_NO
+        ,PN_MDL
+        ,MKT_CMNT
+        FROM TBL009
+        WHERE DEAL_NO = #{dealNo}
+    </select>
+
+    <select id="selectMonthlyRate" resultType="DevMap" parameterType="DevMap">
+        SELECT PN_MNT_RT_NO
+        ,PN_MNT_RT_NM
+        ,PN_MNT_AMT
+        ,PN_NET_TYPE
+        FROM TBL010
+        WHERE PN_MNT_RT_NO
+        IN (
+        SELECT PN_MNT_RT_NO
+        FROM TBL013 WHERE BN_NO = (SELECT cf_get_bn_no(#{bnMbrId}))
+        )
+        AND PN_CARR = #{pnCarr}
+    </select>
+
+    <select id="selectPnMkr" resultType="string" parameterType="DevMap">
+        SELECT DISTINCT PN_MKR
+        FROM TBL011
+        WHERE PN_NET_TYPE = #{pnNetType}
+    </select>
+
+    <select id="selectDevice" resultType="DevMap" parameterType="DevMap">
+        SELECT PN_MDL_NO
+        ,PN_MDL_NM
+        ,PN_STOR
+        FROM TBL011
+        WHERE PN_MKR = #{pnMkr}
+        AND PN_NET_TYPE = #{pnNetType}
+        AND PN_CARR LIKE CONCAT('%', #{pnCarrAbbr}, '%')
+    </select>
+
+    <insert id="updateMarketingOne" parameterType="DevMap">
+        UPDATE TBL009
+        SET MKT_RSLT = #{mktRslt}
+        ,VISIT_DT = #{visitDt}
+        ,PN_CARR = #{pnCarr}
+        ,PN_REG_DIS = #{pnRegDis}
+        ,PN_MNT_RT_NO = #{pnMntRtNo}
+        ,PN_MDL = #{pnMdl}
+        ,MKT_CMNT = #{mktCmnt}
+        ,AMD_DT = CURRENT_TIMESTAMP
+        WHERE DEAL_NO = #{dealNo}
+    </insert>
 </mapper>

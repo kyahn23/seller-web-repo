@@ -14,7 +14,7 @@
         <th:block th:replace="fragment/header :: headerFragment"></th:block>
         <!-- container -->
         <div id="container">
-            <div class="fixedWidth">
+            <div class="fixedWidth" :style="[dpOpenCss ? {'min-height': dpOpenCss } : {}]">
                 <!-- lnbFragment -->
                 <th:block th:replace="fragment/lnb :: lnbFragment"></th:block>
                 <!-- content -->

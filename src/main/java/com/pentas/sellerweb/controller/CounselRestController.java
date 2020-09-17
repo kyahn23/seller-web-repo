@@ -1,6 +1,5 @@
 package com.pentas.sellerweb.controller;
 
-import com.pentas.sellerweb.common.module.mybatis.paginator.domain.PageBounds;
 import com.pentas.sellerweb.common.module.mybatis.paginator.domain.PageList;
 import com.pentas.sellerweb.common.module.util.DevMap;
 import com.pentas.sellerweb.service.CounselService;
@@ -22,7 +21,6 @@ public class CounselRestController {
 
     /**
      * 상담접수현황 목록
-     *
      * @param param
      * @return
      */
@@ -44,7 +42,6 @@ public class CounselRestController {
 
     /**
      * 선택한 상담접수건의 현재 판매정책정보
-     *
      * @param param
      * @return
      */
@@ -63,7 +60,6 @@ public class CounselRestController {
 
     /**
      * 방문예정 상담목록 가져오기
-     *
      * @param param
      * @return
      */
@@ -86,7 +82,6 @@ public class CounselRestController {
 
     /**
      * 업체직원아이디 가져오기
-     *
      * @param param
      * @return
      */
@@ -105,7 +100,6 @@ public class CounselRestController {
 
     /**
      * 상담관리현황페이지 전체 목록
-     *
      * @param param
      * @return
      */
@@ -128,7 +122,6 @@ public class CounselRestController {
 
     /**
      * 상담결과저장
-     *
      * @param param
      * @return
      */
@@ -149,7 +142,6 @@ public class CounselRestController {
 
     /**
      * 방문예정일시 변경
-     *
      * @param param
      * @return
      */
@@ -192,6 +184,12 @@ public class CounselRestController {
         return rslt;
     }
 
+    /**
+     * 개통결과 등록
+     * @param param
+     * @param request
+     * @return
+     */
     @PostMapping("/service/registerRslt")
     public DevMap registerRslt(@RequestBody DevMap param, HttpServletRequest request) {
         //        세션에서 회원아이디 가져오기
@@ -204,4 +202,98 @@ public class CounselRestController {
         rslt.put("succ", "Y");
         return rslt;
     }
+
+    /**
+     * 마케팅 대상 목록 조회
+     * @param param
+     * @return
+     */
+    @PostMapping("/service/getMarketingList")
+    public DevMap getMarketingList(HttpServletRequest request, @RequestBody DevMap param) {
+        HttpSession session = request.getSession();
+        String bnMbrId = (String) session.getAttribute("bnMbrId");
+        param.put("bnMbrId", bnMbrId);
+
+        DevMap rslt = new DevMap();
+
+        PageList<DevMap> listPage = counselService.marketingList(param);
+
+        rslt.put("mktList", listPage);
+        rslt.put("pageInfo", listPage.getPaginator());
+        return rslt;
+    }
+
+    /**
+     * 마케팅 결과 상세 조회
+     * @param param
+     * @return
+     */
+    @PostMapping("/service/getMarketingOne")
+    public DevMap getMarketingOne(@RequestBody DevMap param) {
+        DevMap rslt = new DevMap();
+        DevMap marketingOne = counselService.marketingOne(param);
+        rslt.put("mktOne", marketingOne);
+        return rslt;
+    }
+
+    /**
+     * 요금제 목록 조회
+     * @param request
+     * @param param
+     * @return
+     */
+    @PostMapping("/service/getMonthlyRate")
+    public DevMap getMonthlyRate(HttpServletRequest request, @RequestBody DevMap param) {
+        HttpSession session = request.getSession();
+        String bnMbrId = (String) session.getAttribute("bnMbrId");
+        param.put("bnMbrId", bnMbrId);
+
+        DevMap rslt = new DevMap();
+        List<DevMap> monthlyRate = counselService.monthlyRateList(param);
+        rslt.put("monthlyRate", monthlyRate);
+        return rslt;
+    }
+
+    /**
+     * 제조사 목록 조회
+     * @param param
+     * @return
+     */
+    @PostMapping("/service/getPnMkr")
+    public DevMap getPnMkr(@RequestBody DevMap param) {
+        DevMap rslt = new DevMap();
+        List<String> pnMkr = counselService.pnMkr(param);
+        rslt.put("pnMkr", pnMkr);
+        return rslt;
+    }
+
+    /**
+     * 기기 목록 조회
+     * @param request
+     * @param param
+     * @return
+     */
+    @PostMapping("/service/getDeviceList")
+    public DevMap getDeviceList(HttpServletRequest request, @RequestBody DevMap param) {
+        DevMap rslt = new DevMap();
+        List<DevMap> deviceList = counselService.deviceList(param);
+        rslt.put("deviceList", deviceList);
+        return rslt;
+    }
+
+    /**
+     * 마케팅 상세 정보 저장
+     * @param param
+     * @return
+     */
+    @PostMapping("/service/saveMarketingOne")
+    public DevMap saveMarketingOne(@RequestBody DevMap param) {
+        counselService.saveMarketingOne(param);
+
+        DevMap rslt = new DevMap();
+        rslt.put("rsltStat", "SUCC");
+        return rslt;
+    }
+
+
 }

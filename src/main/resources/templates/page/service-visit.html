@@ -7,6 +7,9 @@
         #container > .fixedWidth {
             overflow: visible;
         }
+        #container > .modiHeight {
+            min-height: 1200px !important;
+        }
 
         .searchArea .txtSize2 input, .searchArea .txtSize2 select {
             width: 100%;
@@ -318,7 +321,7 @@
                                     <vuejs-datepicker ref="programaticOpen2" :language="ko" placeholder="방문예정일자"
                                                       :input-class="'dpInputWidth'" :wrapper-class="'dpWrapWidth'"
                                                       name="calendar02" :disabled-dates="disabledFn"
-                                                      :format="format" v-model="selectedCs.visitDt">
+                                                      :format="format" v-model="rsltToReg.visitDt">
                                     </vuejs-datepicker></span>
                                     <span>
                                         <button @click="openPicker2"
@@ -581,6 +584,12 @@
             mounted: function () {
                 this.getToday()
             },
+            computed:{
+              dpOpenCss() {
+                  if(this.selectedCs.callNo) return '1200px !important'
+                  return '687px !important'
+              }
+            },
             watch: {
                 'rsltToReg.mntCarr': {
                     handler(value) {
@@ -749,7 +758,13 @@
                 selectCs(data, idx) {
                     this.selectedCs = {}
                     this.selectedCs = data
-                    this.rsltToReg = data
+                    // this.rsltToReg = data
+//
+                   // let tempObj = {}
+                    // tempObj = this.selectedCs
+                    this.rsltToReg = JSON.parse(JSON.stringify(data))
+
+
                     this.selectedCs.idx = idx
 
                     let t = new Date(this.selectedCs.visitDt)
@@ -784,11 +799,12 @@
                 },
                 openPicker2() {
                     this.$refs.programaticOpen2.showCalendar();
+                    this.dpOpenCss()
                 },
                 rsltLayerMntRtInit() {
-                    let tempObj = {}
-                    tempObj = this.selectedCs
-                    this.rsltToReg = JSON.parse(JSON.stringify(tempObj))
+                    // let tempObj = {}
+                    // tempObj = this.selectedCs
+                    // this.rsltToReg = JSON.parse(JSON.stringify(tempObj))
                     this.selectedMkr = this.rsltToReg.pnMkr
 
                     let param = {}
@@ -857,7 +873,7 @@
                 },
                 modiVisitDt() {
                     if (confirm('방문예정일시를 변경하시겠습니까?')) {
-                        let modiDate = new Date(this.selectedCs.visitDt)
+                        let modiDate = new Date(this.rsltToReg.visitDt)
                         let temp = "" + modiDate.getFullYear()
                         let m = modiDate.getMonth() + 1
                         let d = modiDate.getDate()
@@ -951,11 +967,10 @@
                         this.visitMM = "all"
                         // this.searchList(type)
                         $('#popLayerServiceResultAdd').popup("hide");
-                        console.log(this.today)
+                        // console.log(this.today)
                         this.getToday()
                     }
                 }
-
             }
         })
     </script>
