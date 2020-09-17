@@ -29,7 +29,7 @@
         DATE_FORMAT(T.INP_DT, '%Y-%m-%d %H:%i') as INP_DT,
         DATE_FORMAT(T.AMD_DT, '%Y-%m-%d %H:%i') as AMD_DT
         from TBL008 T left join TBL006 t1 on T.DEAL_NO = t1.DEAL_NO
-        where T.BN_NO = #{bnNo}
+        where T.BN_NO = (SELECT cf_get_bn_no(#{loginMbrId}))
         <if test='callStCd != null and !callStCd.equals("all")'>
             and T.CALL_ST_CD = #{callStCd}
             <if test='visitDt != null'>
@@ -73,13 +73,13 @@
         where PN_MDL_NO = #{pnMdlNo}
         and PN_STOR = #{pnStor}
         and PN_MNT_RT_NO = #{pnMntRtNo}
-        and BN_NO = #{bnNo}
+        and BN_NO = (SELECT cf_get_bn_no(#{loginMbrId}))
     </select>
     
     <select id="bnMbrList" parameterType="DevMap" resultType="DevMap">
         SELECT BN_MBR_ID, MBR_NM
           FROM TBL002 t
-         WHERE BN_NO = #{bnNo}
+         WHERE BN_NO = (SELECT cf_get_bn_no(#{loginMbrId}))
             AND ACTV_YN  = 'Y'
     </select>
 
@@ -88,18 +88,18 @@
         set VISIT_DT = #{visitDt},
         CALL_ST_CD = #{callStCd},
         CALL_CONT = #{csContent},
-        BN_MBR_ID = #{bnMbrId},
+        BN_MBR_ID = #{loginMbrId},
         AMD_DT = SYSDATE()
-        where BN_NO=#{bnNo}
+        where BN_NO=(SELECT cf_get_bn_no(#{loginMbrId}))
         and CALL_NO=#{callNo}
     </update>
 
     <update id="modiVisitDt" parameterType="DevMap">
         update `TBL008`
         set VISIT_DT = #{visitDt},
-        BN_MBR_ID = #{bnMbrId},
+        BN_MBR_ID = #{loginMbrId},
         AMD_DT = SYSDATE()
-        where BN_NO=#{bnNo}
+        where BN_NO=(SELECT cf_get_bn_no(#{loginMbrId}))
         and CALL_NO=#{callNo}
     </update>
 
@@ -109,7 +109,7 @@
         A.PN_MNT_RT_NM,
         A.PN_NET_TYPE,
         A.PN_CARR
-        from TBL010 A left join (select * from TBL013 where BN_NO=#{bnNo}) B
+        from TBL010 A left join (select * from TBL013 where BN_NO=(SELECT cf_get_bn_no(#{loginMbrId}))) B
         on A.PN_MNT_RT_NO = B.PN_MNT_RT_NO
         WHERE B.MNT_USEYN_NO is not null
     </select>
@@ -122,7 +122,7 @@
     <update id="registerRslt" parameterType="DevMap">
         update `TBL008`
         <if test='callStCd == "T"'>
-            set BN_MBR_ID = #{bnMbrId},
+            set BN_MBR_ID = #{loginMbrId},
                 CALL_ST_CD = #{callStCd},
                 DEAL_CONT = #{dealCont},
                 PN_REG_YN = #{pnRegYn},
@@ -133,13 +133,13 @@
                 REG_TYPE = #{regType},
         </if>
         <if test='callStCd == "E"'>
-            set BN_MBR_ID = #{bnMbrId},
+            set BN_MBR_ID = #{loginMbrId},
                 CALL_ST_CD = #{callStCd},
                 CNCL_CMNT = #{cnclCmnt},
                 PN_REG_YN = #{pnRegYn},
         </if>
         AMD_DT = SYSDATE()
-        where BN_NO=#{bnNo}
+        where BN_NO=(SELECT cf_get_bn_no(#{loginMbrId}))
         and CALL_NO=#{callNo}
     </update>
 

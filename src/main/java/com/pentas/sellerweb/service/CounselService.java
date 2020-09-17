@@ -16,9 +16,6 @@ public class CounselService {
     CmmnDao cmmnDao;
 
     public PageList<DevMap> counselList(DevMap param) {
-        param.put("BN_NO", "202008250001");                                          // 업체번호
-        param.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com");      // 회원아이디
-
         int page = Integer.parseInt(param.getString("page"));
         int pageSize = 10;
         PageBounds pageBounds = new PageBounds(page, pageSize);
@@ -27,11 +24,7 @@ public class CounselService {
     }
 
     public DevMap getCurrPolicy(DevMap param) {
-        param.put("BN_NO", "202008250001");                                          // 업체번호
-        param.put("AMD_MBR_ID", "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com");      // 회원아이디
-
         return cmmnDao.selectOne("sellerweb.counsel.currPolicy", param);
-
     }
 
     public List<DevMap> bnMbrList(DevMap param) {
@@ -56,24 +49,14 @@ public class CounselService {
     }
 
     public List<DevMap> useAllCarrMntRt(DevMap param) {
-        //        세션에서 업체번호 및 회원아이디 가져오기
-//        HttpSession session = request.getSession();
-//        String 업체번호 = (String)session.getAttribute("업체번호);
-//        String mbrId = (String)session.getAttribute("회원아이디");
-
-        param.put("BN_NO", "202008250001");                                          // 업체번호
-
         return cmmnDao.selectList("sellerweb.counsel.useAllCarrMntRt", param);
-
     }
 
     public List<DevMap> allDeviceListByCarr(DevMap param) {
-
         return cmmnDao.selectList("sellerweb.counsel.allDeviceListByCarr", param);
     }
 
     public void registerRslt(DevMap param) {
-
         cmmnDao.update("sellerweb.counsel.registerRslt", param);
     }
 }

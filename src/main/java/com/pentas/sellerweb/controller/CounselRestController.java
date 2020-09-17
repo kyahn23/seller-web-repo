@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @RestController
@@ -25,10 +27,14 @@ public class CounselRestController {
      * @return
      */
     @PostMapping("/service/getCounselList")
-    public DevMap getCounselList(@RequestBody DevMap param) {
-        DevMap rslt = new DevMap();
+    public DevMap getCounselList(@RequestBody DevMap param, HttpServletRequest request) {
+        //        세션에서 회원아이디 가져오기
+        HttpSession session = request.getSession();
+        String loginMbrId = (String) session.getAttribute("bnMbrId");
+        param.put("LOGIN_MBR_ID", loginMbrId);
         param.put("CALL_ST_CD", "R");   // 등록된 상담만 보기위해
 
+        DevMap rslt = new DevMap();
         PageList<DevMap> listPage = counselService.counselList(param);
 
         rslt.put("counselList", listPage);
@@ -43,7 +49,12 @@ public class CounselRestController {
      * @return
      */
     @PostMapping("/service/getCurrPolicy")
-    public DevMap getCurrPolicy(@RequestBody DevMap param) {
+    public DevMap getCurrPolicy(@RequestBody DevMap param, HttpServletRequest request) {
+//        세션에서 회원아이디 가져오기
+        HttpSession session = request.getSession();
+        String loginMbrId = (String) session.getAttribute("bnMbrId");
+        param.put("LOGIN_MBR_ID", loginMbrId);
+
         DevMap rslt = new DevMap();
         rslt = counselService.getCurrPolicy(param);
         return rslt;
@@ -57,7 +68,12 @@ public class CounselRestController {
      * @return
      */
     @PostMapping("/service/getVisitCounselList")
-    public DevMap getVisitCounselList(@RequestBody DevMap param) {
+    public DevMap getVisitCounselList(@RequestBody DevMap param, HttpServletRequest request) {
+        //        세션에서 회원아이디 가져오기
+        HttpSession session = request.getSession();
+        String loginMbrId = (String) session.getAttribute("bnMbrId");
+        param.put("LOGIN_MBR_ID", loginMbrId);
+
         DevMap rslt = new DevMap();
         param.put("CALL_ST_CD", "P");   // 방문예정(상담상태 진행중-P) 상담만 보기위해
 
@@ -75,8 +91,11 @@ public class CounselRestController {
      * @return
      */
     @PostMapping("/service/bnMbrList")
-    public List<DevMap> bnMbrList(@RequestBody DevMap param) {
-        param.put("BN_NO", "202008250001");
+    public List<DevMap> bnMbrList(@RequestBody DevMap param, HttpServletRequest request) {
+        //        세션에서 회원아이디 가져오기
+        HttpSession session = request.getSession();
+        String loginMbrId = (String) session.getAttribute("bnMbrId");
+        param.put("LOGIN_MBR_ID", loginMbrId);
 
         List<DevMap> resultList = null;
         resultList = counselService.bnMbrList(param);
@@ -91,7 +110,12 @@ public class CounselRestController {
      * @return
      */
     @PostMapping("/service/getAllCounselList")
-    public DevMap getAllCounselList(@RequestBody DevMap param) {
+    public DevMap getAllCounselList(@RequestBody DevMap param, HttpServletRequest request) {
+        //        세션에서 회원아이디 가져오기
+        HttpSession session = request.getSession();
+        String loginMbrId = (String) session.getAttribute("bnMbrId");
+        param.put("LOGIN_MBR_ID", loginMbrId);
+
         DevMap rslt = new DevMap();
         param.put("CALL_ST_CD", "all");
 
@@ -104,76 +128,80 @@ public class CounselRestController {
 
     /**
      * 상담결과저장
+     *
      * @param param
      * @return
      */
     @PostMapping("/service/saveCounsel")
-    public DevMap saveCounsel(@RequestBody DevMap param) {
-        DevMap rslt = new DevMap();
-
-        String bnMbrId = "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com";
-
+    public DevMap saveCounsel(@RequestBody DevMap param, HttpServletRequest request) {
+        //        세션에서 회원아이디 가져오기
+        HttpSession session = request.getSession();
+        String loginMbrId = (String) session.getAttribute("bnMbrId");
+        param.put("LOGIN_MBR_ID", loginMbrId);
         param.put("CALL_ST_CD", "P");   // 상담상태 진행중으로 변경
-        param.put("BN_NO", "202008250001");
-        param.put("BN_MBR_ID", bnMbrId);
+
+        DevMap rslt = new DevMap();
         counselService.saveCounsel(param);
 
         rslt.put("succ", "Y");
-
         return rslt;
     }
 
     /**
      * 방문예정일시 변경
+     *
      * @param param
      * @return
      */
     @PostMapping("/service/modiVisitDt")
-    public DevMap modiVisitDt(@RequestBody DevMap param) {
+    public DevMap modiVisitDt(@RequestBody DevMap param, HttpServletRequest request) {
+        //        세션에서 회원아이디 가져오기
+        HttpSession session = request.getSession();
+        String loginMbrId = (String) session.getAttribute("bnMbrId");
+        param.put("LOGIN_MBR_ID", loginMbrId);
+
         DevMap rslt = new DevMap();
-
-        String bnMbrId = "qwerasdfzxcvqwerasdfzxcvqwerasdfzxcvqwer@naver.com";
-
-        param.put("BN_NO", "202008250001");
-        param.put("BN_MBR_ID", bnMbrId);
         counselService.modiVisitDt(param);
 
         rslt.put("succ", "Y");
-
         return rslt;
     }
 
     @PostMapping("/service/useAllCarrMntRt")
-    public DevMap useAllCarrMntRt(@RequestBody DevMap param){
+    public DevMap useAllCarrMntRt(@RequestBody DevMap param, HttpServletRequest request) {
+        //        세션에서 회원아이디 가져오기
+        HttpSession session = request.getSession();
+        String loginMbrId = (String) session.getAttribute("bnMbrId");
+        param.put("LOGIN_MBR_ID", loginMbrId);
+
         DevMap rslt = new DevMap();
         List<DevMap> resultList = null;
 
         resultList = counselService.useAllCarrMntRt(param);
-
-        rslt.put("mntrtList",resultList);
+        rslt.put("mntrtList", resultList);
         return rslt;
     }
 
     @PostMapping("/service/allDeviceListByCarr")
-    public DevMap allDeviceListByCarr(@RequestBody DevMap param){
+    public DevMap allDeviceListByCarr(@RequestBody DevMap param) {
         DevMap rslt = new DevMap();
         List<DevMap> resultList = null;
 
         resultList = counselService.allDeviceListByCarr(param);
-
-        rslt.put("deviceList",resultList);
+        rslt.put("deviceList", resultList);
         return rslt;
     }
 
     @PostMapping("/service/registerRslt")
-    public DevMap registerRslt(@RequestBody DevMap param) {
+    public DevMap registerRslt(@RequestBody DevMap param, HttpServletRequest request) {
+        //        세션에서 회원아이디 가져오기
+        HttpSession session = request.getSession();
+        String loginMbrId = (String) session.getAttribute("bnMbrId");
+        param.put("LOGIN_MBR_ID", loginMbrId);
+
         DevMap rslt = new DevMap();
-
-        param.put("BN_NO", "202008250001");
         counselService.registerRslt(param);
-
         rslt.put("succ", "Y");
-
         return rslt;
     }
 }
