@@ -176,29 +176,32 @@
 
     <select id="selectMarketingList" resultType="DevMap" parameterType="DevMap">
         SELECT A.DEAL_NO
-        ,A.MBR_NM
-        ,A.MBR_PN_NO
-        ,DATE_FORMAT(A.PN_REG_DT, '%Y-%m-%d') AS PN_REG_DT
-        ,(SELECT CASE
-        WHEN B.MKT_RSLT = 'S' THEN '성공'
-        WHEN B.MKT_RSLT = 'F' THEN '실패'
-        ELSE '미진행' END MKT_RSLT_TXT
-        FROM TBL009 B
-        WHERE B.DEAL_NO = A.DEAL_NO) AS MKT_RSLT_TXT
-        ,DATE_FORMAT(A.AMD_DT, '%Y-%m-%d %H:%i') AS AMD_DT
-        ,C.MNT_CARR
-        ,(SELECT D.PN_MDL_NM
-        FROM TBL011 D
-        WHERE D.PN_MDL_NO = C.PN_MDL_NO
-        AND D.PN_STOR = C.PN_STOR) AS PN_MDL_NM
-        FROM TBL009 A, TBL006 C
+            ,A.MBR_NM
+            ,A.MBR_PN_NO
+            ,DATE_FORMAT(A.PN_REG_DT, '%Y-%m-%d') AS PN_REG_DT
+            ,(
+                SELECT CASE
+                WHEN B.MKT_RSLT = 'S' THEN '성공'
+                WHEN B.MKT_RSLT = 'F' THEN '실패'
+                ELSE '미진행' END MKT_RSLT_TXT
+                FROM TBL009 B
+                WHERE B.DEAL_NO = A.DEAL_NO
+            ) AS MKT_RSLT_TXT
+            ,DATE_FORMAT(A.AMD_DT, '%Y-%m-%d %H:%i') AS AMD_DT
+            ,C.REG_CARR
+            ,(
+                SELECT DISTINCT D.PN_MDL_NM
+                FROM TBL011 D
+                WHERE D.PN_MDL_NO = C.REG_PN_MDL_NO
+            ) AS PN_MDL_NM
+        FROM TBL009 A, TBL008 C
         WHERE A.BN_NO = (SELECT cf_get_bn_no(#{bnMbrId}))
-        AND A.DEAL_NO = C.DEAL_NO
-        <if test='!(srchType.equals("A"))'>
-            AND A.MKT_RSLT = #{srchType}
-        </if>
-        AND A.MBR_NM LIKE CONCAT('%', #{srchName}, '%')
-        AND PN_REG_DT LIKE CONCAT(#{srchDate}, '%')
+            AND A.DEAL_NO = C.DEAL_NO
+            <if test='!(srchType.equals("A"))'>
+                AND A.MKT_RSLT = #{srchType}
+            </if>
+            AND A.MBR_NM LIKE CONCAT('%', #{srchName}, '%')
+            AND PN_REG_DT LIKE CONCAT(#{srchDate}, '%')
     </select>
 
     <select id="selectMarketingOne" resultType="DevMap" parameterType="DevMap">
