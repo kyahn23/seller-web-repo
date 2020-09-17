@@ -198,7 +198,19 @@ public class CounselRestController {
         param.put("LOGIN_MBR_ID", loginMbrId);
 
         DevMap rslt = new DevMap();
+
         counselService.registerRslt(param);
+
+        // 상담 종료 확인
+        String callStatus = param.getString("callStCd");
+        if (callStatus.equals("T")) {
+            // 클라이언트 회원 마케팅 동의 여부 확인 후 마케팅 대상 추가
+            String clientMarketing = counselService.checkClientMarketing(param);
+            if (clientMarketing.equals("Y")) {
+                counselService.newMarketingOne(param);
+            }
+        }
+
         rslt.put("succ", "Y");
         return rslt;
     }

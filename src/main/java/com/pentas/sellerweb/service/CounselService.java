@@ -61,6 +61,19 @@ public class CounselService {
     }
 
     /**
+     * 클라이언트 회원 마케팅 동의 여부 확인
+     * @param param
+     * @return
+     */
+    public String checkClientMarketing(DevMap param) { return cmmnDao.selectOne("sellerweb.counsel.selectClientMarketing", param); }
+
+    /**
+     * 마케팅 대상 생성
+     * @param param
+     */
+    public void newMarketingOne(DevMap param) { cmmnDao.insert("sellerweb.counsel.insertMarketingOne", param); }
+
+    /**
      * 마케팅 대상 목록 조회
      *
      * @param param

@@ -143,6 +143,37 @@
         and CALL_NO=#{callNo}
     </update>
 
+    <select id="selectClientMarketing" parameterType="DevMap" resultType="string">
+        SELECT MKT_YN FROM TBL001 WHERE CL_MBR_ID = (
+            SELECT CL_MBR_ID FROM TBL006 WHERE DEAL_NO = (
+                SELECT DEAL_NO FROM TBL008 WHERE CALL_NO = #{callNo}
+            )
+        )
+    </select>
+
+    <insert id="insertMarketingOne" parameterType="DevMap">
+        INSERT INTO TBL009
+            (
+                DEAL_NO
+                ,BN_NO
+                ,MBR_NM
+                ,MBR_PN_NO
+                ,PN_REG_DT
+            )
+        SELECT
+                A.DEAL_NO
+                ,A.BN_NO
+                ,(
+                    SELECT C.MBR_NM FROM TBL001 C WHERE C.CL_MBR_ID = (
+                        SELECT B.CL_MBR_ID FROM TBL006 B WHERE B.DEAL_NO = A.DEAL_NO
+                    )
+                ) AS MBR_NM
+                ,A.MBR_PN_NO
+                ,(SELECT CURRENT_TIMESTAMP) AS PN_REG_DT
+        FROM TBL008 A
+        WHERE A.CALL_NO = #{callNo}
+    </insert>
+
     <select id="selectMarketingList" resultType="DevMap" parameterType="DevMap">
         SELECT A.DEAL_NO
         ,A.MBR_NM
