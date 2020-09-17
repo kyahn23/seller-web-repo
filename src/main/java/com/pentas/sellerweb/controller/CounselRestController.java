@@ -245,8 +245,8 @@ public class CounselRestController {
         DevMap rslt = new DevMap();
         DevMap marketingOne = counselService.marketingOne(param);
         String pnMkrOne = "";
-        if (param.getString("pnMdl") != null) {
-            pnMkrOne = counselService.pnMkrOne(param.getString("pnMdl"));
+        if (marketingOne.getString("pnMdl") != null) {
+            pnMkrOne = counselService.pnMkrOne(marketingOne.getString("pnMdl"));
             marketingOne.put("pnMkr", pnMkrOne);
         }
         rslt.put("mktOne", marketingOne);

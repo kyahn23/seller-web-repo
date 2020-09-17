@@ -240,8 +240,8 @@
 
     <select id="selectPnMkrOne" resultType="string" parameterType="DevMap">
         SELECT DISTINCT PN_MKR
-        FROM TBL001
-        WHERE PN_DML_NM = #{pnMdlNm}
+        FROM TBL011
+        WHERE PN_MDL_NM = #{pnMdlNm}
     </select>
 
     <select id="selectDevice" resultType="DevMap" parameterType="DevMap">

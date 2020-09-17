@@ -291,7 +291,7 @@
                                 <td>
                                     <select id="pnMkr" :disabled="mktOneDisabled" v-model="mktOne.pnMkr">
                                         <option v-if="pnMkrList.length" value="-1">- 제조사를 선택하세요 -</option>
-                                        <option v-if="!pnMkrList.length" value="mktOne.pnMkr">{{ mktOne.pnMkr }}</option>
+                                        <option v-if="!pnMkrList.length" :value="mktOne.pnMkr">{{ setPnMkrNm(mktOne.pnMkr) }}</option>
                                         <option v-for="pnMkr in pnMkrList" :value="pnMkr">{{ setPnMkrNm(pnMkr) }}</option>
                                     </select>
                                 </td>
@@ -302,7 +302,7 @@
                                     <select id="device" :disabled="mktOneDisabled" v-model="mktOne.pnMdl">
                                         <option v-if="deviceList.length" value="-1">- 모델을 선택하세요 -</option>
                                         <option v-if="!deviceList.length" :value="mktOne.pnMdl">{{ mktOne.pnMdl }}</option>
-                                        <option v-for="deviceOne in deviceList" :value="setDeviceOne(deviceOne.pnMdlNm, deviceOne.pnStor)">{{ deviceOne.pnMdlNm }} {{ deviceOne.pnStor }}</option>
+                                        <option v-for="deviceOne in deviceList" :value="deviceOne.pnMdlNm">{{ deviceOne.pnMdlNm }} | {{ deviceOne.pnStor }}</option>
                                     </select>
                                 </td>
                             </tr>
@@ -480,9 +480,6 @@
                 },
                 getDeviceCB(rslt) {
                     this.deviceList = rslt.deviceList
-                },
-                setDeviceOne(a, b) {
-                    return a + ' ' + b
                 },
                 saveMktOne() {
                     if (!this.mktOneDisabled) {
