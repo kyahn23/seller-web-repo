@@ -8,8 +8,9 @@
     <relativePath/>
   </parent>
   <groupId>com.pentas</groupId>
-  <artifactId>sellerweb</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <artifactId>seller-web</artifactId>
+  <version>0.0.1</version>
+  <packaging>war</packaging>
   <name>sellerWeb</name>
   <description>Demo project for Spring Boot</description>
   <properties>
@@ -19,6 +20,11 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-tomcat</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -112,6 +118,10 @@
       <groupId>org.bgee.log4jdbc-log4j2</groupId>
       <artifactId>log4jdbc-log4j2-jdbc4.1</artifactId>
       <version>1.16</version>
+    </dependency>
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.poi</groupId>
