@@ -207,17 +207,19 @@
                 },
                 useMntrt() {
                     if (this.selectedMntNo.length !== 0) {
-                        if (!this.mntValidate('use')) {
-                            let temparr = []
-                            for (let i = 0; i < this.selectedMntNo.length; i++) {
-                                let tempobj = {}
-                                tempobj.pnMntRtNo = this.selectedMntNo[i]
-                                temparr.push(tempobj)
-                            }
-                            this.selectedMntNo = []
-                            this.allSelected = false
-                            cf_call("/carr/insertUseMnt", temparr, this.useMntrtCB);
-                        } else alert('선택한 요금제를 확인해주세요.')
+                        if(confirm('선택하신요금제를 사용 하시겠습니까?')){
+                            if (!this.mntValidate('use')) {
+                                let temparr = []
+                                for (let i = 0; i < this.selectedMntNo.length; i++) {
+                                    let tempobj = {}
+                                    tempobj.pnMntRtNo = this.selectedMntNo[i]
+                                    temparr.push(tempobj)
+                                }
+                                this.selectedMntNo = []
+                                this.allSelected = false
+                                cf_call("/carr/insertUseMnt", temparr, this.useMntrtCB);
+                            } else alert('선택한 요금제를 확인해주세요.')
+                        }
                     } else alert("선택된 항목이 없습니다.")
 
                 },
@@ -228,18 +230,20 @@
                 },
                 nUseMntrt() {
                     if (this.selectedMntNo.length !== 0) {
-                        if (!this.mntValidate('nUse')) {
-                            let temparr = []
-                            for (let i = 0; i < this.selectedMntNo.length; i++) {
-                                let tempobj = {}
-                                tempobj.pnMntRtNo = this.selectedMntNo[i]
-                                temparr.push(tempobj)
-                            }
-                            this.selectedMntNo = []
-                            this.allSelected = false
-                            cf_call("/carr/deleteUseMnt", temparr, this.nUseMntrtCB);
+                        if(confirm('선택한 요금제가 판매중일 경우 미사용시\n판매중인 기기는 모두 판매가중지됩니다.\n\n선택하신요금제를 미사용 하시겠습니까?')){
+                            if (!this.mntValidate('nUse')) {
+                                let temparr = []
+                                for (let i = 0; i < this.selectedMntNo.length; i++) {
+                                    let tempobj = {}
+                                    tempobj.pnMntRtNo = this.selectedMntNo[i]
+                                    temparr.push(tempobj)
+                                }
+                                this.selectedMntNo = []
+                                this.allSelected = false
+                                cf_call("/carr/deleteUseMnt", temparr, this.nUseMntrtCB);
 
-                        } else alert('선택한 요금제를 확인해주세요.')
+                            } else alert('선택한 요금제를 확인해주세요.')
+                        }
                     } else alert("선택된 항목이 없습니다.")
                 },
                 nUseMntrtCB(data) {

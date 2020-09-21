@@ -204,7 +204,10 @@
                                                               :value="sell" @change="chkboxClick"></td>
                                     <td class="alignC" v-if="sell.sellStatus === 'Y'" @click="rowClick(sell,idx)">판매중
                                     </td>
-                                    <td class="alignC" v-else @click="rowClick(sell,idx)">-</td>
+                                    <td class="alignC" v-else-if="sell.sellStatus === 'P'" @click="rowClick(sell,idx)">
+                                        판매중지
+                                    </td>
+                                    <td class="alignC" v-else @click="rowClick(sell,idx)">미판매</td>
                                     <td class="alignC" @click="rowClick(sell,idx)">{{sell.pnMkr}}</td>
                                     <td class="alignC" @click="rowClick(sell,idx)">{{sell.pnMdlNm}}</td>
                                     <td class="alignC" @click="rowClick(sell,idx)">
@@ -320,8 +323,7 @@
                                            :disabled="!list.sellToggle">
                                     <label :for="'mvCarrY'+idx">유</label>
                                     <input type="radio" :id="'mvCarrN'+idx" value="N" v-model="list.pnExtServYn"
-                                           :disabled="!list.sellToggle"
-                                           @change="list.pnEtc = ''">
+                                           :disabled="!list.sellToggle">
                                     <label :for="'mvCarrN'+idx">무</label>
                                 </td>
                                 <td>
@@ -592,6 +594,7 @@
                 sellYn: [
                     {code: "all", value: "전체"},
                     {code: "y", value: "판매중"},
+                    {code: "p", value: "판매중지"},
                     {code: "n", value: "미판매"}
                 ],
                 selectedSellOpt: "all",
@@ -634,7 +637,6 @@
                         this.deviceCarr = 'L'
                         break
                 }
-
                 this.searchList()
             },
             methods: {
@@ -646,23 +648,28 @@
                         pnMkr: this.selectedMkr,
                         searchKey: this.searchKey
                     }
-
                     cf_call("/carr/getSellDeviceList", param, this.searchListCB)
                 },
                 searchListCB(data) {
                     this.dpList = []
-
                     switch (this.selectedSellOpt) {
                         case 'y' :
                             for (idx in data.sellDeviceList) {
-                                if (data.sellDeviceList[idx].sellStatus) {
+                                if (data.sellDeviceList[idx].sellStatus === 'Y') {
+                                    this.dpList.push(data.sellDeviceList[idx])
+                                }
+                            }
+                            break
+                        case 'p' :
+                            for (idx in data.sellDeviceList) {
+                                if (data.sellDeviceList[idx].sellStatus === 'P') {
                                     this.dpList.push(data.sellDeviceList[idx])
                                 }
                             }
                             break
                         case "n" :
                             for (idx in data.sellDeviceList) {
-                                if (!data.sellDeviceList[idx].sellStatus) {
+                                if (data.sellDeviceList[idx].sellStatus === 'N') {
                                     this.dpList.push(data.sellDeviceList[idx])
                                 }
                             }
@@ -714,16 +721,26 @@
                     }
                 },
                 rowClick(data, idx) {
-                    this.selectDevice = {}
-                    this.selectDevice = data
-                    this.selectDevice.idx = idx
-                    var param = {
-                        pnCarr: this.carr.toUpperCase(),
-                        pnNetType: this.selectDevice.pnNetType,
-                        pnStor: this.selectDevice.pnStor,
-                        pnMdlNo: this.selectDevice.pnMdlNo
+                    if (this.selectDevice.idx != idx){
+                        this.selectDevice = {}
+                        this.selectDevice = data
+                        this.selectDevice.idx = idx
+
+                        var param = {
+                            pnCarr: this.carr.toUpperCase(),
+                            pnNetType: this.selectDevice.pnNetType,
+                            pnStor: this.selectDevice.pnStor,
+                            pnMdlNo: this.selectDevice.pnMdlNo
+                        }
+                        cf_call("/carr/getUseMntByDevice", param, this.rowClickCB)
+                    } else {
+                        this.selectDevice = {}
+                        this.currPolicy = {}
+                        this.moveCarrList = []
+                        this.chgDeviceList = []
+                        this.newSignUpList = []
                     }
-                    cf_call("/carr/getUseMntByDevice", param, this.rowClickCB)
+
                 },
                 rowClickCB(data) {
                     this.moveCarrList = []
@@ -806,11 +823,11 @@
                         data.sellYn = 'Y'
                     } else {
                         data.sellYn = 'N'
-                        data.pnOfclSubsd = null
-                        data.pnExtSubsdDv = null
-                        data.pnExtSubsdRt = null
-                        data.pnEtc = null
-                        data.pnExtServYn = null
+                        // data.pnOfclSubsd = null
+                        // data.pnExtSubsdDv = null
+                        // data.pnExtSubsdRt = null
+                        // data.pnEtc = null
+                        // data.pnExtServYn = null
                     }
                 },
                 savePolicy(type) {
@@ -864,8 +881,8 @@
                     let pnExtSubsdDv = data.pnExtSubsdDvOrg === data.pnExtSubsdDv
                     let pnExtSubsdRt = data.pnExtSubsdRtOrg === data.pnExtSubsdRt
                     let pnEtc = data.pnEtcOrg === data.pnEtc
-                    let pnExtServYn = data.pnExtServYnOrg === data.pnExtServYn
-                    return (sellYn && pnOfclSubsd && pnExtSubsdDv && pnExtSubsdRt && pnEtc && pnExtServYn)
+                    // let pnExtServYn = data.pnExtServYnOrg === data.pnExtServYn
+                    return (sellYn && pnOfclSubsd && pnExtSubsdDv && pnExtSubsdRt && pnEtc)
                 }
             }
         })

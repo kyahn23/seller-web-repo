@@ -11,8 +11,10 @@
         A.PN_MNT_DATA,
         A.PN_MNT_CALL,
         A.PN_MNT_SMS,
-        B.AMD_MBR_ID, /*요금제사용테이블에 추가한 직원아이디*/
-        DATE_FORMAT(B.AMD_DT, '%Y-%m-%d %H:%i') as AMD_DT /*요금제사용테이블에 추가한 날짜*/
+<!--        B.AMD_MBR_ID, /*요금제사용테이블에 추가한 직원아이디*/-->
+        (SELECT AMD_MBR_ID FROM TBL015 t WHERE t.BN_NO =(SELECT cf_get_bn_no('gimjigwon1234@hanmail.net')) AND A.PN_MNT_RT_NO=t.PN_MNT_RT_NO ORDER by INP_DT desc LIMIT 0,1) as AMD_MBR_ID,
+<!--        DATE_FORMAT(B.AMD_DT, '%Y-%m-%d %H:%i') as AMD_DT, /*요금제사용테이블에 추가한 날짜*/-->
+        DATE_FORMAT((SELECT INP_DT FROM TBL015 t WHERE t.BN_NO =(SELECT cf_get_bn_no('gimjigwon1234@hanmail.net')) AND A.PN_MNT_RT_NO=t.PN_MNT_RT_NO ORDER by INP_DT desc LIMIT 0,1),'%Y-%m-%d %H:%i') as AMD_DT
         from TBL010 A left join (select * from TBL013 where BN_NO=(SELECT cf_get_bn_no(#{bnMbrId}))) B
         on A.PN_MNT_RT_NO = B.PN_MNT_RT_NO
         WHERE A.pn_carr = #{carr}

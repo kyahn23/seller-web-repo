@@ -55,6 +55,7 @@
 
     <select id="currPolicy" parameterType="DevMap" resultType="Devmap">
         select (select PN_MSRP FROM TBL011 tt1 where tt1.PN_MDL_NO = T.PN_MDL_NO) as PN_MSRP,
+        T.SELL_YN,
         T.PN_OFCL_SUBSD,
         T.PN_EXT_SUBSD_DV,
         T.PN_EXT_SUBSD_RT,
@@ -236,7 +237,6 @@
         SELECT DISTINCT PN_MKR
         FROM TBL011
         WHERE PN_NET_TYPE = #{pnNetType}
-        AND PN_CARR LIKE CONCAT('%', #{pnCarrAbbr}, '%')
     </select>
 
     <select id="selectPnMkrOne" resultType="string" parameterType="DevMap">

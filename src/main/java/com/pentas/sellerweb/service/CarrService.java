@@ -41,11 +41,11 @@ public class CarrService {
                 for (DevMap mvCarr : mvCarrPolicyList) {
                     // 판매중지처리를 위한 객체 값 설정
                     mvCarr.put("SELL_YN", "N");
-                    mvCarr.put("PN_OFCL_SUBSD", null);
-                    mvCarr.put("PN_EXT_SUBSD_DV", null);
-                    mvCarr.put("PN_EXT_SUBSD_RT", null);
-                    mvCarr.put("PN_EXT_SERV_YN", null);
-                    mvCarr.put("PN_ETC", null);
+//                    mvCarr.put("PN_OFCL_SUBSD", null);
+//                    mvCarr.put("PN_EXT_SUBSD_DV", null);
+//                    mvCarr.put("PN_EXT_SUBSD_RT", null);
+//                    mvCarr.put("PN_EXT_SERV_YN", null);
+//                    mvCarr.put("PN_ETC", null);
                     mvCarr.put("BN_MBR_ID", param.getString("bnMbrId"));
 
                     mvCarr.put("policyType", "MoveCarr");
@@ -61,11 +61,11 @@ public class CarrService {
                 for (DevMap chgDev : chgDevPolicyList) {
                     // 판매중지처리를 위한 객체 값 설정
                     chgDev.put("SELL_YN", "N");
-                    chgDev.put("PN_OFCL_SUBSD", null);
-                    chgDev.put("PN_EXT_SUBSD_DV", null);
-                    chgDev.put("PN_EXT_SUBSD_RT", null);
-                    chgDev.put("PN_EXT_SERV_YN", null);
-                    chgDev.put("PN_ETC", null);
+//                    chgDev.put("PN_OFCL_SUBSD", null);
+//                    chgDev.put("PN_EXT_SUBSD_DV", null);
+//                    chgDev.put("PN_EXT_SUBSD_RT", null);
+//                    chgDev.put("PN_EXT_SERV_YN", null);
+//                    chgDev.put("PN_ETC", null);
                     chgDev.put("AMD_MBR_ID", param.getString("bnMbrId")); // 로그인한 회원아이디
 
                     chgDev.put("policyType", "ChgDev");
@@ -82,11 +82,11 @@ public class CarrService {
                 for (DevMap newSignup : newSignupPolicyList) {
                     // 판매중지처리를 위한 객체 값 설정
                     newSignup.put("SELL_YN", "N");
-                    newSignup.put("PN_OFCL_SUBSD", null);
-                    newSignup.put("PN_EXT_SUBSD_DV", null);
-                    newSignup.put("PN_EXT_SUBSD_RT", null);
-                    newSignup.put("PN_EXT_SERV_YN", null);
-                    newSignup.put("PN_ETC", null);
+//                    newSignup.put("PN_OFCL_SUBSD", null);
+//                    newSignup.put("PN_EXT_SUBSD_DV", null);
+//                    newSignup.put("PN_EXT_SUBSD_RT", null);
+//                    newSignup.put("PN_EXT_SERV_YN", null);
+//                    newSignup.put("PN_ETC", null);
                     newSignup.put("AMD_MBR_ID", param.getString("bnMbrId")); // 로그인한 회원아이디
 
                     newSignup.put("policyType", "NewSignup");
@@ -108,7 +108,20 @@ public class CarrService {
     }
 
     public List<DevMap> getSellDeviceList(DevMap param) {
-        return cmmnDao.selectList("sellerweb.carr.sellDeviceList", param);
+        List<DevMap> sellList = new ArrayList<>();
+        sellList = cmmnDao.selectList("sellerweb.carr.sellDeviceList", param);
+
+        for (DevMap list : sellList) {
+            if (list.getString("sellStatus") == null){
+                if (list.getString("lastModiDate") == null){
+                    list.put("sellStatus", "N");    // 판매이력없음(=미판매)
+                } else {
+                    list.put("sellStatus", "P");    // 판매이력 있음(=판매중지)
+                }
+            }
+        }
+
+        return sellList;
     }
 
     public List<DevMap> getmoveCarrList(DevMap param) {

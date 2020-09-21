@@ -153,6 +153,11 @@
                         <div class="cTit">
                             상담 접수 상세정보
                         </div>
+                        <div class="cTitRight">
+                            <div id="btn2"><a href="#popLayerServiceResultAdd"
+                                              class="btnM colorSky popLayerServiceResultAdd_open"><span>상담결과 저장</span></a>
+                            </div>
+                        </div>
                     </div>
                     <!-- content -->
                     <div class="contentDetail">
@@ -180,7 +185,7 @@
                             </tbody>
                         </table>
 
-                        <table class="tblDataRow mb15" v-if="selectedCs.callNo">
+                        <table class="tblDataRow mb15">
                             <colgroup>
                                 <col style="width:140px">
                                 <col style="width:*">
@@ -200,58 +205,67 @@
                             </tr>
                             <tr>
                                 <th style="background: #ebf3fd;">출고가</th>
-                                <td style="text-align: right;">{{Number(selectedCs.pnMsrp).toLocaleString()}} 원</td>
+                                <td style="text-align: right;" v-if="!selectedCs.callNo">- 원</td>
+                                <td style="text-align: right;" v-else>{{Number(selectedCs.pnMsrp).toLocaleString()}} 원</td>
                                 <th style="background: #fdebed;">출고가</th>
-                                <td style="text-align: right;">{{Number(currPolicy.pnMsrp).toLocaleString()}} 원</td>
+                                <td style="text-align: right;" v-if="currPolicy.sellYn==='Y'">{{Number(currPolicy.pnMsrp).toLocaleString()}} 원</td>
+                                <td style="color: #ff0000; text-align: center; font-size: medium;" v-else-if="currPolicy.sellYn==='N'" rowspan="5">현재 판매중지된 정책입니다.</td>
+                                <td style="text-align: right;" v-else>- 원</td>
                             </tr>
                             <tr>
                                 <th style="background: #ebf3fd;">공시지원금</th>
-                                <td style="text-align: right;">{{Number(selectedCs.oldOfclSubsd).toLocaleString()}} 원
-                                </td>
+                                <td style="text-align: right;" v-if="!selectedCs.callNo">- 원</td>
+                                <td style="text-align: right;" v-else>{{Number(selectedCs.oldOfclSubsd).toLocaleString()}} 원</td>
                                 <th style="background: #fdebed;">공시지원금</th>
-                                <td style="text-align: right;">{{Number(currPolicy.pnOfclSubsd).toLocaleString()}} 원
-                                </td>
+                                <td style="text-align: right;" v-if="currPolicy.sellYn==='Y'">{{Number(currPolicy.pnOfclSubsd).toLocaleString()}} 원</td>
+                                <td style="text-align: right;" v-else-if="!currPolicy.sellYn">- 원</td>
                             </tr>
                             <tr>
                                 <th style="background: #ebf3fd;">추가지원금(공시/선약)</th>
-                                <td style="color: #ff0000; text-align: right;">
+                                <td style="text-align: right;" v-if="!selectedCs.callNo">- 원</td>
+                                <td style="color: #ff0000; text-align: right;" v-else>
                                     {{Number(selectedCs.oldExtSubsdDv).toLocaleString()}} 원 &nbsp; / &nbsp;
                                     {{Number(selectedCs.oldExtSubsdRt).toLocaleString()}} 원
                                 </td>
                                 <th style="background: #fdebed;">추가지원금(공시/선약)</th>
-                                <td style="text-align: right;">
+                                <td style="text-align: right;" v-if="currPolicy.sellYn==='Y'">
                                     {{Number(currPolicy.pnExtSubsdDv).toLocaleString()}} 원
                                     &nbsp; / &nbsp;
                                     {{Number(currPolicy.pnExtSubsdRt).toLocaleString()}} 원
                                 </td>
+                                <td style="text-align: right;" v-else-if="!currPolicy.sellYn">- 원</td>
                             </tr>
                             <tr>
                                 <th style="background: #ebf3fd;">할부원금(공시/선약)</th>
-                                <td style="color: #ff0000; text-align: right;">{{Number(selectedCs.pnMsrp -
+                                <td style="text-align: right;" v-if="!selectedCs.callNo">- 원</td>
+                                <td style="color: #ff0000; text-align: right;" v-else>{{Number(selectedCs.pnMsrp -
                                     selectedCs.oldOfclSubsd -
                                     selectedCs.oldExtSubsdDv).toLocaleString()}} 원 &nbsp; / &nbsp;
                                     {{Number(selectedCs.pnMsrp -
                                     selectedCs.oldExtSubsdRt).toLocaleString()}} 원
                                 </td>
                                 <th style="background: #fdebed;">할부원금(공시/선약)</th>
-                                <td style="text-align: right;">{{Number(currPolicy.pnMsrp -
+                                <td style="text-align: right;" v-if="currPolicy.sellYn==='Y'">{{Number(currPolicy.pnMsrp -
                                     currPolicy.pnOfclSubsd -
                                     currPolicy.pnExtSubsdDv).toLocaleString()}} 원 &nbsp; / &nbsp;
                                     {{Number(currPolicy.pnMsrp -
                                     currPolicy.pnExtSubsdRt).toLocaleString()}} 원
                                 </td>
+                                <td style="text-align: right;" v-else-if="!currPolicy.sellYn">- 원</td>
                             </tr>
                             <tr>
                                 <th style="background: #ebf3fd;">부가서비스</th>
-                                <td style="color: #ff0000; text-align: right;" v-if="selectedCs.oldExtServYn === 'Y'">
-                                    있음
+                                <td style="color: #ff0000; text-align: right;" v-if="selectedCs.callNo">
+                                    <span v-if="selectedCs.oldExtServYn === 'Y'">있음</span>
+                                    <span v-else>없음</span>
                                 </td>
-                                <td style="color: #ff0000; text-align: right;" v-else>없음</td>
+                                <td style="color: #ff0000; text-align: right;" v-else>-</td>
                                 <th style="background: #fdebed;">부가서비스</th>
-                                <td style="color: #ff0000; text-align: right;" v-if="currPolicy.pnExtServYn === 'Y'">
-                                    있음
+                                <td style="color: #ff0000; text-align: right;" v-if="currPolicy.sellYn==='Y'">
+                                    <span v-if="currPolicy.pnExtServYn === 'Y'">있음</span>
+                                    <span v-else>없음</span>
                                 </td>
-                                <td style="color: #ff0000; text-align: right;" v-else>없음</td>
+                                <td style="text-align: right;" v-else-if="!currPolicy.sellYn">-</td>
                             </tr>
                             </tbody>
                         </table>
@@ -260,14 +274,14 @@
                     <!-- //content -->
                 </div>
                 <!-- //content group2 -->
-                <div class="contentTitle" v-if="selectedCs.callNo">
-                    <div class="cTit"></div>
-                    <div class="cTitRight">
-                        <div id="btn2"><a href="#popLayerServiceResultAdd"
-                                          class="btnM colorSky popLayerServiceResultAdd_open"><span>상담결과 저장</span></a>
-                        </div>
-                    </div>
-                </div>
+<!--                <div class="contentTitle" v-if="selectedCs.callNo">-->
+<!--                    <div class="cTit"></div>-->
+<!--                    <div class="cTitRight">-->
+<!--                        <div id="btn2"><a href="#popLayerServiceResultAdd"-->
+<!--                                          class="btnM colorSky popLayerServiceResultAdd_open"><span>상담결과 저장</span></a>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
 
             </div>
         </div>
@@ -494,15 +508,24 @@
                     this.searchList(type)
                 },
                 selectCs(data, idx) {
-                    this.selectedCs = {}
-                    this.selectedCs = data
-                    this.selectedCs.idx = idx
+                    if (this.selectedCs.idx != idx){
+                        this.selectedCs = {}
+                        this.selectedCs = data
+                        this.selectedCs.idx = idx
 
-                    this.getCurrPolicy()
+                        this.getCurrPolicy()
+                    } else {
+                        this.selectedCs = {}
+                        this.currPolicy = {}
+                    }
                 },
                 getTrClass(idx) {
-                    if (idx === this.selectedCs.idx) return true
-                    else return false
+                    if (idx === this.selectedCs.idx) {
+                        return true
+                    }
+                    else {
+                        return false
+                    }
                 },
                 getCurrPolicy() {
                     var param = {
@@ -560,7 +583,6 @@
                         visitDt: visitDt,
                         csContent: this.csContent
                     }
-                    console.log(param)
                     cf_call("/service/saveCounsel", param, this.saveCsCB)
                 },
                 saveCsCB(data) {
@@ -571,6 +593,7 @@
                         this.visitHh = "all"
                         this.visitMm = "all"
                         $('#popLayerServiceResultAdd').popup("hide");
+                        this.currPolicy = {}
                         this.searchList(type)
                     }
                 }
