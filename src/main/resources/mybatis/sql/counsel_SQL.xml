@@ -236,6 +236,7 @@
         SELECT DISTINCT PN_MKR
         FROM TBL011
         WHERE PN_NET_TYPE = #{pnNetType}
+        AND PN_CARR LIKE CONCAT('%', #{pnCarrAbbr}, '%')
     </select>
 
     <select id="selectPnMkrOne" resultType="string" parameterType="DevMap">

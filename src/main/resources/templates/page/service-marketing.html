@@ -291,7 +291,6 @@
                                 <td>
                                     <select id="pnMkr" :disabled="mktOneDisabled" v-model="mktOne.pnMkr">
                                         <option v-if="pnMkrList.length" value="-1">- 제조사를 선택하세요 -</option>
-                                        <option v-if="!pnMkrList.length" :value="mktOne.pnMkr">{{ setPnMkrNm(mktOne.pnMkr) }}</option>
                                         <option v-for="pnMkr in pnMkrList" :value="pnMkr">{{ setPnMkrNm(pnMkr) }}</option>
                                     </select>
                                 </td>
@@ -301,7 +300,6 @@
                                 <td>
                                     <select id="device" :disabled="mktOneDisabled" v-model="mktOne.pnMdl">
                                         <option v-if="deviceList.length" value="-1">- 모델을 선택하세요 -</option>
-                                        <option v-if="!deviceList.length" :value="mktOne.pnMdl">{{ mktOne.pnMdl }}</option>
                                         <option v-for="deviceOne in deviceList" :value="deviceOne.pnMdlNm">{{ deviceOne.pnMdlNm }} | {{ deviceOne.pnStor }}</option>
                                     </select>
                                 </td>
@@ -339,6 +337,7 @@
                     pnMkr: -1,
                     pnMdl: -1
                 },
+                mktOneInit: false,
                 oneDate: '',
                 oneHour: '00',
                 oneMin: '00',
@@ -376,13 +375,25 @@
             watch: {
                 'mktOne.pnCarr': function (val) {
                     this.getMonthlyRate(val)
+                    if (this.mktOneInit) {
+                        this.mktOne.pnMntRtNo = -1
+                        this.mktOne.pnMkr = -1
+                        this.mktOne.pnMdl = -1
+                    }
                 },
                 'mktOne.pnMntRtNo': function (val) {
-                    var pnNetType = this.monthlyRateList[val].pnNetType
+                    var pnNetType = this.getPnNetType(val)
                     this.getPnMkr(pnNetType)
+                    if (this.mktOneInit) {
+                        this.mktOne.pnMkr = -1
+                        this.mktOne.pnMdl = -1
+                    }
                 },
                 'mktOne.pnMkr': function (val) {
                     this.getDevice(val)
+                    if (this.mktOneInit) {
+                        this.mktOne.pnMdl = -1
+                    }
                 }
             },
             methods: {
@@ -427,6 +438,7 @@
                     this.monthlyRateList = []
                     this.pnMkrList = []
                     this.deviceList = []
+                    this.mktOneInit = false
                 },
                 getMktOne(){
                     var param = {
@@ -436,6 +448,10 @@
                 },
                 getMktOneCB(rslt) {
                     this.mktOne = rslt.mktOne
+                    if (this.mktOne.pnMntRtNo !== null) {
+                        this.getMonthlyRate(this.mktOne.pnCarr)
+                    }
+                    this.getVisitDt()
                 },
                 getMonthlyRate(val) {
                     var param = {
@@ -445,19 +461,38 @@
                 },
                 getMonthlyRateCB(rslt) {
                     this.monthlyRateList = rslt.monthlyRate
+                    if (this.mktOne.pnMntRtNo !== null && this.mktOne.pnMntRtNo !== -1) {
+                        var pnNetType = this.getPnNetType(this.mktOne.pnMntRtNo)
+                        this.getPnMkr(pnNetType)
+                        this.mktOneInit = true
+                    }
                 },
                 addCommaToPrice(val) {
                     var num = Number(val)
                     return num.toLocaleString()
                 },
+                getPnNetType(val) {
+                    var pnNetType = ''
+                    for (var i=0; i < this.monthlyRateList.length; i++) {
+                        if (this.monthlyRateList[i].pnMntRtNo === Number(val)) {
+                            pnNetType = this.monthlyRateList[i].pnNetType
+                        }
+                    }
+                    return pnNetType
+                },
                 getPnMkr(val) {
+                    var pnCarrAbbr = this.mktOne.pnCarr.substring(0, 1)
                     var param = {
-                        pnNetType: val
+                        pnNetType: val,
+                        pnCarrAbbr: pnCarrAbbr
                     }
                     cf_call("/service/getPnMkr", param, this.getPnMkrCB)
                 },
                 getPnMkrCB(rslt) {
                     this.pnMkrList = rslt.pnMkr
+                    if (this.mktOne.pnMntRtNo !== null) {
+                        this.getDevice(this.mktOne.pnMkr)
+                    }
                 },
                 setPnMkrNm(val) {
                     for (var i=0; i < this.pnMkrData.length; i++) {
@@ -466,10 +501,7 @@
                 },
                 getDevice(val) {
                     var pnCarrAbbr = this.mktOne.pnCarr.substring(0, 1)
-                    var pnNetType = ''
-                    for (var i=0; i < this.monthlyRateList.length; i++) {
-                        if (this.monthlyRateList[i].pnMntRtNo === this.mktOne.pnMntRtNo) pnNetType = this.monthlyRateList[i].pnNetType
-                    }
+                    var pnNetType = this.getPnNetType(this.mktOne.pnMntRtNo)
 
                     var param = {
                         pnMkr: val,
@@ -489,7 +521,6 @@
                             var param = this.mktOne
                             param.dealNo = this.mktList[this.selRow].dealNo
                             param.visitDt = this.setVisitDt
-                            console.log(param)
                             cf_call("/service/saveMarketingOne", param, this.saveMktOneCB)
                         }
                     }
@@ -499,12 +530,17 @@
                         alert('마케팅 정보가 저장되었습니다.')
                         this.srchType = 'A'
                         this.srchName = ''
-                        this.srchDate = new Date()
                         this.oneDate = new Date()
                         this.getMarketingList('1')
                         this.selRow = -1
                         this.initMktOne()
                     }
+                },
+                getVisitDt() {
+                    var visitDt = new Date(this.mktOne.visitDt)
+                    this.oneDate = visitDt
+                    this.oneHour = (visitDt.getHours() + "").padStart(2, '0')
+                    this.oneMin = (visitDt.getMinutes() + "").padStart(2, '0')
                 }
             },
             computed: {
