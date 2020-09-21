@@ -159,7 +159,6 @@
                         <div class="cTitRight">
                             <a href="#popLayerEmployeeAdd"
                                class="btnM colorGreen popLayerEmployeeAdd_open"><span>직원추가</span></a>
-                            <a href="#" class="btnM colorOrg" @click="modiEmpDeact"><span>퇴사처리</span></a>
                         </div>
                     </div>
                     <!-- slide content -->
@@ -177,14 +176,7 @@
                                     </colgroup>
                                     <tbody>
                                     <tr>
-                                        <td scope="col">
-                                            <input
-                                                type="checkbox"
-                                                title="전체 선택"
-                                                v-model="checkAll"
-                                                @change="onCheckAll"
-                                            >
-                                        </td>
+                                        <td scope="col">구분</td>
                                         <td scope="col">직원명</td>
                                         <td scope="col">아이디</td>
                                         <td scope="col">회원권한</td>
@@ -208,7 +200,7 @@
                                 </colgroup>
                                 <thead>
                                 <tr>
-                                    <td scope="col"><input type="checkbox" title="전체 선택"></td>
+                                    <td scope="col">구분</td>
                                     <td scope="col">직원명</td>
                                     <td scope="col">아이디</td>
                                     <td scope="col">회원권한</td>
@@ -219,18 +211,9 @@
                                 <tbody v-if="empList.length">
                                 <tr
                                     v-for="(empInfo, index) in empList"
-                                    :class="{ checkedItem: getTrClass(index) }"
                                     :style="{ color: infoStyle(empInfo), fontWeight: infoMaster(empInfo) }"
                                 >
-                                    <td class="alignC" :title="infoTitle(empInfo)">
-                                        <input
-                                            type="checkbox"
-                                            v-if="!infoCheck(empInfo)"
-                                            v-model="chkEmpList"
-                                            :value="empInfo.bnMbrId"
-                                            @change="onCheckOne"
-                                        >
-                                    </td>
+                                    <td class="alignC" :title="infoTitle(empInfo)">{{ infoText(empInfo) }}</td>
                                     <td class="alignC" :title="empInfo.mbrNm" @click="setTrIndex(index)">{{ empInfo.mbrNm }}</td>
                                     <td class="alignC" :title="empInfo.bnMbrId" @click="setTrIndex(index)">{{ empInfo.bnMbrId }}</td>
                                     <td class="alignC" @click="setTrIndex(index)">{{ empInfo.sellerPrms }}</td>
@@ -257,7 +240,6 @@
 
 
                 <!-- content group2 -->
-                <!-- 2016-08-18 : tr 행 추가 : id="clickPick / href="#clickPick" / id="goodsAddRow" 추가   -->
                 <div class="contentBlock" id="">
                     <div class="contentTitle">
                         <div class="cTit">
@@ -268,48 +250,14 @@
                     <div class="tabToggleWrap">
                         <!-- Tab Menu -->
                         <ul class="tbMenuSub">
-                            <li class="on" data-target="pass"><a href="#;"><span>비밀번호 재발급</span></a></li>
-                            <li data-target="perm"><a href="#;"><span>회원 권한 변경</span></a></li>
+                            <li class="on" data-target="perm"><a href="#;"><span>회원 권한 변경</span></a></li>
+                            <li data-target="pass"><a href="#;"><span>비밀번호 재발급</span></a></li>
                         </ul>
 
                         <div style="height: 20px;"></div>
 
                         <!-- Tab1 -->
-                        <div class="tbMenuSubContent on" id="tab_pass">
-                            <h3 class="tts">비밀번호 재발급</h3>
-                            <!-- content -->
-                            <div class="contentDetail">
-                                <table class="tblDataRow mb15">
-                                    <colgroup>
-                                        <col style="width:140px">
-                                        <col style="width:*">
-                                        <col style="width:140px">
-                                        <col style="width:*">
-                                    </colgroup>
-                                    <tbody>
-                                    <tr>
-                                        <th>비밀번호 설정<span class="icoMust"><em>필수</em></span></th>
-                                        <td><input class="wPer" type="password" id="newPwdStr" placeholder="숫자 6자리 기입" v-mask="'######'" v-model="newPwdInfo.newPwdStr"></td>
-                                        <td></td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <th>비밀번호 확인<span class="icoMust"><em>필수</em></span></th>
-                                        <td><input class="wPer" type="password" id="newPwdChkInp" placeholder="위와 동일하게 기입" v-mask="'######'" @blur="modiEmpPwdChk"></td>
-                                        <td style="text-align: center;"><a href="#;" class="btnS colorRed" v-if="!newPwdInfo.newPwdChk && newPwdInfo.newPwdDirty"><span>불일치</span></a></td>
-                                        <td></td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!-- //content -->
-                            <div class="btnWrapper">
-                                <a href="#;" class="btnM colorSky" @click="modiEmpPwd"><span>비밀번호 수정</span></a>
-                            </div>
-                        </div>
-
-                        <!-- Tab2 -->
-                        <div class="tbMenuSubContent" id="tab_perm">
+                        <div class="tbMenuSubContent on" id="tab_perm">
                             <h3 class="tts">회원 권한 변경</h3>
 
                             <!-- content -->
@@ -325,11 +273,16 @@
                                     <tr>
                                         <th>회원 권한<span class="icoMust"><em>필수</em></span></th>
                                         <td>
-                                            <select id="newSellerPrms" v-model="newSellerPrmsInfo.sellerPrms">
-                                                <option value="ADMIN">관리자</option>
-                                                <option value="BOARD">글작성</option>
-                                                <option value="PRICE">가격설정</option>
-                                                <option value="READONLY">가격열람</option>
+                                            <select id="newSellerPrms" v-model="newSellerPrmsInfo.sellerPrms" :disabled="modiDisabled">
+                                                <optgroup label="재직자 권한 설정">
+                                                    <option value="ADMIN">관리자</option>
+                                                    <option value="BOARD">글작성</option>
+                                                    <option value="PRICE">가격설정</option>
+                                                    <option value="READONLY">가격열람</option>
+                                                </optgroup>
+                                                <optgroup label="퇴사자 여부 설정">
+                                                    <option value="LEAVE">퇴사처리</option>
+                                                </optgroup>
                                             </select>
                                         </td>
                                         <td></td>
@@ -340,9 +293,65 @@
                             </div>
                             <!-- //content -->
                             <div class="btnWrapper">
-                                <a href="#;" class="btnM colorSky" @click="modiEmpPrms"><span>직원권한 수정</span></a>
+                                <a
+                                    href="#;"
+                                    class="btnM"
+                                    :class="{
+                                        colorSky:!modiDisabled,
+                                        disabled: modiDisabled
+                                    }"
+                                    @click="modiEmpPrms"
+                                >
+                                    <span>직원권한 수정</span>
+                                </a>
                             </div>
                         </div>
+
+                        <!-- Tab2 -->
+                        <div class="tbMenuSubContent" id="tab_pass">
+                            <h3 class="tts">비밀번호 재발급</h3>
+                            <!-- content -->
+                            <div class="contentDetail">
+                                <table class="tblDataRow mb15">
+                                    <colgroup>
+                                        <col style="width:140px">
+                                        <col style="width:*">
+                                        <col style="width:140px">
+                                        <col style="width:*">
+                                    </colgroup>
+                                    <tbody>
+                                    <tr>
+                                        <th>비밀번호 설정<span class="icoMust"><em>필수</em></span></th>
+                                        <td><input class="wPer" type="password" id="newPwdStr" placeholder="숫자 6자리 기입" v-mask="'######'" v-model="newPwdInfo.newPwdStr" :disabled="modiDisabled"></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th>비밀번호 확인<span class="icoMust"><em>필수</em></span></th>
+                                        <td><input class="wPer" type="password" id="newPwdChkInp" placeholder="위와 동일하게 기입" v-mask="'######'" @blur="modiEmpPwdChk" :disabled="modiDisabled"></td>
+                                        <td style="text-align: center;"><a href="#;" class="btnS colorRed" v-if="!newPwdInfo.newPwdChk && newPwdInfo.newPwdDirty"><span>불일치</span></a></td>
+                                        <td></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- //content -->
+                            <div class="btnWrapper">
+                                <a
+                                    href="#;"
+                                    class="btnM"
+                                    :class="{
+                                        colorSky:!modiDisabled,
+                                        disabled: modiDisabled
+                                    }"
+                                    @click="modiEmpPwd"
+                                >
+                                    <span>비밀번호 수정</span>
+                                </a>
+                            </div>
+                        </div>
+
+
                     </div>
                     <!-- //TAB -->
                 </div>
@@ -477,9 +486,7 @@
                     srchOptn: 'ALL',
                     srchTerm: ''
                 },
-                checkAll: false,
                 empList: [],
-                chkEmpList: [],
                 selEmp: -1,
                 newPwdInfo: {
                     newPwdStr: '',
@@ -509,7 +516,6 @@
                 initPage() {
                     this.selEmp = -1
                     this.checkAll = false
-                    this.initChkEmpList()
                     this.initSrchCond()
                     this.getEmpList()
                 },
@@ -519,8 +525,11 @@
                         srchTerm: ''
                     }
                 },
-                initChkEmpList() {
-                    this.chkEmpList =  []
+                initModiEmp() {
+                    this.newSellerPrmsInfo.sellerPrms = ''
+                    this.newPwdInfo.newPwdStr = ''
+                    this.newPwdInfo.newPwdChk = false
+                    this.newPwdInfo.newPwdDirty = false
                 },
                 getEmpList() {
                     var param = {
@@ -571,79 +580,37 @@
                     }
                     return titleStr
                 },
-                infoCheck(empInfo) {
-                    var disabledSwitch = false
-                    // 미인증회원 경우 수정불가
-                    if (cf_isEmpty(empInfo.authDt)) {
-                        disabledSwitch = true
+                infoText(empInfo) {
+                    var textStr = "직원"
+                    if (empInfo.lginAvlYn === 'N') {
+                        textStr = '제한'
                     }
-                    // 마스터회원 경우 수정불가
+                    if (empInfo.actvYn === 'N') {
+                        textStr = '퇴사'
+                    }
                     if (empInfo.mstMbrYn === 'Y') {
-                        disabledSwitch = true
+                        textStr = '마스터'
                     }
-                    return disabledSwitch
+                    if (cf_isEmpty(empInfo.authDt)) {
+                        textStr = '미인증'
+                    }
+                    return textStr
                 },
                 setTrIndex(idx) {
                     if (this.empList[idx].mstMbrYn === 'Y') {
                         alert('마스터 회원의 정보수정은 불가합니다.')
                         this.selEmp = -1
+                        this.initModiEmp()
                     } else if (cf_isEmpty(this.empList[idx].authDt)) {
                         alert('미인증 직원의 정보수정은 불가합니다.')
                         this.selEmp = -1
+                        this.initModiEmp()
                     } else if (idx === this.selEmp) {
                         this.selEmp = -1
+                        this.initModiEmp()
                     } else {
                         this.selEmp = idx
                         this.newSellerPrmsInfo.sellerPrms = this.empList[idx].sellerPrms
-                    }
-                },
-                getTrClass(idx) {
-                    if (this.empList[idx].mstMbrYn === 'Y') {
-                        return false
-                    } else if (cf_isEmpty(this.empList[idx].authDt)) {
-                        return false
-                    }
-                    return (this.selEmp === idx)
-                },
-                onCheckAll() {
-                    if (this.checkAll) {
-                        this.initChkEmpList()
-                        for (var i=0; i < this.empList.length; i++) {
-                            if (this.empList[i].mstMbrYn === 'N') {
-                                this.chkEmpList.push(this.empList[i].bnMbrId)
-                            }
-                        }
-                    } else {
-                        this.initChkEmpList()
-                    }
-                },
-                onCheckOne() {
-                    var chkCnt = 0
-                    var lstCnt = 0
-                    for (var i=0; i < this.chkEmpList.length; i++) { chkCnt++ }
-                    for (var i=0; i < this.empList.length; i++) {
-                        if (this.empList[i].mstMbrYn === 'N') { lstCnt++ }
-                    }
-                    if (chkCnt === lstCnt) {
-                        this.checkAll = true
-                    } else {
-                        this.checkAll = false
-                    }
-                },
-                modiEmpDeact() {
-                    if (this.chkEmpList.length) {
-                        var param = {
-                            bnMbrIdList: this.chkEmpList
-                        }
-                        cf_call('/shop/modiEmpDeact', param, this.modiEmpDeactCB)
-                    } else {
-                        alert('퇴사로 처리 할 직원을 체크하세요.')
-                    }
-                },
-                modiEmpDeactCB(rslt) {
-                    if (rslt.rsltStat === 'SUCC') {
-                        alert('해당 직원이 퇴사 처리 되었습니다.')
-                        this.initPage()
                     }
                 },
                 modiEmpPwdChk($e) {
@@ -651,19 +618,21 @@
                     this.newPwdInfo.newPwdChk = this.newPwdInfo.newPwdStr === $e.target.value
                 },
                 modiEmpPwd() {
-                    if (this.selEmp === -1) {
-                        alert('정보수정 할 직원을 선택하세요.')
-                    } else if (this.newPwdInfo.newPwdStr === '') {
-                        alert('재발급 할 비밀번호를 입력하세요.')
-                    } else if (!this.newPwdInfo.newPwdChk) {
-                        alert('비밀번호 확인을 완료하세요.')
-                    } else {
-                        var hashedPw = CryptoJS.SHA256(this.newPwdInfo.newPwdStr).toString()
-                        var param = {
-                            bnMbrId: this.empList[this.selEmp].bnMbrId,
-                            pwdNo: hashedPw
+                    if (!this.modiDisabled) {
+                        if (this.selEmp === -1) {
+                            alert('정보수정 할 직원을 선택하세요.')
+                        } else if (this.newPwdInfo.newPwdStr === '') {
+                            alert('재발급 할 비밀번호를 입력하세요.')
+                        } else if (!this.newPwdInfo.newPwdChk) {
+                            alert('비밀번호 확인을 완료하세요.')
+                        } else {
+                            var hashedPw = CryptoJS.SHA256(this.newPwdInfo.newPwdStr).toString()
+                            var param = {
+                                bnMbrId: this.empList[this.selEmp].bnMbrId,
+                                pwdNo: hashedPw
+                            }
+                            cf_call('/shop/modiEmpPwd', param, this.modiEmpPwdCB)
                         }
-                        cf_call('/shop/modiEmpPwd', param, this.modiEmpPwdCB)
                     }
                 },
                 modiEmpPwdCB(rslt) {
@@ -679,16 +648,23 @@
                     }
                 },
                 modiEmpPrms() {
-                    if (this.selEmp === -1) {
-                        alert('정보수정 할 직원을 선택하세요.')
-                    } else if (this.newSellerPrmsInfo.sellerPrms === this.empList[this.selEmp].sellerPrms) {
-                        alert('해당 직원의 기존 권한 레벨과 동일합니다.')
-                    } else {
-                        var param = {
-                            bnMbrId: this.empList[this.selEmp].bnMbrId,
-                            sellerPrms: this.newSellerPrmsInfo.sellerPrms
+                    if (!this.modiDisabled) {
+                        if (this.selEmp === -1) {
+                            alert('정보수정 할 직원을 선택하세요.')
+                        } else if (this.newSellerPrmsInfo.sellerPrms === this.empList[this.selEmp].sellerPrms) {
+                            alert('해당 직원의 기존 권한 레벨과 동일합니다.')
+                        } else {
+                            var actvYn = 'Y'
+                            if (this.newSellerPrmsInfo.sellerPrms === 'LEAVE') {
+                                actvYn = 'N'
+                            }
+                            var param = {
+                                bnMbrId: this.empList[this.selEmp].bnMbrId,
+                                sellerPrms: this.newSellerPrmsInfo.sellerPrms,
+                                actvYn: actvYn
+                            }
+                            cf_call('/shop/modiEmpPrms', param, this.modiEmpPrmsCB)
                         }
-                        cf_call('/shop/modiEmpPrms', param, this.modiEmpPrmsCB)
                     }
                 },
                 modiEmpPrmsCB(rslt) {
@@ -773,6 +749,9 @@
                         return true
                     }
                     return false
+                },
+                modiDisabled() {
+                    return this.selEmp === -1;
                 }
             }
         })

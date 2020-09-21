@@ -58,22 +58,6 @@ public class ShopService {
     public void addEmpInfo(DevMap param) { cmmnDao.insert("sellerweb.shop.addEmpInfo", param); }
 
     /**
-     * 직원 퇴사처리 (update)
-     * @param param
-     */
-    public void modiEmpDeact(DevMap param) {
-        DevMap qParam = new DevMap();
-        String amdMbrId = (String) param.get("amdMbrId");
-        List<String> bnMbrIdList = (List<String>) param.get("bnMbrIdList");
-        for (String bnMbrId : bnMbrIdList) {
-            qParam.put("bnMbrId", bnMbrId);
-            qParam.put("amdMbrId", amdMbrId);
-            cmmnDao.update("sellerweb.shop.updateEmpDeact", qParam);
-            qParam.clear();
-        }
-    }
-
-    /**
      * 직원 비밀번호 재발급
      * @param param
      */

@@ -91,14 +91,6 @@
         )
     </insert>
 
-    <update id="updateEmpDeact" parameterType="DevMap">
-        UPDATE TBL002
-        SET ACTV_YN = 'N'
-            ,AMD_DT = CURRENT_TIMESTAMP
-            ,AMD_MBR_ID = #{amdMbrId}
-        WHERE BN_MBR_ID = #{bnMbrId}
-    </update>
-
     <update id="updateEmpPwd" parameterType="DevMap">
         UPDATE TBL002
         SET PWD_NO = #{pwdNo}
@@ -113,6 +105,7 @@
     <update id="updateEmpPrms" parameterType="DevMap">
         UPDATE TBL002
         SET SELLER_PRMS = #{sellerPrms}
+            ,ACTV_YN = #{actvYn}
             ,AMD_DT = CURRENT_TIMESTAMP
             ,AMD_MBR_ID = #{amdMbrId}
         WHERE BN_MBR_ID = #{bnMbrId}
