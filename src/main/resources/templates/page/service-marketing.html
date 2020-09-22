@@ -36,7 +36,7 @@
                             </select>
                         </li>
                         <li class="txtSize2">
-                            <label>대상월</label>
+                            <label>개통월</label>
                             <vuejs-datepicker
                                 ref="srchDatePicker"
                                 :input-class="'wDate'"
@@ -545,7 +545,7 @@
             },
             computed: {
                 paramDate() {
-                    var srchYear = this.srchDate.getFullYear() - 2
+                    var srchYear = this.srchDate.getFullYear()
                     var srchMonth = ((this.srchDate.getMonth() + 1) + "").padStart(2, '0')
                     return srchYear + "-" + srchMonth + "-"
                 },
