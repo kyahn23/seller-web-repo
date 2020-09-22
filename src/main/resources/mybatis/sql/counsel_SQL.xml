@@ -206,17 +206,20 @@
     </select>
 
     <select id="selectMarketingOne" resultType="DevMap" parameterType="DevMap">
-        SELECT MBR_NM
-        ,MBR_PN_NO
-        ,MKT_RSLT
-        ,VISIT_DT
-        ,PN_CARR
-        ,PN_REG_DIS
-        ,PN_MNT_RT_NO
-        ,PN_MDL
-        ,MKT_CMNT
-        FROM TBL009
-        WHERE DEAL_NO = #{dealNo}
+        SELECT A.MBR_NM
+        ,A.MBR_PN_NO
+        ,A.MKT_RSLT
+        ,A.VISIT_DT
+        ,A.PN_CARR
+        ,A.PN_REG_DIS
+        ,A.PN_MNT_RT_NO
+        ,B.PN_MNT_RT_NM
+        ,(SELECT DISTINCT C.PN_MKR FROM TBL011 C WHERE C.PN_MDL_NM = A.PN_MDL) AS PN_MKR
+        ,A.PN_MDL
+        ,A.MKT_CMNT
+        FROM TBL009 A, TBL010 B
+        WHERE A.DEAL_NO = #{dealNo}
+        AND B.PN_MNT_RT_NO = A.PN_MNT_RT_NO
     </select>
 
     <select id="selectMonthlyRate" resultType="DevMap" parameterType="DevMap">

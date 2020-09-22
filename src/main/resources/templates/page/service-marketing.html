@@ -280,7 +280,9 @@
                             <tr>
                                 <th>요금제</th>
                                 <td>
-                                    <select id="selMonthlyRate" :disabled="mktOneDisabled" v-model="mktOne.pnMntRtNo">
+                                    <span style="width: 60%" v-if="!mktOneEdit && mktOne.pnMntRtNo !== -1">{{ mktOne.pnMntRtNm }}</span>
+                                    <a href="#;" class="btnS colorWhite" v-if="!mktOneEdit && mktOne.pnMntRtNo !== -1" @click="enableEditOne"><span>수정</span></a>
+                                    <select id="selMonthlyRate" :disabled="mktOneDisabled" v-model="mktOne.pnMntRtNo" v-if="mktOneEdit">
                                         <option v-if="monthlyRateList.length" value="-1">- 요금제를 선택하세요 -</option>
                                         <option v-for="(plan, index) in monthlyRateList" :value="plan.pnMntRtNo">{{ plan.pnMntRtNm }} | {{ addCommaToPrice(plan.pnMntAmt) }}원</option>
                                     </select>
@@ -289,7 +291,8 @@
                             <tr>
                                 <th>휴대폰 제조사</th>
                                 <td>
-                                    <select id="pnMkr" :disabled="mktOneDisabled" v-model="mktOne.pnMkr">
+                                    <span style="width: 60%" v-if="!mktOneEdit && mktOne.pnMkr !== -1">{{ setPnMkrNm(mktOne.pnMkr) }}</span>
+                                    <select id="pnMkr" :disabled="mktOneDisabled" v-model="mktOne.pnMkr" v-if="mktOneEdit">
                                         <option v-if="pnMkrList.length" value="-1">- 제조사를 선택하세요 -</option>
                                         <option v-for="pnMkr in pnMkrList" :value="pnMkr">{{ setPnMkrNm(pnMkr) }}</option>
                                     </select>
@@ -298,7 +301,8 @@
                             <tr>
                                 <th>휴대폰 모델</th>
                                 <td>
-                                    <select id="device" :disabled="mktOneDisabled" v-model="mktOne.pnMdl">
+                                    <span style="width: 60%" v-if="!mktOneEdit && mktOne.pnMdl !== -1">{{ mktOne.pnMdl }}</span>
+                                    <select id="device" :disabled="mktOneDisabled" v-model="mktOne.pnMdl" v-if="mktOneEdit">
                                         <option v-if="deviceList.length" value="-1">- 모델을 선택하세요 -</option>
                                         <option v-for="deviceOne in deviceList" :value="deviceOne.pnMdlNm">{{ deviceOne.pnMdlNm }} | {{ deviceOne.pnStor }}</option>
                                     </select>
@@ -338,6 +342,7 @@
                     pnMdl: -1
                 },
                 mktOneInit: false,
+                mktOneEdit: false,
                 oneDate: '',
                 oneHour: '00',
                 oneMin: '00',
@@ -439,8 +444,15 @@
                     this.pnMkrList = []
                     this.deviceList = []
                     this.mktOneInit = false
+                    this.mktOneEdit = false
                 },
-                getMktOne(){
+                enableEditOne() {
+                    this.mktOne.pnMntRtNo = -1
+                    this.mktOne.pnMkr = -1
+                    this.mktOne.pnMdl = -1
+                    this.mktOneEdit = true
+                },
+                getMktOne() {
                     var param = {
                         dealNo: this.mktList[this.selRow].dealNo
                     }
@@ -450,6 +462,8 @@
                     this.mktOne = rslt.mktOne
                     if (this.mktOne.pnMntRtNo !== null) {
                         this.getMonthlyRate(this.mktOne.pnCarr)
+                    } else {
+                        this.mktOneEdit = true
                     }
                     this.getVisitDt()
                 },
