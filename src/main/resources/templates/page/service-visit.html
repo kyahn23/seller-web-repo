@@ -228,18 +228,27 @@
                             <tr>
                                 <th style="background: #ebf3fd;">출고가</th>
                                 <td style="text-align: right;" v-if="!selectedCs.callNo">- 원</td>
-                                <td style="text-align: right;" v-else>{{Number(selectedCs.pnMsrp).toLocaleString()}} 원</td>
+                                <td style="text-align: right;" v-else>{{Number(selectedCs.pnMsrp).toLocaleString()}} 원
+                                </td>
                                 <th style="background: #fdebed;">출고가</th>
-                                <td style="text-align: right;" v-if="currPolicy.sellYn==='Y'">{{Number(currPolicy.pnMsrp).toLocaleString()}} 원</td>
-                                <td style="color: #ff0000; text-align: center; font-size: medium;" v-else-if="currPolicy.sellYn==='N'" rowspan="5">현재 판매중지된 정책입니다.</td>
+                                <td style="text-align: right;" v-if="currPolicy.sellYn==='Y'">
+                                    {{Number(currPolicy.pnMsrp).toLocaleString()}} 원
+                                </td>
+                                <td style="color: #ff0000; text-align: center; font-size: medium;"
+                                    v-else-if="currPolicy.sellYn==='N'" rowspan="5">현재 판매중지된 정책입니다.
+                                </td>
                                 <td style="text-align: right;" v-else>- 원</td>
                             </tr>
                             <tr>
                                 <th style="background: #ebf3fd;">공시지원금</th>
                                 <td style="text-align: right;" v-if="!selectedCs.callNo">- 원</td>
-                                <td style="text-align: right;" v-else>{{Number(selectedCs.oldOfclSubsd).toLocaleString()}} 원</td>
+                                <td style="text-align: right;" v-else>
+                                    {{Number(selectedCs.oldOfclSubsd).toLocaleString()}} 원
+                                </td>
                                 <th style="background: #fdebed;">공시지원금</th>
-                                <td style="text-align: right;" v-if="currPolicy.sellYn==='Y'">{{Number(currPolicy.pnOfclSubsd).toLocaleString()}} 원</td>
+                                <td style="text-align: right;" v-if="currPolicy.sellYn==='Y'">
+                                    {{Number(currPolicy.pnOfclSubsd).toLocaleString()}} 원
+                                </td>
                                 <td style="text-align: right;" v-else-if="!currPolicy.sellYn">- 원</td>
                             </tr>
                             <tr>
@@ -267,7 +276,8 @@
                                     selectedCs.oldExtSubsdRt).toLocaleString()}} 원
                                 </td>
                                 <th style="background: #fdebed;">할부원금(공시/선약)</th>
-                                <td style="text-align: right;" v-if="currPolicy.sellYn==='Y'">{{Number(currPolicy.pnMsrp -
+                                <td style="text-align: right;" v-if="currPolicy.sellYn==='Y'">{{Number(currPolicy.pnMsrp
+                                    -
                                     currPolicy.pnOfclSubsd -
                                     currPolicy.pnExtSubsdDv).toLocaleString()}} 원 &nbsp; / &nbsp;
                                     {{Number(currPolicy.pnMsrp -
@@ -304,7 +314,8 @@
                             상담결과정보
                         </div>
                         <div class="cTitRight">
-                            <div id="btn2" v-if="selectedCs.callNo"><a href="#" class="btnM colorSky" @click="modiVisitDt"><span>방문예정일시 변경</span></a>
+                            <div id="btn2" v-if="selectedCs.callNo"><a href="#" class="btnM colorSky"
+                                                                       @click="modiVisitDt"><span>방문예정일시 변경</span></a>
                             </div>
                         </div>
                     </div>
@@ -414,22 +425,22 @@
                         <tr>
                             <th>구분</th>
                             <td colspan="3">
-                                <input type="radio" id="saleSucc" name="saleRslt" value="T"
-                                       v-model="modiCallStCd"><label
-                                    for="saleSucc">개통완료</label>&nbsp;
-                                <input type="radio" id="saleFail" name="saleRslt" value="E"
-                                       v-model="modiCallStCd"><label
-                                    for="saleFail">미개통처리(블랙고객
-                                등록)</label>
+                                <input type="radio" id="saleSucc" name="saleRslt" value="T" v-model="modiCallStCd">
+                                <label for="saleSucc">개통완료</label>&nbsp;
+                                <input type="radio" id="saleFail" name="saleRslt" value="E" v-model="modiCallStCd">
+                                <label for="saleFail">미개통</label>
                             </td>
                         </tr>
                         <tr>
                             <th>고객명</th>
                             <td>{{rsltToReg.clMbrNm}}
-                                <!--                                <input class="wPer" type="text" placeholder="고객명" v-model="rsltToReg.clMbrNm">-->
                             </td>
                             <th>개통번호</th>
-                            <td><input class="wPer" type="text" placeholder="개통번호" v-model="rsltToReg.mbrPnNo" :disabled='modiCallStCd==="E"'></td>
+                            <td>
+                                <input class="wPer" type="text"
+                                       placeholder="개통번호" v-model="rsltToReg.mbrPnNo"
+                                       :disabled='modiCallStCd==="E"'>
+                            </td>
                         </tr>
                         <tr>
                             <th>통신사</th>
@@ -447,12 +458,19 @@
                         </tr>
                         <tr>
                             <th>요금제</th>
-                            <td colspan="3">
+                            <td>
                                 <select class="wPer" v-model="rsltToReg.pnMntRtNo" :disabled='modiCallStCd==="E"'>
                                     <option v-for="mntrt in useMntrtListByCarr" :value="mntrt.pnMntRtNo">
                                         {{mntrt.pnMntRtNm}}
                                     </option>
                                 </select>
+                            </td>
+                            <th>약정기간</th>
+                            <td>
+                                <input type="radio" id="period12" name="RegPeriod" value="12" v-model="selectedPd" :disabled='modiCallStCd==="E"'>
+                                <label for="period12">12개월</label>&nbsp;
+                                <input type="radio" id="period24" name="RegPeriod" value="24" v-model="selectedPd" :disabled='modiCallStCd==="E"'>
+                                <label for="period24">24개월</label>
                             </td>
                         </tr>
                         <tr>
@@ -480,15 +498,16 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>비고</th>
+                            <th>상담내용</th>
                             <td colspan="3">
-                                <input class="wPer" type="text" placeholder="상담결과내용" v-model="rsltToReg.callCont" :disabled='modiCallStCd==="E"'>
+                                <input class="wPer" type="text" placeholder="상담결과내용" v-model="rsltToReg.callCont"
+                                       :disabled='modiCallStCd==="E"'>
                             </td>
                         </tr>
                         <tr>
                             <th>기타사항</th>
                             <td colspan="3" style="height: 85px">
-                                <textarea style="width: 100%; height: 100%;" v-model="rsltTxt"></textarea>
+                                <textarea style="width: 100%; height: 100%;" v-model="rsltTxt" placeholder="특이사항을 작성해주세요"></textarea>
                             </td>
                         </tr>
                         </tbody>
@@ -562,6 +581,11 @@
                     {code: "B", value: "기기변경"},
                     {code: "C", value: "신규가입"},
                 ],
+                period: [
+                    {code: "12", value: "12개월"},
+                    {code: "24", value: "24개월"}
+                ],
+                selectedPd: "",
                 mntrtList: [],          // 사용중인 전체 요금제 리스트
                 useMntrtListByCarr: [],     //  통신사에 따른 사용 요금제 리스트
                 deviceList: [],              // 전체 디바이스 목록
@@ -756,12 +780,13 @@
                                 data.counselList[idx].pnRegDisNm = '번호이동'
                                 break
                             case "B":
-                                data.counselList[idx].pnRegDisNm = '번호이동'
+                                data.counselList[idx].pnRegDisNm = '기기변경'
                                 break
                             case "C":
                                 data.counselList[idx].pnRegDisNm = '신규가입'
                                 break
                         }
+
                     }
                     this.counselList = data.counselList
                 },
@@ -771,7 +796,7 @@
                     this.searchList(type)
                 },
                 selectCs(data, idx) {
-                    if (this.selectedCs.idx != idx){
+                    if (this.selectedCs.idx != idx) {
                         this.selectedCs = {}
                         this.selectedCs = data
                         this.selectedCs.idx = idx
@@ -785,6 +810,18 @@
                         }
                         this.modiHH = hh
                         this.modiMM = mm
+
+                        switch (this.selectedCs.pnRegDis) {
+                            case 'A':
+                                this.selectedCs.pnRegDisNm = '번호이동'
+                                break
+                            case 'B':
+                                this.selectedCs.pnRegDisNm = '기기변경'
+                                break
+                            case 'C':
+                                this.selectedCs.pnRegDisNm = '신규가입'
+                                break
+                        }
 
                         this.getCurrPolicy()
                     } else {
@@ -956,10 +993,14 @@
                             regType: this.rsltToReg.pnRegDis,
                             regMntRtNo: this.rsltToReg.pnMntRtNo,
                             regPnMdlNo: this.rsltToReg.pnMdlNo,
+                            regPd: this.selectedPd,
                             dealCont: this.rsltTxt,
                             pnRegYn: 'Y',
                             callNo: this.rsltToReg.callNo
-
+                        }
+                        if (!this.selectedPd){
+                            alert('약정기간을 선택해주세요.')
+                            return
                         }
                     } else if (this.modiCallStCd === 'E') {
                         param = {
@@ -973,17 +1014,23 @@
                         alert('개통여부를 선택해주세요.')
                         return
                     }
-                    cf_call("/service/registerRslt", param, this.registerRsltCB)
+
+                    // 확인필요
+                    if(this.rsltTxt.length===0){
+                        alert('특이사항을 입력해주세요.')
+                        return
+                    }
+                    if(confirm('개통결과를 등록하시겠습니까?')){
+                        cf_call("/service/registerRslt", param, this.registerRsltCB)
+                    }
+
                 },
                 registerRsltCB(data) {
                     if (data.succ === "Y") {
                         alert('결과가 등록되었습니다.')
-                        // let type = 'init'
                         this.visitHH = "all"
                         this.visitMM = "all"
-                        // this.searchList(type)
                         $('#popLayerServiceResultAdd').popup("hide");
-                        // console.log(this.today)
                         this.getToday()
                     }
                 }

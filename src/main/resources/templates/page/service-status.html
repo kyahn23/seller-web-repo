@@ -32,24 +32,34 @@
 
                 <div class="searchArea">
                     <ul>
-                        <li class="txtSize2">
-                            <label>등록일</label>
-                            <span>
-                                <vuejs-datepicker ref="programaticOpen1" :language="ko" placeholder="등록일"
-                                                  name="calendar01"
-                                                  :input-class="'dpInputWidth'" :wrapper-class="'dpWrapWidth'"
-                                                  :format="format" v-model="searchDay">
-                                </vuejs-datepicker>
-                            </span>
-                            <span>
-                                <button @click="openPicker1"
-                                        style="vertical-align: middle; width: 19px; height: 23px; background: url('../../images/cmmn/bg_ico_calender.gif') 0 0 no-repeat;">
-                                </button>
-                            </span>
-                        </li>
+<!--                        <li class="txtSize2">-->
+<!--                            <label>등록일</label>-->
+<!--                            <span>-->
+<!--                                <vuejs-datepicker ref="programaticOpen1" :language="ko" placeholder="등록일"-->
+<!--                                                  name="calendar01"-->
+<!--                                                  :input-class="'dpInputWidth'" :wrapper-class="'dpWrapWidth'"-->
+<!--                                                  :format="format" v-model="searchDay">-->
+<!--                                </vuejs-datepicker>-->
+<!--                            </span>-->
+<!--                            <span>-->
+<!--                                <button @click="openPicker1"-->
+<!--                                        style="vertical-align: middle; width: 19px; height: 23px; background: url('../../images/cmmn/bg_ico_calender.gif') 0 0 no-repeat;">-->
+<!--                                </button>-->
+<!--                            </span>-->
+<!--                        </li>-->
                         <li class="txtSize3">
-                            <label for="marketing01">등록자</label>
-                            <select id="marketing01" v-model="selectedBnMbr">
+                            <label for="marketing01">구분</label>
+                            <select id="marketing01" v-model="selectedCallCd">
+                                <option v-for="call in callStCd" :value="call.code">{{call.value}}</option>
+                            </select>
+                        </li>
+                        <li class="txtSize5">
+                            <label for="marketing02">고객명</label>
+                            <input type="text" id="marketing02" placeholder="고객명 입력" v-model="clientNm">
+                        </li>
+                        <li class="txtSize5">
+                            <label for="marketing03">등록자</label>
+                            <select id="marketing03" v-model="selectedBnMbr">
                                 <option value="all">전체</option>
                                 <option v-for="mbr in bnMbr" :value="mbr.bnMbrId">{{mbr.mbrNm}}</option>
                             </select>
@@ -145,9 +155,8 @@
                                     <td class="alignC">{{list.amdDt}}</td>
                                 </tr>
                                 <!-- 결과없음 -->
-                                <!-- 결과없음 -->
                                 <tr v-if="counselList.length == 0" :class="{errorMessage : counselList.length == 0 }">
-                                    <td colspan="6">
+                                    <td colspan="8">
                                         <div class="errorTxt">
                                             <span>항목이 없습니다.</span>
                                         </div>
@@ -174,9 +183,18 @@
         var app = new Vue({
             el: "#app",
             data: {
-                ko: vdp_translation_ko.js,
-                format: "yyyy-MM-dd",
-                searchDay: "",
+                // ko: vdp_translation_ko.js,   // 날짜 검색 없이 구분검색으로 변경으로 인해
+                // format: "yyyy-MM-dd",
+                // searchDay: "",
+                callStCd: [
+                    {code: "all", value: "전체"},
+                    {code: "R", value: "상담접수"},
+                    {code: "P", value: "방문예정"},
+                    {code: "T", value: "개통완료"},
+                    {code: "E", value: "미개통"}
+                ],
+                selectedCallCd: "all",
+                clientNm: "",
                 today : "",
                 bnMbr: [],
                 selectedBnMbr: "all",
@@ -184,31 +202,32 @@
                 pageNo: "1",
                 pageInfo: [],              // 현재 페이지 정보
             },
-            components: {
-                vuejsDatepicker
-            },
+            // components: {            // 날짜 검색 없이 구분검색으로 변경으로 인해
+            //     vuejsDatepicker
+            // },
             mounted: function () {
-                this.getToday()
+                // this.getToday()      // 날짜 검색 없이 구분검색으로 변경으로 인해
+                this.getBnMbrList()
             },
             methods: {
-                openPicker1() {
-                    this.$refs.programaticOpen1.showCalendar();
-                },
-                getToday() {
-                    let today = new Date()
-                    let year = today.getFullYear()
-                    let month = today.getMonth() + 1
-                    let day = today.getDate();
-
-                    if (("" + month).length == 1) {
-                        month = "0" + month
-                    }
-                    if (("" + day).length == 1) {
-                        day = "0" + day
-                    }
-                    this.today = "" + year + '-' + month + '-' + day
-                    this.getBnMbrList()
-                },
+                // openPicker1() {      // 날짜 검색 없이 구분검색으로 변경으로 인해
+                //     this.$refs.programaticOpen1.showCalendar();
+                // },
+                // getToday() {
+                //     let today = new Date()
+                //     let year = today.getFullYear()
+                //     let month = today.getMonth() + 1
+                //     let day = today.getDate();
+                //
+                //     if (("" + month).length == 1) {
+                //         month = "0" + month
+                //     }
+                //     if (("" + day).length == 1) {
+                //         day = "0" + day
+                //     }
+                //     this.today = "" + year + '-' + month + '-' + day
+                //     this.getBnMbrList()
+                // },
                 getBnMbrList() {
                     var param = {}
                     cf_call("/service/bnMbrList", param, this.getBnMbrListCB)
@@ -220,23 +239,24 @@
                     this.searchList(type)
                 },
                 searchList(data) {
-                    let t = new Date(this.searchDay)
-                    let yy = "" + t.getFullYear()
-                    let mm = t.getMonth() + 1
-                    let dd = t.getDate();
-                    if (("" + mm).length == 1) {
-                        mm = "0" + mm
-                    }
-                    if (("" + dd).length == 1) {
-                        dd = "0" + dd
-                    }
-                    yy = yy.concat("-", mm, "-", dd)
+                    // let t = new Date(this.searchDay)
+                    // let yy = "" + t.getFullYear()
+                    // let mm = t.getMonth() + 1
+                    // let dd = t.getDate();
+                    // if (("" + mm).length == 1) {
+                    //     mm = "0" + mm
+                    // }
+                    // if (("" + dd).length == 1) {
+                    //     dd = "0" + dd
+                    // }
+                    // yy = yy.concat("-", mm, "-", dd)
 
-                    var param = {
+                    let param = {
+                        callStCd: this.selectedCallCd,
                         mntCarr: "all",
                         counselType: "all",
-                        searchDay: yy,
-                        clientNm: "",
+                        // searchDay: yy,
+                        clientNm: this.clientNm,
                         bnMbr: this.selectedBnMbr,
                         page: "1"
                     }
@@ -244,8 +264,9 @@
                         param.page = this.pageNo
                     }
                     if (data === 'init') {
-                        this.searchDay = this.today
-                        param.searchDay = this.today
+                        this.selectedCallCd = "all"
+                        this.clientNm = ""
+                        this.selectedBnMbr = "all"
                     }
                     this.counselList = []
                     cf_call("/service/getAllCounselList", param, this.searchListCB)
@@ -278,7 +299,7 @@
                                 data.counselList[idx].callStNm = '개통완료'
                                 break
                             case "E":
-                                data.counselList[idx].callStNm = '블랙고객'
+                                data.counselList[idx].callStNm = '미개통'
                                 break
                         }
                     }

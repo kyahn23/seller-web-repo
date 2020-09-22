@@ -99,7 +99,7 @@ public class CounselRestController {
     }
 
     /**
-     * 상담관리현황페이지 전체 목록
+     * 상담관리현황페이지
      * @param param
      * @return
      */
@@ -111,7 +111,7 @@ public class CounselRestController {
         param.put("LOGIN_MBR_ID", loginMbrId);
 
         DevMap rslt = new DevMap();
-        param.put("CALL_ST_CD", "all");
+//        param.put("CALL_ST_CD", "all");
 
         PageList<DevMap> listPage = counselService.counselList(param);
 

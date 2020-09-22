@@ -155,7 +155,7 @@
                         </div>
                         <div class="cTitRight">
                             <div id="btn2"><a href="#popLayerServiceResultAdd"
-                                              class="btnM colorSky popLayerServiceResultAdd_open"><span>상담결과 저장</span></a>
+                                              class="btnM colorSky popLayerServiceResultAdd_open" v-if="selectedCs.callNo"><span>상담결과 저장</span></a>
                             </div>
                         </div>
                     </div>
@@ -206,18 +206,27 @@
                             <tr>
                                 <th style="background: #ebf3fd;">출고가</th>
                                 <td style="text-align: right;" v-if="!selectedCs.callNo">- 원</td>
-                                <td style="text-align: right;" v-else>{{Number(selectedCs.pnMsrp).toLocaleString()}} 원</td>
+                                <td style="text-align: right;" v-else>{{Number(selectedCs.pnMsrp).toLocaleString()}} 원
+                                </td>
                                 <th style="background: #fdebed;">출고가</th>
-                                <td style="text-align: right;" v-if="currPolicy.sellYn==='Y'">{{Number(currPolicy.pnMsrp).toLocaleString()}} 원</td>
-                                <td style="color: #ff0000; text-align: center; font-size: medium;" v-else-if="currPolicy.sellYn==='N'" rowspan="5">현재 판매중지된 정책입니다.</td>
+                                <td style="text-align: right;" v-if="currPolicy.sellYn==='Y'">
+                                    {{Number(currPolicy.pnMsrp).toLocaleString()}} 원
+                                </td>
+                                <td style="color: #ff0000; text-align: center; font-size: medium;"
+                                    v-else-if="currPolicy.sellYn==='N'" rowspan="5">현재 판매중지된 정책입니다.
+                                </td>
                                 <td style="text-align: right;" v-else>- 원</td>
                             </tr>
                             <tr>
                                 <th style="background: #ebf3fd;">공시지원금</th>
                                 <td style="text-align: right;" v-if="!selectedCs.callNo">- 원</td>
-                                <td style="text-align: right;" v-else>{{Number(selectedCs.oldOfclSubsd).toLocaleString()}} 원</td>
+                                <td style="text-align: right;" v-else>
+                                    {{Number(selectedCs.oldOfclSubsd).toLocaleString()}} 원
+                                </td>
                                 <th style="background: #fdebed;">공시지원금</th>
-                                <td style="text-align: right;" v-if="currPolicy.sellYn==='Y'">{{Number(currPolicy.pnOfclSubsd).toLocaleString()}} 원</td>
+                                <td style="text-align: right;" v-if="currPolicy.sellYn==='Y'">
+                                    {{Number(currPolicy.pnOfclSubsd).toLocaleString()}} 원
+                                </td>
                                 <td style="text-align: right;" v-else-if="!currPolicy.sellYn">- 원</td>
                             </tr>
                             <tr>
@@ -245,7 +254,8 @@
                                     selectedCs.oldExtSubsdRt).toLocaleString()}} 원
                                 </td>
                                 <th style="background: #fdebed;">할부원금(공시/선약)</th>
-                                <td style="text-align: right;" v-if="currPolicy.sellYn==='Y'">{{Number(currPolicy.pnMsrp -
+                                <td style="text-align: right;" v-if="currPolicy.sellYn==='Y'">{{Number(currPolicy.pnMsrp
+                                    -
                                     currPolicy.pnOfclSubsd -
                                     currPolicy.pnExtSubsdDv).toLocaleString()}} 원 &nbsp; / &nbsp;
                                     {{Number(currPolicy.pnMsrp -
@@ -274,14 +284,14 @@
                     <!-- //content -->
                 </div>
                 <!-- //content group2 -->
-<!--                <div class="contentTitle" v-if="selectedCs.callNo">-->
-<!--                    <div class="cTit"></div>-->
-<!--                    <div class="cTitRight">-->
-<!--                        <div id="btn2"><a href="#popLayerServiceResultAdd"-->
-<!--                                          class="btnM colorSky popLayerServiceResultAdd_open"><span>상담결과 저장</span></a>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
+                <!--                <div class="contentTitle" v-if="selectedCs.callNo">-->
+                <!--                    <div class="cTit"></div>-->
+                <!--                    <div class="cTitRight">-->
+                <!--                        <div id="btn2"><a href="#popLayerServiceResultAdd"-->
+                <!--                                          class="btnM colorSky popLayerServiceResultAdd_open"><span>상담결과 저장</span></a>-->
+                <!--                        </div>-->
+                <!--                    </div>-->
+                <!--                </div>-->
 
             </div>
         </div>
@@ -303,7 +313,6 @@
                 <!-- 컨텐츠 -->
                 <div class="guidanceWrapper">
                     <table class="tblDataRow">
-                        <caption>상담결과저장</caption>
                         <colgroup>
                             <col style="width:85px">
                             <col style="width:*">
@@ -448,28 +457,6 @@
                 let type = 'init'
                 this.searchList(type)
             },
-            // watch:{
-            //     visitDd(){
-            //         let t = new Date(this.visitDd)
-            //         let year = ""+t.getFullYear()
-            //         let month = t.getMonth() + 1
-            //         let day = t.getDate();
-            //
-            //         if (("" + month).length == 1) {
-            //             month = "0" + month
-            //         }
-            //         if (("" + day).length == 1) {
-            //             day = "0" + day
-            //         }
-            //         let visitDt = year.concat("",month,"",day,this.visitHh,this.visitMm)
-            //         let today = this.getToday()
-            //
-            //         if (visitDt.substr(0,8)<today){
-            //             alert('이전날짜 선택 불가')
-            //             this.visitDd = ""
-            //         }
-            //     }
-            // },
             methods: {
                 searchList(data) {
                     var param = {
@@ -493,7 +480,7 @@
                                 this.counselList[idx].pnRegDisNm = '번호이동'
                                 break
                             case 'B':
-                                this.counselList[idx].pnRegDisNm = '번호이동'
+                                this.counselList[idx].pnRegDisNm = '기기변경'
                                 break
                             case 'C':
                                 this.counselList[idx].pnRegDisNm = '신규가입'
@@ -508,11 +495,22 @@
                     this.searchList(type)
                 },
                 selectCs(data, idx) {
-                    if (this.selectedCs.idx != idx){
+                    if (this.selectedCs.idx != idx) {
                         this.selectedCs = {}
                         this.selectedCs = data
                         this.selectedCs.idx = idx
 
+                        switch (this.selectedCs.pnRegDis) {
+                            case 'A':
+                                this.selectedCs.pnRegDisNm = '번호이동'
+                                break
+                            case 'B':
+                                this.selectedCs.pnRegDisNm = '기기변경'
+                                break
+                            case 'C':
+                                this.selectedCs.pnRegDisNm = '신규가입'
+                                break
+                        }
                         this.getCurrPolicy()
                     } else {
                         this.selectedCs = {}
@@ -522,8 +520,7 @@
                 getTrClass(idx) {
                     if (idx === this.selectedCs.idx) {
                         return true
-                    }
-                    else {
+                    } else {
                         return false
                     }
                 },
@@ -570,10 +567,9 @@
                     }
                     if (this.visitDd.length === 0 || this.visitHh === "all" || this.visitMm === "all") {
                         alert('방문예정일을 선택해주세요')
-                        // $('#popLayerPW').popup("hide");
                         return
                     }
-                    if (this.csContent.length === 0 ){
+                    if (this.csContent.length === 0) {
                         alert('상담내용을 작성해주세요')
                         return
                     }
