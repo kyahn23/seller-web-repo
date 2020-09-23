@@ -127,13 +127,14 @@ public class CommonService {
         mbrId = param.getString("bnMbrId");
         fileTgt = param.getString("fileTgt");
 
+        // 저장파일명 생성: '업로드일시_UUID'
         Date uploadDate = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         String uploadDateStr = sdf.format(uploadDate);
 
         String storFilNm = uploadDateStr + "_" + UuidUtil.getUuidOnlyString(); // 저장파일명
         String origFilNm = multipartFile.getOriginalFilename(); // 원시파일명
-        String filTyp = multipartFile.getContentType();
+        String filTyp = multipartFile.getContentType(); // 원시파일타입
 
         if(origFilNm.getBytes().length > 50) {
             throw new UserException("파일명의 길이가 50Byte를 초과할 수 없습니다.");
@@ -146,6 +147,7 @@ public class CommonService {
             throw new UserException("파일크기가 100MB를 초과할 수 없습니다.");
         }
 
+        // 파일 업로드
         try {
             InputStream fis = multipartFile.getInputStream();
 
@@ -168,6 +170,7 @@ public class CommonService {
             throw new UserException("파일저장중 오류가 발생했습니다. 운영자에게 문의바랍니다.");
         }
 
+        // 업로드 파일 정보 DB저장
         DevMap fileInfo = new DevMap();
         fileInfo.put("storFilNm", storFilNm);
         fileInfo.put("filExtNm", filExtNm);
@@ -177,7 +180,6 @@ public class CommonService {
         fileInfo.put("filTyp", filTyp);
         fileInfo.put("inpMbrId", mbrId);
 
-        // 파일 업로드 정보 DB저장
         cmmnDao.insert("sellerweb.common.insertFileDetail", fileInfo);
 
         return fileInfo;
@@ -208,8 +210,7 @@ public class CommonService {
      * @throws UserException
      */
     public void imageSrc(HttpServletResponse response, String fileName) throws UserException {
-        byte[] b = new byte[BUFFER_SIZE];
-
+        // 파일 정보 셋팅
         DevMap fileInfo = getFileInfo(fileName);
         String fileStorePath = fileInfo.getString("filStorPthTxt");
         if (fileStorePath.indexOf("/") == 0) {
@@ -223,6 +224,7 @@ public class CommonService {
         response.setContentType(removeCRLF(mimeType));
         response.setHeader("Content-Disposition", "filename=image;");
 
+        // 파일 다운로드
         try {
             S3Util.s3FileDownload(
                     response,
@@ -247,6 +249,7 @@ public class CommonService {
      * @throws UserException
      */
     public void downloadFile(HttpServletResponse response, String fileName) throws UserException {
+        // 다운로드 파일 정보 조회
         DevMap fileInfo = getFileInfo(fileName);
         if (fileInfo == null) {
             throw new UserException("파일정보가 존재하지 않습니다.");
@@ -255,18 +258,11 @@ public class CommonService {
         String storFilNm = fileInfo.getString("storFilNm");
         String filTyp = fileInfo.getString("filTyp");
 
+        // 파일 경로 셋팅
         String fileStorePath = fileInfo.getString("filStorPthTxt");
         if (fileStorePath.indexOf("/") == 0) {
             fileStorePath = fileStorePath.replaceFirst("/", "");
         }
-
-//        File file = new File(fileStorePath + filePathBlackList(storFilNm));
-//
-//        if(!file.exists() || !file.isFile()) {
-//            throw new UserException("파일이 존재하지 않습니다.");
-//        }
-
-        byte[] bufByte = new byte[BUFFER_SIZE];
 
         try {
             origFilNm = URLEncoder.encode(origFilNm, "UTF-8");
@@ -274,6 +270,7 @@ public class CommonService {
             throw new UserException("파일 다운로드 중 오류가 발생했습니다.");
         }
 
+        // 서블릿 응답 셋팅 (파일명 원시명으로 변경)
         response.setContentType(filTyp);
         StringBuffer strBuf = new StringBuffer();
         strBuf.append("attachment; filename=\"");
@@ -284,6 +281,7 @@ public class CommonService {
         response.setHeader("Pragma", "no-cache");
         response.setHeader("Expires", "0");
 
+        // 파일 다운로드
         try {
             S3Util.s3FileDownload(
                     response,
@@ -293,28 +291,13 @@ public class CommonService {
                     s3Properties.getSecretKey(),
                     s3Properties.getBucketName(),
                     fileStorePath,
-                    fileName
+                    storFilNm
             );
         } catch (Exception e) {
             log.error(CmmnUtil.getExceptionMsg(e));
             throw new UserException("이미지파일 로딩중 오류가 발생했습니다.");
         }
 
-//        try (BufferedInputStream bufIS = new BufferedInputStream(new FileInputStream(file));
-//            BufferedOutputStream bufOS = new BufferedOutputStream(response.getOutputStream())
-//        ){
-//            int read = 0;
-//
-//            while (true) {
-//                read = bufIS.read(bufByte);
-//                if (read == -1) {
-//                    break;
-//                }
-//                bufOS.write(bufByte, 0, read);
-//            }
-//        } catch (Exception e) {
-//            throw new UserException("파일 로딩 중 오류가 발생했습니다.");
-//        }
     }
 
     /**

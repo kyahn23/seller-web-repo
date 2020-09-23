@@ -22,6 +22,20 @@ public final class S3Util {
 
     private S3Util() {}
 
+    /**
+     * S3 호환 스토리지 파일 (오브젝트) 업로드
+     * @param endPoint S3 엔드포인트 주소
+     * @param regionName S3 서버 지역
+     * @param accessKey S3 액세스키
+     * @param secretKey S3 비밀키
+     * @param bucketName S3 저장버킷명
+     * @param fis 파일 인풋스트림
+     * @param fileTgt 파일 폴더명
+     * @param fileSize 파일크기
+     * @param fileType 파일타입
+     * @param fileName 파일명
+     * @throws IOException
+     */
     public static void s3ObjectUpload(String endPoint, String regionName, String accessKey, String secretKey, String bucketName, InputStream fis, String fileTgt, Long fileSize, String fileType, String fileName) throws IOException {
         // S3 client
         final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
@@ -29,6 +43,7 @@ public final class S3Util {
                 .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
                 .build();
 
+        // 해당 폴더 생성
         String folderName = fileTgt + "/";
 
         ObjectMetadata objectMetadata = new ObjectMetadata();
@@ -44,9 +59,11 @@ public final class S3Util {
             e.printStackTrace();
         }
 
-        // upload local file
+        // 파일 업로드
+        // 오브젝트(키)명 형식: '폴더명/파일명'
         String objectName = folderName + fileName;
 
+        // 파일 메타데이터에 파일크기, 파일타입 주입
         if(fileType == null || fileType.equals("")) {
             fileType = "application/octet-stream;";
         }
@@ -64,6 +81,17 @@ public final class S3Util {
         }
     }
 
+    /**
+     * S3 호환 스토리지 파일 (오브젝트) 다운로드
+     * @param response 파일 전달용 서블릿 응답
+     * @param endPoint S3 엔드포인트 주소
+     * @param regionName S3 서버 지역
+     * @param accessKey S3 액세스키
+     * @param secretKey S3 비밀키
+     * @param bucketName S3 저장버킷명
+     * @param filePath 파일 폴더명
+     * @param fileName 파일명
+     */
     public static void s3FileDownload(HttpServletResponse response, String endPoint, String regionName, String accessKey, String secretKey, String bucketName, String filePath, String fileName) {
         // S3 client
         final AmazonS3 s3 = AmazonS3ClientBuilder.standard()
@@ -71,9 +99,10 @@ public final class S3Util {
                 .withCredentials(new AWSStaticCredentialsProvider(new BasicAWSCredentials(accessKey, secretKey)))
                 .build();
 
+        // 파일 다운로드
+        // 오브젝트(키)명 형식: '폴더명/파일명'
         String objectName = filePath + fileName;
 
-        // download object
         try {
             S3Object s3Object = s3.getObject(bucketName, objectName);
             S3ObjectInputStream s3ObjectInputStream = s3Object.getObjectContent();
