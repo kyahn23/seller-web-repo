@@ -18,7 +18,8 @@
 
     <select id="selectFileInfo" parameterType="string" resultType="DevMap">
         SELECT
-            STOR_FIL_NM
+            FIL_STOR_PTH_TXT
+            ,STOR_FIL_NM
             ,ORIG_FIL_NM
             ,FIL_SIZ_NO
             ,FIL_TYP

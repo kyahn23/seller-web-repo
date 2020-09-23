@@ -146,7 +146,7 @@
                                     </p>
                                     <br>
                                     <p class="br">
-                                        <img :src="getImagePath(shopInfo.bnRegCard)" alt="사업자등록증 사본" style="width: 300px; height: auto;">
+                                        <img :src="getImagePath('regcard', shopInfo.bnRegCard)" alt="사업자등록증 사본" style="width: 300px; height: auto;">
                                     </p>
                                     <input
                                         type="file"
@@ -214,7 +214,7 @@
                                 <th>대표사진</th>
                                 <td colspan="3">
                                     <p class="br">
-                                        <img :src="getImagePath(shopInfo.bnImg)" alt="매장 대표사진" style="width: 300px; height: auto;">
+                                        <img :src="getImagePath('shopimg', shopInfo.bnImg)" alt="매장 대표사진" style="width: 300px; height: auto;">
                                     </p>
                                     <br>
                                     <input
@@ -335,8 +335,17 @@
                 },
                 uploadImage(tgtNm) {
                     this.uploadTgtNm = tgtNm
+                    var fileTgt = ''
+                    if (tgtNm === 'bnRegCard') {
+                        fileTgt = 'regcard'
+                    } else if (tgtNm === 'bnImg') {
+                        fileTgt = 'shopimg'
+                    }
+
                     var fileList = []
-                    var param = {}
+                    var param = {
+                        fileTgt : fileTgt
+                    }
                     if ($("#" + tgtNm)[0].files[0] !== undefined) {
                         fileList.push($("#" + tgtNm)[0].files[0])
                         cf_callWithFiles("/upload/image", fileList, param, this.uploadImageCB)
@@ -387,7 +396,7 @@
                         this.phoneMask = this.phoneMaskOther
                     }
                 },
-                getImagePath(fileName) {
+                getImagePath(fileTgt, fileName) {
                     if (fileName !== undefined) {
                         return '/imageSrc?fileName=' + fileName
                     }

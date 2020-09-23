@@ -1,12 +1,14 @@
 package com.pentas.sellerweb.service;
 
 import com.pentas.sellerweb.common.conf.properties.EmailProperties;
+import com.pentas.sellerweb.common.conf.properties.S3Properties;
 import com.pentas.sellerweb.common.conf.properties.SettingProperties;
 import com.pentas.sellerweb.common.dao.CmmnDao;
 import com.pentas.sellerweb.common.exception.UserException;
 import com.pentas.sellerweb.common.module.util.CmmnUtil;
 import com.pentas.sellerweb.common.module.util.DevMap;
 import com.pentas.sellerweb.common.module.util.email.EmailUtil;
+import com.pentas.sellerweb.common.module.util.s3.S3Util;
 import com.pentas.sellerweb.common.module.util.uuid.UuidUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +34,9 @@ public class CommonService {
 
     @Autowired
     EmailProperties emailProperties;
+
+    @Autowired
+    S3Properties s3Properties;
 
     @Autowired
     CmmnDao cmmnDao;
@@ -118,13 +123,15 @@ public class CommonService {
      */
     public DevMap uploadFile(MultipartFile multipartFile, DevMap param) throws UserException {
         String mbrId = "";
+        String fileTgt = "";
         mbrId = param.getString("bnMbrId");
+        fileTgt = param.getString("fileTgt");
 
         Date uploadDate = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         String uploadDateStr = sdf.format(uploadDate);
 
-        String storFilNm = "SHOP_" + uploadDateStr + "_" + UuidUtil.getUuidOnlyString(); // 저장파일명
+        String storFilNm = uploadDateStr + "_" + UuidUtil.getUuidOnlyString(); // 저장파일명
         String origFilNm = multipartFile.getOriginalFilename(); // 원시파일명
         String filTyp = multipartFile.getContentType();
 
@@ -133,19 +140,31 @@ public class CommonService {
         }
 
         String filExtNm = origFilNm.substring(origFilNm.lastIndexOf(".")); // 파일 확장자
-        String filStorPthTxt = settingProperties.getFileStorePath(); // 파일 저장경로
+        String filStorPthTxt = "/" + fileTgt + "/"; // 파일 저장경로
         long filSizNo = multipartFile.getSize(); // 파일크기
         if (filSizNo > 100000000) {
             throw new UserException("파일크기가 100MB를 초과할 수 없습니다.");
         }
 
-        File file = new File(filStorPthTxt + storFilNm);
-
         try {
-            multipartFile.transferTo(file);
+            InputStream fis = multipartFile.getInputStream();
+
+            S3Util.s3ObjectUpload(
+                    s3Properties.getEndPoint(),
+                    s3Properties.getRegionName(),
+                    s3Properties.getAccessKey(),
+                    s3Properties.getSecretKey(),
+                    s3Properties.getBucketName(),
+                    fis,
+                    fileTgt,
+                    filSizNo,
+                    filTyp,
+                    storFilNm
+            );
         } catch (IllegalStateException e) {
             throw new UserException("파일저장중 오류가 발생했습니다. 운영자에게 문의바랍니다.");
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new UserException("파일저장중 오류가 발생했습니다. 운영자에게 문의바랍니다.");
         }
 
@@ -189,35 +208,32 @@ public class CommonService {
      * @throws UserException
      */
     public void imageSrc(HttpServletResponse response, String fileName) throws UserException {
-//        String mimeType = mimeTypeParam;
-        String fileStorePath = settingProperties.getFileStorePath();
-
-        File file = new File(fileStorePath + filePathBlackList(fileName));
-        if(!file.exists() || !file.isFile()) {
-            throw new UserException("이미지파일이 존재하지 않습니다.");
-        }
-
         byte[] b = new byte[BUFFER_SIZE];
 
         DevMap fileInfo = getFileInfo(fileName);
+        String fileStorePath = fileInfo.getString("filStorPthTxt");
+        if (fileStorePath.indexOf("/") == 0) {
+            fileStorePath = fileStorePath.replaceFirst("/", "");
+        }
+
         String mimeType = fileInfo.getString("filTyp");
-        if(mimeType == null || mimeType.equals("")) {
+        if (mimeType == null || mimeType.equals("")) {
             mimeType = "application/octet-stream;";
         }
         response.setContentType(removeCRLF(mimeType));
         response.setHeader("Content-Disposition", "filename=image;");
 
-        try (BufferedInputStream fin = new BufferedInputStream(new FileInputStream(file));
-             BufferedOutputStream outs = new BufferedOutputStream(response.getOutputStream())) {
-            int read = 0;
-
-            while (true) {
-                read = fin.read(b);
-                if (read == -1) {
-                    break;
-                }
-                outs.write(b, 0, read);
-            }
+        try {
+            S3Util.s3FileDownload(
+                    response,
+                    s3Properties.getEndPoint(),
+                    s3Properties.getRegionName(),
+                    s3Properties.getAccessKey(),
+                    s3Properties.getSecretKey(),
+                    s3Properties.getBucketName(),
+                    fileStorePath,
+                    fileName
+            );
         } catch (Exception e) {
             log.error(CmmnUtil.getExceptionMsg(e));
             throw new UserException("이미지파일 로딩중 오류가 발생했습니다.");
@@ -239,13 +255,16 @@ public class CommonService {
         String storFilNm = fileInfo.getString("storFilNm");
         String filTyp = fileInfo.getString("filTyp");
 
-        String fileStorePath = settingProperties.getFileStorePath();
-
-        File file = new File(fileStorePath + filePathBlackList(storFilNm));
-
-        if(!file.exists() || !file.isFile()) {
-            throw new UserException("파일이 존재하지 않습니다.");
+        String fileStorePath = fileInfo.getString("filStorPthTxt");
+        if (fileStorePath.indexOf("/") == 0) {
+            fileStorePath = fileStorePath.replaceFirst("/", "");
         }
+
+//        File file = new File(fileStorePath + filePathBlackList(storFilNm));
+//
+//        if(!file.exists() || !file.isFile()) {
+//            throw new UserException("파일이 존재하지 않습니다.");
+//        }
 
         byte[] bufByte = new byte[BUFFER_SIZE];
 
@@ -265,21 +284,37 @@ public class CommonService {
         response.setHeader("Pragma", "no-cache");
         response.setHeader("Expires", "0");
 
-        try (BufferedInputStream bufIS = new BufferedInputStream(new FileInputStream(file));
-            BufferedOutputStream bufOS = new BufferedOutputStream(response.getOutputStream())
-        ){
-            int read = 0;
-
-            while (true) {
-                read = bufIS.read(bufByte);
-                if (read == -1) {
-                    break;
-                }
-                bufOS.write(bufByte, 0, read);
-            }
+        try {
+            S3Util.s3FileDownload(
+                    response,
+                    s3Properties.getEndPoint(),
+                    s3Properties.getRegionName(),
+                    s3Properties.getAccessKey(),
+                    s3Properties.getSecretKey(),
+                    s3Properties.getBucketName(),
+                    fileStorePath,
+                    fileName
+            );
         } catch (Exception e) {
-            throw new UserException("파일 로딩 중 오류가 발생했습니다.");
+            log.error(CmmnUtil.getExceptionMsg(e));
+            throw new UserException("이미지파일 로딩중 오류가 발생했습니다.");
         }
+
+//        try (BufferedInputStream bufIS = new BufferedInputStream(new FileInputStream(file));
+//            BufferedOutputStream bufOS = new BufferedOutputStream(response.getOutputStream())
+//        ){
+//            int read = 0;
+//
+//            while (true) {
+//                read = bufIS.read(bufByte);
+//                if (read == -1) {
+//                    break;
+//                }
+//                bufOS.write(bufByte, 0, read);
+//            }
+//        } catch (Exception e) {
+//            throw new UserException("파일 로딩 중 오류가 발생했습니다.");
+//        }
     }
 
     /**

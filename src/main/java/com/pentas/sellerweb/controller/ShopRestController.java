@@ -161,6 +161,7 @@ public class ShopRestController {
 
         DevMap fileUploadParam = new DevMap();
         fileUploadParam.put("bnMbrId", bnMbrId);
+        fileUploadParam.put("fileTgt", "board");
 
         List<DevMap> insFileInfoList = new ArrayList<>();
         List<MultipartFile> multipartFileList = multipartRequest.getFiles("fileList");
@@ -259,6 +260,7 @@ public class ShopRestController {
 
         DevMap fileUploadParam = new DevMap();
         fileUploadParam.put("bnMbrId", bnMbrId);
+        fileUploadParam.put("fileTgt", "board");
 
         List<DevMap> insFileInfoList = new ArrayList<>();
         List<MultipartFile> multipartFileList = multipartRequest.getFiles("fileList");
