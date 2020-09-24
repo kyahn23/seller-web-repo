@@ -18,6 +18,7 @@ public class CounselService {
     public PageList<DevMap> counselList(DevMap param) {
         int page = Integer.parseInt(param.getString("page"));
         int pageSize = 10;
+
         PageBounds pageBounds = new PageBounds(page, pageSize);
 
         return cmmnDao.selectListPage("sellerweb.counsel.counselList", param, pageBounds);

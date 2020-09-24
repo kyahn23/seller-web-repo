@@ -7,13 +7,13 @@
             width: 100%;
         }
 
-        div.dpWrapWidth {
-            width: 82px;
-        }
-
-        input.dpInputWidth {
-            width: 100%;
-        }
+        /*.tBodyScroll {*/
+        /*    height: 432px;*/
+        /*}*/
+        /*.underLine {*/
+        /*    color: #007ac6;*/
+        /*    text-decoration: underline;*/
+        /*}*/
     </style>
 </th:block>
 <div layout:fragment="content">
@@ -32,21 +32,21 @@
 
                 <div class="searchArea">
                     <ul>
-<!--                        <li class="txtSize2">-->
-<!--                            <label>등록일</label>-->
-<!--                            <span>-->
-<!--                                <vuejs-datepicker ref="programaticOpen1" :language="ko" placeholder="등록일"-->
-<!--                                                  name="calendar01"-->
-<!--                                                  :input-class="'dpInputWidth'" :wrapper-class="'dpWrapWidth'"-->
-<!--                                                  :format="format" v-model="searchDay">-->
-<!--                                </vuejs-datepicker>-->
-<!--                            </span>-->
-<!--                            <span>-->
-<!--                                <button @click="openPicker1"-->
-<!--                                        style="vertical-align: middle; width: 19px; height: 23px; background: url('../../images/cmmn/bg_ico_calender.gif') 0 0 no-repeat;">-->
-<!--                                </button>-->
-<!--                            </span>-->
-<!--                        </li>-->
+                        <!--                        <li class="txtSize2">-->
+                        <!--                            <label>등록일</label>-->
+                        <!--                            <span>-->
+                        <!--                                <vuejs-datepicker ref="programaticOpen1" :language="ko" placeholder="등록일"-->
+                        <!--                                                  name="calendar01"-->
+                        <!--                                                  :input-class="'dpInputWidth'" :wrapper-class="'dpWrapWidth'"-->
+                        <!--                                                  :format="format" v-model="searchDay">-->
+                        <!--                                </vuejs-datepicker>-->
+                        <!--                            </span>-->
+                        <!--                            <span>-->
+                        <!--                                <button @click="openPicker1"-->
+                        <!--                                        style="vertical-align: middle; width: 19px; height: 23px; background: url('../../images/cmmn/bg_ico_calender.gif') 0 0 no-repeat;">-->
+                        <!--                                </button>-->
+                        <!--                            </span>-->
+                        <!--                        </li>-->
                         <li class="txtSize3">
                             <label for="marketing01">구분</label>
                             <select id="marketing01" v-model="selectedCallCd">
@@ -108,7 +108,7 @@
                                         <td>구분</td>
                                         <td>고객명</td>
                                         <td>통신사</td>
-                                        <td>개통유형</td>
+                                        <td>가입유형</td>
                                         <td>상담요금제</td>
                                         <td>휴대폰</td>
                                         <td>등록자</td>
@@ -144,7 +144,8 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr v-for="(list,idx) in counselList">
+                                <tr v-for="(list,idx) in counselList" @click="selectCs(list,idx)"
+                                    :class="{ checkedItem: getTrClass(idx) }">
                                     <td class="alignC">{{list.callStNm}}</td>
                                     <td class="alignC">{{list.clMbrNm}}</td>
                                     <td class="alignC">{{list.mntCarr}}</td>
@@ -170,22 +171,311 @@
                 </div>
                 <!-- //content group1 -->
 
+                <!-- content group2 -->
+                <div class="contentBlock">
+                    <div class="contentTitle">
+                        <div class="cTit">
+                            상담 처리 상세정보
+                        </div>
+                        <div class="cTitRight">
+                            <!-- !!! 여기가 팝업 버튼 !!! -->
+                            <div id="btn2">
+                                <a href="#popLayerServiceResultAdd"
+                                   class="btnM colorGreen"
+                                   @click="modiBtnClick"
+                                   v-if="!modiBtn && (selectedCs.callStCd === 'T' || selectedCs.callStCd === 'E')">
+                                    <span>수정하기</span>
+                                </a>
+                                <a v-if="modiBtn"
+                                   @click="modiBtnClick"
+                                   class="btnM disabled">
+                                    <span>취소하기</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- content -->
+                    <div class="contentDetail">
+                        <table class="tblDataRow mb15">
+                            <colgroup>
+                                <col style="width:140px">
+                                <col style="width:*">
+                                <col style="width:140px">
+                                <col style="width:*">
+                            </colgroup>
+                            <tbody>
+                            <tr>
+                                <th>개통 구분</th>
+                                <td v-if="modiCallStCd === 'T' || modiCallStCd === 'E'">
+                                    <input type="radio" id="saleSucc" name="saleRslt" value="T" v-model="modiCallStCd"
+                                           :disabled="modiCallStCd === '' || !modiBtn">
+                                    <label for="saleSucc">개통완료</label>&nbsp;
+                                    <input type="radio" id="saleFail" name="saleRslt" value="E" v-model="modiCallStCd"
+                                           :disabled="modiCallStCd === '' || !modiBtn">
+                                    <label for="saleFail">미개통</label>
+                                </td>
+                                <td v-else-if="modiCallStCd === 'P' || modiCallStCd === 'R'"> {{selectedCs.callStNm}}
+                                </td>
+                                <td v-else>-</td>
+                                <th>개통담당자</th>
+                                <td v-if="modiBtn">
+                                    <select class="wPer" v-model="rsltToReg.bnMbrId">
+                                        <option v-for="mbr in bnMbr" :value="mbr.bnMbrId">{{mbr.mbrNm}}</option>
+                                    </select>
+                                </td>
+                                <td v-else-if="!modiBtn && selectedCs.callStCd !== 'R'">{{rsltToReg.mbrNm}}</td>
+                                <td v-else-if="modiCallStCd === '' || selectedCs.callStCd === 'R'">-</td>
+                            </tr>
+                            <tr>
+                                <th>통신사</th>
+                                <td v-if="modiBtn && (selectedCs.callStCd === 'T' || selectedCs.callStCd === 'E')">
+                                    <select class="wPer" v-model="rsltToReg.mntCarr" :disabled='modiCallStCd==="E"'>
+                                        <option v-for="carr in carrArr" :value="carr.code">{{carr.value}}</option>
+                                    </select>
+                                </td>
+                                <td v-else-if="!modiBtn && modiCallStCd !== ''">{{selectedCs.mntCarr}}</td>
+                                <td v-else-if="!selectedCs.callNo">-</td>
+                                <th>가입유형</th>
+                                <td v-if="modiBtn && (selectedCs.callStCd === 'T' || selectedCs.callStCd === 'E')">
+                                    <select class="wPer" v-model="rsltToReg.pnRegDis" :disabled='modiCallStCd==="E"'>
+                                        <option v-for="type in counselType" :value="type.code">{{type.value}}</option>
+                                    </select>
+                                </td>
+                                <td v-else-if="!modiBtn && modiCallStCd !== ''">{{selectedCs.pnRegDisNm}}</td>
+                                <td v-else-if="!selectedCs.callNo">-</td>
+                            </tr>
+                            <tr>
+                                <th>요금제</th>
+                                <td v-if="modiBtn && (selectedCs.callStCd === 'T' || selectedCs.callStCd === 'E')">
+                                    <select class="wPer" v-model="rsltToReg.pnMntRtNo" :disabled='modiCallStCd==="E"'>
+                                        <option value="all">선택</option>
+                                        <option v-for="mntrt in useMntrtListByCarr" :value="mntrt.pnMntRtNo">
+                                            {{mntrt.pnMntRtNm}}
+                                        </option>
+                                    </select>
+                                </td>
+                                <td v-else-if="!modiBtn && modiCallStCd !== ''">{{selectedCs.pnMntRtNm}}</td>
+                                <td v-else-if="!selectedCs.callNo">-</td>
+                                <th>약정기간</th>
+                                <td>
+                                    <input type="radio" id="period12" name="RegPeriod" value="12"
+                                           v-model="rsltToReg.regPd" :disabled="modiCallStCd === '' || !modiBtn || modiCallStCd==='E'">
+                                    <label for="period12">12개월</label>&nbsp;
+                                    <input type="radio" id="period24" name="RegPeriod" value="24"
+                                           v-model="rsltToReg.regPd" :disabled="modiCallStCd === '' || !modiBtn || modiCallStCd==='E'">
+                                    <label for="period24">24개월</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>제조사</th>
+                                <td v-if="modiBtn && (selectedCs.callStCd === 'T' || selectedCs.callStCd === 'E')">
+                                    <select class="wPer" v-model="selectedMkr" :disabled='modiCallStCd==="E"'>
+                                        <option v-for="mkr in pnMkr" :value="mkr.code">{{mkr.value}}</option>
+                                    </select>
+                                </td>
+                                <td v-else-if="!modiBtn && modiCallStCd !== ''">{{selectedCs.pnMkrNm}}</td>
+                                <td v-else-if="!selectedCs.callNo">-</td>
+                                <th>모델</th>
+                                <td v-if="modiBtn && (selectedCs.callStCd === 'T' || selectedCs.callStCd === 'E')">
+                                    <select class="wPer" v-model="rsltToReg.pnMdlNo" :disabled='modiCallStCd==="E"'>
+                                        <option v-for="device in devListByMkr" :value="device.pnMdlNo">
+                                            {{device.pnMdlNm}} {{device.pnStor}}GB
+                                        </option>
+                                    </select>
+                                </td>
+                                <td v-else-if="!modiBtn && modiCallStCd !== ''">{{selectedCs.pnMdlNm}}
+                                    {{selectedCs.pnStor}}GB
+                                </td>
+                                <td v-else-if="!selectedCs.callNo">-</td>
+                            </tr>
+                            <tr>
+                                <th>부가서비스</th>
+                                <td colspan="3">
+                                    <input type="radio" id="extServY" value="Y"
+                                           v-model="rsltToReg.oldExtServYn" :disabled="modiCallStCd === '' || !modiBtn || modiCallStCd==='E'"><label
+                                        for="extServY">유</label>&nbsp;
+                                    <input type="radio" id="extServN" value="N"
+                                           v-model="rsltToReg.oldExtServYn" :disabled="modiCallStCd === '' || !modiBtn || modiCallStCd==='E'"><label
+                                        for="extServN">무</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>상담내용</th>
+                                <td colspan="3" v-if="modiBtn && (selectedCs.callStCd === 'T' || selectedCs.callStCd === 'E')">
+                                    <input class="wPer" type="text" placeholder="상담결과내용" v-model="rsltToReg.callCont" :disabled='modiCallStCd==="E"'>
+                                </td>
+                                <td colspan="3" v-else-if="!modiBtn && modiCallStCd !== ''">{{selectedCs.callCont}}</td>
+                                <td colspan="3" v-else-if="!selectedCs.callNo || selectedCs.callStCd === 'R'">-</td>
+                            </tr>
+                            <tr>
+                                <th>기타사항</th>
+                                <td colspan="3" v-if="modiBtn && (selectedCs.callStCd === 'T' || selectedCs.callStCd === 'E')">
+                                    <textarea style="width: 100%; height: 100%;" v-model="rsltToReg.dealCont" placeholder="특이사항을 작성해주세요"></textarea>
+                                </td>
+                                <td colspan="3" v-else-if="!modiBtn && modiCallStCd !== ''">{{selectedCs.dealCont}}</td>
+                                <td colspan="3" v-else-if="!selectedCs.callNo">-</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <div class="btnWrapper">
+                            <a href="#;" v-if="modiBtn" class="btnM colorSky">
+                                <span>저장하기</span>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- //content -->
+                </div>
+                <!-- //content group2 -->
+
             </div>
         </div>
     </div>
     <!-- //contents -->
 </div>
 
+<!--<div layout:fragment="layer">-->
+<!--    &lt;!&ndash; 팝업: 개통결과등록 &ndash;&gt;-->
+<!--    <div class="layerWrapper layerSizeM" id="popLayerServiceResultAdd" style="display:inherit !important">-->
+<!--        <div class="layerHeader">-->
+<!--            <strong v-if>개통결과</strong>-->
+<!--            <a href="#" class="btnClose popLayerServiceResultAdd_close"><img src="../images/cmmn/btn-layer-close.png"-->
+<!--                                                                             alt="창닫기"></a>-->
+<!--        </div>-->
+<!--        <div class="layerContainer">-->
+<!--            <div class="layerContent">-->
+
+<!--                &lt;!&ndash; 컨텐츠 &ndash;&gt;-->
+<!--                <div class="guidanceWrapper">-->
+<!--                    <table class="tblDataRow">-->
+<!--                        <caption>개통결과등록</caption>-->
+<!--                        <colgroup>-->
+<!--                            <col style="width:80px">-->
+<!--                            <col style="width:*">-->
+<!--                            <col style="width:80px">-->
+<!--                            <col style="width:*">-->
+<!--                        </colgroup>-->
+<!--                        <tbody>-->
+<!--                        <tr>-->
+<!--                            <th>개통담당자</th>-->
+<!--                            <td colspan="3">-->
+<!--                                <select class="wPer" v-model="rsltToReg.bnMbrId">-->
+<!--                                    <option v-for="mbr in bnMbr" :value="mbr.bnMbrId">{{mbr.mbrNm}}</option>-->
+<!--                                </select>-->
+<!--                            </td>-->
+<!--                        </tr>-->
+<!--&lt;!&ndash;                        <tr>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <th>구분</th>&ndash;&gt;-->
+<!--&lt;!&ndash;                            <td colspan="3">&ndash;&gt;-->
+<!--&lt;!&ndash;                                <input type="radio" id="saleSucc" name="saleRslt" value="T" v-model="modiCallStCd">&ndash;&gt;-->
+<!--&lt;!&ndash;                                <label for="saleSucc">개통완료</label>&nbsp;&ndash;&gt;-->
+<!--&lt;!&ndash;                                <input type="radio" id="saleFail" name="saleRslt" value="E" v-model="modiCallStCd">&ndash;&gt;-->
+<!--&lt;!&ndash;                                <label for="saleFail">미개통</label>&ndash;&gt;-->
+<!--&lt;!&ndash;                            </td>&ndash;&gt;-->
+<!--&lt;!&ndash;                        </tr>&ndash;&gt;-->
+<!--                        <tr>-->
+<!--                            <th>고객명</th>-->
+<!--                            <td>{{rsltToReg.clMbrNm}}-->
+<!--                            </td>-->
+<!--                            <th>개통번호</th>-->
+<!--                            <td>-->
+<!--                                <input class="wPer" type="text"-->
+<!--                                       placeholder="개통번호" v-model="rsltToReg.mbrPnNo"-->
+<!--                                       :disabled='modiCallStCd==="E"'>-->
+<!--                            </td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <th>통신사</th>-->
+<!--                            <td>-->
+<!--                                <select class="wPer" v-model="rsltToReg.mntCarr" :disabled='modiCallStCd==="E"'>-->
+<!--                                    <option v-for="carr in carrArr" :value="carr.code">{{carr.value}}</option>-->
+<!--                                </select>-->
+<!--                            </td>-->
+<!--                            <th>조건</th>-->
+<!--                            <td>-->
+<!--                                <select class="wPer" v-model="rsltToReg.pnRegDis" :disabled='modiCallStCd==="E"'>-->
+<!--                                    <option v-for="type in counselType" :value="type.code">{{type.value}}</option>-->
+<!--                                </select>-->
+<!--                            </td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <th>요금제</th>-->
+<!--                            <td>-->
+<!--                                <select class="wPer" v-model="rsltToReg.pnMntRtNo" :disabled='modiCallStCd==="E"'>-->
+<!--                                    <option v-for="mntrt in useMntrtListByCarr" :value="mntrt.pnMntRtNo">-->
+<!--                                        {{mntrt.pnMntRtNm}}-->
+<!--                                    </option>-->
+<!--                                </select>-->
+<!--                            </td>-->
+<!--                            <th>약정기간</th>-->
+<!--                            <td>-->
+<!--                                <input type="radio" id="period12" name="RegPeriod" value="12" v-model="rsltToReg.regPd">-->
+<!--                                <label for="period12">12개월</label>&nbsp;-->
+<!--                                <input type="radio" id="period24" name="RegPeriod" value="24" v-model="rsltToReg.regPd">-->
+<!--                                <label for="period24">24개월</label>-->
+<!--                            </td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <th>제조사</th>-->
+<!--                            <td>-->
+<!--                                <select class="wPer" v-model="selectedMkr">-->
+<!--                                    <option v-for="mkr in pnMkr" :value="mkr.code">{{mkr.value}}</option>-->
+<!--                                </select>-->
+<!--                            </td>-->
+<!--                            <th>모델</th>-->
+<!--                            <td>-->
+<!--                                <select class="wPer" v-model="rsltToReg.pnMdlNo">-->
+<!--                                    <option v-for="device in devListByMkr" :value="device.pnMdlNo">{{device.pnMdlNm}}-->
+<!--                                    </option>-->
+<!--                                </select>-->
+<!--                            </td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <th>부가서비스</th>-->
+<!--                            <td colspan="3">-->
+<!--                                <input type="radio" id="extServY" value="Y"-->
+<!--                                       v-model="rsltToReg.oldExtServYn"><label for="extServY">유</label>&nbsp;-->
+<!--                                <input type="radio" id="extServN" value="N"-->
+<!--                                       v-model="rsltToReg.oldExtServYn"><label for="extServN">무</label>-->
+<!--                            </td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <th>상담내용</th>-->
+<!--                            <td colspan="3">-->
+<!--                                <input class="wPer" type="text" placeholder="상담결과내용" v-model="rsltToReg.callCont">-->
+<!--                            </td>-->
+<!--                        </tr>-->
+<!--                        <tr>-->
+<!--                            <th>기타사항</th>-->
+<!--                            <td colspan="3" style="height: 85px">-->
+<!--                                <textarea style="width: 100%; height: 100%;" v-model="rsltToReg.dealCont" placeholder="특이사항을 작성해주세요"></textarea>-->
+<!--                            </td>-->
+<!--                        </tr>-->
+<!--                        </tbody>-->
+<!--                    </table>-->
+<!--                </div>-->
+<!--                &lt;!&ndash; //컨텐츠 &ndash;&gt;-->
+<!--                <div class="btnWrapper">-->
+<!--                    <a href="#" v-if="modiBtn===true" class="btnL colorBlue" @click="registerRslt"><span>저장</span></a>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
 <div layout:fragment="script">
-    <script type="text/javascript" th:src="@{/js/lib/vuejs-datepicker-1.6.2/vuejs-datepicker.js}"></script>
-    <script type="text/javascript" th:src="@{/js/lib/vuejs-datepicker-1.6.2/locale/translations/ko.js}"></script>
+    <!-- //팝업: 개통결과 또는 블랙고객등록 -->
+    <!--    <script type="text/javascript">-->
+    <!--        $(function () {-->
+    <!--            if ($(".layerWrapper").length) {-->
+    <!--                //개통결과등록-->
+    <!--                $('#popLayerServiceResultAdd').popup();-->
+    <!--            }-->
+    <!--        });-->
+    <!--    </script>-->
     <script>
         var app = new Vue({
             el: "#app",
             data: {
-                // ko: vdp_translation_ko.js,   // 날짜 검색 없이 구분검색으로 변경으로 인해
-                // format: "yyyy-MM-dd",
-                // searchDay: "",
                 callStCd: [
                     {code: "all", value: "전체"},
                     {code: "R", value: "상담접수"},
@@ -193,41 +483,137 @@
                     {code: "T", value: "개통완료"},
                     {code: "E", value: "미개통"}
                 ],
+                carrArr: [
+                    {code: "all", value: "선택"},
+                    {code: "SKT", value: "SKT"},
+                    {code: "KT", value: "KT"},
+                    {code: "LGU", value: "LGU"}
+                ],
+                counselType: [
+                    {code: "all", value: "선택"},
+                    {code: "A", value: "번호이동"},
+                    {code: "B", value: "기기변경"},
+                    {code: "C", value: "신규가입"},
+                ],
+                period: [
+                    {code: "12", value: "12개월"},
+                    {code: "24", value: "24개월"}
+                ],
+                pnMkr: [
+                    {code: "all", value: "선택"},
+                    {code: "SAM", value: "삼성전자"},
+                    {code: "APP", value: "애플"},
+                    {code: "LGE", value: "LG전자"},
+                    {code: "XIA", value: "샤오미"},
+                    {code: "ETC", value: "기타"}
+                ],
                 selectedCallCd: "all",
                 clientNm: "",
-                today : "",
+                today: "",
                 bnMbr: [],
                 selectedBnMbr: "all",
                 counselList: [],            // 현재 페이지 상담 리스트
+                modiBtn: false,             // true - 수정버튼 눌렀을때 / false
+                selectedCs: {},
+                rsltToReg: {},
+                modiCallStCd: "",
+                selectedMkr: "",
+                mntrtList: [],              // 사용중인 전체 요금제 리스트
+                useMntrtListByCarr: [],     //  통신사에 따른 사용 요금제 리스트
+                deviceList: [],             // 전체 디바이스 목록
+                devListByMkr: [],           // 선택된 제조사에 따른 디바이스 목록
                 pageNo: "1",
                 pageInfo: [],              // 현재 페이지 정보
             },
-            // components: {            // 날짜 검색 없이 구분검색으로 변경으로 인해
-            //     vuejsDatepicker
-            // },
             mounted: function () {
-                // this.getToday()      // 날짜 검색 없이 구분검색으로 변경으로 인해
                 this.getBnMbrList()
             },
+            watch: {
+                'rsltToReg.mntCarr': {
+                    handler(value) {
+                        this.rsltLayerDeviceInit()
+
+                        let tempArr = []
+                        this.useMntrtListByCarr = []
+                        switch (value) {
+                            case 'SKT':
+                                for (list in this.mntrtList) {
+                                    if (this.mntrtList[list].pnCarr === 'SKT') {
+                                        tempArr.push(this.mntrtList[list])
+                                    }
+                                }
+                                break
+                            case 'KT':
+                                for (list in this.mntrtList) {
+                                    if (this.mntrtList[list].pnCarr === 'KT') {
+                                        tempArr.push(this.mntrtList[list])
+                                    }
+                                }
+                                break
+                            case 'LGU':
+                                for (list in this.mntrtList) {
+                                    if (this.mntrtList[list].pnCarr === 'LGU') {
+                                        tempArr.push(this.mntrtList[list])
+                                    }
+                                }
+                                break
+                        }
+                        if (value !== this.selectedCs.mntCarr) {
+                            this.rsltToReg.pnRegDis = "all"
+                            this.rsltToReg.pnMntRtNo = "all"
+                        }
+                        this.useMntrtListByCarr = tempArr
+                    },
+                    immediate: true
+                },
+                selectedMkr: function (data) {
+                    let mntCarr = this.rsltToReg.mntCarr
+                    switch (this.rsltToReg.mntCarr) {
+                        case 'SKT':
+                            mntCarr = 'S'
+                            break
+                        case 'KT':
+                            mntCarr = 'K'
+                            break
+                        case 'SKT':
+                            mntCarr = 'L'
+                            break
+                    }
+                    let tempArr = []
+                    switch (data) {
+                        case 'SAM':
+                            for (list in this.deviceList) {
+                                if (this.deviceList[list].pnMkr === 'SAM' && this.deviceList[list].pnCarr.includes(mntCarr)) {
+                                    tempArr.push(this.deviceList[list])
+                                }
+                            }
+                            break
+                        case 'LGE':
+                            for (list in this.deviceList) {
+                                if (this.deviceList[list].pnMkr === 'LGE' && this.deviceList[list].pnCarr.includes(mntCarr)) {
+                                    tempArr.push(this.deviceList[list])
+                                }
+                            }
+                            break
+                        case 'APP':
+                            for (list in this.deviceList) {
+                                if (this.deviceList[list].pnMkr === 'APP' && this.deviceList[list].pnCarr.includes(mntCarr)) {
+                                    tempArr.push(this.deviceList[list])
+                                }
+                            }
+                            break
+                        case 'XIA':
+                            for (list in this.deviceList) {
+                                if (this.deviceList[list].pnMkr === 'XIA' && this.deviceList[list].pnCarr.includes(mntCarr)) {
+                                    tempArr.push(this.deviceList[list])
+                                }
+                            }
+                            break
+                    }
+                    this.devListByMkr = tempArr
+                }
+            },
             methods: {
-                // openPicker1() {      // 날짜 검색 없이 구분검색으로 변경으로 인해
-                //     this.$refs.programaticOpen1.showCalendar();
-                // },
-                // getToday() {
-                //     let today = new Date()
-                //     let year = today.getFullYear()
-                //     let month = today.getMonth() + 1
-                //     let day = today.getDate();
-                //
-                //     if (("" + month).length == 1) {
-                //         month = "0" + month
-                //     }
-                //     if (("" + day).length == 1) {
-                //         day = "0" + day
-                //     }
-                //     this.today = "" + year + '-' + month + '-' + day
-                //     this.getBnMbrList()
-                // },
                 getBnMbrList() {
                     var param = {}
                     cf_call("/service/bnMbrList", param, this.getBnMbrListCB)
@@ -239,18 +625,6 @@
                     this.searchList(type)
                 },
                 searchList(data) {
-                    // let t = new Date(this.searchDay)
-                    // let yy = "" + t.getFullYear()
-                    // let mm = t.getMonth() + 1
-                    // let dd = t.getDate();
-                    // if (("" + mm).length == 1) {
-                    //     mm = "0" + mm
-                    // }
-                    // if (("" + dd).length == 1) {
-                    //     dd = "0" + dd
-                    // }
-                    // yy = yy.concat("-", mm, "-", dd)
-
                     let param = {
                         callStCd: this.selectedCallCd,
                         mntCarr: "all",
@@ -269,6 +643,10 @@
                         this.selectedBnMbr = "all"
                     }
                     this.counselList = []
+                    this.modiBtn = false
+                    this.selectedCs = {}
+                    this.rsltToReg = {}
+                    this.modiCallStCd = ''
                     cf_call("/service/getAllCounselList", param, this.searchListCB)
                 },
                 searchListCB(data) {
@@ -282,7 +660,7 @@
                                 data.counselList[idx].pnRegDisNm = '번호이동'
                                 break
                             case "B":
-                                data.counselList[idx].pnRegDisNm = '번호이동'
+                                data.counselList[idx].pnRegDisNm = '기기변경'
                                 break
                             case "C":
                                 data.counselList[idx].pnRegDisNm = '신규가입'
@@ -310,6 +688,200 @@
                     let type = 'page'
                     this.searchList(type)
                 },
+                selectCs(data, idx) {
+                    this.modiBtn = false
+                    if (this.selectedCs.idx != idx) {
+                        this.selectedCs = {}
+                        this.selectedCs = data
+                        this.selectedCs.idx = idx
+                        this.rsltToReg = JSON.parse(JSON.stringify(data))
+                        this.modiCallStCd = this.rsltToReg.callStCd
+
+                        switch (this.selectedCs.pnMkr) {
+                            case "SAM":
+                                this.selectedCs.pnMkrNm = '삼성전자'
+                                break
+                            case "LGE":
+                                this.selectedCs.pnMkrNm = 'LG전자'
+                                break
+                            case "APP":
+                                this.selectedCs.pnMkrNm = '애플'
+                                break
+                            case "XIA":
+                                this.selectedCs.pnMkrNm = '샤오미'
+                                break
+                            case "ETC":
+                                this.selectedCs.pnMkrNm = '기타'
+                                break
+                        }
+
+
+                        this.rsltLayerMntRtInit()
+                    } else {
+                        this.selectedCs = {}
+                        this.rsltToReg = {}
+                        this.modiCallStCd = ''
+                    }
+                },
+                getTrClass(idx) {
+                    if (idx === this.selectedCs.idx) return true
+                    else return false
+                },
+                modiBtnClick() {
+                    this.modiBtn = !this.modiBtn
+                },
+                rsltLayerMntRtInit() {
+
+                    if (!this.selectedCs.idx) {
+                        this.selectedMkr = this.selectedCs.pnMkr
+                    } else {
+                        this.selectedMkr = this.rsltToReg.pnMkr
+                    }
+
+                    let param = {}
+                    cf_call("/service/useAllCarrMntRt", param, this.rsltLayerMntRtInitCB)
+                },
+                rsltLayerMntRtInitCB(data) {
+                    this.mntrtList = data.mntrtList
+                    let temp = ''
+                    this.useMntRtList(this.rsltToReg.mntCarr, this.rsltToReg.pnNetType)
+                    this.rsltLayerDeviceInit()
+                },
+                rsltLayerDeviceInit() {
+                    let carr = ''
+                    switch (this.rsltToReg.mntCarr) {
+                        case "SKT":
+                            carr = 'S'
+                            break
+                        case "KT":
+                            carr = 'K'
+                            break
+                        case "LGU":
+                            carr = 'L'
+                            break
+                    }
+                    let param = {
+                        mntCarr: carr
+                    }
+                    cf_call("/service/allDeviceListByCarr", param, this.rsltLayerDeviceInitCB)
+                },
+                rsltLayerDeviceInitCB(data) {
+                    this.deviceList = data.deviceList
+                    let netType = this.rsltToReg.pnNetType
+                    let tempArr = []
+                    switch (this.selectedMkr) {
+                        case 'SAM':
+                            for (list in this.deviceList) {
+                                if (this.deviceList[list].pnMkr === 'SAM' && this.deviceList[list].pnNetType === netType) {
+                                    tempArr.push(this.deviceList[list])
+                                }
+                            }
+                            break
+                        case 'LGE':
+                            for (list in this.deviceList) {
+                                if (this.deviceList[list].pnMkr === 'LGE' && this.deviceList[list].pnNetType === netType) {
+                                    tempArr.push(this.deviceList[list])
+                                }
+                            }
+                            break
+                        case 'APP':
+                            for (list in this.deviceList) {
+                                if (this.deviceList[list].pnMkr === 'APP' && this.deviceList[list].pnNetType === netType) {
+                                    tempArr.push(this.deviceList[list])
+                                }
+                            }
+                            break
+                        case 'XIA':
+                            for (list in this.deviceList) {
+                                if (this.deviceList[list].pnMkr === 'XIA' && this.deviceList[list].pnNetType === netType) {
+                                    tempArr.push(this.deviceList[list])
+                                }
+                            }
+                            break
+                    }
+                    this.devListByMkr = tempArr
+
+                },
+                useMntRtList(data1, data2) {
+                    let tempArr = []
+                    this.useMntrtListByCarr = []
+                    switch (data1) {
+                        case 'SKT':
+                            for (list in this.mntrtList) {
+                                if (this.mntrtList[list].pnCarr === 'SKT' && this.mntrtList[list].pnNetType === data2) {
+                                    tempArr.push(this.mntrtList[list])
+                                }
+                            }
+                            break
+                        case 'KT':
+                            for (list in this.mntrtList) {
+                                if (this.mntrtList[list].pnCarr === 'KT' && this.mntrtList[list].pnNetType === data2) {
+                                    tempArr.push(this.mntrtList[list])
+                                }
+                            }
+                            break
+                        case 'LGU':
+                            for (list in this.mntrtList) {
+                                if (this.mntrtList[list].pnCarr === 'LGU' && this.mntrtList[list].pnNetType === data2) {
+                                    tempArr.push(this.mntrtList[list])
+                                }
+                            }
+                            break
+                    }
+                    this.useMntrtListByCarr = tempArr
+                },
+                registerRslt() {
+                    let param = {}
+                    if (this.modiCallStCd === 'T') {
+                        param = {
+                            bnMbrId: this.rsltToReg.bnMbrId,
+                            callStCd: this.modiCallStCd,
+                            regMbrPnNo: this.rsltToReg.mbrPnNo,
+                            regCarr: this.rsltToReg.mntCarr,
+                            regType: this.rsltToReg.pnRegDis,
+                            regMntRtNo: this.rsltToReg.pnMntRtNo,
+                            regPnMdlNo: this.rsltToReg.pnMdlNo,
+                            regPd: this.selectedPd,
+                            dealCont: this.rsltTxt,
+                            pnRegYn: 'Y',
+                            callNo: this.rsltToReg.callNo
+                        }
+                        if (!this.selectedPd) {
+                            alert('약정기간을 선택해주세요.')
+                            return
+                        }
+                    } else if (this.modiCallStCd === 'E') {
+                        param = {
+                            bnMbrId: this.rsltToReg.bnMbrId,
+                            callStCd: this.modiCallStCd,
+                            pnRegYn: 'N',
+                            cnclCmnt: this.rsltTxt,
+                            callNo: this.rsltToReg.callNo
+                        }
+                    } else {
+                        alert('개통여부를 선택해주세요.')
+                        return
+                    }
+
+                    // 확인필요
+                    if (this.rsltTxt.length === 0) {
+                        alert('특이사항을 입력해주세요.')
+                        return
+                    }
+                    if (confirm('개통결과를 등록하시겠습니까?')) {
+                        cf_call("/service/registerRslt", param, this.registerRsltCB)
+                    }
+
+                },
+                registerRsltCB(data) {
+                    if (data.succ === "Y") {
+                        alert('결과가 등록되었습니다.')
+                        // this.visitHH = "all"
+                        // this.visitMM = "all"
+                        $('#popLayerServiceResultAdd').popup("hide");
+                        this.getToday()
+                    }
+                }
             }
         })
     </script>
