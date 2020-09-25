@@ -415,20 +415,20 @@
                         </colgroup>
                         <tbody>
                         <tr>
-                            <th>개통담당자</th>
-                            <td colspan="3">
-                                <select class="wPer" v-model="rsltToReg.bnMbrId">
-                                    <option v-for="mbr in bnMbr" :value="mbr.bnMbrId">{{mbr.mbrNm}}</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
                             <th>구분</th>
                             <td colspan="3">
                                 <input type="radio" id="saleSucc" name="saleRslt" value="T" v-model="modiCallStCd">
                                 <label for="saleSucc">개통완료</label>&nbsp;
                                 <input type="radio" id="saleFail" name="saleRslt" value="E" v-model="modiCallStCd">
                                 <label for="saleFail">미개통</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>개통담당자</th>
+                            <td colspan="3">
+                                <select class="wPer" v-model="rsltToReg.bnMbrId">
+                                    <option v-for="mbr in bnMbr" :value="mbr.bnMbrId">{{mbr.mbrNm}}</option>
+                                </select>
                             </td>
                         </tr>
                         <tr>
