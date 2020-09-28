@@ -14,6 +14,7 @@
         t1.PN_STOR,
         (select PN_MSRP FROM TBL011 tt4 where tt4.PN_MDL_NO = t1.PN_MDL_NO) as PN_MSRP,
         (SELECT MBR_NM FROM TBL001 tt3 where tt3.CL_MBR_ID = t1.CL_MBR_ID) as CL_MBR_NM,
+        t1.CL_MBR_ID,
         (SELECT PN_MKR FROM TBL011 pnmkr where pnmkr.PN_MDL_NO = t1.PN_MDL_NO) as PN_MKR,
         DATE_FORMAT(T.VISIT_DT, '%Y-%m-%d %H:%i') as VISIT_DT,
         t1.DEAL_REQ,
@@ -31,8 +32,10 @@
         T.REG_TYPE,         /* 개통한 가입유형 */
         T.REG_MBR_PN_NO,    /* 개통한 번호 */
         T.REG_MNT_RT_NO,    /* 개통한 요금제 */
+        (select PN_MNT_RT_NM FROM TBL010 tt9 where tt9.PN_MNT_RT_NO = T.REG_MNT_RT_NO) as REG_MNT_RT_NM,
         T.REG_CARR,         /* 개통한 통신사 */
         T.REG_PN_MDL_NO,    /* 개통한 모델 */
+        (select PN_MDL_NM FROM TBL011 tt2 where tt2.PN_MDL_NO = T.REG_PN_MDL_NO) as REG_PN_MDL_NM,    /* 개통한 모델이름 */
         T.REG_EXT_SERV_YN,    /* 개통시 부가서비스여부 */
         (SELECT MBR_NM FROM TBL002 tt5 WHERE tt5.BN_MBR_ID = T.BN_MBR_ID) as MBR_NM,
         DATE_FORMAT(T.INP_DT, '%Y-%m-%d %H:%i') as INP_DT,
@@ -128,14 +131,15 @@
     <select id="allDeviceListByCarr" parameterType="DevMap" resultType="DevMap">
         SELECT * from TBL011 t
         where PN_CARR LIKE CONCAT('%', #{mntCarr}, '%') /* 기기 통신사 */
-        order by t.REL_DT desc
+        order by t.REL_DT desc,t.PN_MDL_NO, convert(t.PN_STOR, decimal), convert(t.PN_MSRP, decimal) desc
     </select>
 
     <update id="registerRslt" parameterType="DevMap">
         update `TBL008`
         <if test='callStCd == "T"'>
-            set BN_MBR_ID = #{loginMbrId},
+            set BN_MBR_ID = #{bnMbrId},
                 CALL_ST_CD = #{callStCd},
+                CALL_CONT = #{callCont},
                 DEAL_CONT = #{dealCont},
                 PN_REG_YN = #{pnRegYn},
                 REG_CARR = #{regCarr},
@@ -146,7 +150,7 @@
                 REG_PD = #{regPd},
         </if>
         <if test='callStCd == "E"'>
-            set BN_MBR_ID = #{loginMbrId},
+            set BN_MBR_ID = #{bnMbrId},
                 CALL_ST_CD = #{callStCd},
                 CNCL_CMNT = #{cnclCmnt},
                 PN_REG_YN = #{pnRegYn},
@@ -167,24 +171,14 @@
     <insert id="insertMarketingOne" parameterType="DevMap">
         INSERT INTO TBL009
             (
-                MKT_NO
-                ,DEAL_NO
+                DEAL_NO
                 ,BN_NO
                 ,MBR_NM
                 ,MBR_PN_NO
                 ,PN_REG_DT
             )
         SELECT
-                (SELECT (
-                    IFNULL(
-                        (
-                            SELECT MAX(MKT_NO)
-                            FROM TBL009 D
-                            WHERE MKT_NO LIKE CONCAT((DATE_FORMAT(CURRENT_TIMESTAMP, '%Y%m%d')),'%')
-                        ), CONCAT((DATE_FORMAT(CURRENT_TIMESTAMP, '%Y%m%d')),'0000')
-                    ) + 1 )
-                AS MKT_NO)
-                ,A.DEAL_NO
+                A.DEAL_NO
                 ,A.BN_NO
                 ,(
                     SELECT C.MBR_NM FROM TBL001 C WHERE C.CL_MBR_ID = (
@@ -198,101 +192,47 @@
     </insert>
 
     <select id="selectMarketingList" resultType="DevMap" parameterType="DevMap">
-        (
-            SELECT A.MKT_NO
-                ,A.DEAL_NO
-                ,A.MBR_NM
-                ,A.MBR_PN_NO
-                ,DATE_FORMAT(A.PN_REG_DT, '%Y-%m-%d') AS PN_REG_DT
-                ,(
-                    SELECT CASE
-                    WHEN B.MKT_RSLT = 'S' THEN '성공'
-                    WHEN B.MKT_RSLT = 'F' THEN '실패'
-                    WHEN B.MKT_RSLT = 'P' THEN '진행중'
-                    ELSE '미진행' END MKT_RSLT_TXT
-                    FROM TBL009 B
-                    WHERE B.DEAL_NO = A.DEAL_NO
-                ) AS MKT_RSLT_TXT
-                ,DATE_FORMAT(A.AMD_DT, '%Y-%m-%d %H:%i') AS AMD_DT
-                ,C.REG_CARR AS MNT_CARR
-                ,(
-                    SELECT DISTINCT D.PN_MDL_NM
-                    FROM TBL011 D
-                    WHERE D.PN_MDL_NO = C.REG_PN_MDL_NO
-                ) AS PN_MDL_NM
-            FROM TBL009 A, TBL008 C
-            WHERE A.BN_NO = (SELECT cf_get_bn_no(#{bnMbrId}))
+        SELECT A.DEAL_NO
+            ,A.MBR_NM
+            ,A.MBR_PN_NO
+            ,DATE_FORMAT(A.PN_REG_DT, '%Y-%m-%d') AS PN_REG_DT
+            ,(
+                SELECT CASE
+                WHEN B.MKT_RSLT = 'S' THEN '성공'
+                WHEN B.MKT_RSLT = 'F' THEN '실패'
+                ELSE '미진행' END MKT_RSLT_TXT
+                FROM TBL009 B
+                WHERE B.DEAL_NO = A.DEAL_NO
+            ) AS MKT_RSLT_TXT
+            ,DATE_FORMAT(A.AMD_DT, '%Y-%m-%d %H:%i') AS AMD_DT
+            ,C.REG_CARR AS MNT_CARR
+            ,(
+                SELECT DISTINCT D.PN_MDL_NM
+                FROM TBL011 D
+                WHERE D.PN_MDL_NO = C.REG_PN_MDL_NO
+            ) AS PN_MDL_NM
+        FROM TBL009 A, TBL008 C
+        WHERE A.BN_NO = (SELECT cf_get_bn_no(#{bnMbrId}))
             AND A.DEAL_NO = C.DEAL_NO
             <if test='!(srchType.equals("A"))'>
                 AND A.MKT_RSLT = #{srchType}
             </if>
             AND A.MBR_NM LIKE CONCAT('%', #{srchName}, '%')
             AND PN_REG_DT LIKE CONCAT(#{srchDate}, '%')
-        ) UNION ALL (
-            SELECT E.MKT_NO
-                ,'' AS DEAL_NO
-                ,E.MBR_NM
-                ,E.MBR_PN_NO
-                ,DATE_FORMAT(E.PN_REG_DT, '%Y-%m-%d') AS PN_REG_DT
-                ,(
-                    SELECT CASE
-                    WHEN F.MKT_RSLT = 'S' THEN '성공'
-                    WHEN F.MKT_RSLT = 'F' THEN '실패'
-                    WHEN F.MKT_RSLT = 'P' THEN '진행중'
-                    ELSE '미진행' END MKT_RSLT_TXT
-                    FROM TBL009 F
-                    WHERE F.MKT_NO = E.MKT_NO
-                ) AS MKT_RSLT_TXT
-                ,DATE_FORMAT(E.AMD_DT, '%Y-%m-%d %H:%i') AS AMD_DT
-                ,'' AS MNT_CARR
-                ,'' AS PN_MDL_NM
-            FROM TBL009 E
-            WHERE E.BN_NO = (SELECT cf_get_bn_no(#{bnMbrId}))
-            AND E.DEAL_NO IS NULL
-            <if test='!(srchType.equals("A"))'>
-                AND E.MKT_RSLT = #{srchType}
-            </if>
-            AND E.MBR_NM LIKE CONCAT('%', #{srchName}, '%')
-            AND PN_REG_DT LIKE CONCAT(#{srchDate}, '%')
-        )
     </select>
 
     <select id="selectMarketingOne" resultType="DevMap" parameterType="DevMap">
-        SELECT A.MKT_NO
-            ,A.DEAL_NO
-            ,A.MBR_NM
-            ,DATE_FORMAT(A.PN_REG_DT, '%Y-%m-%d') AS PN_REG_DT
-            ,A.MBR_PN_NO
-            ,A.MKT_RSLT
-            ,(
-                SELECT CASE
-                    WHEN B.MKT_RSLT = 'S' THEN '성공'
-                    WHEN B.MKT_RSLT = 'F' THEN '실패'
-                    WHEN B.MKT_RSLT = 'P' THEN '진행중'
-                    ELSE '미진행' END MKT_RSLT_TXT
-                FROM TBL009 B
-                WHERE B.MKT_NO = A.MKT_NO
-            ) AS MKT_RSLT_TXT
-            ,DATE_FORMAT(A.VISIT_DT, '%Y-%m-%d %H:%i') AS VISIT_DT
-            ,A.PN_CARR
-            ,A.PN_REG_DIS
-            ,(
-                SELECT CASE
-                    WHEN C.PN_REG_DIS = 'A' THEN '번호이동'
-                    WHEN C.PN_REG_DIS = 'B' THEN '기기변경'
-                    WHEN C.PN_REG_DIS = 'C' THEN '신규가입'
-                    ELSE '' END PN_REG_DIS_TXT
-                FROM TBL009 C
-                WHERE C.MKT_NO = A.MKT_NO
-            ) AS PN_REG_DIS_TXT
-            ,A.PN_MNT_RT_NO
-            ,(
-                SELECT D.PN_MNT_RT_NM FROM TBL010 D WHERE D.PN_MNT_RT_NO =  A.PN_MNT_RT_NO
-            ) AS PN_MNT_RT_NM
-            ,A.PN_MDL
-            ,A.MKT_CMNT
-        FROM TBL009 A
-        WHERE MKT_NO = #{mktNo}
+        SELECT MBR_NM
+        ,MBR_PN_NO
+        ,MKT_RSLT
+        ,VISIT_DT
+        ,PN_CARR
+        ,PN_REG_DIS
+        ,PN_MNT_RT_NO
+        ,PN_MDL
+        ,MKT_CMNT
+        FROM TBL009
+        WHERE DEAL_NO = #{dealNo}
     </select>
 
     <select id="selectMonthlyRate" resultType="DevMap" parameterType="DevMap">
@@ -341,45 +281,35 @@
         ,PN_MDL = #{pnMdl}
         ,MKT_CMNT = #{mktCmnt}
         ,AMD_DT = CURRENT_TIMESTAMP
-        WHERE MKT_NO = #{mktNo}
+        WHERE DEAL_NO = #{dealNo}
     </insert>
 
-    <insert id="insertMarketingNew" parameterType="DevMap">
-        INSERT INTO TBL009
-        (
-            MKT_NO
-            ,BN_NO
-            ,MBR_NM
-            ,MBR_PN_NO
-            ,PN_REG_DT
-            ,MKT_RSLT
-            ,VISIT_DT
-            ,PN_CARR
-            ,PN_REG_DIS
-            ,PN_MNT_RT_NO
-            ,PN_MDL
-            ,MKT_CMNT
-        ) VALUES (
-            (SELECT (
-                IFNULL(
-                    (
-                        SELECT MAX(MKT_NO)
-                        FROM TBL009 D
-                        WHERE MKT_NO LIKE CONCAT((DATE_FORMAT(CURRENT_TIMESTAMP, '%Y%m%d')),'%')
-                    ), CONCAT((DATE_FORMAT(CURRENT_TIMESTAMP, '%Y%m%d')),'0000')
-                ) + 1 )
-            AS MKT_NO)
-            ,(SELECT cf_get_bn_no(#{bnMbrId}))
-            ,#{mbrNm}
-            ,#{mbrPnNo}
-            ,#{pnRegDt}
-            ,#{mktRslt}
-            ,#{visitDt}
-            ,#{pnCarr}
-            ,#{pnRegDis}
-            ,#{pnMntRtNo}
-            ,#{pnMdl}
-            ,#{mktCmnt}
+    <insert id="addBlkClient" parameterType="DevMap">
+        insert into `TBL005-B`(
+        BL_NO,
+        DEAL_NO,
+        CL_MBR_ID,
+        BN_NO,
+        RPT_CONT,
+        CLEAR_YN,
+        RPT_DT
+        ) values(
+        (SELECT CONCAT(DATE_FORMAT(SYSDATE() , '%Y%m%d'), IFNULL(LPAD(IFNULL(MAX(SUBSTR(BL_NO,9)),0)+1,4,0), ''))
+        as BL_NO
+        FROM `TBL005-B` as t
+        WHERE BL_NO LIKE CONCAT(DATE_FORMAT(SYSDATE(), '%Y%m%d'),'%')),
+        (select t.DEAL_NO from TBL008 t where t.CALL_NO = #{callNo}),
+        #{clMbrId},
+        (SELECT cf_get_bn_no(#{loginMbrId})),
+        #{cnclCmnt},
+        'N',
+        sysdate()
         )
     </insert>
+
+    <select id="blackYnChk" parameterType="DevMap" resultType="DevMap">
+        select count(*) as cnt from `TBL005-B` tb
+        where CL_MBR_ID =#{clMbrId}
+        and DEAL_NO = (select t.DEAL_NO from TBL008 t where t.CALL_NO = #{callNo})
+    </select>
 </mapper>

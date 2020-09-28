@@ -201,18 +201,32 @@ public class CounselRestController {
 
         counselService.registerRslt(param);
 
-        // 상담 종료 확인
+        String modiYn = "";
+        modiYn = param.getString("modiYn", "");
         String callStatus = param.getString("callStCd");
-        if (callStatus.equals("T")) {
-            // 클라이언트 회원 마케팅 동의 여부 확인 후 마케팅 대상 추가
-            String clientMarketing = counselService.checkClientMarketing(param);
-            if (clientMarketing.equals("Y")) {
-                counselService.newMarketingOne(param);
+        if (!modiYn.equals("Y")){
+            // 상담 종료 확인
+            if (callStatus.equals("T")) {
+                // 클라이언트 회원 마케팅 동의 여부 확인 후 마케팅 대상 추가
+                String clientMarketing = counselService.checkClientMarketing(param);
+                if (clientMarketing.equals("Y")) {
+                    counselService.newMarketingOne(param);
+                }
+            }
+        }
+        if (callStatus.equals("E")){
+            if (param.getBoolean("blackYn")){
+                counselService.addBlkClient(param);
             }
         }
 
         rslt.put("succ", "Y");
         return rslt;
+    }
+
+    @PostMapping("/service/blackYnChk")
+    public DevMap blackYnChk(@RequestBody DevMap param){
+        return counselService.blackYnChk(param);
     }
 
     /**

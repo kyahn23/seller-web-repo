@@ -132,7 +132,7 @@ public class CounselService {
     }
 
     /**
-     * 마케팅 상세 정보 수정
+     * 마케팅 상세 정보 저장
      * @param param
      */
     public void saveMarketingOne(DevMap param) {
@@ -145,4 +145,19 @@ public class CounselService {
      */
     public void saveMarketingNew(DevMap param) { cmmnDao.insert("sellerweb.counsel.insertMarketingNew", param); }
 
+    /**
+     * 블랙리스트 등록여부 확인
+     * @param param
+     */
+    public DevMap blackYnChk(DevMap param) {
+        return cmmnDao.selectOne("sellerweb.counsel.blackYnChk", param);
+    }
+
+    /**
+     *  블랙리스트 등록
+     * @param param
+     */
+    public void addBlkClient(DevMap param) {
+        cmmnDao.insert("sellerweb.counsel.addBlkClient", param);
+    }
 }

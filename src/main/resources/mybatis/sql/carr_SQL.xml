@@ -191,7 +191,7 @@
             AND a.PN_MDL_NM LIKE CONCAT('%', #{searchKey}, '%') ]]>
         </if>
         group by a.PN_MDL_NO, a.PN_STOR
-        order by sellStatus desc, a.REL_DT desc, a.PN_MDL_NO, a.PN_MSRP asc, convert(a.PN_STOR, decimal) DESC
+        order by sellStatus desc, a.REL_DT desc, a.PN_MDL_NO, convert(a.PN_STOR, decimal), convert(a.PN_MSRP, decimal) desc
     </select>
 
     <select id="moveCarrList" parameterType="DevMap" resultType="DevMap">

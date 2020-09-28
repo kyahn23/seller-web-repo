@@ -148,10 +148,14 @@
                                     :class="{ checkedItem: getTrClass(idx) }">
                                     <td class="alignC">{{list.callStNm}}</td>
                                     <td class="alignC">{{list.clMbrNm}}</td>
-                                    <td class="alignC">{{list.mntCarr}}</td>
-                                    <td class="alignC">{{list.pnRegDisNm}}</td>
-                                    <td class="alignC">{{list.pnMntRtNm}}</td>
-                                    <td class="alignC">{{list.pnMdlNm}}</td>
+                                    <td v-if="list.callStCd === 'T'" class="alignC">{{list.regCarr}}</td>
+                                    <td v-else class="alignC">{{list.mntCarr}}</td>
+                                    <td v-if="list.callStCd === 'T'" class="alignC">{{list.regTypeNm}}</td>
+                                    <td v-else class="alignC">{{list.pnRegDisNm}}</td>
+                                    <td v-if="list.callStCd === 'T'" class="alignC">{{list.regMntRtNm}}</td>
+                                    <td v-else class="alignC">{{list.pnMntRtNm}}</td>
+                                    <td v-if="list.callStCd === 'T'" class="alignC">{{list.regPnMdlNm}}</td>
+                                    <td v-else class="alignC">{{list.pnMdlNm}}</td>
                                     <td class="alignC">{{list.mbrNm}}</td>
                                     <td class="alignC">{{list.amdDt}}</td>
                                 </tr>
@@ -297,21 +301,21 @@
                         <tr>
                             <th>구분</th>
                             <td :colspan="modiCallStCd==='T'? 3 : 1">
-                                <input type="radio" id="saleSucc" name="saleRslt" value="T" v-model="modiCallStCd">
+                                <input type="radio" id="saleSucc" name="saleRslt" value="T" v-model="modiCallStCd" :disabled="modiCall">
                                 <label for="saleSucc">개통완료</label>&nbsp;
-                                <input type="radio" id="saleFail" name="saleRslt" value="E" v-model="modiCallStCd">
+                                <input type="radio" id="saleFail" name="saleRslt" value="E" v-model="modiCallStCd" :disabled="modiCall">
                                 <label for="saleFail">미개통</label>
                             </td>
                             <th v-if="modiCallStCd === 'E'">블랙여부</th>
                             <td v-if="modiCallStCd === 'E'">
-                                <input type="checkbox" id="addBlacklist" v-model="blackYn">
+                                <input type="checkbox" id="addBlacklist" v-model="blackYn" @click="blackBtnChked" :disabled="modiCall">
                                 <label for="addBlacklist">등록</label>
                             </td>
                         </tr>
                         <tr>
                             <th>개통담당자</th>
                             <td colspan="3">
-                                <select class="wPer" v-model="rsltToReg.bnMbrId">
+                                <select class="wPer" v-model="rsltToReg.bnMbrId" :disabled="modiCall">
                                     <option v-for="mbr in bnMbr" :value="mbr.bnMbrId">{{mbr.mbrNm}}</option>
                                 </select>
                             </td>
@@ -334,7 +338,7 @@
                                     <option v-for="carr in carrArr" :value="carr.code">{{carr.value}}</option>
                                 </select>
                             </td>
-                            <th>조건</th>
+                            <th>가입유형</th>
                             <td>
                                 <select class="wPer" v-model="rsltToReg.pnRegDis" :disabled='modiCallStCd==="E"'>
                                     <option v-for="type in counselType" :value="type.code">{{type.value}}</option>
@@ -345,6 +349,7 @@
                             <th>요금제</th>
                             <td>
                                 <select class="wPer" v-model="rsltToReg.pnMntRtNo" :disabled='modiCallStCd==="E"'>
+                                    <option value="all">선택</option>
                                     <option v-for="mntrt in useMntrtListByCarr" :value="mntrt.pnMntRtNo">
                                         {{mntrt.pnMntRtNm}}
                                     </option>
@@ -368,7 +373,8 @@
                             <th>모델</th>
                             <td>
                                 <select class="wPer" v-model="rsltToReg.pnMdlNo" :disabled='modiCallStCd==="E"'>
-                                    <option v-for="device in devListByMkr" :value="device.pnMdlNo">{{device.pnMdlNm}}
+                                    <option value="all">선택</option>
+                                    <option v-for="device in devListByMkr" :value="device.pnMdlNo">{{device.pnMdlNm}} {{device.pnStor}}GB
                                     </option>
                                 </select>
                             </td>
@@ -391,7 +397,7 @@
                         <tr>
                             <th>기타사항</th>
                             <td colspan="3" style="height: 85px">
-                                <textarea style="width: 100%; height: 100%;" v-model="rsltTxt" placeholder="특이사항또는 블랙사유를 입력해주세요."></textarea>
+                                <textarea style="width: 100%; height: 100%;" v-model="rsltTxt" placeholder="특이사항또는 블랙사유를 입력해주세요." :disabled="modiCall"></textarea>
                             </td>
                         </tr>
                         </tbody>
@@ -399,7 +405,10 @@
                 </div>
                 <!-- //컨텐츠 -->
                 <div class="btnWrapper">
-                    <a href="#" class="btnL colorBlue" @click="registerRslt"><span>저장</span></a>
+                    <a href="#;" class="btnL"
+                       :class="{disabled : modiCall,
+                                colorBlue :!modiCall}"
+                       @click="registerRslt"><span>저장</span></a>
                 </div>
             </div>
         </div>
@@ -457,7 +466,9 @@
                 bnMbr: [],
                 selectedBnMbr: "all",
                 counselList: [],            // 현재 페이지 상담 리스트
-                blackYn: false,
+                blackYn: false,             // 블랙리스트 추가 버튼
+                blackYnChked:false,         // 블랙리스트 체크시 alert 를 위한 변수
+                modiCall: false,            // 블랙리스트 등록된 회원 수정불가 위한 변수
                 selectedCs: {},
                 rsltToReg: {},
                 modiCallStCd: "",
@@ -465,6 +476,7 @@
                 rsltTxt:"",
                 mntrtList: [],              // 사용중인 전체 요금제 리스트
                 useMntrtListByCarr: [],     //  통신사에 따른 사용 요금제 리스트
+                netTypeByMntrt:"",  // 선택된 요금제에 따른 망 타입
                 deviceList: [],             // 전체 디바이스 목록
                 devListByMkr: [],           // 선택된 제조사에 따른 디바이스 목록
                 pageNo: "1",
@@ -478,7 +490,7 @@
                     handler(value) {
                         this.rsltLayerDeviceInit()
 
-                        let tempArr = []
+                        var tempArr = []
                         this.useMntrtListByCarr = []
                         switch (value) {
                             case 'SKT':
@@ -511,8 +523,21 @@
                     },
                     immediate: true
                 },
+                'rsltToReg.pnMntRtNo':{
+                    handler(value) {
+                        if (value !== this.selectedCs.pnMntRtNo) {
+                            this.selectedMkr = "all"
+                        }
+                        for (list in this.mntrtList){
+                            if(this.mntrtList[list].pnMntRtNo === value){
+                                this.netTypeByMntrt = this.mntrtList[list].pnNetType
+                            }
+                        }
+                    },
+                    immediate: true
+                },
                 selectedMkr: function (data) {
-                    let mntCarr = this.rsltToReg.mntCarr
+                    var mntCarr = this.rsltToReg.mntCarr
                     switch (this.rsltToReg.mntCarr) {
                         case 'SKT':
                             mntCarr = 'S'
@@ -524,36 +549,39 @@
                             mntCarr = 'L'
                             break
                     }
-                    let tempArr = []
+                    var tempArr = []
                     switch (data) {
                         case 'SAM':
                             for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'SAM' && this.deviceList[list].pnCarr.includes(mntCarr)) {
+                                if (this.deviceList[list].pnMkr === 'SAM' && this.deviceList[list].pnCarr.includes(mntCarr) && this.deviceList[list].pnNetType === this.netTypeByMntrt) {
                                     tempArr.push(this.deviceList[list])
                                 }
                             }
                             break
                         case 'LGE':
                             for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'LGE' && this.deviceList[list].pnCarr.includes(mntCarr)) {
+                                if (this.deviceList[list].pnMkr === 'LGE' && this.deviceList[list].pnCarr.includes(mntCarr)&& this.deviceList[list].pnNetType === this.netTypeByMntrt) {
                                     tempArr.push(this.deviceList[list])
                                 }
                             }
                             break
                         case 'APP':
                             for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'APP' && this.deviceList[list].pnCarr.includes(mntCarr)) {
+                                if (this.deviceList[list].pnMkr === 'APP' && this.deviceList[list].pnCarr.includes(mntCarr)&& this.deviceList[list].pnNetType === this.netTypeByMntrt) {
                                     tempArr.push(this.deviceList[list])
                                 }
                             }
                             break
                         case 'XIA':
                             for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'XIA' && this.deviceList[list].pnCarr.includes(mntCarr)) {
+                                if (this.deviceList[list].pnMkr === 'XIA' && this.deviceList[list].pnCarr.includes(mntCarr)&& this.deviceList[list].pnNetType === this.netTypeByMntrt) {
                                     tempArr.push(this.deviceList[list])
                                 }
                             }
                             break
+                    }
+                    if (data !== this.selectedCs.pnMkr){
+                        this.rsltToReg.pnMdlNo = 'all'
                     }
                     this.devListByMkr = tempArr
                 },
@@ -565,7 +593,7 @@
                     // if (this.selectedCs.callStCd !== data){
                     //
                     // }
-                }
+                },
             },
             methods: {
                 getBnMbrList() {
@@ -575,11 +603,11 @@
                 getBnMbrListCB(data) {
                     this.bnMbr = data
 
-                    let type = 'init'
+                    var type = 'init'
                     this.searchList(type)
                 },
                 searchList(data) {
-                    let param = {
+                    var param = {
                         callStCd: this.selectedCallCd,
                         mntCarr: "all",
                         counselType: "all",
@@ -604,7 +632,7 @@
                 },
                 searchListCB(data) {
                     this.pageInfo = data.pageInfo
-                    let tempArr = []
+                    var tempArr = []
 
                     for (idx in data.counselList) {
                         data.counselList[idx].idx = idx
@@ -617,6 +645,17 @@
                                 break
                             case "C":
                                 data.counselList[idx].pnRegDisNm = '신규가입'
+                                break
+                        }
+                        switch (data.counselList[idx].regType) {
+                            case "A":
+                                data.counselList[idx].regTypeNm = '번호이동'
+                                break
+                            case "B":
+                                data.counselList[idx].regTypeNm = '기기변경'
+                                break
+                            case "C":
+                                data.counselList[idx].regTypeNm = '신규가입'
                                 break
                         }
                         switch (data.counselList[idx].callStCd) {
@@ -638,10 +677,13 @@
                 },
                 goToPage(data) {
                     this.pageNo = "" + data
-                    let type = 'page'
+                    var type = 'page'
                     this.searchList(type)
                 },
                 selectCs(data, idx) {
+                    this.modiCall = false    // false - 블랙리스트 등록안된
+                    this.blackYn = false
+
                     if (this.selectedCs.idx != idx) {
                         this.selectedCs = {}
                         this.selectedCs = data
@@ -667,7 +709,6 @@
                                 break
                         }
 
-
                         this.rsltLayerMntRtInit()
                     } else {
                         this.selectedCs = {}
@@ -688,7 +729,7 @@
                     } else {
                         this.rsltTxt = this.rsltToReg.cnclCmnt
                     }
-
+                    this.modiCallYn()
                 },
                 rsltLayerMntRtInit() {
 
@@ -698,17 +739,17 @@
                         this.selectedMkr = this.rsltToReg.pnMkr
                     }
 
-                    let param = {}
+                    var param = {}
                     cf_call("/service/useAllCarrMntRt", param, this.rsltLayerMntRtInitCB)
                 },
                 rsltLayerMntRtInitCB(data) {
                     this.mntrtList = data.mntrtList
-                    let temp = ''
+                    var temp = ''
                     this.useMntRtList(this.rsltToReg.mntCarr, this.rsltToReg.pnNetType)
                     this.rsltLayerDeviceInit()
                 },
                 rsltLayerDeviceInit() {
-                    let carr = ''
+                    var carr = ''
                     switch (this.rsltToReg.mntCarr) {
                         case "SKT":
                             carr = 'S'
@@ -720,15 +761,16 @@
                             carr = 'L'
                             break
                     }
-                    let param = {
+                    var param = {
                         mntCarr: carr
                     }
                     cf_call("/service/allDeviceListByCarr", param, this.rsltLayerDeviceInitCB)
                 },
                 rsltLayerDeviceInitCB(data) {
                     this.deviceList = data.deviceList
-                    let netType = this.rsltToReg.pnNetType
-                    let tempArr = []
+                    var netType = this.rsltToReg.pnNetType
+                    console.log(netType)
+                    var tempArr = []
                     switch (this.selectedMkr) {
                         case 'SAM':
                             for (list in this.deviceList) {
@@ -763,7 +805,7 @@
 
                 },
                 useMntRtList(data1, data2) {
-                    let tempArr = []
+                    var tempArr = []
                     this.useMntrtListByCarr = []
                     switch (data1) {
                         case 'SKT':
@@ -791,9 +833,12 @@
                     this.useMntrtListByCarr = tempArr
                 },
                 registerRslt() {
-                    let param = {}
+                    if (this.modiCall) return
+
+                    var param = {}
                     if (this.modiCallStCd === 'T') {
                         param = {
+                            modiYn : 'Y',
                             callStCd: this.modiCallStCd,
                             bnMbrId: this.rsltToReg.bnMbrId,
                             regMbrPnNo: this.rsltToReg.mbrPnNo,
@@ -802,18 +847,43 @@
                             regMntRtNo: this.rsltToReg.pnMntRtNo,
                             regPnMdlNo: this.rsltToReg.pnMdlNo,
                             regPd: this.rsltToReg.regPd,
-                            dealCont: this.rsltToReg.dealCont,
+                            callCont: this.rsltToReg.callCont,
+                            dealCont: this.rsltTxt,
                             pnRegYn: 'Y',
                             callNo: this.rsltToReg.callNo
                         }
                     } else if (this.modiCallStCd === 'E') {
                         param = {
+                            modiYn : 'Y',
                             bnMbrId: this.rsltToReg.bnMbrId,
                             callStCd: this.modiCallStCd,
+                            blackYn : this.blackYn,
                             pnRegYn: 'N',
                             cnclCmnt: this.rsltTxt,
-                            callNo: this.rsltToReg.callNo
+                            callNo: this.rsltToReg.callNo,
+                            clMbrId : this.rsltToReg.clMbrId
                         }
+                    }
+
+                    if (param.regMbrPnNo === 'all'){
+                        alert('통신사를 선택해주세요.')
+                        return
+                    }
+                    if (param.regType === 'all'){
+                        alert('가입유형을 선택해주세요.')
+                        return
+                    }
+                    if (param.regMntRtNo === 'all'){
+                        alert('요금제를 선택해주세요.')
+                        return
+                    }
+                    if (this.selectedMkr === 'all'){
+                        alert('휴대폰 제조사를 선택해주세요.')
+                        return
+                    }
+                    if (param.regPnMdlNo === 'all'){
+                        alert('휴대폰을 선택해주세요.')
+                        return
                     }
 
                     // 확인필요
@@ -823,7 +893,7 @@
                     }
                     if (confirm('개통결과를 수정하시겠습니까?')) {
                         console.log(param)
-                        // cf_call("/service/registerRslt", param, this.registerRsltCB)
+                        cf_call("/service/registerRslt", param, this.registerRsltCB)
                     }
 
                 },
@@ -833,8 +903,32 @@
                         // this.visitHH = "all"
                         // this.visitMM = "all"
                         $('#popLayerServiceResultAdd').popup("hide");
+                        this.modiCall = false
                         this.getBnMbrList()
                     }
+                },
+                blackBtnChked: function(){
+                    if (!this.blackYnChked){
+                        this.blackYnChked = true
+                        alert('블랙리스트에 등록될 시 정보 수정이 불가능합니다.')
+                    }
+                },
+                modiCallYn: function(){
+                    var param = {
+                        callNo: this.selectedCs.callNo,
+                        clMbrId: this.selectedCs.clMbrId,
+                    }
+                    cf_call("/service/blackYnChk", param,this.modiCallYnCB)
+                },
+                modiCallYnCB: function(data){
+                    if (data.cnt > 0){
+                        this.modiCall = true    // true - 블랙리스트 등록된 회원
+                        this.blackYn = true
+                    } else {
+                        this.modiCall = false    // false - 블랙리스트 등록안된
+                        this.blackYn = false
+                    }
+
                 }
             }
         })
