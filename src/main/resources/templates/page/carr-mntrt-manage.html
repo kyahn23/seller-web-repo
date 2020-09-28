@@ -168,7 +168,7 @@
                 this.searchList()
             },
             methods: {
-                searchList() {
+                searchList: function() {
                     var param = {
                         carr: this.carr,
                         selectedNetType: this.selectedNetType,
@@ -179,10 +179,10 @@
                     this.allSelected = false
                     cf_call("/carr/getMntrtList", param, this.searchListCB)
                 },
-                searchListCB(data) {
+                searchListCB: function(data) {
                     this.mntrtList = data.mntrtList
                 },
-                chkRowClick(data) {
+                chkRowClick: function(data) {
                     this.allSelected = false
 
                     if (!this.selectedMntNo.includes(data.pnMntRtNo)) {
@@ -192,10 +192,10 @@
                         if (idx > -1) this.selectedMntNo.splice(idx, 1)
                     }
                 },
-                chkboxClick() {
+                chkboxClick: function() {
                     this.allSelected = false
                 },
-                checkAll() {
+                checkAll: function() {
                     this.selectedMntNo = []
 
                     if (this.allSelected) {
@@ -205,7 +205,7 @@
                         }
                     }
                 },
-                useMntrt() {
+                useMntrt: function() {
                     if (this.selectedMntNo.length !== 0) {
                         if(confirm('선택하신요금제를 사용 하시겠습니까?')){
                             if (!this.mntValidate('use')) {
@@ -223,12 +223,12 @@
                     } else alert("선택된 항목이 없습니다.")
 
                 },
-                useMntrtCB(data) {
+                useMntrtCB: function(data) {
                     if (data.succ === "Y") {
                         this.searchList()
                     }
                 },
-                nUseMntrt() {
+                nUseMntrt: function() {
                     if (this.selectedMntNo.length !== 0) {
                         if(confirm('선택한 요금제가 판매중일 경우 미사용시\n판매중인 기기는 모두 판매가중지됩니다.\n\n선택하신요금제를 미사용 하시겠습니까?')){
                             if (!this.mntValidate('nUse')) {
@@ -246,12 +246,12 @@
                         }
                     } else alert("선택된 항목이 없습니다.")
                 },
-                nUseMntrtCB(data) {
+                nUseMntrtCB: function(data) {
                     if (data.succ === "Y") {
                         this.searchList()
                     }
                 },
-                mntValidate(chk) {
+                mntValidate: function(chk) {
                     let nUseChk = false      // 초기값 false null값이 있는것이 chk될경우 true
                     let useChk = false     // 초기값 false null값이 없는것이 chk될경우 true
                     this.validateArr = []

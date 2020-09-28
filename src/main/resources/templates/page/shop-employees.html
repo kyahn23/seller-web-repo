@@ -211,7 +211,11 @@
                                 <tbody v-if="empList.length">
                                 <tr
                                     v-for="(empInfo, index) in empList"
-                                    :style="{ color: infoStyle(empInfo), fontWeight: infoMaster(empInfo) }"
+                                    :class="{ checkedItem: getTrClass(index) }"
+                                    :style="{
+                                        color: infoStyle(empInfo),
+                                        fontWeight: infoMaster(empInfo)
+                                    }"
                                 >
                                     <td class="alignC" :title="infoTitle(empInfo)">{{ infoText(empInfo) }}</td>
                                     <td class="alignC" :title="empInfo.mbrNm" @click="setTrIndex(index)">{{ empInfo.mbrNm }}</td>
@@ -365,7 +369,7 @@
 
 <div layout:fragment="layer">
     <!-- 팝업: 직원등록 -->
-    <div class="layerWrapper layerSizeM" id="popLayerEmployeeAdd" style="display:inherit !important">
+    <div class="layerWrapper layerSizeM" id="popLayerEmployeeAdd" style="display:inline-block !important">
         <div class="layerHeader">
             <strong>직원등록</strong>
             <a href="#" class="btnClose popLayerEmployeeAdd_close"><img th:src="@{/images/cmmn/btn-layer-close.png}"
@@ -480,8 +484,8 @@
         });
 
         var app = new Vue({
-            el:"#app",
-            data:{
+            el: "#app",
+            data: {
                 srchCond: {
                     srchOptn: 'ALL',
                     srchTerm: ''
@@ -513,38 +517,38 @@
             },
             watch: {},
             methods: {
-                initPage() {
+                initPage: function() {
                     this.selEmp = -1
                     this.checkAll = false
                     this.initSrchCond()
                     this.getEmpList()
                 },
-                initSrchCond() {
+                initSrchCond: function() {
                     this.srchCond = {
                         srchOptn: 'ALL',
                         srchTerm: ''
                     }
                 },
-                initModiEmp() {
+                initModiEmp: function() {
                     this.newSellerPrmsInfo.sellerPrms = ''
                     this.newPwdInfo.newPwdStr = ''
                     this.newPwdInfo.newPwdChk = false
                     this.newPwdInfo.newPwdDirty = false
                 },
-                getEmpList() {
+                getEmpList: function() {
                     var param = {
                         srchOptn: this.srchCond.srchOptn,
                         srchTerm: this.srchCond.srchTerm
                     }
                     cf_call('/shop/getEmpList', param, this.getEmpListCB)
                 },
-                getEmpListCB(rslt) {
+                getEmpListCB: function(rslt) {
                     var rsltList = rslt.empList
                     if (!cf_isEmpty(rsltList)) {
                         this.empList = rsltList
                     }
                 },
-                infoStyle(empInfo) {
+                infoStyle: function(empInfo) {
                     var colorSwitch = ''
                     if (empInfo.lginAvlYn === 'N') {
                         colorSwitch = 'red'
@@ -557,14 +561,14 @@
                     }
                     return colorSwitch
                 },
-                infoMaster(empInfo) {
+                infoMaster: function(empInfo) {
                     var fontWeight = ''
                     if (empInfo.mstMbrYn === 'Y') {
                         fontWeight = 'bold'
                     }
                     return fontWeight
                 },
-                infoTitle(empInfo) {
+                infoTitle: function(empInfo) {
                     var titleStr = "선택"
                     if (empInfo.lginAvlYn === 'N') {
                         titleStr = '로그인 제한'
@@ -580,7 +584,7 @@
                     }
                     return titleStr
                 },
-                infoText(empInfo) {
+                infoText: function(empInfo) {
                     var textStr = "직원"
                     if (empInfo.lginAvlYn === 'N') {
                         textStr = '제한'
@@ -596,7 +600,7 @@
                     }
                     return textStr
                 },
-                setTrIndex(idx) {
+                setTrIndex: function(idx) {
                     if (this.empList[idx].mstMbrYn === 'Y') {
                         alert('마스터 회원의 정보수정은 불가합니다.')
                         this.selEmp = -1
@@ -613,11 +617,19 @@
                         this.newSellerPrmsInfo.sellerPrms = this.empList[idx].sellerPrms
                     }
                 },
-                modiEmpPwdChk($e) {
+                getTrClass: function(idx) {
+                    if (this.empList[idx].mstMbrYn === 'Y') {
+                        return false
+                    } else if (cf_isEmpty(this.empList[idx].authDt)) {
+                        return false
+                    }
+                    return (this.selEmp === idx)
+                },
+                modiEmpPwdChk: function($e) {
                     this.newPwdInfo.newPwdDirty = true
                     this.newPwdInfo.newPwdChk = this.newPwdInfo.newPwdStr === $e.target.value
                 },
-                modiEmpPwd() {
+                modiEmpPwd: function() {
                     if (!this.modiDisabled) {
                         if (this.selEmp === -1) {
                             alert('정보수정 할 직원을 선택하세요.')
@@ -635,7 +647,7 @@
                         }
                     }
                 },
-                modiEmpPwdCB(rslt) {
+                modiEmpPwdCB: function(rslt) {
                     if (rslt.rsltStat === 'SUCC') {
                         alert('해당 직원의 비밀번호가 초기화 되었습니다.')
                         this.newPwdInfo = {
@@ -647,7 +659,7 @@
                         this.initPage()
                     }
                 },
-                modiEmpPrms() {
+                modiEmpPrms: function() {
                     if (!this.modiDisabled) {
                         if (this.selEmp === -1) {
                             alert('정보수정 할 직원을 선택하세요.')
@@ -667,14 +679,14 @@
                         }
                     }
                 },
-                modiEmpPrmsCB(rslt) {
+                modiEmpPrmsCB: function(rslt) {
                     if (rslt.rsltStat === 'SUCC') {
                         alert('해당 직원의 권한이 변경되었습니다.')
                         this.newSellerPrmsInfo.sellerPrms = 'READONLY'
                         this.initPage()
                     }
                 },
-                addNewEmpInfo() {
+                addNewEmpInfo: function() {
                     if (
                         this.newEmpInfo.emailId.trim() === ''
                         || this.newEmpInfo.emailDomain.trim() === ''
@@ -693,7 +705,7 @@
                         cf_call('/shop/addEmpInfo', param, this.addNewEmpInfoCB)
                     }
                 },
-                addNewEmpInfoCB(rslt) {
+                addNewEmpInfoCB: function(rslt) {
                     if (rslt.rsltStat === 'SUCC') {
                         alert('신규 직원이 추가되었습니다.')
 
@@ -712,16 +724,16 @@
                         this.initPage()
                     }
                 },
-                setChkMbrId() {
+                setChkMbrId: function() {
                     this.newEmpInfo.idChk = false
                 },
-                chkMbrId() {
+                chkMbrId: function() {
                     var param = {
                         mbrId: this.newBnMbrId
                     }
                     cf_call('/member/checkId', param, this.chkMbrIdCB);
                 },
-                chkMbrIdCB(rslt) {
+                chkMbrIdCB: function(rslt) {
                     var mbrIdChk = rslt.chkMbrId
                     if (mbrIdChk === '0') {
                         alert('사용 가능한 이메일입니다.')
@@ -734,23 +746,23 @@
                         $('#emailDomainSel')[0].value = ''
                     }
                 },
-                newEmpPwdChk($e) {
+                newEmpPwdChk: function($e) {
                     this.newEmpInfo.pwDirty = true
                     this.newEmpInfo.pwChk = this.newEmpInfo.pwdNo === $e.target.value
                 }
             },
             computed: {
-                newBnMbrId() {
+                newBnMbrId: function() {
                     return this.newEmpInfo.emailId + '@' + this.newEmpInfo.emailDomain
                 },
-                srchTermSwitch() {
+                srchTermSwitch: function() {
                     if (this.srchCond.srchOptn === 'ALL') {
                         this.srchCond.srchTerm = ''
                         return true
                     }
                     return false
                 },
-                modiDisabled() {
+                modiDisabled: function() {
                     return this.selEmp === -1;
                 }
             }

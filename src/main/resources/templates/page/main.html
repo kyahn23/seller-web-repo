@@ -169,7 +169,7 @@
 
 <div layout:fragment="layer">
     <!-- 팝업: 비밀번호 변경 -->
-    <div class="layerWrapper layerSizeML" id="popLayerInitPw" style="display:inherit !important">
+    <div class="layerWrapper layerSizeML" id="popLayerInitPw" style="display:inline-block !important">
         <div class="layerHeader" style="width: 95.2% !important;">
             <strong>비밀번호 변경</strong>
         </div>
@@ -250,7 +250,7 @@
         });
 
         var app = new Vue({
-            el:"#app",
+            el: "#app",
             data: {
                 mstMbrYn: '[[${session.mstMbrYn}]]',
                 pwnoInitYn: '[[${session.pwnoInitYn}]]',
@@ -262,16 +262,16 @@
                 this.pwnoInit()
             },
             methods: {
-                pwnoInit() {
+                pwnoInit: function() {
                     if (this.pwnoInitYn === 'Y') {
                         $('#popLayerInitPw').popup('show')
                     }
                 },
-                newPwdChk($e) {
+                newPwdChk: function($e) {
                     this.pwDirty = true
                     this.pwChk = this.newPwdNo === $e.target.value
                 },
-                updatePwd() {
+                updatePwd: function() {
                     if (!this.pwChk && this.pwDirty) {
                         alert('비밀번호 확인 후 진행해주세요.')
                     } else {
@@ -282,7 +282,7 @@
                         cf_call('/member/updateMbrPw', param, this.updatePwdCB)
                     }
                 },
-                updatePwdCB(rslt) {
+                updatePwdCB: function(rslt) {
                     if (rslt.rsltStat === 'SUCC') {
                         alert('비밀번호 변경이 완료되었습니다.\n새 비밀번호로 로그인 해주세요.')
                         window.location.href = "/logout"
@@ -290,7 +290,7 @@
                 }
             },
             computed: {
-                mstMbrTxt() {
+                mstMbrTxt: function() {
                     if (this.mstMbrYn === 'Y') return '대표'
                     return '직원'
                 }

@@ -373,7 +373,7 @@
 
 <div layout:fragment="layer">
     <!-- 팝업: 공지사항 등록 -->
-    <div class="layerWrapper layerSizeL" id="popLayerNoticeAdd" style="display:inherit !important">
+    <div class="layerWrapper layerSizeL" id="popLayerNoticeAdd" style="display:inline-block !important">
         <div class="layerHeader">
             <strong>공지사항 등록</strong>
             <a href="#" class="btnClose popLayerNoticeAdd_close"><img th:src="@{/images/cmmn/btn-layer-close.png}" alt="창닫기"></a>
@@ -480,8 +480,9 @@
 
 <div layout:fragment="script">
     <script type="text/javascript">
-        var g_cxt = '/'
-        g_cxt = g_cxt.substring(0, g_cxt.length-1);
+        if (Number.parseFloat === undefined) {
+            Number.parseFloat = parseFloat;
+        }
 
         $(function () {
             if ($(".layerWrapper").length) {
@@ -491,8 +492,8 @@
         });
 
         var app = new Vue({
-            el:"#app",
-            data:{
+            el: "#app",
+            data: {
                 initDone: false,
                 srchCond: {
                     srchOptn: 'ALL',
@@ -520,13 +521,13 @@
             },
             watch: {},
             filters: {
-                mbSize(value) {
+                mbSize: function(value) {
                     if (!value) return ''
                     return (Number.parseFloat(value) / 1000000).toFixed(2)
                 }
             },
             methods: {
-                initPage() {
+                initPage: function() {
                     this.selBrd = -1
                     this.checkAll = false
                     this.initChkBrdList()
@@ -535,25 +536,25 @@
                     this.initBnBrdOne()
                     this.initPop()
                 },
-                initSrchCond() {
+                initSrchCond: function() {
                     this.srchCond = {
                         srchOptn: 'ALL',
                         srchTerm: ''
                     }
                 },
-                initChkBrdList() {
+                initChkBrdList: function() {
                     this.chkBnBrdList = []
                 },
-                initBnBrdOne() {
+                initBnBrdOne: function() {
                     this.bnBrdOne = {}
                     this.initBrdOneFileList()
                 },
-                initBrdOneFileList() {
+                initBrdOneFileList: function() {
                     this.brdOneCurFileInfo = []
                     this.brdOneNewFileInfo = []
                     this.brdOneFileShow = false
                 },
-                initPop() {
+                initPop: function() {
                     this.newBnBrd = {
                         brdTitle: '',
                         brdCont: ''
@@ -565,27 +566,27 @@
                     }
                     this.showPopFilePlus = true
                 },
-                getBnBrdList() {
+                getBnBrdList: function() {
                     var param = {
                         srchOptn: this.srchCond.srchOptn,
                         srchTerm: this.srchCond.srchTerm
                     }
                     cf_call('/shop/getBnBrdList', param, this.getBnBrdListCB)
                 },
-                getBnBrdListCB(rslt) {
+                getBnBrdListCB: function(rslt) {
                     if (rslt.bnBrdList !== undefined) {
                         this.bnBrdList = rslt.bnBrdList
                     }
                     this.initDone = true
                 },
-                rowStyle(bnBrdRow) {
+                rowStyle: function(bnBrdRow) {
                     var colorSwitch = ''
                     if (bnBrdRow.showYn === 'N') {
                         colorSwitch = 'lightgray'
                     }
                     return colorSwitch
                 },
-                setTrIndex(idx) {
+                setTrIndex: function(idx) {
                     if (idx === this.selBrd) {
                         this.selBrd = -1
                         this.initBnBrdOne()
@@ -594,10 +595,10 @@
                         this.getBnBrdOne()
                     }
                 },
-                getTrClass(idx) {
+                getTrClass: function(idx) {
                     return (this.selBrd === idx)
                 },
-                onCheckAll() {
+                onCheckAll: function() {
                     if (this.checkAll) {
                         this.initChkBrdList()
                         for (var i=0; i < this.bnBrdList.length; i++) {
@@ -607,7 +608,7 @@
                         this.initChkBrdList()
                     }
                 },
-                onCheckOne() {
+                onCheckOne: function() {
                     var chkCnt = this.chkBnBrdList.length
                     var lstCnt = this.bnBrdList.length
                     if (chkCnt === lstCnt) {
@@ -616,13 +617,13 @@
                         this.checkAll = false
                     }
                 },
-                showYnTxt(showYn) {
+                showYnTxt: function(showYn) {
                     if (showYn === 'Y') {
                         return '게시'
                     }
                     return '숨김'
                 },
-                modiBnBrdHide() {
+                modiBnBrdHide: function() {
                     if (this.chkBnBrdList.length) {
                         var param = {
                             brdNoList: this.chkBnBrdList
@@ -632,19 +633,19 @@
                         alert('숨김 처리 할 글을 체크하세요.')
                     }
                 },
-                modiBnBrdHideCB(rslt) {
+                modiBnBrdHideCB: function(rslt) {
                     if (rslt.rsltStat === 'SUCC') {
                         alert('해당 글이 숨김 처리 되었습니다.')
                         this.initPage()
                     }
                 },
-                getBnBrdOne() {
+                getBnBrdOne: function() {
                     var param = {
                         brdNo: this.bnBrdList[this.selBrd].brdNo
                     }
                     cf_call('/shop/getBnBrdOne', param, this.getBnBrdOneCB)
                 },
-                getBnBrdOneCB(rslt) {
+                getBnBrdOneCB: function(rslt) {
                     if (rslt !== undefined) {
                         this.brdOneFileShow = true
                         this.bnBrdOne = rslt.bnBrdOne
@@ -658,27 +659,27 @@
                         this.showFileInput2 = false
                     }
                 },
-                brdOneDisabled(brdWriterId) {
+                brdOneDisabled: function(brdWriterId) {
                     return brdWriterId !== '[[${session.bnMbrId}]]'
                 },
-                getFile(fileName) {
+                getFile: function(fileName) {
                     cf_downloadFile(fileName)
                 },
-                toggleFilePlus1() {
+                toggleFilePlus1: function() {
                     this.showFilePlus1 = !this.showFilePlus1
                 },
-                toggleFilePlus2() {
+                toggleFilePlus2: function() {
                     this.showFilePlus2 = !this.showFilePlus2
                     if (this.showFilePlus2) this.showFileInput2 =  false
                 },
-                toggleFileInput2() {
+                toggleFileInput2: function() {
                     this.showFileInput2 = !this.showFileInput2
                     if (this.showFileInput2) this.showFilePlus2 = false
                 },
-                togglePopFilePlus() {
+                togglePopFilePlus: function() {
                     this.showPopFilePlus = !this.showPopFilePlus
                 },
-                delOneFile(storFilNm) {
+                delOneFile: function(storFilNm) {
                     for (var i=0; i < this.brdOneCurFileInfo.length; i++) {
                         if (this.brdOneCurFileInfo[i].storFilNm === storFilNm) {
                             var delFile = this.brdOneCurFileInfo.splice(i, 1)[0]
@@ -688,7 +689,7 @@
                     }
                     this.toggleFilePlus2()
                 },
-                modiBnBrdOne() {
+                modiBnBrdOne: function() {
                     if (!this.brdOneDisabled(this.bnBrdOne.brdWriterId)) {
                         if (this.bnBrdOne.brdTitle.trim() === '') {
                             alert('공지사항 제목을 입력하세요.')
@@ -716,13 +717,13 @@
 
                     }
                 },
-                modiBnBrdOneCB(rslt) {
+                modiBnBrdOneCB: function(rslt) {
                     if (rslt.rsltStat === 'SUCC') {
                         alert('해당 글이 수정 되었습니다.')
                         this.initPage()
                     }
                 },
-                addBnBrd() {
+                addBnBrd: function() {
                     if (this.newBnBrd.brdTitle.trim() === '') {
                         alert('공지사항 제목을 입력하세요.')
                     } else if (this.newBnBrd.brdCont.trim() === '') {
@@ -743,7 +744,7 @@
                         cf_callWithFiles('/shop/addBnBrd', fileList, param, this.addBnBrdCB)
                     }
                 },
-                addBnBrdCB(rslt) {
+                addBnBrdCB: function(rslt) {
                     if (rslt.rsltStat === 'SUCC') {
                         alert('공지사항이 작성되었습니다.')
                         $('#popLayerNoticeAdd').popup('hide')
@@ -752,7 +753,7 @@
                 }
             },
             computed: {
-                srchTermSwitch() {
+                srchTermSwitch: function() {
                     if (this.srchCond.srchOptn === 'ALL') {
                         this.srchCond.srchTerm = ''
                         return true

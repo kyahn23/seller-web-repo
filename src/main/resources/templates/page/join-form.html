@@ -301,12 +301,11 @@
                                                     class="wZipcode"
                                                     style="width: 120px !important;"
                                                     placeholder="우편번호"
-                                                    v-model="daumPostcodeRslt.zonecode"
                                                 >
                                                 <a
                                                     href="#;"
-                                                    class="btnS colorWhite popLayerDaumPostcodeSrch_open"
-                                                    onclick="layer_execDaumPostcode(); return false;"
+                                                    class="btnS colorWhite"
+                                                    @click="openDaumPostCode"
                                                 >
                                                     <span>주소 검색</span>
                                                 </a>
@@ -329,6 +328,8 @@
                                                         :value="bnAddrBldg"
                                                         @input="bnAddrBldg = $event.target.value"
                                                     >
+                                                    <input type="hidden" id="bnAddrSido">
+                                                    <input type="hidden" id="bnAddrSigg">
                                                 </p>
                                             </td>
                                         </tr>
@@ -397,30 +398,6 @@
     <!-- //footer -->
 </div>
 
-<div layout:fragment="layer">
-    <!-- 팝업: 우편번호 찾기 -->
-    <div class="layerWrapper layerSizeM" id="popLayerDaumPostcodeSrch" style="display:inherit !important;">
-        <div class="layerHeader">
-            <strong>우편번호 찾기</strong>
-            <a href="#" class="btnClose popLayerDaumPostcodeSrch_close">
-                <img th:src="@{/images/cmmn/btn-layer-close.png}" alt="창닫기">
-            </a>
-        </div>
-        <div class="layerContainer" style="display: inline-block;">
-            <div class="layerContent">
-
-                <!-- 컨텐츠 -->
-                <div class="guidanceWrapper">
-                    <vue-daum-postcode style="width: 559px; height: 300px;" @complete="daumPostcodeCB($event)" />
-                </div>
-                <!-- //컨텐츠 -->
-            </div>
-
-        </div>
-    </div>
-    <!-- //팝업: 우편번호 찾기 -->
-</div>
-
 <div layout:fragment="script">
     <script type="text/javascript">
         document.cookie = '_TI_NID=1; SameSite=None; Secure';
@@ -432,27 +409,43 @@
         // document.cookie = 'safeCookie7="webid"; SameSite=Lax;';
     </script>
 
-    <script type="text/javascript" th:src="@{/js/lib/vue-daum-postcode/index.js}"></script>
+    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
-    <script type="text/javascript">
-        var g_cxt = '/'
-        g_cxt = g_cxt.substring(0, g_cxt.length-1);
-
-        var mktYnIdx = location.search.indexOf('?')+5
+    <script type="text/javascript">var mktYnIdx = location.search.indexOf('?')+5
         var mktYn = location.search.substring(mktYnIdx, mktYnIdx+1)
         if (mktYn === undefined || (mktYn !== 'Y' && mktYn !== 'N')) {
             alert('잘못된 접근입니다.')
             window.location.href = "/"
         }
 
-        $(function () {
-            if ($(".layerWrapper").length) {
-                $('#popLayerDaumPostcodeSrch').popup();
-            }
-        });
+        function execDaumPostcode() {
+            new daum.Postcode({
+                oncomplete: function(data) {
+                    var roadAddr = data.roadAddress;
+                    var extraRoadAddr = '';
+
+                    if(data.bname !== '' && /[동|로|가]$/g.test(data.bname)){
+                        extraRoadAddr += data.bname;
+                    }
+
+                    if(data.buildingName !== '' && data.apartment === 'Y'){
+                        extraRoadAddr += (extraRoadAddr !== '' ? ', ' + data.buildingName : data.buildingName);
+                    }
+                    if(extraRoadAddr !== ''){
+                        extraRoadAddr = ' (' + extraRoadAddr + ')';
+                    }
+
+                    document.getElementById('bnZipcode').value = data.zonecode;
+                    document.getElementById('bnAddrSido').value = data.sido;
+                    document.getElementById('bnAddrSigg').value = data.sigungu;
+                    document.getElementById("bnAddrStr").value = roadAddr;
+                    document.getElementById("bnAddrBldg").value = extraRoadAddr;
+                }
+            }).open();
+        }
 
         var app = new Vue({
-            el:"#app",
+            el: "#app",
             data: {
                 shopInfo: {
                     ownerNm: '',
@@ -468,7 +461,6 @@
                 idChk: false,
                 bnRegNo: '',
                 cardAttm: false,
-                daumPostcodeRslt: {},
                 bnAddrStr: '',
                 bnAddrBldg: '',
                 bnPnNo: '',
@@ -478,22 +470,23 @@
                 uploadTgtNm: ''
             },
             watch: {
-                bnPnNo (newPhoneNo) {
+                bnPnNo: function (newPhoneNo) {
                     if (newPhoneNo.length === 2) {
                         this.setPhoneMask(newPhoneNo)
                     }
                 }
             },
             methods: {
-                addNewBnInfo() {
+                openDaumPostCode: function() {
+                    execDaumPostcode()
+                },
+                addNewBnInfo: function() {
                     if (
                         this.emailId.trim() === ''
                         || this.emailDomain.trim() === ''
                         || this.shopInfo.ownerNm.trim() === ''
                         || this.shopInfo.bnNm.trim() === ''
                         || this.bnRegNo.trim() === ''
-                        || this.shopInfo.bnAddrSido.trim() === ''
-                        || this.shopInfo.bnAddrSigg.trim() === ''
                         || this.bnAddrBldg.trim() === ''
                         || this.bnPnNo.trim() === ''
                     ) {
@@ -506,28 +499,30 @@
                         var param = this.shopInfo
                         param.mstMbrId = this.newBnMbrId
                         param.bnRegNo = this.bnRegNoND
+                        param.bnAddrSido = $('#bnAddrSido')[0].value
+                        param.bnAddrSigg = $('#bnAddrSigg')[0].value
                         param.bnAddrDtl = this.bnAddrFull
                         param.bnPnNo = this.bnPnNoND
 
                         cf_call('/member/newMstAcc', param, this.addNewBnInfoCB)
                     }
                 },
-                addNewBnInfoCB(rslt) {
+                addNewBnInfoCB: function(rslt) {
                     if (rslt.rsltStat === 'SUCC') {
                         alert('가입이 완료되었습니다.\n가입하신 이메일로 전송된 임시 비밀번호로 로그인 해주세요.')
                         window.location.href = "/"
                     }
                 },
-                setChkMbrId() {
+                setChkMbrId: function() {
                     this.idChk = false
                 },
-                chkMbrId() {
+                chkMbrId: function() {
                     var param = {
                         mbrId: this.newBnMbrId
                     }
                     cf_call('/member/checkId', param, this.chkMbrIdCB);
                 },
-                uploadImage(tgtNm) {
+                uploadImage: function(tgtNm) {
                     this.uploadTgtNm = tgtNm
                     var fileList = []
                     var param = {}
@@ -537,19 +532,19 @@
                         cf_callWithFiles("/upload/image", fileList, param, this.uploadImageCB)
                     }
                 },
-                uploadImageCB(rslt) {
+                uploadImageCB: function(rslt) {
                     if (this.uploadTgtNm === 'bnRegCard') {
                         this.shopInfo.bnRegCard = rslt.filNm
                         $("#bnRegCard")[0].value = ''
                         this.cardAttm = true
-                    }``
+                    }
                     if (this.uploadTgtNm === 'bnImg') {
                         this.shopInfo.bnImg = rslt.filNm
                         $("#bnImg")[0].value = ''
                     }
                     alert('사진이 업로드 되었습니다.')
                 },
-                chkMbrIdCB(rslt) {
+                chkMbrIdCB: function(rslt) {
                     var mbrIdChk = rslt.chkMbrId
                     if (mbrIdChk === '0') {
                         alert('사용 가능한 이메일입니다.')
@@ -562,14 +557,7 @@
                         $('#emailDomainSel')[0].value = ''
                     }
                 },
-                daumPostcodeCB(e) {
-                    this.daumPostcodeRslt = e
-                    this.shopInfo.bnAddrSido = this.daumPostcodeRslt.sido
-                    this.shopInfo.bnAddrSigg = this.daumPostcodeRslt.sigungu
-                    this.bnAddrStr = this.daumPostcodeRslt.address
-                    $('#popLayerDaumPostcodeSrch').popup('hide')
-                },
-                setPhoneMask(phoneNo) {
+                setPhoneMask: function(phoneNo) {
                     var areaCode = phoneNo.substring(0, 2)
                     if (areaCode === '02') {
                         this.phoneMask = this.phoneMaskSeoul
@@ -577,23 +565,23 @@
                         this.phoneMask = this.phoneMaskOther
                     }
                 },
-                getImagePath(fileName) {
+                getImagePath: function(fileName) {
                     if (fileName !== undefined) {
                         return '/imageSrc?fileName=' + fileName
                     }
                 }
             },
             computed: {
-                newBnMbrId() {
+                newBnMbrId: function() {
                     return this.emailId + '@' + this.emailDomain
                 },
-                bnAddrFull() {
-                    return this.bnAddrStr + ' ' + this.bnAddrBldg
+                bnAddrFull: function() {
+                    return $('#bnAddrStr')[0].value + ' ' + $('#bnAddrBldg')[0].value
                 },
-                bnRegNoND() {
+                bnRegNoND: function() {
                     return this.bnRegNo.replaceAll('-', '')
                 },
-                bnPnNoND() {
+                bnPnNoND: function() {
                     return this.bnPnNo.replaceAll('-', '')
                 }
             }

@@ -640,7 +640,7 @@
                 this.searchList()
             },
             methods: {
-                searchList() {
+                searchList: function() {
                     var param = {
                         mntCarr: this.carr,
                         deviceCarr: this.deviceCarr,
@@ -650,7 +650,7 @@
                     }
                     cf_call("/carr/getSellDeviceList", param, this.searchListCB)
                 },
-                searchListCB(data) {
+                searchListCB: function(data) {
                     this.dpList = []
                     switch (this.selectedSellOpt) {
                         case 'y' :
@@ -701,11 +701,11 @@
                         }
                     }
                 },
-                getTrClass(idx) {
+                getTrClass: function(idx) {
                     if (idx === this.selectDevice.idx) return true
                     else return false
                 },
-                checkAll() {
+                checkAll: function() {
                     this.checkedList = []
 
                     if (this.allchecked) {
@@ -714,13 +714,13 @@
                         }
                     }
                 },
-                chkboxClick() {
+                chkboxClick: function() {
                     this.allchecked = false
                     if (this.checkedList.length === this.dpList.length) {
                         this.allchecked = true
                     }
                 },
-                rowClick(data, idx) {
+                rowClick: function(data, idx) {
                     if (this.selectDevice.idx != idx){
                         this.selectDevice = {}
                         this.selectDevice = data
@@ -742,7 +742,7 @@
                     }
 
                 },
-                rowClickCB(data) {
+                rowClickCB: function(data) {
                     this.moveCarrList = []
                     this.chgDeviceList = []
                     this.newSignUpList = []
@@ -790,7 +790,7 @@
                         this.newSignUpList[idx].pnExtServYnOrg = this.newSignUpList[idx].pnExtServYn
                     }
                 },
-                stopSale() {
+                stopSale: function() {
                     let saleYn = false
                     if (!this.checkedList.length) alert('판매중지할 모델을 선택해주세요.')
                     else {
@@ -807,7 +807,7 @@
                         }
                     }
                 },
-                stopSaleCB(data) {
+                stopSaleCB: function(data) {
                     alert('선택하신 모델의 판매가 중지되었습니다.')
                     if (data.succ === "Y") {
                         this.selectDevice = {}
@@ -818,7 +818,7 @@
                         this.searchList()
                     }
                 },
-                sellToggleBtn(data) {
+                sellToggleBtn: function(data) {
                     if (data.sellToggle === true) {
                         data.sellYn = 'Y'
                     } else {
@@ -830,7 +830,7 @@
                         // data.pnExtServYn = null
                     }
                 },
-                savePolicy(type) {
+                savePolicy: function(type) {
                     let tempArr = []
                     let keyword = ''
                     switch (type) {
@@ -863,7 +863,7 @@
                         }
                     }
                 },
-                savePolicyCB(data) {
+                savePolicyCB: function(data) {
                     if (data.succ === "Y") {
                         alert('저장되었습니다.')
 
@@ -875,7 +875,7 @@
                         this.searchList()
                     }
                 },
-                changeChk(data) {
+                changeChk: function(data) {
                     let sellYn = data.sellYnOrg === data.sellYn
                     let pnOfclSubsd = data.pnOfclSubsdOrg === data.pnOfclSubsd
                     let pnExtSubsdDv = data.pnExtSubsdDvOrg === data.pnExtSubsdDv

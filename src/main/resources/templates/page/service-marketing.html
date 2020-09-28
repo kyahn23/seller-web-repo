@@ -267,7 +267,7 @@
 
 <div layout:fragment="layer">
     <!-- 팝업: 마케팅 결과 등록 -->
-    <div class="layerWrapper layerSizeL" id="popLayerMarketingForm" style="display:inherit !important">
+    <div class="layerWrapper layerSizeL" id="popLayerMarketingForm" style="display:inline-block !important">
         <div class="layerHeader">
             <strong>마케팅 결과 등록</strong>
             <a href="#;" class="btnClose" @click="closeMktEdit"><img th:src="@{/images/cmmn/btn-layer-close.png}" alt="창닫기"></a>
@@ -445,6 +445,25 @@
     <script type="text/javascript" th:src="@{/js/lib/vuejs-datepicker-1.6.2/locale/translations/ko.js}"></script>
 
     <script>
+        // https://github.com/uxitten/polyfill/blob/master/string.polyfill.js
+        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padStart
+        if (!String.prototype.padStart) {
+            String.prototype.padStart = function padStart(targetLength,padString) {
+                targetLength = targetLength>>0; //truncate if number or convert non-number to 0;
+                padString = String((typeof padString !== 'undefined' ? padString : ' '));
+                if (this.length > targetLength) {
+                    return String(this);
+                }
+                else {
+                    targetLength = targetLength-this.length;
+                    if (targetLength > padString.length) {
+                        padString += padString.repeat(targetLength/padString.length); //append to original to ensure we are longer than needed
+                    }
+                    return padString.slice(0,targetLength) + String(this);
+                }
+            };
+        }
+
         $(function () {
             if ($(".layerWrapper").length) {
                 // 마케팅 결과 등록 레이어 추가
@@ -499,7 +518,7 @@
                 selRow: -1,
             },
             components: {
-                vuejsDatepicker
+                'vuejsDatepicker': vuejsDatepicker
             },
             mounted: function(){
                 this.srchDate = new Date()
@@ -524,19 +543,19 @@
                 }
             },
             methods: {
-                clickMethod(e) {
+                clickMethod: function(e) {
                     alert(e.target.value)
                 },
-                openSrchDatePicker() {
+                openSrchDatePicker: function() {
                     this.$refs.srchDatePicker.showCalendar()
                 },
-                openEditDatePicker() {
+                openEditDatePicker: function() {
                     this.$refs.editDatePicker.showCalendar()
                 },
-                openPnRegDtDatePicker() {
+                openPnRegDtDatePicker: function() {
                     this.$refs.pnRegDtDatePicker.showCalendar()
                 },
-                getMarketingList(n) {
+                getMarketingList: function(n) {
                     this.pageNo = n + ""
                     var param = {
                         srchType: this.srchType,
@@ -546,11 +565,11 @@
                     }
                     cf_call("/service/getMarketingList", param, this.getMarketingListCB)
                 },
-                getMarketingListCB(rslt) {
+                getMarketingListCB: function(rslt) {
                     this.pageInfo = rslt.pageInfo
                     this.mktList = rslt.mktList
                 },
-                setTrIndex(idx) {
+                setTrIndex: function(idx) {
                     if (idx === this.selRow) {
                         this.selRow = -1
                         this.initMktOne()
@@ -559,10 +578,10 @@
                         this.getMktOne()
                     }
                 },
-                getTrClass(idx) {
+                getTrClass: function(idx) {
                     return (this.selRow === idx)
                 },
-                initMktOne() {
+                initMktOne: function() {
                     this.mktOne = {}
                     this.monthlyRateList = []
                     this.pnMkrList = []
@@ -571,22 +590,22 @@
                     this.initMktEditInfo()
                     this.mktEditInit = false
                 },
-                getMktOne() {
+                getMktOne: function() {
                     var param = {
                         mktNo: this.mktList[this.selRow].mktNo
                     }
                     cf_call("/service/getMarketingOne", param, this.getMktOneCB)
                 },
-                getMktOneCB(rslt) {
+                getMktOneCB: function(rslt) {
                     this.mktOne = rslt.mktOne
                 },
-                getMonthlyRate(val) {
+                getMonthlyRate: function(val) {
                     var param = {
                         pnCarr: val
                     }
                     cf_call("/service/getMonthlyRate", param, this.getMonthlyRateCB)
                 },
-                getMonthlyRateCB(rslt) {
+                getMonthlyRateCB: function(rslt) {
                     this.monthlyRateList = rslt.monthlyRate
                     if (this.mktEditInit) {
                         this.mktEdit.pnMntRtNo = -1
@@ -599,11 +618,11 @@
                         this.mktEditInit = true
                     }
                 },
-                addCommaToPrice(val) {
+                addCommaToPrice: function(val) {
                     var num = Number(val)
                     return num.toLocaleString()
                 },
-                getPnNetType(val) {
+                getPnNetType: function(val) {
                     var pnNetType = ''
                     for (var i=0; i < this.monthlyRateList.length; i++) {
                         if (this.monthlyRateList[i].pnMntRtNo === Number(val)) {
@@ -612,7 +631,7 @@
                     }
                     return pnNetType
                 },
-                getPnMkr(val) {
+                getPnMkr: function(val) {
                     var pnCarrAbbr = this.mktEdit.pnCarr.substring(0, 1)
                     var param = {
                         pnNetType: val,
@@ -620,18 +639,18 @@
                     }
                     cf_call("/service/getPnMkr", param, this.getPnMkrCB)
                 },
-                getPnMkrCB(rslt) {
+                getPnMkrCB: function(rslt) {
                     this.pnMkrList = rslt.pnMkr
                     if (this.mktEdit.pnMntRtNo !== null) {
                         this.getDevice(this.mktEdit.pnMkr)
                     }
                 },
-                setPnMkrNm(val) {
+                setPnMkrNm: function(val) {
                     for (var i=0; i < this.pnMkrData.length; i++) {
                         if (this.pnMkrData[i].mkrCd === val) return this.pnMkrData[i].mkrNm
                     }
                 },
-                getDevice(val) {
+                getDevice: function(val) {
                     var pnCarrAbbr = this.mktEdit.pnCarr.substring(0, 1)
                     var pnNetType = this.getPnNetType(this.mktEdit.pnMntRtNo)
 
@@ -642,10 +661,10 @@
                     }
                     cf_call("/service/getDeviceList", param, this.getDeviceCB)
                 },
-                getDeviceCB(rslt) {
+                getDeviceCB: function(rslt) {
                     this.deviceList = rslt.deviceList
                 },
-                saveMktEdit() {
+                saveMktEdit: function() {
                     if (this.mktEditDisabled) {
                         if (this.mktEdit.mbrNm.trim() === '') {
                             alert('개통고객명을 기입해주세요.')
@@ -680,7 +699,7 @@
                     console.log(param)
                     cf_call(callUrl, param, this.saveMktOneCB)
                 },
-                saveMktOneCB(rslt) {
+                saveMktOneCB: function(rslt) {
                     if (rslt.rsltStat === 'SUCC') {
                         alert('마케팅 정보가 저장되었습니다.')
                         $('#popLayerMarketingForm').popup('hide')
@@ -693,11 +712,11 @@
                         this.initMktOne()
                     }
                 },
-                closeMktEdit() {
+                closeMktEdit: function() {
                     this.initMktEditInfo()
                     $('#popLayerMarketingForm').popup('hide')
                 },
-                initMktEditInfo() {
+                initMktEditInfo: function() {
                     this.mktEdit.mbrNm = ""
                     this.mktEdit.mbrPnNo = ""
                     this.mktEdit.mktRslt = -1
@@ -713,7 +732,7 @@
                     this.mktEdit.pnMdl = -1
                     this.mktEdit.mktCmnt = ""
                 },
-                openMktForm(enabled, mode) {
+                openMktForm: function(enabled, mode) {
                     if (enabled) {
                         $('#popLayerMarketingForm').popup('show')
                         if (mode === 'edit') {
@@ -721,7 +740,7 @@
                             this.mktEdit.mbrPnNo = this.mktOne.mbrPnNo
                             this.mktEdit.mktRslt = this.mktOne.mktRslt
                             this.mktEdit.pnRegDt = this.mktOne.pnRegDt
-                            this.mktEdit.visitDt = this.mktOne.visitDt
+                            this.mktEdit.visitDt = this.mktOne.visitDt.replaceAll('-', '/')
                             this.editDate = new Date(this.mktEdit.visitDt)
                             this.editHour = (new Date(this.mktEdit.visitDt).getHours() + "").padStart(2, '0')
                             this.editMin = (new Date(this.mktEdit.visitDt).getMinutes() + "").padStart(2, '0')
@@ -743,41 +762,41 @@
                 }
             },
             computed: {
-                paramDate() {
+                paramDate: function() {
                     var srchYear = this.srchDate.getFullYear()
                     var srchMonth = ((this.srchDate.getMonth() + 1) + "").padStart(2, '0')
                     return srchYear + "-" + srchMonth + "-"
                 },
-                mktEditDisabled() {
+                mktEditDisabled: function() {
                     return !(this.selRow >= 0)
                 },
-                setEditHour() {
+                setEditHour: function() {
                     var editHourList = []
                     for (var i=0; i < 24; i++) {
                         editHourList.push((i + "").padStart(2, '0'))
                     }
                     return editHourList
                 },
-                setEditMin() {
+                setEditMin: function() {
                     var editMinList = []
                     for (var i=0; i < 60; i+=10) {
                         editMinList.push((i + "").padStart(2, '0'))
                     }
                     return editMinList
                 },
-                setPnRegDt() {
+                setPnRegDt: function() {
                     return this.newPnRegDt.getFullYear()
                         + '-' + ((this.newPnRegDt.getMonth() + 1) + "").padStart(2, '0')
                         + '-' + this.newPnRegDt.getDate()
                         + ' 00:00:00'
                 },
-                setVisitDt() {
+                setVisitDt: function() {
                     return this.editDate.getFullYear()
                         + '-' + ((this.editDate.getMonth() + 1) + "").padStart(2, '0')
                         + '-' + this.editDate.getDate()
                         + ' ' + this.editHour + ':' + this.editMin + ':00'
                 },
-                mbrPnNoND() {
+                mbrPnNoND: function() {
                     return this.mktEdit.mbrPnNo.replaceAll('-', '')
                 }
             }

@@ -217,7 +217,7 @@
 
 <div layout:fragment="layer">
     <!-- 팝업: 약관 보기 -->
-    <div class="layerWrapper layerSizeXL" id="popLayerViewTOC" style="display:inherit !important;">
+    <div class="layerWrapper layerSizeXL" id="popLayerViewTOC" style="display:inline-block !important;">
         <div class="layerHeader">
             <strong>{{ layerHeaderTxt }}</strong>
             <a href="#" class="btnClose popLayerViewTOC_close">
@@ -252,7 +252,7 @@
         });
 
         var app = new Vue({
-            el:"#app",
+            el: "#app",
             data: {
                 checkAll: false,
                 agreeCheckList: [],
@@ -273,10 +273,10 @@
                 }
             },
             methods: {
-                initCheckList() {
+                initCheckList: function() {
                     this.agreeCheckList = []
                 },
-                onCheckAll() {
+                onCheckAll: function() {
                     if (this.checkAll) {
                         this.initCheckList()
                         this.agreeCheckList.push('SVC');
@@ -286,7 +286,7 @@
                         this.initCheckList()
                     }
                 },
-                onCheckOne() {
+                onCheckOne: function() {
                     var checkCnt = this.agreeCheckList.length
                     if (checkCnt === 3) {
                         this.checkAll = true
@@ -294,12 +294,12 @@
                         this.checkAll = false
                     }
                 },
-                setLayerType(layerType) {
+                setLayerType: function(layerType) {
                     this.layerType = layerType
                     PDFObject.embed(this.layerPdfUrl, '#pdfContainer', this.pdfOptions);
                     $('#popLayerViewTOC').popup('show')
                 },
-                agreeLayer() {
+                agreeLayer: function() {
                     $('#popLayerViewTOC').popup('hide')
 
                     var inCheckList = false
@@ -311,7 +311,7 @@
                     this.onCheckOne()
                     this.layerType = ''
                 },
-                validateAgree() {
+                validateAgree: function() {
                     var svcChecked = false
                     var pvcChecked = false
                     var mktChecked = false
@@ -330,7 +330,7 @@
                         alert('필수 약관에 동의해주세요.')
                     }
                 },
-                mktAlertMsg(mktBool) {
+                mktAlertMsg: function(mktBool) {
                     if (mktBool) {
                         return '광고성 정보 수신에 동의하셨습니다.'
                     }
@@ -338,7 +338,7 @@
                 }
             },
             computed: {
-                layerHeaderTxt() {
+                layerHeaderTxt: function() {
                     switch (this.layerType) {
                         case 'SVC' : return '서비스 이용약관'
                         case 'PVC' : return '개인정보 수집 및 이용에 대한 안내'
@@ -346,7 +346,7 @@
                         default : return ''
                     }
                 },
-                layerPdfUrl() {
+                layerPdfUrl: function() {
                     switch (this.layerType) {
                         case 'SVC' : return '/images/agree/service.pdf'
                         case 'PVC' : return '/images/agree/privacy.pdf'

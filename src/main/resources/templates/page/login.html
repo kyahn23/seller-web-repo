@@ -154,7 +154,7 @@
 
 <div layout:fragment="layer">
     <!-- 팝업: 비밀번호 찾기 -->
-    <div class="layerWrapper layerSizeML" id="popLayerIDPW" style="display:inherit !important">
+    <div class="layerWrapper layerSizeML" id="popLayerIDPW" style="display:inline-block !important">
         <div class="layerHeader">
             <strong>비밀번호 찾기</strong>
             <a href="#" class="btnClose popLayerIDPW_close"><img th:src="@{/images/cmmn/btn-layer-close.png}" alt="창닫기"></a>
@@ -273,7 +273,7 @@
         var loginStat = '[[${loginStat}]]'
         if (loginStat === 'FAIL') {
             alert('로그인 실패 했습니다.\nID와/또는 비밀번호를 확인해주세요.')
-        } else if (loginStat.includes("FAIL_PWERR_CNT_")) {
+        } else if (loginStat.indexOf("FAIL_PWERR_CNT_") !== -1) {
             var pwerrCntStr = loginStat.slice(15)
             if (pwerrCntStr === 'OVER') {
                 alert('로그인을 5회 이상 실패했습니다.\n\'비밀번호 찾기\'로 비밀변호를 재설정 해주세요.')
@@ -309,14 +309,14 @@
         });
 
         var app = new Vue({
-            el:"#app",
+            el: "#app",
             data: {
                 bnRegNo: '',
                 ownerNm: '',
                 mstMbrId: ''
             },
             methods: {
-                resetMstPw() {
+                resetMstPw: function() {
                     var param = {
                         bnRegNo: this.bnRegNoND,
                         ownerNm: this.ownerNm,
@@ -325,8 +325,8 @@
                     cf_call('/member/resetMstPw', param, this.resetMstPwCB)
                     this.resetMstPwPost()
                 },
-                resetMstPwCB(rslt) {},
-                resetMstPwPost() {
+                resetMstPwCB: function(rslt) {},
+                resetMstPwPost: function() {
                     alert('가입정보 확인 후 가입하신 이메일로\n임시 비밀번호가 전송됩니다.')
                     $('#popLayerIDPW').popup('hide')
                     this.bnRegNo = ''
@@ -335,7 +335,7 @@
                 }
             },
             computed: {
-                bnRegNoND() {
+                bnRegNoND: function() {
                     return this.bnRegNo.replaceAll('-', '')
                 }
             }
