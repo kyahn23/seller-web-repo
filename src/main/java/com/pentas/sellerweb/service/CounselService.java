@@ -131,11 +131,17 @@ public class CounselService {
     }
 
     /**
-     * 마케팅 상세 정보 저장
+     * 마케팅 상세 정보 수정
      * @param param
      */
     public void saveMarketingOne(DevMap param) {
         cmmnDao.update("sellerweb.counsel.updateMarketingOne", param);
     }
+
+    /**
+     * 마케팅 상세 정보 저장 (신규, 별도 개통)
+     * @param param
+     */
+    public void saveMarketingNew(DevMap param) { cmmnDao.insert("sellerweb.counsel.insertMarketingNew", param); }
 
 }

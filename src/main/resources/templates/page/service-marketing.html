@@ -31,6 +31,7 @@
                             <select id="marketing01" v-model="srchType">
                                 <option value="A">전체</option>
                                 <option value="N">미진행</option>
+                                <option value="P">진행중</option>
                                 <option value="S">성공</option>
                                 <option value="F">실패</option>
                             </select>
@@ -103,7 +104,7 @@
                                         <td>구분</td>
                                         <td>고객명</td>
                                         <td>개통번호</td>
-                                        <td>개통일</td>
+                                        <td>이전 개통일</td>
                                         <td>이전 통신사</td>
                                         <td>이전 휴대폰</td>
                                         <td>최종등록일시</td>
@@ -129,7 +130,7 @@
                                     <td>구분</td>
                                     <td>고객명</td>
                                     <td>개통번호</td>
-                                    <td>개통일</td>
+                                    <td>이전 개통일</td>
                                     <td>이전 통신사</td>
                                     <td>이전 휴대폰</td>
                                     <td>최종등록일시</td>
@@ -145,8 +146,8 @@
                                     <td class="alignC">{{ mktRow.mbrNm }}</td>
                                     <td class="alignC">{{ mktRow.mbrPnNo }}</td>
                                     <td class="alignC">{{ mktRow.pnRegDt }}</td>
-                                    <td class="alignC">{{ mktRow.mntCarr }}</td>
-                                    <td class="alignC">{{ mktRow.pnMdlNm }}</td>
+                                    <td class="alignC">{{ mktRow.mntCarr ? mktRow.mntCarr : '-' }}</td>
+                                    <td class="alignC">{{ mktRow.pnMdlNm ? mktRow.pnMdlNm : '-' }}</td>
                                     <td class="alignC">{{ mktRow.amdDt }}</td>
                                 </tr>
                                 </tbody>
@@ -171,7 +172,7 @@
                 <div class="contentBlock">
                     <div class="contentTitle">
                         <div class="cTit">
-                            마케팅 결과 등록
+                            마케팅 상세 정보
                         </div>
                         <div class="cTitRight">
                             <div id="btn2">
@@ -179,12 +180,25 @@
                                     href="#;"
                                     class="btnM"
                                     :class="{
-                                        colorSky:!mktOneDisabled,
-                                        disabled: mktOneDisabled
+                                        colorSky: !mktEditDisabled,
+                                        disabled: mktEditDisabled
                                     }"
-                                    @click="saveMktOne"
+                                    @click="openMktForm(!mktEditDisabled, 'edit')"
                                 >
-                                    <span>마케팅 결과 저장</span>
+                                    <span>정보 수정</span>
+                                </a>
+                            </div>
+                            <div id="btn3">
+                                <a
+                                        href="#;"
+                                        class="btnM colorGreen"
+                                        :class="{
+                                            colorGreen: mktEditDisabled,
+                                            disabled: !mktEditDisabled
+                                        }"
+                                        @click="openMktForm(mktEditDisabled, 'new')"
+                                >
+                                    <span>신규 추가</span>
                                 </a>
                             </div>
                         </div>
@@ -206,38 +220,10 @@
                                 <td>{{ mktOne.mbrPnNo }}</td>
                             </tr>
                             <tr>
-                                <th>마케팅 결과<span class="icoMust"><em>필수</em></span></th>
-                                <td>
-                                    <input type="radio" id="mktSucc" name="mktRslt" value="S" v-model="mktOne.mktRslt" :disabled="mktOneDisabled">
-                                    <label for="mktSucc">성공&ensp;</label>&nbsp;
-                                    <input type="radio" id="mktFail" name="mktRslt" value="F" v-model="mktOne.mktRslt" :disabled="mktOneDisabled">
-                                    <label for="mktFail">실패&ensp;</label>
-                                </td>
-                                <th>방문예정일시<span class="icoMust"><em>필수</em></span></th>
-                                <td>
-                                    <vuejs-datepicker
-                                            ref="oneDatePicker"
-                                            :input-class="'wDate'"
-                                            :wrapper-class="'datePickerInput'"
-                                            :language="ko"
-                                            :format="'yyyy-MM-dd'"
-                                            :minimum-view="'day'"
-                                            :maximum-view="'day'"
-                                            :disabled="mktOneDisabled"
-                                            v-model="oneDate"
-                                    ></vuejs-datepicker>
-                                    <span class="datePickerUI">
-										<a href="#;" class="btnCalender" id="btnVisitDate" @click="openOneDatePicker"><em>방문예정일시 선택</em></a>
-									</span>
-                                    <span style="width: 12px;"></span>
-                                    <select id="oneHour" style="width: 62px !important;" :disabled="mktOneDisabled" v-model="oneHour">
-                                        <option v-for="hour in setOneHour" :value="hour">{{ hour }}</option>
-                                    </select>
-                                    <span> : </span>
-                                    <select id="oneMin" style="width: 62px !important;" :disabled="mktOneDisabled" v-model="oneMin">
-                                        <option v-for="min in setOneMin" :value="min">{{ min }}</option>
-                                    </select>
-                                </td>
+                                <th>마케팅 결과</th>
+                                <td>{{ mktOne.mktRsltTxt }}</td>
+                                <th>방문예정일시</th>
+                                <td>{{ mktOne.visitDt }}</td>
                             </tr>
                             <tr>
                                 <th colspan="2" style="padding: 6px 10px 6px 12px; text-align: center;">
@@ -247,66 +233,24 @@
                             </tr>
                             <tr>
                                 <th>통신사</th>
-                                <td>
-                                    <input type="radio" id="mktSkt" name="pnCarr" value="SKT" v-model="mktOne.pnCarr" :disabled="mktOneDisabled">&nbsp;
-                                    <label for="mktSkt">SKT&ensp;</label>
-                                    <input type="radio" id="mktKt" name="pnCarr" value="KT" v-model="mktOne.pnCarr" :disabled="mktOneDisabled">&nbsp;
-                                    <label for="mktKt">KT&ensp;</label>
-                                    <input type="radio" id="mktLgu" name="pnCarr" value="LGU" v-model="mktOne.pnCarr" :disabled="mktOneDisabled">&nbsp;
-                                    <label for="mktLgu">LGU+&ensp;</label>
-                                </td>
-                                <td colspan="2" rowspan="5">
-                                    <textarea
-                                        style="width: 100%; height: 100%;"
-                                        placeholder="마케팅 처리 결과 내용 등록 입력란"
-                                        :value="mktOne.mktCmnt"
-                                        @input="mktOne.mktCmnt = $event.target.value"
-                                        maxlength="100"
-                                        :disabled="mktOneDisabled"
-                                    ></textarea>
-                                </td>
+                                <td>{{ mktOne.pnCarr }}</td>
+                                <td colspan="2" rowspan="5" style="vertical-align: top;">{{ mktOne.mktCmnt }}</td>
                             </tr>
                             <tr>
                                 <th>개통유형</th>
-                                <td>
-                                    <input type="radio" id="mktNum" name="pnRegDis" value="A" v-model="mktOne.pnRegDis" :disabled="mktOneDisabled">&nbsp;
-                                    <label for="mktNum">번호이동&ensp;</label>&nbsp;
-                                    <input type="radio" id="mktPhone" name="pnRegDis" value="B" v-model="mktOne.pnRegDis" :disabled="mktOneDisabled">&nbsp;
-                                    <label for="mktPhone">기기변경&ensp;</label>&nbsp;
-                                    <input type="radio" id="mktNew" name="pnRegDis" value="C" v-model="mktOne.pnRegDis" :disabled="mktOneDisabled">&nbsp;
-                                    <label for="mktNew">신규가입&ensp;</label>
-                                </td>
+                                <td>{{ mktOne.pnRegDisTxt }}</td>
                             </tr>
                             <tr>
                                 <th>요금제</th>
-                                <td>
-                                    <span style="width: 60%" v-if="!mktOneEdit && mktOne.pnMntRtNo !== -1">{{ mktOne.pnMntRtNm }}</span>
-                                    <a href="#;" class="btnS colorWhite" v-if="!mktOneEdit && mktOne.pnMntRtNo !== -1" @click="enableEditOne"><span>수정</span></a>
-                                    <select id="selMonthlyRate" :disabled="mktOneDisabled" v-model="mktOne.pnMntRtNo" v-if="mktOneEdit">
-                                        <option v-if="monthlyRateList.length" value="-1">- 요금제를 선택하세요 -</option>
-                                        <option v-for="(plan, index) in monthlyRateList" :value="plan.pnMntRtNo">{{ plan.pnMntRtNm }} | {{ addCommaToPrice(plan.pnMntAmt) }}원</option>
-                                    </select>
-                                </td>
+                                <td>{{ mktOne.pnMntRtNm }}</td>
                             </tr>
                             <tr>
                                 <th>휴대폰 제조사</th>
-                                <td>
-                                    <span style="width: 60%" v-if="!mktOneEdit && mktOne.pnMkr !== -1">{{ setPnMkrNm(mktOne.pnMkr) }}</span>
-                                    <select id="pnMkr" :disabled="mktOneDisabled" v-model="mktOne.pnMkr" v-if="mktOneEdit">
-                                        <option v-if="pnMkrList.length" value="-1">- 제조사를 선택하세요 -</option>
-                                        <option v-for="pnMkr in pnMkrList" :value="pnMkr">{{ setPnMkrNm(pnMkr) }}</option>
-                                    </select>
-                                </td>
+                                <td>{{ setPnMkrNm(mktOne.pnMkr) }}</td>
                             </tr>
                             <tr>
                                 <th>휴대폰 모델</th>
-                                <td>
-                                    <span style="width: 60%" v-if="!mktOneEdit && mktOne.pnMdl !== -1">{{ mktOne.pnMdl }}</span>
-                                    <select id="device" :disabled="mktOneDisabled" v-model="mktOne.pnMdl" v-if="mktOneEdit">
-                                        <option v-if="deviceList.length" value="-1">- 모델을 선택하세요 -</option>
-                                        <option v-for="deviceOne in deviceList" :value="deviceOne.pnMdlNm">{{ deviceOne.pnMdlNm }} | {{ deviceOne.pnStor }}</option>
-                                    </select>
-                                </td>
+                                <td>{{ mktOne.pnMdl }}</td>
                             </tr>
                             </tbody>
                         </table>
@@ -321,11 +265,193 @@
     <!-- //contents -->
 </div>
 
+<div layout:fragment="layer">
+    <!-- 팝업: 마케팅 결과 등록 -->
+    <div class="layerWrapper layerSizeL" id="popLayerMarketingForm" style="display:inherit !important">
+        <div class="layerHeader">
+            <strong>마케팅 결과 등록</strong>
+            <a href="#;" class="btnClose" @click="closeMktEdit"><img th:src="@{/images/cmmn/btn-layer-close.png}" alt="창닫기"></a>
+        </div>
+        <div class="layerContainer">
+            <div class="layerContent">
+                <!-- 컨텐츠 -->
+                <div class="guidanceWrapper">
+                    <table class="tblDataRow">
+                        <caption>유지보수 상세 정보</caption>
+                        <colgroup>
+                            <col style="width:120px">
+                            <col style="width:*">
+                            <col style="width:120px">
+                            <col style="width:*">
+                        </colgroup>
+                        <tbody>
+                        <tr>
+                            <th>개통고객명<span class="icoMust" v-if="mktEditDisabled"><em>필수</em></span></th>
+                            <td v-if="!mktEditDisabled">{{ mktOne.mbrNm }}</td>
+                            <td v-else>
+                                <input
+                                        class="wPer"
+                                        type="text"
+                                        id="mbrNm"
+                                        placeholder="고객명 기입"
+                                        :value="mktEdit.mbrNm"
+                                        @input="mktEdit.mbrNm = $event.target.value"
+                                >
+                            </td>
+                            <th>개통번호<span class="icoMust" v-if="mktEditDisabled"><em>필수</em></span></th>
+                            <td v-if="!mktEditDisabled">{{ mktOne.mbrPnNo }}</td>
+                            <td v-else>
+                                <input
+                                        class="wPer"
+                                        type="text"
+                                        id="mbrPnNo"
+                                        placeholder="고객 전화번호 기입"
+                                        v-model="mktEdit.mbrPnNo"
+                                >
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>이전 개통일<span class="icoMust" v-if="mktEditDisabled"><em>필수</em></span></th>
+                            <td v-if="!mktEditDisabled" colspan="3">{{ mktOne.pnRegDt }}</td>
+                            <td v-else colspan="3">
+                                <vuejs-datepicker
+                                        ref="pnRegDtDatePicker"
+                                        :input-class="'wDate'"
+                                        :wrapper-class="'datePickerInput'"
+                                        :language="ko"
+                                        :format="'yyyy-MM-dd'"
+                                        v-model="newPnRegDt"
+                                ></vuejs-datepicker>
+                                <span class="datePickerUI">
+										<a href="#;" class="btnCalender" id="btnPnRegDt" @click="openPnRegDtDatePicker"><em>개통일 입력</em></a>
+								</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th colspan="4" style="height: 22px; text-align: center;">고객 구매 예정 정보</th>
+                        </tr>
+                        <tr>
+                            <th>마케팅 결과<span class="icoMust"><em>필수</em></span></th>
+                            <td>
+                                <select class="wPer" id="mktRslt" v-model="mktEdit.mktRslt">
+                                    <option value="-1">- 마케팅 상태를 입력하세요. -</option>
+                                    <option value="P">진행중</option>
+                                    <option value="S">성공</option>
+                                    <option value="F">실패</option>
+                                </select>
+                            </td>
+                            <th>방문예정일시<span class="icoMust"><em>필수</em></span></th>
+                            <td>
+                                <vuejs-datepicker
+                                        ref="editDatePicker"
+                                        :input-class="'wDate'"
+                                        :wrapper-class="'datePickerInput'"
+                                        :language="ko"
+                                        :format="'yyyy-MM-dd'"
+                                        v-model="editDate"
+                                ></vuejs-datepicker>
+                                <span class="datePickerUI">
+										<a href="#;" class="btnCalender" id="btnVisitDate" @click="openEditDatePicker"><em>방문예정일시 선택</em></a>
+								</span>
+                                <select id="editHour" style="width: 48px !important;" v-model="editHour">
+                                    <option v-for="hour in setEditHour" :value="hour">{{ hour }}</option>
+                                </select>
+                                <span> : </span>
+                                <select id="editMin" style="width: 48px !important;" v-model="editMin">
+                                    <option v-for="min in setEditMin" :value="min">{{ min }}</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>통신사</th>
+                            <td>
+                                <input type="radio" id="mktSkt" name="pnCarr" value="SKT" v-model="mktEdit.pnCarr" @click="getMonthlyRate($event.target.value)">
+                                <label for="mktSkt">SKT&ensp;</label>
+                                <input type="radio" id="mktKt" name="pnCarr" value="KT" v-model="mktEdit.pnCarr" @click="getMonthlyRate($event.target.value)">
+                                <label for="mktKt">KT&ensp;</label>
+                                <input type="radio" id="mktLgu" name="pnCarr" value="LGU" v-model="mktEdit.pnCarr" @click="getMonthlyRate($event.target.value)">
+                                <label for="mktLgu">LGU+&ensp;</label>
+                            </td>
+                            <th>개통유형</th>
+                            <td>
+                                <input type="radio" id="mktNum" name="pnRegDis" value="A" v-model="mktEdit.pnRegDis">
+                                <label for="mktNum">번호이동&ensp;</label>
+                                <input type="radio" id="mktPhone" name="pnRegDis" value="B" v-model="mktEdit.pnRegDis">
+                                <label for="mktPhone">기기변경&ensp;</label>
+                                <input type="radio" id="mktNew" name="pnRegDis" value="C" v-model="mktEdit.pnRegDis">
+                                <label for="mktNew">신규가입&ensp;</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>요금제</th>
+                            <td colspan="3">
+                                <select class="wPer" id="selMonthlyRate" v-model="mktEdit.pnMntRtNo">
+                                    <option v-if="monthlyRateList.length" value="-1">- 요금제를 선택하세요 -</option>
+                                    <option v-else value="-1">- 통신사 선택 후 선택 가능 -</option>
+                                    <option v-for="(plan, index) in monthlyRateList" :value="plan.pnMntRtNo">{{ plan.pnMntRtNm }} [월 {{ addCommaToPrice(plan.pnMntAmt) }}원]</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>휴대폰 제조사</th>
+                            <td>
+                                <select class="wPer" id="pnMkr" v-model="mktEdit.pnMkr">
+                                    <option v-if="pnMkrList.length" value="-1">- 제조사를 선택하세요 -</option>
+                                    <option v-else-if="mktEdit.pnMntRtNo != -1" value="-1">- 해당 조건에 맞는 제조사가 없습니다 -</option>
+                                    <option v-else value="-1">- 요금제 선택 후 선택 가능 -</option>
+                                    <option v-for="pnMkr in pnMkrList" :value="pnMkr">{{ setPnMkrNm(pnMkr) }}</option>
+                                </select>
+                            </td>
+                            <th>휴대폰 모델</th>
+                            <td>
+                                <select class="wPer" id="device" v-model="mktEdit.pnMdl">
+                                    <option v-if="deviceList.length" value="-1">- 모델을 선택하세요 -</option>
+                                    <option v-else-if="mktEdit.pnMkr != -1" value="-1">- 해당 조건에 맞는 모델이 없습니다 -</option>
+                                    <option v-else value="-1">- 제조사 선택 후 선택 가능 -</option>
+                                    <option v-for="deviceOne in deviceList" :value="deviceOne.pnMdlNm">{{ deviceOne.pnMdlNm }}</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th colspan="4" style="height: 22px; text-align: center;">마케팅 처리 내용</th>
+                        </tr>
+                        <tr>
+                            <td style="height: 88px; vertical-align: top;" colspan="4">
+                                <textarea
+                                        style="width: 100%; height: 100%;"
+                                        placeholder="마케팅 처리 결과 내용 등록 입력란"
+                                        :value="mktEdit.mktCmnt"
+                                        @input="mktEdit.mktCmnt = $event.target.value"
+                                        maxlength="100"
+                                ></textarea>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="btnWrapper">
+                    <a href="#;" class="btnL colorBlue" @click="saveMktEdit"><span>등록</span></a>
+                    <a href="#;" class="btnL colorGray" @click="closeMktEdit"><span>취소</span></a>
+                </div>
+            </div>
+            <!-- //컨텐츠 -->
+        </div>
+    </div>
+    <!-- //팝업: 마케팅 결과 등록 -->
+</div>
+
 <div layout:fragment="script">
     <script type="text/javascript" th:src="@{/js/lib/vuejs-datepicker-1.6.2/vuejs-datepicker.js}"></script>
     <script type="text/javascript" th:src="@{/js/lib/vuejs-datepicker-1.6.2/locale/translations/ko.js}"></script>
 
     <script>
+        $(function () {
+            if ($(".layerWrapper").length) {
+                // 마케팅 결과 등록 레이어 추가
+                $('#popLayerMarketingForm').popup();
+            }
+        });
+
         var app = new Vue({
             el: "#app",
             data: {
@@ -336,16 +462,19 @@
                 pageNo: '0',
                 pageInfo: [],
                 mktList: [],
-                mktOne: {
+                mktOne: {},
+                mktOneEdit: false,
+                mktEditInit: false,
+                mktEdit: {
+                    mktRslt: -1,
                     pnMntRtNo: -1,
                     pnMkr: -1,
                     pnMdl: -1
                 },
-                mktOneInit: false,
-                mktOneEdit: false,
-                oneDate: '',
-                oneHour: '00',
-                oneMin: '00',
+                newPnRegDt: '',
+                editDate: '',
+                editHour: '00',
+                editMin: '00',
                 monthlyRateList: [],
                 pnMkrData: [
                     {
@@ -357,13 +486,13 @@
                         mkrNm: 'LG전자'
                     },
                     {
-                        mkrCd: 'XIA',
-                        mkrNm: '샤오미'
-                    },
-                    {
-                        mkrCd: 'APL',
+                        mkrCd: 'APP',
                         mkrNm: '애플'
                     },
+                    {
+                        mkrCd: 'XIA',
+                        mkrNm: '샤오미'
+                    }
                 ],
                 pnMkrList: [],
                 deviceList: [],
@@ -374,39 +503,38 @@
             },
             mounted: function(){
                 this.srchDate = new Date()
-                this.oneDate = new Date()
+                this.newPnRegDt = new Date()
+                this.editDate = new Date()
                 this.getMarketingList('1')
             },
             watch: {
-                'mktOne.pnCarr': function (val) {
-                    this.getMonthlyRate(val)
-                    if (this.mktOneInit) {
-                        this.mktOne.pnMntRtNo = -1
-                        this.mktOne.pnMkr = -1
-                        this.mktOne.pnMdl = -1
-                    }
-                },
-                'mktOne.pnMntRtNo': function (val) {
+                'mktEdit.pnMntRtNo': function (val) {
                     var pnNetType = this.getPnNetType(val)
                     this.getPnMkr(pnNetType)
-                    if (this.mktOneInit) {
-                        this.mktOne.pnMkr = -1
-                        this.mktOne.pnMdl = -1
+                    if (this.mktEditInit) {
+                        this.mktEdit.pnMkr = -1
+                        this.mktEdit.pnMdl = -1
                     }
                 },
-                'mktOne.pnMkr': function (val) {
+                'mktEdit.pnMkr': function (val) {
                     this.getDevice(val)
-                    if (this.mktOneInit) {
-                        this.mktOne.pnMdl = -1
+                    if (this.mktEditInit) {
+                        this.mktEdit.pnMdl = -1
                     }
                 }
             },
             methods: {
+                clickMethod(e) {
+                    alert(e.target.value)
+                },
                 openSrchDatePicker() {
                     this.$refs.srchDatePicker.showCalendar()
                 },
-                openOneDatePicker() {
-                    this.$refs.oneDatePicker.showCalendar()
+                openEditDatePicker() {
+                    this.$refs.editDatePicker.showCalendar()
+                },
+                openPnRegDtDatePicker() {
+                    this.$refs.pnRegDtDatePicker.showCalendar()
                 },
                 getMarketingList(n) {
                     this.pageNo = n + ""
@@ -435,37 +563,22 @@
                     return (this.selRow === idx)
                 },
                 initMktOne() {
-                    this.mktOne = {
-                        pnMntRtNo: -1,
-                        pnMkr: -1,
-                        pnMdl: -1
-                    }
+                    this.mktOne = {}
                     this.monthlyRateList = []
                     this.pnMkrList = []
                     this.deviceList = []
-                    this.mktOneInit = false
                     this.mktOneEdit = false
-                },
-                enableEditOne() {
-                    this.mktOne.pnMntRtNo = -1
-                    this.mktOne.pnMkr = -1
-                    this.mktOne.pnMdl = -1
-                    this.mktOneEdit = true
+                    this.initMktEditInfo()
+                    this.mktEditInit = false
                 },
                 getMktOne() {
                     var param = {
-                        dealNo: this.mktList[this.selRow].dealNo
+                        mktNo: this.mktList[this.selRow].mktNo
                     }
                     cf_call("/service/getMarketingOne", param, this.getMktOneCB)
                 },
                 getMktOneCB(rslt) {
                     this.mktOne = rslt.mktOne
-                    if (this.mktOne.pnMntRtNo !== null) {
-                        this.getMonthlyRate(this.mktOne.pnCarr)
-                    } else {
-                        this.mktOneEdit = true
-                    }
-                    this.getVisitDt()
                 },
                 getMonthlyRate(val) {
                     var param = {
@@ -475,10 +588,15 @@
                 },
                 getMonthlyRateCB(rslt) {
                     this.monthlyRateList = rslt.monthlyRate
-                    if (this.mktOne.pnMntRtNo !== null && this.mktOne.pnMntRtNo !== -1) {
-                        var pnNetType = this.getPnNetType(this.mktOne.pnMntRtNo)
+                    if (this.mktEditInit) {
+                        this.mktEdit.pnMntRtNo = -1
+                        this.mktEdit.pnMkr = -1
+                        this.mktEdit.pnMdl = -1
+                    }
+                    if (this.mktEdit.pnMntRtNo !== null && (this.mktEdit.pnMntRtNo * 1) !== -1) {
+                        var pnNetType = this.getPnNetType(this.mktEdit.pnMntRtNo)
                         this.getPnMkr(pnNetType)
-                        this.mktOneInit = true
+                        this.mktEditInit = true
                     }
                 },
                 addCommaToPrice(val) {
@@ -495,7 +613,7 @@
                     return pnNetType
                 },
                 getPnMkr(val) {
-                    var pnCarrAbbr = this.mktOne.pnCarr.substring(0, 1)
+                    var pnCarrAbbr = this.mktEdit.pnCarr.substring(0, 1)
                     var param = {
                         pnNetType: val,
                         pnCarrAbbr: pnCarrAbbr
@@ -504,8 +622,8 @@
                 },
                 getPnMkrCB(rslt) {
                     this.pnMkrList = rslt.pnMkr
-                    if (this.mktOne.pnMntRtNo !== null) {
-                        this.getDevice(this.mktOne.pnMkr)
+                    if (this.mktEdit.pnMntRtNo !== null) {
+                        this.getDevice(this.mktEdit.pnMkr)
                     }
                 },
                 setPnMkrNm(val) {
@@ -514,8 +632,8 @@
                     }
                 },
                 getDevice(val) {
-                    var pnCarrAbbr = this.mktOne.pnCarr.substring(0, 1)
-                    var pnNetType = this.getPnNetType(this.mktOne.pnMntRtNo)
+                    var pnCarrAbbr = this.mktEdit.pnCarr.substring(0, 1)
+                    var pnNetType = this.getPnNetType(this.mktEdit.pnMntRtNo)
 
                     var param = {
                         pnMkr: val,
@@ -527,34 +645,101 @@
                 getDeviceCB(rslt) {
                     this.deviceList = rslt.deviceList
                 },
-                saveMktOne() {
-                    if (!this.mktOneDisabled) {
-                        if (this.mktOne.mktRslt !== 'S' && this.mktOne.mktRslt !== 'F') {
-                            alert('마케팅 결과를 지정해주세요.')
-                        } else {
-                            var param = this.mktOne
-                            param.dealNo = this.mktList[this.selRow].dealNo
-                            param.visitDt = this.setVisitDt
-                            cf_call("/service/saveMarketingOne", param, this.saveMktOneCB)
+                saveMktEdit() {
+                    if (this.mktEditDisabled) {
+                        if (this.mktEdit.mbrNm.trim() === '') {
+                            alert('개통고객명을 기입해주세요.')
+                            return false
+                        }
+                        if (this.mbrPnNoND.trim() === '') {
+                            alert('개통번호를 입력해주세요.')
+                            return false
+                        }
+                        if (this.setPnRegDt.trim() === '') {
+                            alert('이전 개통일을 입력해주세요.')
+                            return false
                         }
                     }
+                    if ((this.mktEdit.mktRslt * 1) === -1) {
+                        alert('마케팅 결과를 지정해주세요.')
+                        return false
+                    }
+
+                    var param = this.mktEdit
+                    param.mbrPnNo = this.mbrPnNoND
+                    param.visitDt = this.setVisitDt
+
+                    var callUrl = ''
+                    if (!this.mktEditDisabled) {
+                        param.mktNo = this.mktList[this.selRow].mktNo
+                        callUrl = '/service/saveMarketingOne'
+                    } else {
+                        param.pnRegDt = this.setPnRegDt
+                        callUrl = '/service/saveMarketingNew'
+                    }
+                    console.log(param)
+                    cf_call(callUrl, param, this.saveMktOneCB)
                 },
                 saveMktOneCB(rslt) {
                     if (rslt.rsltStat === 'SUCC') {
                         alert('마케팅 정보가 저장되었습니다.')
+                        $('#popLayerMarketingForm').popup('hide')
                         this.srchType = 'A'
                         this.srchName = ''
-                        this.oneDate = new Date()
+                        this.newPnRegDt = new Date()
+                        this.editDate = new Date()
                         this.getMarketingList('1')
                         this.selRow = -1
                         this.initMktOne()
                     }
                 },
-                getVisitDt() {
-                    var visitDt = new Date(this.mktOne.visitDt)
-                    this.oneDate = visitDt
-                    this.oneHour = (visitDt.getHours() + "").padStart(2, '0')
-                    this.oneMin = (visitDt.getMinutes() + "").padStart(2, '0')
+                closeMktEdit() {
+                    this.initMktEditInfo()
+                    $('#popLayerMarketingForm').popup('hide')
+                },
+                initMktEditInfo() {
+                    this.mktEdit.mbrNm = ""
+                    this.mktEdit.mbrPnNo = ""
+                    this.mktEdit.mktRslt = -1
+                    this.newPnRegDt = new Date()
+                    this.mktEdit.visitDt = new Date()
+                    this.editDate = new Date(this.mktEdit.visitDt)
+                    this.editHour = '00'
+                    this.editMin = '00'
+                    this.mktEdit.pnCarr = -1
+                    this.mktEdit.pnRegDis = -1
+                    this.mktEdit.pnMntRtNo = -1
+                    this.mktEdit.pnMkr = -1
+                    this.mktEdit.pnMdl = -1
+                    this.mktEdit.mktCmnt = ""
+                },
+                openMktForm(enabled, mode) {
+                    if (enabled) {
+                        $('#popLayerMarketingForm').popup('show')
+                        if (mode === 'edit') {
+                            this.mktEdit.mbrNm = this.mktOne.mbrNm
+                            this.mktEdit.mbrPnNo = this.mktOne.mbrPnNo
+                            this.mktEdit.mktRslt = this.mktOne.mktRslt
+                            this.mktEdit.pnRegDt = this.mktOne.pnRegDt
+                            this.mktEdit.visitDt = this.mktOne.visitDt
+                            this.editDate = new Date(this.mktEdit.visitDt)
+                            this.editHour = (new Date(this.mktEdit.visitDt).getHours() + "").padStart(2, '0')
+                            this.editMin = (new Date(this.mktEdit.visitDt).getMinutes() + "").padStart(2, '0')
+                            this.mktEdit.pnCarr = this.mktOne.pnCarr
+                            this.mktEdit.pnRegDis = this.mktOne.pnRegDis
+                            this.mktEdit.pnMntRtNo = this.mktOne.pnMntRtNo
+                            this.mktEdit.pnMkr = this.mktOne.pnMkr
+                            this.mktEdit.pnMdl = this.mktOne.pnMdl
+                            this.mktEdit.mktCmnt = this.mktOne.mktCmnt
+                            this.getMonthlyRate(this.mktEdit.pnCarr)
+                        } else if (mode == 'new') {
+                            this.initMktEditInfo()
+                        } else {
+                            this.initMktEditInfo()
+                            $('#popLayerMarketingForm').popup('hide')
+                            alert('잘못된 접근입니다.')
+                        }
+                    }
                 }
             },
             computed: {
@@ -563,28 +748,37 @@
                     var srchMonth = ((this.srchDate.getMonth() + 1) + "").padStart(2, '0')
                     return srchYear + "-" + srchMonth + "-"
                 },
-                mktOneDisabled() {
+                mktEditDisabled() {
                     return !(this.selRow >= 0)
                 },
-                setOneHour() {
-                    var oneHourList = []
+                setEditHour() {
+                    var editHourList = []
                     for (var i=0; i < 24; i++) {
-                        oneHourList.push((i + "").padStart(2, '0'))
+                        editHourList.push((i + "").padStart(2, '0'))
                     }
-                    return oneHourList
+                    return editHourList
                 },
-                setOneMin() {
-                    var oneMinList = []
+                setEditMin() {
+                    var editMinList = []
                     for (var i=0; i < 60; i+=10) {
-                        oneMinList.push((i + "").padStart(2, '0'))
+                        editMinList.push((i + "").padStart(2, '0'))
                     }
-                    return oneMinList
+                    return editMinList
+                },
+                setPnRegDt() {
+                    return this.newPnRegDt.getFullYear()
+                        + '-' + ((this.newPnRegDt.getMonth() + 1) + "").padStart(2, '0')
+                        + '-' + this.newPnRegDt.getDate()
+                        + ' 00:00:00'
                 },
                 setVisitDt() {
-                    return this.oneDate.getFullYear()
-                        + '-' + ((this.oneDate.getMonth() + 1) + "").padStart(2, '0')
-                        + '-' + this.oneDate.getDate()
-                        + ' ' + this.oneHour + ':' + this.oneMin + ':00'
+                    return this.editDate.getFullYear()
+                        + '-' + ((this.editDate.getMonth() + 1) + "").padStart(2, '0')
+                        + '-' + this.editDate.getDate()
+                        + ' ' + this.editHour + ':' + this.editMin + ':00'
+                },
+                mbrPnNoND() {
+                    return this.mktEdit.mbrPnNo.replaceAll('-', '')
                 }
             }
         })

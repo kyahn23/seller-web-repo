@@ -312,5 +312,22 @@ public class CounselRestController {
         return rslt;
     }
 
+    /**
+     * 마케팅 상세 정보 저장 (신규, 별도 개통)
+     * @param param
+     * @return
+     */
+    @PostMapping("/service/saveMarketingNew")
+    public DevMap saveMarketingNew(HttpServletRequest request, @RequestBody DevMap param) {
+        HttpSession session = request.getSession();
+        String bnMbrId = (String) session.getAttribute("bnMbrId");
+        param.put("bnMbrId", bnMbrId);
+
+        counselService.saveMarketingNew(param);
+
+        DevMap rslt = new DevMap();
+        rslt.put("rsltStat", "SUCC");
+        return rslt;
+    }
 
 }
