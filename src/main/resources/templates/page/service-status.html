@@ -213,15 +213,18 @@
                             </tr>
                             <tr>
                                 <th>통신사</th>
-                                <td v-if="selectedCs.callNo">{{selectedCs.mntCarr}}</td>
+                                <td v-if="selectedCs.callStCd === 'T'">{{selectedCs.regCarr}}</td>
+                                <td v-else-if="selectedCs.callStCd === 'P' || selectedCs.callStCd === 'R' || selectedCs.callStCd === 'E'">{{selectedCs.mntCarr}}</td>
                                 <td v-else>-</td>
                                 <th>가입유형</th>
-                                <td v-if="selectedCs.callNo">{{selectedCs.pnRegDisNm}}</td>
+                                <td v-if="selectedCs.callStCd === 'T'">{{selectedCs.regTypeNm}}</td>
+                                <td v-else-if="selectedCs.callStCd === 'P' || selectedCs.callStCd === 'R' || selectedCs.callStCd === 'E'">{{selectedCs.pnRegDisNm}}</td>
                                 <td v-else>-</td>
                             </tr>
                             <tr>
                                 <th>요금제</th>
-                                <td v-if="selectedCs.callNo">{{selectedCs.pnMntRtNm}}</td>
+                                <td v-if="selectedCs.callStCd === 'T'">{{selectedCs.regMntRtNm}}</td>
+                                <td v-else-if="selectedCs.callStCd === 'P' || selectedCs.callStCd === 'R' || selectedCs.callStCd === 'E'">{{selectedCs.pnMntRtNm}}</td>
                                 <td v-else>-</td>
                                 <th>약정기간</th>
                                 <td v-if="selectedCs.callNo">
@@ -234,10 +237,12 @@
                             </tr>
                             <tr>
                                 <th>제조사</th>
-                                <td v-if="selectedCs.callNo">{{selectedCs.pnMkrNm}}</td>
+                                <td v-if="selectedCs.callStCd === 'T'">{{selectedCs.regPnMkrNm}}</td>
+                                <td v-else-if="selectedCs.callStCd === 'P' || selectedCs.callStCd === 'R' || selectedCs.callStCd === 'E'">{{selectedCs.pnMkrNm}}</td>
                                 <td v-else>-</td>
                                 <th>모델</th>
-                                <td v-if="selectedCs.callNo">{{selectedCs.pnMdlNm}} {{selectedCs.pnStor}}GB</td>
+                                <td v-if="selectedCs.callStCd === 'T'">{{selectedCs.regPnMdlNm}} {{selectedCs.regPnStor}}GB</td>
+                                <td v-else-if="selectedCs.callStCd === 'P' || selectedCs.callStCd === 'R' || selectedCs.callStCd === 'E'">{{selectedCs.pnMdlNm}} {{selectedCs.pnStor}}GB</td>
                                 <td v-else>-</td>
                             </tr>
                             <tr>
@@ -334,13 +339,13 @@
                         <tr>
                             <th>통신사</th>
                             <td>
-                                <select class="wPer" v-model="rsltToReg.mntCarr" :disabled='modiCallStCd==="E"'>
+                                <select class="wPer" v-model="rsltToReg.regCarr" :disabled='modiCallStCd==="E"'>
                                     <option v-for="carr in carrArr" :value="carr.code">{{carr.value}}</option>
                                 </select>
                             </td>
                             <th>가입유형</th>
                             <td>
-                                <select class="wPer" v-model="rsltToReg.pnRegDis" :disabled='modiCallStCd==="E"'>
+                                <select class="wPer" v-model="rsltToReg.regType" :disabled='modiCallStCd==="E"'>
                                     <option v-for="type in counselType" :value="type.code">{{type.value}}</option>
                                 </select>
                             </td>
@@ -348,7 +353,7 @@
                         <tr>
                             <th>요금제</th>
                             <td>
-                                <select class="wPer" v-model="rsltToReg.pnMntRtNo" :disabled='modiCallStCd==="E"'>
+                                <select class="wPer" v-model="rsltToReg.regMntRtNo" :disabled='modiCallStCd==="E"'>
                                     <option value="all">선택</option>
                                     <option v-for="mntrt in useMntrtListByCarr" :value="mntrt.pnMntRtNo">
                                         {{mntrt.pnMntRtNm}}
@@ -372,7 +377,7 @@
                             </td>
                             <th>모델</th>
                             <td>
-                                <select class="wPer" v-model="rsltToReg.pnMdlNo" :disabled='modiCallStCd==="E"'>
+                                <select class="wPer" v-model="rsltToReg.regPnMdlNo" :disabled='modiCallStCd==="E"'>
                                     <option value="all">선택</option>
                                     <option v-for="device in devListByMkr" :value="device.pnMdlNo">{{device.pnMdlNm}} {{device.pnStor}}GB
                                     </option>
@@ -486,7 +491,7 @@
                 this.getBnMbrList()
             },
             watch: {
-                'rsltToReg.mntCarr': {
+                'rsltToReg.regCarr': {
                     handler(value) {
                         this.rsltLayerDeviceInit()
 
@@ -515,9 +520,9 @@
                                 }
                                 break
                         }
-                        if (value !== this.selectedCs.mntCarr) {
-                            this.rsltToReg.pnRegDis = "all"
-                            this.rsltToReg.pnMntRtNo = "all"
+                        if (value !== this.selectedCs.regCarr) {
+                            this.rsltToReg.regType = "all"
+                            this.rsltToReg.regMntRtNo = "all"
                         }
                         this.useMntrtListByCarr = tempArr
                     },
@@ -528,17 +533,20 @@
                         if (value !== this.selectedCs.pnMntRtNo) {
                             this.selectedMkr = "all"
                         }
+                        let includeChk = false  // 기존 개통요금제가 현재 사용중인 요금제에 없는경우 false
                         for (list in this.mntrtList){
                             if(this.mntrtList[list].pnMntRtNo === value){
                                 this.netTypeByMntrt = this.mntrtList[list].pnNetType
+                                includeChk = true       // 기존 개통요금제가 현재 사용중인 요금제에 있는경우 true
                             }
                         }
+                        if (!includeChk) this.selectedMkr = "all"
                     },
                     immediate: true
                 },
                 selectedMkr: function (data) {
-                    var mntCarr = this.rsltToReg.mntCarr
-                    switch (this.rsltToReg.mntCarr) {
+                    var mntCarr = this.rsltToReg.regCarr
+                    switch (this.rsltToReg.regCarr) {
                         case 'SKT':
                             mntCarr = 'S'
                             break
@@ -581,7 +589,10 @@
                             break
                     }
                     if (data !== this.selectedCs.pnMkr){
-                        this.rsltToReg.pnMdlNo = 'all'
+                        this.rsltToReg.regPnMdlNo = 'all'
+                    }
+                    if (data === 'all') {
+                        this.rsltToReg.regPnMdlNo = 'all'
                     }
                     this.devListByMkr = tempArr
                 },
@@ -708,6 +719,24 @@
                                 this.selectedCs.pnMkrNm = '기타'
                                 break
                         }
+                        switch (this.selectedCs.regPnMkr) {
+                            case "SAM":
+                                this.selectedCs.regPnMkrNm = '삼성전자'
+                                break
+                            case "LGE":
+                                this.selectedCs.regPnMkrNm = 'LG전자'
+                                break
+                            case "APP":
+                                this.selectedCs.regPnMkrNm = '애플'
+                                break
+                            case "XIA":
+                                this.selectedCs.regPnMkrNm = '샤오미'
+                                break
+                            case "ETC":
+                                this.selectedCs.regPnMkrNm = '기타'
+                                break
+                        }
+
 
                         this.rsltLayerMntRtInit()
                     } else {
@@ -831,6 +860,9 @@
                             break
                     }
                     this.useMntrtListByCarr = tempArr
+                    for (list in this.useMntrtListByCarr) {
+
+                    }
                 },
                 registerRslt() {
                     if (this.modiCall) return
@@ -928,8 +960,7 @@
                         this.modiCall = false    // false - 블랙리스트 등록안된
                         this.blackYn = false
                     }
-
-                }
+                },
             }
         })
     </script>
