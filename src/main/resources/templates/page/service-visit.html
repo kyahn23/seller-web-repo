@@ -460,6 +460,7 @@
                             <th>요금제</th>
                             <td>
                                 <select class="wPer" v-model="rsltToReg.pnMntRtNo" :disabled='modiCallStCd==="E"'>
+                                    <option value="all">선택</option>
                                     <option v-for="mntrt in useMntrtListByCarr" :value="mntrt.pnMntRtNo">
                                         {{mntrt.pnMntRtNm}}
                                     </option>
@@ -483,6 +484,7 @@
                             <th>모델</th>
                             <td>
                                 <select class="wPer" v-model="rsltToReg.pnMdlNo" :disabled='modiCallStCd==="E"'>
+                                    <option value="all">선택</option>
                                     <option v-for="device in devListByMkr" :value="device.pnMdlNo">{{device.pnMdlNm}} {{device.pnStor}}GB
                                     </option>
                                 </select>
@@ -634,7 +636,7 @@
                     handler(value) {
                         this.rsltLayerDeviceInit()
 
-                        let tempArr = []
+                        var tempArr = []
                         this.useMntrtListByCarr = []
                         switch (value) {
                             case 'SKT':
@@ -659,8 +661,24 @@
                                 }
                                 break
                         }
+                        if (value !== this.selectedCs.mntCarr) {
+                            this.rsltToReg.pnRegDis = "all"
+                            this.rsltToReg.pnMntRtNo = "all"
+                        }
                         this.useMntrtListByCarr = tempArr
-
+                    },
+                    immediate: true
+                },
+                'rsltToReg.pnMntRtNo':{
+                    handler(value) {
+                        if (value !== this.selectedCs.pnMntRtNo) {
+                            this.selectedMkr = "all"
+                        }
+                        for (list in this.mntrtList){
+                            if(this.mntrtList[list].pnMntRtNo === value){
+                                this.netTypeByMntrt = this.mntrtList[list].pnNetType
+                            }
+                        }
                     },
                     immediate: true
                 },
@@ -681,32 +699,35 @@
                     switch (data) {
                         case 'SAM':
                             for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'SAM' && this.deviceList[list].pnCarr.includes(mntCarr)) {
+                                if (this.deviceList[list].pnMkr === 'SAM' && this.deviceList[list].pnCarr.includes(mntCarr) && this.deviceList[list].pnNetType === this.netTypeByMntrt) {
                                     tempArr.push(this.deviceList[list])
                                 }
                             }
                             break
                         case 'LGE':
                             for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'LGE' && this.deviceList[list].pnCarr.includes(mntCarr)) {
+                                if (this.deviceList[list].pnMkr === 'LGE' && this.deviceList[list].pnCarr.includes(mntCarr) && this.deviceList[list].pnNetType === this.netTypeByMntrt) {
                                     tempArr.push(this.deviceList[list])
                                 }
                             }
                             break
                         case 'APP':
                             for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'APP' && this.deviceList[list].pnCarr.includes(mntCarr)) {
+                                if (this.deviceList[list].pnMkr === 'APP' && this.deviceList[list].pnCarr.includes(mntCarr) && this.deviceList[list].pnNetType === this.netTypeByMntrt) {
                                     tempArr.push(this.deviceList[list])
                                 }
                             }
                             break
                         case 'XIA':
                             for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'XIA' && this.deviceList[list].pnCarr.includes(mntCarr)) {
+                                if (this.deviceList[list].pnMkr === 'XIA' && this.deviceList[list].pnCarr.includes(mntCarr) && this.deviceList[list].pnNetType === this.netTypeByMntrt) {
                                     tempArr.push(this.deviceList[list])
                                 }
                             }
                             break
+                    }
+                    if (data !== this.selectedCs.pnMkr){
+                        this.rsltToReg.pnMdlNo = 'all'
                     }
                     this.devListByMkr = tempArr
                 }
@@ -843,9 +864,11 @@
                         pnStor: this.selectedCs.pnStor,
                         pnMntRtNo: this.selectedCs.pnMntRtNo
                     }
+                    console.log(param)
                     cf_call("/service/getCurrPolicy", param, this.getCurrPolicyCB)
                 },
                 getCurrPolicyCB(data) {
+                    console.log(data)
                     this.currPolicy = data
                 },
                 openPicker1() {
