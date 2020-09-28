@@ -24,7 +24,16 @@
         T.OLD_EXT_SERV_YN,
         T.CALL_NO,
         T.CALL_CONT,
+        T.DEAL_CONT,
+        T.CNCL_CMNT,
         T.BN_MBR_ID,
+        T.REG_PD,           /* 개통한 약정기간 */
+        T.REG_TYPE,         /* 개통한 가입유형 */
+        T.REG_MBR_PN_NO,    /* 개통한 번호 */
+        T.REG_MNT_RT_NO,    /* 개통한 요금제 */
+        T.REG_CARR,         /* 개통한 통신사 */
+        T.REG_PN_MDL_NO,    /* 개통한 모델 */
+        T.REG_EXT_SERV_YN,    /* 개통시 부가서비스여부 */
         (SELECT MBR_NM FROM TBL002 tt5 WHERE tt5.BN_MBR_ID = T.BN_MBR_ID) as MBR_NM,
         DATE_FORMAT(T.INP_DT, '%Y-%m-%d %H:%i') as INP_DT,
         DATE_FORMAT(T.AMD_DT, '%Y-%m-%d %H:%i') as AMD_DT
@@ -119,6 +128,7 @@
     <select id="allDeviceListByCarr" parameterType="DevMap" resultType="DevMap">
         SELECT * from TBL011 t
         where PN_CARR LIKE CONCAT('%', #{mntCarr}, '%') /* 기기 통신사 */
+        order by t.REL_DT desc
     </select>
 
     <update id="registerRslt" parameterType="DevMap">

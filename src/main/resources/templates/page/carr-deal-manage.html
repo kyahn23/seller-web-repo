@@ -215,8 +215,8 @@
                                     </td>
                                     <td class="alignC" v-if="sell.pnNetType === '4G'" @click="rowClick(sell,idx)">LTE
                                     </td>
-                                    <td class="alignC" @click="rowClick(sell,idx)">{{sell.pnNetType}}</td>
-                                    <td class="alignC" @click="rowClick(sell,idx)">{{sell.pnStor}}</td>
+                                    <td class="alignC" v-else @click="rowClick(sell,idx)">{{sell.pnNetType}}</td>
+                                    <td class="alignC" @click="rowClick(sell,idx)">{{sell.pnStor}}GB</td>
                                     <td class="alignC" @click="rowClick(sell,idx)">{{sell.pnMdlNo}}</td>
                                     <td class="alignC" v-if="!sell.lastModiMbr" @click="rowClick(sell,idx)">-</td>
                                     <td class="alignC" v-else @click="rowClick(sell,idx)">{{sell.lastModiMbr}}</td>

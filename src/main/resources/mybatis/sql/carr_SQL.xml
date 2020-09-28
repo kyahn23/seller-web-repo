@@ -150,7 +150,7 @@
         a.PN_NET_TYPE,
         a.PN_STOR,
         a.PN_MDL_NO,
-        a.INP_DT
+        a.REL_DT
         FROM
         `TBL011` a
         LEFT JOIN (
@@ -191,7 +191,7 @@
             AND a.PN_MDL_NM LIKE CONCAT('%', #{searchKey}, '%') ]]>
         </if>
         group by a.PN_MDL_NO, a.PN_STOR
-        order by sellStatus desc, a.INP_DT desc /* 출시일 컬럼 추가후 출시일로 변경 */
+        order by sellStatus desc, a.REL_DT desc, a.PN_MDL_NO, a.PN_MSRP asc, convert(a.PN_STOR, decimal) DESC
     </select>
 
     <select id="moveCarrList" parameterType="DevMap" resultType="DevMap">

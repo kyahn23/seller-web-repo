@@ -107,7 +107,7 @@
                                         <td>방문예정일시</td>
                                         <td>고객명</td>
                                         <td>통신사</td>
-                                        <td>개통유형</td>
+                                        <td>가입유형</td>
                                         <td>상담 요금제</td>
                                         <td>휴대폰</td>
                                         <td>등록자</td>
@@ -133,7 +133,7 @@
                                     <td>방문예정일시</td>
                                     <td>고객명</td>
                                     <td>통신사</td>
-                                    <td>개통유형</td>
+                                    <td>가입유형</td>
                                     <td>상담 요금제</td>
                                     <td>휴대폰</td>
                                     <td>등록자</td>
@@ -192,7 +192,7 @@
                             </colgroup>
                             <tbody>
                             <tr>
-                                <th>통신사 / 개통유형</th>
+                                <th>통신사 / 가입유형</th>
                                 <td v-if="!selectedCs.callNo">-</td>
                                 <td v-else>{{selectedCs.mntCarr}} / {{selectedCs.pnRegDisNm}}</td>
                                 <th>상담요금제</th>
@@ -202,7 +202,7 @@
                             <tr>
                                 <th>휴대폰</th>
                                 <td colspan="3" v-if="!selectedCs.callNo">-</td>
-                                <td colspan="3" v-else>{{selectedCs.pnMdlNm}} {{selectedCs.pnStor}}</td>
+                                <td colspan="3" v-else>{{selectedCs.pnMdlNm}} {{selectedCs.pnStor}}GB</td>
                             </tr>
                             </tbody>
                         </table>
@@ -415,20 +415,20 @@
                         </colgroup>
                         <tbody>
                         <tr>
-                            <th>개통담당자</th>
-                            <td colspan="3">
-                                <select class="wPer" v-model="rsltToReg.bnMbrId">
-                                    <option v-for="mbr in bnMbr" :value="mbr.bnMbrId">{{mbr.mbrNm}}</option>
-                                </select>
-                            </td>
-                        </tr>
-                        <tr>
                             <th>구분</th>
                             <td colspan="3">
                                 <input type="radio" id="saleSucc" name="saleRslt" value="T" v-model="modiCallStCd">
                                 <label for="saleSucc">개통완료</label>&nbsp;
                                 <input type="radio" id="saleFail" name="saleRslt" value="E" v-model="modiCallStCd">
                                 <label for="saleFail">미개통</label>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>개통담당자</th>
+                            <td colspan="3">
+                                <select class="wPer" v-model="rsltToReg.bnMbrId">
+                                    <option v-for="mbr in bnMbr" :value="mbr.bnMbrId">{{mbr.mbrNm}}</option>
+                                </select>
                             </td>
                         </tr>
                         <tr>
@@ -449,7 +449,7 @@
                                     <option v-for="carr in carrArr" :value="carr.code">{{carr.value}}</option>
                                 </select>
                             </td>
-                            <th>조건</th>
+                            <th>가입유형</th>
                             <td>
                                 <select class="wPer" v-model="rsltToReg.pnRegDis" :disabled='modiCallStCd==="E"'>
                                     <option v-for="type in counselType" :value="type.code">{{type.value}}</option>
@@ -483,7 +483,7 @@
                             <th>모델</th>
                             <td>
                                 <select class="wPer" v-model="rsltToReg.pnMdlNo" :disabled='modiCallStCd==="E"'>
-                                    <option v-for="device in devListByMkr" :value="device.pnMdlNo">{{device.pnMdlNm}}
+                                    <option v-for="device in devListByMkr" :value="device.pnMdlNo">{{device.pnMdlNm}} {{device.pnStor}}GB
                                     </option>
                                 </select>
                             </td>

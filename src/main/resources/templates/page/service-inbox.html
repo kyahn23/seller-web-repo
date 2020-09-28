@@ -38,7 +38,7 @@
 
                         </li>
                         <li class="txtSize3">
-                            <label for="purchaes02">개통유형</label>
+                            <label for="purchaes02">가입유형</label>
                             <select id="purchaes02" v-model="selectedType">
                                 <option v-for="type in counselType" :value="type.code">{{type.value}}</option>
                             </select>
@@ -110,7 +110,7 @@
                                 <thead>
                                 <tr>
                                     <td>통신사</td>
-                                    <td>개통유형</td>
+                                    <td>가입유형</td>
                                     <td>상담 요금제</td>
                                     <td>휴대폰</td>
                                     <td>고객명</td>
@@ -170,7 +170,7 @@
                             </colgroup>
                             <tbody>
                             <tr>
-                                <th>통신사 / 개통유형</th>
+                                <th>통신사 / 가입유형</th>
                                 <td v-if="!selectedCs.callNo">-</td>
                                 <td v-else>{{selectedCs.mntCarr}} / {{selectedCs.pnRegDisNm}}</td>
                                 <th>상담요금제</th>
