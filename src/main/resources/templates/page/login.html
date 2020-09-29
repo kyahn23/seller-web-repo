@@ -300,6 +300,15 @@
                 $("#tab_" + tabName).addClass("on");
             });
 
+            // 비밀번호 input 박스에서 enter 키 누를 시 로그인 버튼 클릭 처리
+            $('#userPw').keypress(function(event){
+                var keycode = (event.keyCode ? event.keyCode : event.which);
+                if(keycode == '13'){
+                    $("#btnLogin").trigger("click");
+                }
+            });
+
+            // 로그인 버튼 클릭 시 로그인 처리
             $("#btnLogin").click(function() {
                 var userPw = $("#userPw").val();
                 var hashedPw = CryptoJS.SHA256(userPw).toString();
