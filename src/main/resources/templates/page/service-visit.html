@@ -460,6 +460,7 @@
                             <th>요금제</th>
                             <td>
                                 <select class="wPer" v-model="rsltToReg.pnMntRtNo" :disabled='modiCallStCd==="E"'>
+                                    <option value="all">선택</option>
                                     <option v-for="mntrt in useMntrtListByCarr" :value="mntrt.pnMntRtNo">
                                         {{mntrt.pnMntRtNm}}
                                     </option>
@@ -482,8 +483,9 @@
                             </td>
                             <th>모델</th>
                             <td>
-                                <select class="wPer" v-model="rsltToReg.pnMdlNo" :disabled='modiCallStCd==="E"'>
-                                    <option v-for="device in devListByMkr" :value="device.pnMdlNo">{{device.pnMdlNm}} {{device.pnStor}}GB
+                                <select class="wPer" v-model="pnMdlNoStor" :disabled='modiCallStCd==="E"'>
+                                    <option value="all">선택</option>
+                                    <option v-for="device in devListByMkr" :value="device.pnMdlNo+'|'+device.pnStor">{{device.pnMdlNm}} {{device.pnStor}}GB
                                     </option>
                                 </select>
                             </td>
@@ -591,6 +593,9 @@
                 deviceList: [],              // 전체 디바이스 목록
                 devListByMkr: [],
                 selectedMkr: "",              // 개통결과등록레이어팝업 내에 제조사 항목
+                selectedCarrChg: false,
+                selectedMkrChg: false,
+                selectedMdlChg: false,
                 pnMkr: [
                     {code: "all", value: "선택"},
                     {code: "SAM", value: "삼성전자"},
@@ -617,24 +622,45 @@
                     }
                 },
             },
+            computed:{
+                pnMdlNoStor: {
+                    get: function(){
+                        return this.rsltToReg.pnMdlNo+'|'+this.rsltToReg.pnStor
+                    },
+                    set: function(newValue){
+                        if (newValue === 'all'){
+                            return 'all'
+                        } else {
+                            let keyword = newValue.split('|')
+                            this.rsltToReg.pnMdlNo = keyword[0]
+                            this.rsltToReg.pnStor= keyword[1]
+                        }
+                    }
+
+                    // if (this.selectedMkr === 'all'){
+                    //     if (this.selectedMkrChg === true){
+                    //         return 'all'
+                    //     }
+                    // } else if(this.selectedMdlChg === true){
+                    //     return this.rsltToReg.pnMdlNo+'|'+this.rsltToReg.pnStor
+                    // }
+                    // else {
+                    //     return this.rsltToReg.pnMdlNo+'|'+this.rsltToReg.pnStor
+                    // }
+                }
+            },
             components: {
                 vuejsDatepicker
             },
             mounted: function () {
                 this.getToday()
             },
-            // computed:{
-            //   dpOpenCss() {
-            //       if(this.selectedCs.callNo) return '1200px !important'
-            //       return '687px !important'
-            //   }
-            // },
             watch: {
                 'rsltToReg.mntCarr': {
                     handler(value) {
                         this.rsltLayerDeviceInit()
 
-                        let tempArr = []
+                        var tempArr = []
                         this.useMntrtListByCarr = []
                         switch (value) {
                             case 'SKT':
@@ -659,8 +685,28 @@
                                 }
                                 break
                         }
-                        this.useMntrtListByCarr = tempArr
+                        if (value !== this.selectedCs.mntCarr) {
+                            this.selectedCarrChg = true
+                            if (this.selectedCarrChg === true){
+                                this.rsltToReg.pnRegDis = "all"
+                                this.rsltToReg.pnMntRtNo = "all"
+                            }
 
+                        }
+                        this.useMntrtListByCarr = tempArr
+                    },
+                    immediate: true
+                },
+                'rsltToReg.pnMntRtNo':{
+                    handler(value) {
+                        if (value !== this.selectedCs.pnMntRtNo) {
+                            this.selectedMkr = "all"
+                        }
+                        for (list in this.mntrtList){
+                            if(this.mntrtList[list].pnMntRtNo === value){
+                                this.netTypeByMntrt = this.mntrtList[list].pnNetType
+                            }
+                        }
                     },
                     immediate: true
                 },
@@ -681,32 +727,36 @@
                     switch (data) {
                         case 'SAM':
                             for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'SAM' && this.deviceList[list].pnCarr.includes(mntCarr)) {
+                                if (this.deviceList[list].pnMkr === 'SAM' && this.deviceList[list].pnCarr.includes(mntCarr) && this.deviceList[list].pnNetType === this.netTypeByMntrt) {
                                     tempArr.push(this.deviceList[list])
                                 }
                             }
                             break
                         case 'LGE':
                             for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'LGE' && this.deviceList[list].pnCarr.includes(mntCarr)) {
+                                if (this.deviceList[list].pnMkr === 'LGE' && this.deviceList[list].pnCarr.includes(mntCarr) && this.deviceList[list].pnNetType === this.netTypeByMntrt) {
                                     tempArr.push(this.deviceList[list])
                                 }
                             }
                             break
                         case 'APP':
                             for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'APP' && this.deviceList[list].pnCarr.includes(mntCarr)) {
+                                if (this.deviceList[list].pnMkr === 'APP' && this.deviceList[list].pnCarr.includes(mntCarr) && this.deviceList[list].pnNetType === this.netTypeByMntrt) {
                                     tempArr.push(this.deviceList[list])
                                 }
                             }
                             break
                         case 'XIA':
                             for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'XIA' && this.deviceList[list].pnCarr.includes(mntCarr)) {
+                                if (this.deviceList[list].pnMkr === 'XIA' && this.deviceList[list].pnCarr.includes(mntCarr) && this.deviceList[list].pnNetType === this.netTypeByMntrt) {
                                     tempArr.push(this.deviceList[list])
                                 }
                             }
                             break
+                    }
+                    if (data !== this.selectedCs.pnMkr){
+                        this.rsltToReg.pnMdlNo = 'all'
+                        this.selectedMkrChg = true  // 제조사 값 변경됨 - true
                     }
                     this.devListByMkr = tempArr
                 }
@@ -843,9 +893,11 @@
                         pnStor: this.selectedCs.pnStor,
                         pnMntRtNo: this.selectedCs.pnMntRtNo
                     }
+                    console.log(param)
                     cf_call("/service/getCurrPolicy", param, this.getCurrPolicyCB)
                 },
                 getCurrPolicyCB(data) {
+                    console.log(data)
                     this.currPolicy = data
                 },
                 openPicker1() {
@@ -993,15 +1045,38 @@
                             regType: this.rsltToReg.pnRegDis,
                             regMntRtNo: this.rsltToReg.pnMntRtNo,
                             regPnMdlNo: this.rsltToReg.pnMdlNo,
+                            regPnStor: this.rsltToReg.pnStor,
                             regPd: this.selectedPd,
                             dealCont: this.rsltTxt,
                             pnRegYn: 'Y',
                             callNo: this.rsltToReg.callNo
                         }
+                        if (param.regCarr === 'all') {
+                            alert('통신사를 선택해주세요.')
+                            return
+                        }
+                        if (param.regType === 'all') {
+                            alert('가입유형을 선택해주세요.')
+                            return
+                        }
+                        if (param.regMntRtNo === 'all'){
+                            alert('요금제를 선택해주세요.')
+                            return
+                        }
                         if (!this.selectedPd){
                             alert('약정기간을 선택해주세요.')
                             return
                         }
+                        if (this.selectedMkr === 'all'){
+                            alert('제조사를 선택해주세요.')
+                            return
+                        }
+                        if (this.pnMdlNoStor === 'all'){
+                            alert('모델을 선택해주세요.')
+                            return
+                        }
+
+
                     } else if (this.modiCallStCd === 'E') {
                         param = {
                             bnMbrId: this.rsltToReg.bnMbrId,
@@ -1021,7 +1096,8 @@
                         return
                     }
                     if(confirm('개통결과를 등록하시겠습니까?')){
-                        cf_call("/service/registerRslt", param, this.registerRsltCB)
+                        console.log(param)
+                        // cf_call("/service/registerRslt", param, this.registerRsltCB)
                     }
 
                 },

@@ -34,7 +34,9 @@
         T.REG_MNT_RT_NO,    /* 개통한 요금제 */
         (select PN_MNT_RT_NM FROM TBL010 tt9 where tt9.PN_MNT_RT_NO = T.REG_MNT_RT_NO) as REG_MNT_RT_NM,
         T.REG_CARR,         /* 개통한 통신사 */
+        (SELECT PN_MKR FROM TBL011 pnmkr where pnmkr.PN_MDL_NO = T.REG_PN_MDL_NO) as REG_PN_MKR,         /* 개통한 모델제조사 */
         T.REG_PN_MDL_NO,    /* 개통한 모델 */
+        T.REG_PN_STOR,      /* 개통한 모델 용량 */
         (select PN_MDL_NM FROM TBL011 tt2 where tt2.PN_MDL_NO = T.REG_PN_MDL_NO) as REG_PN_MDL_NM,    /* 개통한 모델이름 */
         T.REG_EXT_SERV_YN,    /* 개통시 부가서비스여부 */
         (SELECT MBR_NM FROM TBL002 tt5 WHERE tt5.BN_MBR_ID = T.BN_MBR_ID) as MBR_NM,
@@ -146,6 +148,7 @@
                 REG_MBR_PN_NO = #{regMbrPnNo},
                 REG_MNT_RT_NO = #{regMntRtNo},
                 REG_PN_MDL_NO = #{regPnMdlNo},
+                REG_PN_STOR = #{regPnStor}
                 REG_TYPE = #{regType},
                 REG_PD = #{regPd},
         </if>
