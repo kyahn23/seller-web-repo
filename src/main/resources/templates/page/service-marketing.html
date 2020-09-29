@@ -144,7 +144,7 @@
                                 >
                                     <td class="alignC">{{ mktRow.mktRsltTxt }}</td>
                                     <td class="alignC">{{ mktRow.mbrNm }}</td>
-                                    <td class="alignC">{{ mktRow.mbrPnNo }}</td>
+                                    <td class="alignC">{{ getMbrPnNo(mktRow.mbrPnNo) }}</td>
                                     <td class="alignC">{{ mktRow.pnRegDt }}</td>
                                     <td class="alignC">{{ mktRow.mntCarr ? mktRow.mntCarr : '-' }}</td>
                                     <td class="alignC">{{ mktRow.pnMdlNm ? mktRow.pnMdlNm : '-' }}</td>
@@ -217,7 +217,7 @@
                                 <th>개통고객명</th>
                                 <td>{{ mktOne.mbrNm }}</td>
                                 <th>개통번호</th>
-                                <td>{{ mktOne.mbrPnNo }}</td>
+                                <td>{{ getMbrPnNo(mktOne.mbrPnNo) }}</td>
                             </tr>
                             <tr>
                                 <th>마케팅 결과</th>
@@ -299,14 +299,15 @@
                                 >
                             </td>
                             <th>개통번호<span class="icoMust" v-if="mktEditDisabled"><em>필수</em></span></th>
-                            <td v-if="!mktEditDisabled">{{ mktOne.mbrPnNo }}</td>
+                            <td v-if="!mktEditDisabled">{{ getMbrPnNo(mktOne.mbrPnNo) }}</td>
                             <td v-else>
                                 <input
                                         class="wPer"
                                         type="text"
                                         id="mbrPnNo"
-                                        placeholder="고객 전화번호 기입"
-                                        v-model="mktEdit.mbrPnNo"
+                                        placeholder="'-'없이 숫자 10-11자리 입력"
+                                        :value="mktEdit.mbrPnNo"
+                                        @input="setMbrPnNo($event.target.value)"
                                 >
                             </td>
                         </tr>
@@ -598,6 +599,36 @@
                 },
                 getMktOneCB: function(rslt) {
                     this.mktOne = rslt.mktOne
+                },
+                getMbrPnNo: function(val) {
+                    var formatPnNo = ''
+                    if (val !== undefined) {
+                        if (val.length === 10) {
+                            formatPnNo = val.substring(0, 3) + '-' + val.substring(3, 6) + '-' + val.substring(6, 10)
+                        } else if (val.length === 11) {
+                            formatPnNo = val.substring(0, 3) + '-' + val.substring(3, 7) + '-' + val.substring(7, 11)
+                        }
+                    }
+                    return formatPnNo
+                },
+                setMbrPnNo: function(val) {
+                    var newChar = val.slice(-1)
+                    var newNo = val.replaceAll('-', '')
+                    if (/\d/.test(newChar)) {
+                        if (newNo.length === 10) {
+                            this.mktEdit.mbrPnNo = newNo.substring(0, 3) + '-' + newNo.substring(3, 6) + '-' + newNo.substring(6, 10)
+                        } else if (newNo.length === 11) {
+                            this.mktEdit.mbrPnNo = newNo.substring(0, 3) + '-' + newNo.substring(3, 7) + '-' + newNo.substring(7, 11)
+                        } else if (newNo.length >= 12 ) {
+                            this.mktEdit.mbrPnNo = newNo.substring(0, 3) + '-' + newNo.substring(3, 7) + '-' + newNo.substring(7, 11)
+                        } else {
+                            this.mktEdit.mbrPnNo = newNo
+                        }
+                        $('#mbrPnNo')[0].value = this.mktEdit.mbrPnNo
+                    } else {
+                        this.mktEdit.mbrPnNo = this.mktEdit.mbrPnNo.substring(0, this.mktEdit.mbrPnNo.length)
+                        $('#mbrPnNo')[0].value = this.mktEdit.mbrPnNo
+                    }
                 },
                 getMonthlyRate: function(val) {
                     var param = {
