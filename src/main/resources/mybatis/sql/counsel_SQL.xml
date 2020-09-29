@@ -10,12 +10,12 @@
         (select PN_NET_TYPE FROM TBL010 tt1 where tt1.PN_MNT_RT_NO = t1.PN_MNT_RT_NO) as PN_NET_TYPE,
         t1.PN_MNT_RT_NO,
         t1.PN_MDL_NO,
-        (select PN_MDL_NM FROM TBL011 tt2 where tt2.PN_MDL_NO = t1.PN_MDL_NO) as PN_MDL_NM,
+        (select DISTINCT PN_MDL_NM FROM TBL011 tt2 where tt2.PN_MDL_NO = t1.PN_MDL_NO) as PN_MDL_NM,
         t1.PN_STOR,
         (select PN_MSRP FROM TBL011 tt4 where tt4.PN_MDL_NO = t1.PN_MDL_NO) as PN_MSRP,
         (SELECT MBR_NM FROM TBL001 tt3 where tt3.CL_MBR_ID = t1.CL_MBR_ID) as CL_MBR_NM,
         t1.CL_MBR_ID,
-        (SELECT PN_MKR FROM TBL011 pnmkr where pnmkr.PN_MDL_NO = t1.PN_MDL_NO) as PN_MKR,
+        (SELECT DISTINCT PN_MKR FROM TBL011 pnmkr where pnmkr.PN_MDL_NO = t1.PN_MDL_NO) as PN_MKR,
         DATE_FORMAT(T.VISIT_DT, '%Y-%m-%d %H:%i') as VISIT_DT,
         t1.DEAL_REQ,
         T.MBR_PN_NO,
@@ -34,10 +34,10 @@
         T.REG_MNT_RT_NO,    /* 개통한 요금제 */
         (select PN_MNT_RT_NM FROM TBL010 tt9 where tt9.PN_MNT_RT_NO = T.REG_MNT_RT_NO) as REG_MNT_RT_NM,
         T.REG_CARR,         /* 개통한 통신사 */
-        (SELECT PN_MKR FROM TBL011 pnmkr where pnmkr.PN_MDL_NO = T.REG_PN_MDL_NO) as REG_PN_MKR,         /* 개통한 모델제조사 */
+        (SELECT DISTINCT PN_MKR FROM TBL011 pnmkr where pnmkr.PN_MDL_NO = T.REG_PN_MDL_NO) as REG_PN_MKR,         /* 개통한 모델제조사 */
         T.REG_PN_MDL_NO,    /* 개통한 모델 */
         T.REG_PN_STOR,      /* 개통한 모델 용량 */
-        (select PN_MDL_NM FROM TBL011 tt2 where tt2.PN_MDL_NO = T.REG_PN_MDL_NO) as REG_PN_MDL_NM,    /* 개통한 모델이름 */
+        (select DISTINCT PN_MDL_NM FROM TBL011 tt2 where tt2.PN_MDL_NO = T.REG_PN_MDL_NO) as REG_PN_MDL_NM,    /* 개통한 모델이름 */
         T.REG_EXT_SERV_YN,    /* 개통시 부가서비스여부 */
         (SELECT MBR_NM FROM TBL002 tt5 WHERE tt5.BN_MBR_ID = T.BN_MBR_ID) as MBR_NM,
         DATE_FORMAT(T.INP_DT, '%Y-%m-%d %H:%i') as INP_DT,
