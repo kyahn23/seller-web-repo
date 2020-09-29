@@ -461,7 +461,7 @@
                             <td>
                                 <select class="wPer" v-model="rsltToReg.pnMntRtNo" :disabled='modiCallStCd==="E"'>
                                     <option value="all">선택</option>
-                                    <option v-for="mntrt in useMntrtListByCarr" :value="mntrt.pnMntRtNo">
+                                    <option v-for="mntrt in mntrtList" :value="mntrt.pnMntRtNo">
                                         {{mntrt.pnMntRtNm}}
                                     </option>
                                 </select>
@@ -478,14 +478,15 @@
                             <th>제조사</th>
                             <td>
                                 <select class="wPer" v-model="selectedMkr" :disabled='modiCallStCd==="E"'>
-                                    <option v-for="mkr in pnMkr" :value="mkr.code">{{mkr.value}}</option>
+                                    <option value="all">선택</option>
+                                    <option v-for="mkr in pnMkrList" :value="mkr">{{setPnMkrNm(mkr)}}</option>
                                 </select>
                             </td>
                             <th>모델</th>
                             <td>
-                                <select class="wPer" v-model="pnMdlNoStor" :disabled='modiCallStCd==="E"'>
+                                <select class="wPer" v-model="rsltToReg.pnMdlNo" :disabled='modiCallStCd==="E"'>
                                     <option value="all">선택</option>
-                                    <option v-for="device in devListByMkr" :value="device.pnMdlNo+'|'+device.pnStor">{{device.pnMdlNm}} {{device.pnStor}}GB
+                                    <option v-for="device in deviceList" :value="device.pnMdlNo">{{device.pnMdlNm}} {{device.pnStor}}GB
                                     </option>
                                 </select>
                             </td>
@@ -589,21 +590,38 @@
                 ],
                 selectedPd: "",
                 mntrtList: [],          // 사용중인 전체 요금제 리스트
-                useMntrtListByCarr: [],     //  통신사에 따른 사용 요금제 리스트
+                // useMntrtListByCarr: [],     //  통신사에 따른 사용 요금제 리스트
                 deviceList: [],              // 전체 디바이스 목록
                 devListByMkr: [],
                 selectedMkr: "",              // 개통결과등록레이어팝업 내에 제조사 항목
                 selectedCarrChg: false,
                 selectedMkrChg: false,
                 selectedMdlChg: false,
-                pnMkr: [
-                    {code: "all", value: "선택"},
-                    {code: "SAM", value: "삼성전자"},
-                    {code: "APP", value: "애플"},
-                    {code: "LGE", value: "LG전자"},
-                    // {code: "XIA", value: "샤오미"},
-                    {code: "ETC", value: "기타"}
+                // pnMkr: [
+                //     {code: "SAM", value: "삼성전자"},
+                //     {code: "APP", value: "애플"},
+                //     {code: "LGE", value: "LG전자"},
+                //     {code: "ETC", value: "기타"}
+                // ],
+                pnMkrData: [
+                    {
+                        mkrCd: 'SAM',
+                        mkrNm: '삼성전자'
+                    },
+                    {
+                        mkrCd: 'LGE',
+                        mkrNm: 'LG전자'
+                    },
+                    {
+                        mkrCd: 'APP',
+                        mkrNm: '애플'
+                    },
+                    {
+                        mkrCd: 'XIA',
+                        mkrNm: '샤오미'
+                    }
                 ],
+                pnMkrList: [],
                 rsltTxt: "",                 // 개통결과등록 기타사항
                 counselList: [],            // 현재 페이지 상담 리스트
                 pageNo: "1",
@@ -622,33 +640,22 @@
                     }
                 },
             },
-            computed:{
-                pnMdlNoStor: {
-                    get: function(){
-                        return this.rsltToReg.pnMdlNo+'|'+this.rsltToReg.pnStor
-                    },
-                    set: function(newValue){
-                        if (newValue === 'all'){
-                            return 'all'
-                        } else {
-                            let keyword = newValue.split('|')
-                            this.rsltToReg.pnMdlNo = keyword[0]
-                            this.rsltToReg.pnStor= keyword[1]
-                        }
-                    }
-
-                    // if (this.selectedMkr === 'all'){
-                    //     if (this.selectedMkrChg === true){
-                    //         return 'all'
-                    //     }
-                    // } else if(this.selectedMdlChg === true){
-                    //     return this.rsltToReg.pnMdlNo+'|'+this.rsltToReg.pnStor
-                    // }
-                    // else {
-                    //     return this.rsltToReg.pnMdlNo+'|'+this.rsltToReg.pnStor
-                    // }
-                }
-            },
+            // computed:{
+            //     pnMdlNoStor: {
+            //         get: function(){
+            //             return this.rsltToReg.pnMdlNo+'|'+this.rsltToReg.pnStor
+            //         },
+            //         set: function(newValue){
+            //             if (newValue === 'all'){
+            //                 return 'all'
+            //             } else {
+            //                 let keyword = newValue.split('|')
+            //                 this.rsltToReg.pnMdlNo = keyword[0]
+            //                 this.rsltToReg.pnStor= keyword[1]
+            //             }
+            //         }
+            //     }
+            // },
             components: {
                 vuejsDatepicker
             },
@@ -658,107 +665,35 @@
             watch: {
                 'rsltToReg.mntCarr': {
                     handler(value) {
-                        this.rsltLayerDeviceInit()
+                        this.rsltLayerMntRtInit()
 
-                        var tempArr = []
-                        this.useMntrtListByCarr = []
-                        switch (value) {
-                            case 'SKT':
-                                for (list in this.mntrtList) {
-                                    if (this.mntrtList[list].pnCarr === 'SKT') {
-                                        tempArr.push(this.mntrtList[list])
-                                    }
-                                }
-                                break
-                            case 'KT':
-                                for (list in this.mntrtList) {
-                                    if (this.mntrtList[list].pnCarr === 'KT') {
-                                        tempArr.push(this.mntrtList[list])
-                                    }
-                                }
-                                break
-                            case 'LGU':
-                                for (list in this.mntrtList) {
-                                    if (this.mntrtList[list].pnCarr === 'LGU') {
-                                        tempArr.push(this.mntrtList[list])
-                                    }
-                                }
-                                break
-                        }
                         if (value !== this.selectedCs.mntCarr) {
                             this.selectedCarrChg = true
                             if (this.selectedCarrChg === true){
                                 this.rsltToReg.pnRegDis = "all"
                                 this.rsltToReg.pnMntRtNo = "all"
                             }
-
                         }
-                        this.useMntrtListByCarr = tempArr
                     },
                     immediate: true
                 },
                 'rsltToReg.pnMntRtNo':{
                     handler(value) {
+                        var pnNetType = this.getPnNetType(value)
+                        this.rsltLayerMkrInit(pnNetType)
                         if (value !== this.selectedCs.pnMntRtNo) {
                             this.selectedMkr = "all"
-                        }
-                        for (list in this.mntrtList){
-                            if(this.mntrtList[list].pnMntRtNo === value){
-                                this.netTypeByMntrt = this.mntrtList[list].pnNetType
-                            }
                         }
                     },
                     immediate: true
                 },
                 selectedMkr: function (data) {
                     let mntCarr = this.rsltToReg.mntCarr
-                    switch (this.rsltToReg.mntCarr) {
-                        case 'SKT':
-                            mntCarr = 'S'
-                            break
-                        case 'KT':
-                            mntCarr = 'K'
-                            break
-                        case 'SKT':
-                            mntCarr = 'L'
-                            break
-                    }
-                    let tempArr = []
-                    switch (data) {
-                        case 'SAM':
-                            for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'SAM' && this.deviceList[list].pnCarr.includes(mntCarr) && this.deviceList[list].pnNetType === this.netTypeByMntrt) {
-                                    tempArr.push(this.deviceList[list])
-                                }
-                            }
-                            break
-                        case 'LGE':
-                            for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'LGE' && this.deviceList[list].pnCarr.includes(mntCarr) && this.deviceList[list].pnNetType === this.netTypeByMntrt) {
-                                    tempArr.push(this.deviceList[list])
-                                }
-                            }
-                            break
-                        case 'APP':
-                            for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'APP' && this.deviceList[list].pnCarr.includes(mntCarr) && this.deviceList[list].pnNetType === this.netTypeByMntrt) {
-                                    tempArr.push(this.deviceList[list])
-                                }
-                            }
-                            break
-                        case 'XIA':
-                            for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'XIA' && this.deviceList[list].pnCarr.includes(mntCarr) && this.deviceList[list].pnNetType === this.netTypeByMntrt) {
-                                    tempArr.push(this.deviceList[list])
-                                }
-                            }
-                            break
-                    }
+                    this.rsltLayerDeviceInit(data)
                     if (data !== this.selectedCs.pnMkr){
                         this.rsltToReg.pnMdlNo = 'all'
                         this.selectedMkrChg = true  // 제조사 값 변경됨 - true
                     }
-                    this.devListByMkr = tempArr
                 }
             },
             methods: {
@@ -850,6 +785,7 @@
                         this.selectedCs = {}
                         this.selectedCs = data
                         this.selectedCs.idx = idx
+                        this.selectedMkr = this.selectedCs.pnMkr
                         this.rsltToReg = JSON.parse(JSON.stringify(data))
 
                         let t = new Date(this.selectedCs.visitDt)
@@ -897,7 +833,6 @@
                     cf_call("/service/getCurrPolicy", param, this.getCurrPolicyCB)
                 },
                 getCurrPolicyCB(data) {
-                    console.log(data)
                     this.currPolicy = data
                 },
                 openPicker1() {
@@ -907,21 +842,29 @@
                     this.$refs.programaticOpen2.showCalendar();
                 },
                 rsltLayerMntRtInit() {
-                    // let tempObj = {}
-                    // tempObj = this.selectedCs
-                    // this.rsltToReg = JSON.parse(JSON.stringify(tempObj))
-                    this.selectedMkr = this.rsltToReg.pnMkr
-
-                    let param = {}
-                    cf_call("/service/useAllCarrMntRt", param, this.rsltLayerMntRtInitCB)
+                    var param = {
+                        pnCarr: this.rsltToReg.mntCarr
+                    }
+                    cf_call("/service/getMonthlyRate", param, this.rsltLayerMntRtInitCB)
                 },
                 rsltLayerMntRtInitCB(data) {
-                    this.mntrtList = data.mntrtList
-                    let temp = ''
-                    this.useMntRtList(this.rsltToReg.mntCarr, this.rsltToReg.pnNetType)
-                    this.rsltLayerDeviceInit()
+                    this.mntrtList = data.monthlyRate
+
+                    if (this.rsltToReg.pnMntRtNo !== null && (this.rsltToReg.pnMntRtNo * 1) !== -1) {
+                        var pnNetType = this.getPnNetType(this.rsltToReg.pnMntRtNo)
+                        this.rsltLayerMkrInit(pnNetType)
+                    }
                 },
-                rsltLayerDeviceInit() {
+                getPnNetType: function(val) {
+                    var pnNetType = ''
+                    for (var i=0; i < this.mntrtList.length; i++) {
+                        if (this.mntrtList[i].pnMntRtNo === Number(val)) {
+                            pnNetType = this.mntrtList[i].pnNetType
+                        }
+                    }
+                    return pnNetType
+                },
+                rsltLayerMkrInit(val){
                     let carr = ''
                     switch (this.rsltToReg.mntCarr) {
                         case "SKT":
@@ -934,47 +877,46 @@
                             carr = 'L'
                             break
                     }
-                    let param = {
-                        mntCarr: carr
+                    var param = {
+                        pnNetType: val,
+                        pnCarrAbbr: carr
                     }
-                    cf_call("/service/allDeviceListByCarr", param, this.rsltLayerDeviceInitCB)
+                    cf_call("/service/getPnMkr", param, this.rsltLayerMkrInitCB)
+                },
+                rsltLayerMkrInitCB(data){
+                    this.pnMkrList = data.pnMkr
+                    if (this.rsltToReg.pnMntRtNo !== null) {
+                        this.rsltLayerDeviceInit(this.rsltToReg.pnMkr)
+                    }
+                },
+                setPnMkrNm: function(val) {
+                    for (var i=0; i < this.pnMkrData.length; i++) {
+                        if (this.pnMkrData[i].mkrCd === val) return this.pnMkrData[i].mkrNm
+                    }
+                },
+                rsltLayerDeviceInit(val) {
+                    var carr = ''
+                    var pnNetType = this.getPnNetType(this.rsltToReg.pnMntRtNo)
+                    switch (this.rsltToReg.mntCarr) {
+                        case "SKT":
+                            carr = 'S'
+                            break
+                        case "KT":
+                            carr = 'K'
+                            break
+                        case "LGU":
+                            carr = 'L'
+                            break
+                    }
+                    var param = {
+                        pnMkr: val,
+                        pnNetType: pnNetType,
+                        pnCarrAbbr: carr
+                    }
+                    cf_call("/service/getDeviceList", param, this.rsltLayerDeviceInitCB)
                 },
                 rsltLayerDeviceInitCB(data) {
                     this.deviceList = data.deviceList
-                    let netType = this.rsltToReg.pnNetType
-                    let tempArr = []
-                    switch (this.selectedMkr) {
-                        case 'SAM':
-                            for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'SAM' && this.deviceList[list].pnNetType === netType) {
-                                    tempArr.push(this.deviceList[list])
-                                }
-                            }
-                            break
-                        case 'LGE':
-                            for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'LGE' && this.deviceList[list].pnNetType === netType) {
-                                    tempArr.push(this.deviceList[list])
-                                }
-                            }
-                            break
-                        case 'APP':
-                            for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'APP' && this.deviceList[list].pnNetType === netType) {
-                                    tempArr.push(this.deviceList[list])
-                                }
-                            }
-                            break
-                        case 'XIA':
-                            for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'XIA' && this.deviceList[list].pnNetType === netType) {
-                                    tempArr.push(this.deviceList[list])
-                                }
-                            }
-                            break
-                    }
-                    this.devListByMkr = tempArr
-
                 },
                 modiVisitDt() {
                     if (confirm('방문예정일시를 변경하시겠습니까?')) {
@@ -1006,34 +948,6 @@
                         this.searchList(type)
                     }
                 },
-                useMntRtList(data1, data2) {
-                    let tempArr = []
-                    this.useMntrtListByCarr = []
-                    switch (data1) {
-                        case 'SKT':
-                            for (list in this.mntrtList) {
-                                if (this.mntrtList[list].pnCarr === 'SKT' && this.mntrtList[list].pnNetType === data2) {
-                                    tempArr.push(this.mntrtList[list])
-                                }
-                            }
-                            break
-                        case 'KT':
-                            for (list in this.mntrtList) {
-                                if (this.mntrtList[list].pnCarr === 'KT' && this.mntrtList[list].pnNetType === data2) {
-                                    tempArr.push(this.mntrtList[list])
-                                }
-                            }
-                            break
-                        case 'LGU':
-                            for (list in this.mntrtList) {
-                                if (this.mntrtList[list].pnCarr === 'LGU' && this.mntrtList[list].pnNetType === data2) {
-                                    tempArr.push(this.mntrtList[list])
-                                }
-                            }
-                            break
-                    }
-                    this.useMntrtListByCarr = tempArr
-                },
                 registerRslt() {
                     let param = {}
                     if (this.modiCallStCd === 'T') {
@@ -1045,7 +959,7 @@
                             regType: this.rsltToReg.pnRegDis,
                             regMntRtNo: this.rsltToReg.pnMntRtNo,
                             regPnMdlNo: this.rsltToReg.pnMdlNo,
-                            regPnStor: this.rsltToReg.pnStor,
+                            regExtServYn: this.rsltToReg.oldExtServYn,
                             regPd: this.selectedPd,
                             dealCont: this.rsltTxt,
                             pnRegYn: 'Y',
@@ -1071,7 +985,7 @@
                             alert('제조사를 선택해주세요.')
                             return
                         }
-                        if (this.pnMdlNoStor === 'all'){
+                        if (param.regPnMdlNo === 'all'){
                             alert('모델을 선택해주세요.')
                             return
                         }
@@ -1096,8 +1010,7 @@
                         return
                     }
                     if(confirm('개통결과를 등록하시겠습니까?')){
-                        console.log(param)
-                        // cf_call("/service/registerRslt", param, this.registerRsltCB)
+                        cf_call("/service/registerRslt", param, this.registerRsltCB)
                     }
 
                 },

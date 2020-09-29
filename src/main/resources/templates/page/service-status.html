@@ -241,8 +241,8 @@
                                 <td v-else-if="selectedCs.callStCd === 'P' || selectedCs.callStCd === 'R' || selectedCs.callStCd === 'E'">{{selectedCs.pnMkrNm}}</td>
                                 <td v-else>-</td>
                                 <th>모델</th>
-                                <td v-if="selectedCs.callStCd === 'T'">{{selectedCs.regPnMdlNm}} {{selectedCs.regPnStor}}GB</td>
-                                <td v-else-if="selectedCs.callStCd === 'P' || selectedCs.callStCd === 'R' || selectedCs.callStCd === 'E'">{{selectedCs.pnMdlNm}} {{selectedCs.pnStor}}GB</td>
+                                <td v-if="selectedCs.callStCd === 'T'">{{selectedCs.regPnMdlNm}}</td>
+                                <td v-else-if="selectedCs.callStCd === 'P' || selectedCs.callStCd === 'R' || selectedCs.callStCd === 'E'">{{selectedCs.pnMdlNm}}</td>
                                 <td v-else>-</td>
                             </tr>
                             <tr>
@@ -355,7 +355,7 @@
                             <td>
                                 <select class="wPer" v-model="rsltToReg.regMntRtNo" :disabled='modiCallStCd==="E"'>
                                     <option value="all">선택</option>
-                                    <option v-for="mntrt in useMntrtListByCarr" :value="mntrt.pnMntRtNo">
+                                    <option v-for="mntrt in mntrtList" :value="mntrt.pnMntRtNo">
                                         {{mntrt.pnMntRtNm}}
                                     </option>
                                 </select>
@@ -372,14 +372,15 @@
                             <th>제조사</th>
                             <td>
                                 <select class="wPer" v-model="selectedMkr" :disabled='modiCallStCd==="E"'>
-                                    <option v-for="mkr in pnMkr" :value="mkr.code">{{mkr.value}}</option>
+                                    <option value="all">선택</option>
+                                    <option v-for="mkr in pnMkrList" :value="mkr">{{setPnMkrNm(mkr)}}</option>
                                 </select>
                             </td>
                             <th>모델</th>
                             <td>
                                 <select class="wPer" v-model="rsltToReg.regPnMdlNo" :disabled='modiCallStCd==="E"'>
                                     <option value="all">선택</option>
-                                    <option v-for="device in devListByMkr" :value="device.pnMdlNo">{{device.pnMdlNm}} {{device.pnStor}}GB
+                                    <option v-for="device in deviceList" :value="device.pnMdlNo">{{device.pnMdlNm}} {{device.pnStor}}GB
                                     </option>
                                 </select>
                             </td>
@@ -457,14 +458,25 @@
                     {code: "12", value: "12개월"},
                     {code: "24", value: "24개월"}
                 ],
-                pnMkr: [
-                    {code: "all", value: "선택"},
-                    {code: "SAM", value: "삼성전자"},
-                    {code: "APP", value: "애플"},
-                    {code: "LGE", value: "LG전자"},
-                    {code: "XIA", value: "샤오미"},
-                    {code: "ETC", value: "기타"}
+                pnMkrData: [
+                    {
+                        mkrCd: 'SAM',
+                        mkrNm: '삼성전자'
+                    },
+                    {
+                        mkrCd: 'LGE',
+                        mkrNm: 'LG전자'
+                    },
+                    {
+                        mkrCd: 'APP',
+                        mkrNm: '애플'
+                    },
+                    {
+                        mkrCd: 'XIA',
+                        mkrNm: '샤오미'
+                    }
                 ],
+                pnMkrList: [],
                 selectedCallCd: "all",
                 clientNm: "",
                 today: "",
@@ -480,7 +492,6 @@
                 selectedMkr: "",
                 rsltTxt:"",
                 mntrtList: [],              // 사용중인 전체 요금제 리스트
-                useMntrtListByCarr: [],     //  통신사에 따른 사용 요금제 리스트
                 netTypeByMntrt:"",  // 선택된 요금제에 따른 망 타입
                 deviceList: [],             // 전체 디바이스 목록
                 devListByMkr: [],           // 선택된 제조사에 따른 디바이스 목록
@@ -493,117 +504,79 @@
             watch: {
                 'rsltToReg.regCarr': {
                     handler(value) {
-                        this.rsltLayerDeviceInit()
-
-                        var tempArr = []
-                        this.useMntrtListByCarr = []
-                        switch (value) {
-                            case 'SKT':
-                                for (list in this.mntrtList) {
-                                    if (this.mntrtList[list].pnCarr === 'SKT') {
-                                        tempArr.push(this.mntrtList[list])
-                                    }
-                                }
-                                break
-                            case 'KT':
-                                for (list in this.mntrtList) {
-                                    if (this.mntrtList[list].pnCarr === 'KT') {
-                                        tempArr.push(this.mntrtList[list])
-                                    }
-                                }
-                                break
-                            case 'LGU':
-                                for (list in this.mntrtList) {
-                                    if (this.mntrtList[list].pnCarr === 'LGU') {
-                                        tempArr.push(this.mntrtList[list])
-                                    }
-                                }
-                                break
-                        }
+                        this.rsltLayerMntRtInit()
                         if (value !== this.selectedCs.regCarr) {
                             this.rsltToReg.regType = "all"
                             this.rsltToReg.regMntRtNo = "all"
                         }
-                        this.useMntrtListByCarr = tempArr
                     },
                     immediate: true
                 },
-                'rsltToReg.pnMntRtNo':{
+                'rsltToReg.regMntRtNo':{
                     handler(value) {
-                        if (value !== this.selectedCs.pnMntRtNo) {
+                        var pnNetType = this.getPnNetType(value)
+                        this.rsltLayerMkrInit(pnNetType)
+
+                        if (value !== this.selectedCs.regMntRtNo) {
                             this.selectedMkr = "all"
                         }
-                        let includeChk = false  // 기존 개통요금제가 현재 사용중인 요금제에 없는경우 false
-                        for (list in this.mntrtList){
-                            if(this.mntrtList[list].pnMntRtNo === value){
-                                this.netTypeByMntrt = this.mntrtList[list].pnNetType
-                                includeChk = true       // 기존 개통요금제가 현재 사용중인 요금제에 있는경우 true
-                            }
-                        }
-                        if (!includeChk) this.selectedMkr = "all"
                     },
                     immediate: true
                 },
                 selectedMkr: function (data) {
                     var mntCarr = this.rsltToReg.regCarr
-                    switch (this.rsltToReg.regCarr) {
-                        case 'SKT':
-                            mntCarr = 'S'
-                            break
-                        case 'KT':
-                            mntCarr = 'K'
-                            break
-                        case 'SKT':
-                            mntCarr = 'L'
-                            break
-                    }
-                    var tempArr = []
-                    switch (data) {
-                        case 'SAM':
-                            for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'SAM' && this.deviceList[list].pnCarr.includes(mntCarr) && this.deviceList[list].pnNetType === this.netTypeByMntrt) {
-                                    tempArr.push(this.deviceList[list])
-                                }
-                            }
-                            break
-                        case 'LGE':
-                            for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'LGE' && this.deviceList[list].pnCarr.includes(mntCarr)&& this.deviceList[list].pnNetType === this.netTypeByMntrt) {
-                                    tempArr.push(this.deviceList[list])
-                                }
-                            }
-                            break
-                        case 'APP':
-                            for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'APP' && this.deviceList[list].pnCarr.includes(mntCarr)&& this.deviceList[list].pnNetType === this.netTypeByMntrt) {
-                                    tempArr.push(this.deviceList[list])
-                                }
-                            }
-                            break
-                        case 'XIA':
-                            for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'XIA' && this.deviceList[list].pnCarr.includes(mntCarr)&& this.deviceList[list].pnNetType === this.netTypeByMntrt) {
-                                    tempArr.push(this.deviceList[list])
-                                }
-                            }
-                            break
-                    }
-                    if (data !== this.selectedCs.pnMkr){
+                    // switch (this.rsltToReg.regCarr) {
+                    //     case 'SKT':
+                    //         mntCarr = 'S'
+                    //         break
+                    //     case 'KT':
+                    //         mntCarr = 'K'
+                    //         break
+                    //     case 'SKT':
+                    //         mntCarr = 'L'
+                    //         break
+                    // }
+                    // var tempArr = []
+                    // switch (data) {
+                    //     case 'SAM':
+                    //         for (list in this.deviceList) {
+                    //             if (this.deviceList[list].pnMkr === 'SAM' && this.deviceList[list].pnCarr.includes(mntCarr) && this.deviceList[list].pnNetType === this.netTypeByMntrt) {
+                    //                 tempArr.push(this.deviceList[list])
+                    //             }
+                    //         }
+                    //         break
+                    //     case 'LGE':
+                    //         for (list in this.deviceList) {
+                    //             if (this.deviceList[list].pnMkr === 'LGE' && this.deviceList[list].pnCarr.includes(mntCarr)&& this.deviceList[list].pnNetType === this.netTypeByMntrt) {
+                    //                 tempArr.push(this.deviceList[list])
+                    //             }
+                    //         }
+                    //         break
+                    //     case 'APP':
+                    //         for (list in this.deviceList) {
+                    //             if (this.deviceList[list].pnMkr === 'APP' && this.deviceList[list].pnCarr.includes(mntCarr)&& this.deviceList[list].pnNetType === this.netTypeByMntrt) {
+                    //                 tempArr.push(this.deviceList[list])
+                    //             }
+                    //         }
+                    //         break
+                    //     case 'XIA':
+                    //         for (list in this.deviceList) {
+                    //             if (this.deviceList[list].pnMkr === 'XIA' && this.deviceList[list].pnCarr.includes(mntCarr)&& this.deviceList[list].pnNetType === this.netTypeByMntrt) {
+                    //                 tempArr.push(this.deviceList[list])
+                    //             }
+                    //         }
+                    //         break
+                    // }
+                    this.rsltLayerDeviceInit(data)
+                    if (data !== this.selectedCs.regPnMkr){
                         this.rsltToReg.regPnMdlNo = 'all'
                     }
-                    if (data === 'all') {
-                        this.rsltToReg.regPnMdlNo = 'all'
-                    }
-                    this.devListByMkr = tempArr
                 },
                 modiCallStCd: function(data){
                     this.rsltTxt = ""
                     if (data === 'T'){
                         this.blackYn = false
                     }
-                    // if (this.selectedCs.callStCd !== data){
-                    //
-                    // }
                 },
             },
             methods: {
@@ -699,6 +672,7 @@
                         this.selectedCs = {}
                         this.selectedCs = data
                         this.selectedCs.idx = idx
+                        this.selectedMkr = this.selectedCs.regPnMkr
                         this.rsltToReg = JSON.parse(JSON.stringify(data))
                         this.modiCallStCd = this.rsltToReg.callStCd
 
@@ -737,7 +711,6 @@
                                 break
                         }
 
-
                         this.rsltLayerMntRtInit()
                     } else {
                         this.selectedCs = {}
@@ -765,20 +738,32 @@
                     if (!this.selectedCs.idx) {
                         this.selectedMkr = this.selectedCs.pnMkr
                     } else {
-                        this.selectedMkr = this.rsltToReg.pnMkr
+                        this.selectedMkr = this.rsltToReg.regPnMkr
                     }
-
-                    var param = {}
-                    cf_call("/service/useAllCarrMntRt", param, this.rsltLayerMntRtInitCB)
+                    var param = {
+                        pnCarr: this.rsltToReg.regCarr
+                    }
+                    cf_call("/service/getMonthlyRate", param, this.rsltLayerMntRtInitCB)
                 },
                 rsltLayerMntRtInitCB(data) {
-                    this.mntrtList = data.mntrtList
-                    var temp = ''
-                    this.useMntRtList(this.rsltToReg.mntCarr, this.rsltToReg.pnNetType)
-                    this.rsltLayerDeviceInit()
+                    this.mntrtList = data.monthlyRate
+
+                    if (this.rsltToReg.regMntRtNo !== null && (this.rsltToReg.regMntRtNo * 1) !== -1) {
+                        var pnNetType = this.getPnNetType(this.rsltToReg.regMntRtNo)
+                        this.rsltLayerMkrInit(pnNetType)
+                    }
                 },
-                rsltLayerDeviceInit() {
-                    var carr = ''
+                getPnNetType: function(val) {
+                    var pnNetType = ''
+                    for (var i=0; i < this.mntrtList.length; i++) {
+                        if (this.mntrtList[i].pnMntRtNo === Number(val)) {
+                            pnNetType = this.mntrtList[i].pnNetType
+                        }
+                    }
+                    return pnNetType
+                },
+                rsltLayerMkrInit(val){
+                    let carr = ''
                     switch (this.rsltToReg.mntCarr) {
                         case "SKT":
                             carr = 'S'
@@ -791,78 +776,45 @@
                             break
                     }
                     var param = {
-                        mntCarr: carr
+                        pnNetType: val,
+                        pnCarrAbbr: carr
                     }
-                    cf_call("/service/allDeviceListByCarr", param, this.rsltLayerDeviceInitCB)
+                    cf_call("/service/getPnMkr", param, this.rsltLayerMkrInitCB)
+                },
+                rsltLayerMkrInitCB(data){
+                    this.pnMkrList = data.pnMkr
+                    if (this.rsltToReg.regMntRtNo !== null) {
+                        this.rsltLayerDeviceInit(this.rsltToReg.regPnMkr)
+                    }
+                },
+                setPnMkrNm: function(val) {
+                    for (var i=0; i < this.pnMkrData.length; i++) {
+                        if (this.pnMkrData[i].mkrCd === val) return this.pnMkrData[i].mkrNm
+                    }
+                },
+                rsltLayerDeviceInit(val) {
+                    var carr = ''
+                    var pnNetType = this.getPnNetType(this.rsltToReg.regMntRtNo)
+                    switch (this.rsltToReg.regCarr) {
+                        case "SKT":
+                            carr = 'S'
+                            break
+                        case "KT":
+                            carr = 'K'
+                            break
+                        case "LGU":
+                            carr = 'L'
+                            break
+                    }
+                    var param = {
+                        pnMkr: val,
+                        pnNetType: pnNetType,
+                        pnCarrAbbr: carr
+                    }
+                    cf_call("/service/getDeviceList", param, this.rsltLayerDeviceInitCB)
                 },
                 rsltLayerDeviceInitCB(data) {
                     this.deviceList = data.deviceList
-                    var netType = this.rsltToReg.pnNetType
-                    console.log(netType)
-                    var tempArr = []
-                    switch (this.selectedMkr) {
-                        case 'SAM':
-                            for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'SAM' && this.deviceList[list].pnNetType === netType) {
-                                    tempArr.push(this.deviceList[list])
-                                }
-                            }
-                            break
-                        case 'LGE':
-                            for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'LGE' && this.deviceList[list].pnNetType === netType) {
-                                    tempArr.push(this.deviceList[list])
-                                }
-                            }
-                            break
-                        case 'APP':
-                            for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'APP' && this.deviceList[list].pnNetType === netType) {
-                                    tempArr.push(this.deviceList[list])
-                                }
-                            }
-                            break
-                        case 'XIA':
-                            for (list in this.deviceList) {
-                                if (this.deviceList[list].pnMkr === 'XIA' && this.deviceList[list].pnNetType === netType) {
-                                    tempArr.push(this.deviceList[list])
-                                }
-                            }
-                            break
-                    }
-                    this.devListByMkr = tempArr
-
-                },
-                useMntRtList(data1, data2) {
-                    var tempArr = []
-                    this.useMntrtListByCarr = []
-                    switch (data1) {
-                        case 'SKT':
-                            for (list in this.mntrtList) {
-                                if (this.mntrtList[list].pnCarr === 'SKT' && this.mntrtList[list].pnNetType === data2) {
-                                    tempArr.push(this.mntrtList[list])
-                                }
-                            }
-                            break
-                        case 'KT':
-                            for (list in this.mntrtList) {
-                                if (this.mntrtList[list].pnCarr === 'KT' && this.mntrtList[list].pnNetType === data2) {
-                                    tempArr.push(this.mntrtList[list])
-                                }
-                            }
-                            break
-                        case 'LGU':
-                            for (list in this.mntrtList) {
-                                if (this.mntrtList[list].pnCarr === 'LGU' && this.mntrtList[list].pnNetType === data2) {
-                                    tempArr.push(this.mntrtList[list])
-                                }
-                            }
-                            break
-                    }
-                    this.useMntrtListByCarr = tempArr
-                    for (list in this.useMntrtListByCarr) {
-
-                    }
                 },
                 registerRslt() {
                     if (this.modiCall) return
@@ -873,17 +825,38 @@
                             modiYn : 'Y',
                             callStCd: this.modiCallStCd,
                             bnMbrId: this.rsltToReg.bnMbrId,
-                            regMbrPnNo: this.rsltToReg.mbrPnNo,
-                            regCarr: this.rsltToReg.mntCarr,
-                            regType: this.rsltToReg.pnRegDis,
-                            regMntRtNo: this.rsltToReg.pnMntRtNo,
-                            regPnMdlNo: this.rsltToReg.pnMdlNo,
+                            regMbrPnNo: this.rsltToReg.regMbrPnNo,
+                            regCarr: this.rsltToReg.regCarr,
+                            regType: this.rsltToReg.regType,
+                            regMntRtNo: this.rsltToReg.regMntRtNo,
+                            regPnMdlNo: this.rsltToReg.regPnMdlNo,
                             regPd: this.rsltToReg.regPd,
                             callCont: this.rsltToReg.callCont,
                             dealCont: this.rsltTxt,
                             pnRegYn: 'Y',
                             callNo: this.rsltToReg.callNo
                         }
+                        if (param.regCarr === 'all') {
+                            alert('통신사를 선택해주세요.')
+                            return
+                        }
+                        if (param.regType === 'all') {
+                            alert('가입유형을 선택해주세요.')
+                            return
+                        }
+                        if (param.regMntRtNo === 'all'){
+                            alert('요금제를 선택해주세요.')
+                            return
+                        }
+                        if (this.selectedMkr === 'all'){
+                            alert('제조사를 선택해주세요.')
+                            return
+                        }
+                        if (param.regPnMdlNo === 'all'){
+                            alert('모델을 선택해주세요.')
+                            return
+                        }
+
                     } else if (this.modiCallStCd === 'E') {
                         param = {
                             modiYn : 'Y',
@@ -897,26 +870,7 @@
                         }
                     }
 
-                    if (param.regMbrPnNo === 'all'){
-                        alert('통신사를 선택해주세요.')
-                        return
-                    }
-                    if (param.regType === 'all'){
-                        alert('가입유형을 선택해주세요.')
-                        return
-                    }
-                    if (param.regMntRtNo === 'all'){
-                        alert('요금제를 선택해주세요.')
-                        return
-                    }
-                    if (this.selectedMkr === 'all'){
-                        alert('휴대폰 제조사를 선택해주세요.')
-                        return
-                    }
-                    if (param.regPnMdlNo === 'all'){
-                        alert('휴대폰을 선택해주세요.')
-                        return
-                    }
+
 
                     // 확인필요
                     if (this.rsltTxt.length === 0) {
