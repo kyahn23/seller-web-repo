@@ -815,7 +815,6 @@
                         pnStor: this.selectedCs.pnStor,
                         pnMntRtNo: this.selectedCs.pnMntRtNo
                     }
-                    console.log(param)
                     cf_call("/service/getCurrPolicy", param, this.getCurrPolicyCB)
                 },
                 getCurrPolicyCB: function (data) {
