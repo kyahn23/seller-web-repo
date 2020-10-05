@@ -633,29 +633,13 @@
                 disabledDates: {},
                 disabledFn: {
                     customPredictor(date) {
-                        let t = new Date()
+                        var t = new Date()
                         if (date.getDate() < t.getDate()) {
                             return true;
                         }
                     }
                 },
             },
-            // computed:{
-            //     pnMdlNoStor: {
-            //         get: function(){
-            //             return this.rsltToReg.pnMdlNo+'|'+this.rsltToReg.pnStor
-            //         },
-            //         set: function(newValue){
-            //             if (newValue === 'all'){
-            //                 return 'all'
-            //             } else {
-            //                 let keyword = newValue.split('|')
-            //                 this.rsltToReg.pnMdlNo = keyword[0]
-            //                 this.rsltToReg.pnStor= keyword[1]
-            //             }
-            //         }
-            //     }
-            // },
             components: {
                 vuejsDatepicker
             },
@@ -688,7 +672,7 @@
                     immediate: true
                 },
                 selectedMkr: function (data) {
-                    let mntCarr = this.rsltToReg.mntCarr
+                    var mntCarr = this.rsltToReg.mntCarr
                     this.rsltLayerDeviceInit(data)
                     if (data !== this.selectedCs.pnMkr){
                         this.rsltToReg.pnMdlNo = 'all'
@@ -697,11 +681,11 @@
                 }
             },
             methods: {
-                getToday() {
-                    let today = new Date()
-                    let year = today.getFullYear()
-                    let month = today.getMonth() + 1
-                    let day = today.getDate();
+                getToday: function () {
+                    var today = new Date()
+                    var year = today.getFullYear()
+                    var month = today.getMonth() + 1
+                    var day = today.getDate();
 
                     if (("" + month).length == 1) {
                         month = "0" + month
@@ -712,21 +696,21 @@
                     this.today = "" + year + '-' + month + '-' + day
                     this.getBnMbrList()
                 },
-                getBnMbrList() {
+                getBnMbrList: function () {
                     var param = {}
                     cf_call("/service/bnMbrList", param, this.getBnMbrListCB)
                 },
-                getBnMbrListCB(data) {
+                getBnMbrListCB: function (data) {
                     this.bnMbr = data
 
-                    let type = 'init'
+                    var type = 'init'
                     this.searchList(type)
                 },
-                searchList(data) {
-                    let t = new Date(this.searchDay)
-                    let yy = "" + t.getFullYear()
-                    let mm = t.getMonth() + 1
-                    let dd = t.getDate();
+                searchList: function (data) {
+                    var t = new Date(this.searchDay)
+                    var yy = "" + t.getFullYear()
+                    var mm = t.getMonth() + 1
+                    var dd = t.getDate();
                     if (("" + mm).length == 1) {
                         mm = "0" + mm
                     }
@@ -754,9 +738,9 @@
                     this.counselList = []
                     cf_call("/service/getVisitCounselList", param, this.searchListCB)
                 },
-                searchListCB(data) {
+                searchListCB: function (data) {
                     this.pageInfo = data.pageInfo
-                    let tempArr = []
+                    var tempArr = []
 
                     for (idx in data.counselList) {
                         data.counselList[idx].idx = idx
@@ -775,12 +759,12 @@
                     }
                     this.counselList = data.counselList
                 },
-                goToPage(data) {
+                goToPage: function (data) {
                     this.pageNo = "" + data
-                    let type = 'page'
+                    var type = 'page'
                     this.searchList(type)
                 },
-                selectCs(data, idx) {
+                selectCs: function (data, idx) {
                     if (this.selectedCs.idx != idx) {
                         this.selectedCs = {}
                         this.selectedCs = data
@@ -788,9 +772,9 @@
                         this.selectedMkr = this.selectedCs.pnMkr
                         this.rsltToReg = JSON.parse(JSON.stringify(data))
 
-                        let t = new Date(this.selectedCs.visitDt)
-                        let hh = "" + t.getHours()
-                        let mm = "" + t.getMinutes()
+                        var t = new Date(this.selectedCs.visitDt)
+                        var hh = "" + t.getHours()
+                        var mm = "" + t.getMinutes()
                         if (("" + mm).length == 1) {
                             mm = "0" + mm
                         }
@@ -818,11 +802,11 @@
                         this.modiMM = 'all'
                     }
                 },
-                getTrClass(idx) {
+                getTrClass: function (idx) {
                     if (idx === this.selectedCs.idx) return true
                     else return false
                 },
-                getCurrPolicy() {
+                getCurrPolicy: function () {
                     var param = {
                         pnRegDis: this.selectedCs.pnRegDis,
                         pnMdlNo: this.selectedCs.pnMdlNo,
@@ -832,22 +816,22 @@
                     console.log(param)
                     cf_call("/service/getCurrPolicy", param, this.getCurrPolicyCB)
                 },
-                getCurrPolicyCB(data) {
+                getCurrPolicyCB: function (data) {
                     this.currPolicy = data
                 },
-                openPicker1() {
+                openPicker1: function () {
                     this.$refs.programaticOpen1.showCalendar();
                 },
-                openPicker2() {
+                openPicker2: function () {
                     this.$refs.programaticOpen2.showCalendar();
                 },
-                rsltLayerMntRtInit() {
+                rsltLayerMntRtInit: function () {
                     var param = {
                         pnCarr: this.rsltToReg.mntCarr
                     }
                     cf_call("/service/getMonthlyRate", param, this.rsltLayerMntRtInitCB)
                 },
-                rsltLayerMntRtInitCB(data) {
+                rsltLayerMntRtInitCB: function (data) {
                     this.mntrtList = data.monthlyRate
 
                     if (this.rsltToReg.pnMntRtNo !== null && (this.rsltToReg.pnMntRtNo * 1) !== -1) {
@@ -864,8 +848,8 @@
                     }
                     return pnNetType
                 },
-                rsltLayerMkrInit(val){
-                    let carr = ''
+                rsltLayerMkrInit: function (val){
+                    var carr = ''
                     switch (this.rsltToReg.mntCarr) {
                         case "SKT":
                             carr = 'S'
@@ -883,7 +867,7 @@
                     }
                     cf_call("/service/getPnMkr", param, this.rsltLayerMkrInitCB)
                 },
-                rsltLayerMkrInitCB(data){
+                rsltLayerMkrInitCB: function (data){
                     this.pnMkrList = data.pnMkr
                     if (this.rsltToReg.pnMntRtNo !== null) {
                         this.rsltLayerDeviceInit(this.rsltToReg.pnMkr)
@@ -894,7 +878,7 @@
                         if (this.pnMkrData[i].mkrCd === val) return this.pnMkrData[i].mkrNm
                     }
                 },
-                rsltLayerDeviceInit(val) {
+                rsltLayerDeviceInit: function (val) {
                     var carr = ''
                     var pnNetType = this.getPnNetType(this.rsltToReg.pnMntRtNo)
                     switch (this.rsltToReg.mntCarr) {
@@ -915,15 +899,15 @@
                     }
                     cf_call("/service/getDeviceList", param, this.rsltLayerDeviceInitCB)
                 },
-                rsltLayerDeviceInitCB(data) {
+                rsltLayerDeviceInitCB: function (data) {
                     this.deviceList = data.deviceList
                 },
-                modiVisitDt() {
+                modiVisitDt: function () {
                     if (confirm('방문예정일시를 변경하시겠습니까?')) {
-                        let modiDate = new Date(this.rsltToReg.visitDt)
-                        let temp = "" + modiDate.getFullYear()
-                        let m = modiDate.getMonth() + 1
-                        let d = modiDate.getDate()
+                        var modiDate = new Date(this.rsltToReg.visitDt)
+                        var temp = "" + modiDate.getFullYear()
+                        var m = modiDate.getMonth() + 1
+                        var d = modiDate.getDate()
                         if (("" + m).length == 1) {
                             m = "0" + m
                         }
@@ -932,24 +916,24 @@
                         }
                         temp = temp.concat("", m, "", d, this.modiHH, this.modiMM)
 
-                        let param = {
+                        var param = {
                             callNo: this.selectedCs.callNo,
                             visitDt: temp
                         }
                         cf_call("/service/modiVisitDt", param, this.modiVisitDtCB)
                     }
                 },
-                modiVisitDtCB(data) {
+                modiVisitDtCB: function (data) {
                     if (data.succ === "Y") {
                         alert('방문예정일시가 변경되었습니다.')
-                        let type = 'page'
+                        var type = 'page'
                         this.visitHH = "all"
                         this.visitMM = "all"
                         this.searchList(type)
                     }
                 },
-                registerRslt() {
-                    let param = {}
+                registerRslt: function () {
+                    var param = {}
                     if (this.modiCallStCd === 'T') {
                         param = {
                             bnMbrId: this.rsltToReg.bnMbrId,
@@ -1014,7 +998,7 @@
                     }
 
                 },
-                registerRsltCB(data) {
+                registerRsltCB: function (data) {
                     if (data.succ === "Y") {
                         alert('결과가 등록되었습니다.')
                         this.visitHH = "all"

@@ -331,10 +331,11 @@
         SELECT PN_MDL_NO
         ,PN_MDL_NM
         ,PN_STOR
-        FROM TBL011
+        FROM TBL011 t
         WHERE PN_MKR = #{pnMkr}
         AND PN_NET_TYPE = #{pnNetType}
         AND PN_CARR LIKE CONCAT('%', #{pnCarrAbbr}, '%')
+        ORDER BY t.REL_DT desc,t.PN_MDL_NO, convert(t.PN_STOR, decimal)
     </select>
 
     <insert id="updateMarketingOne" parameterType="DevMap">

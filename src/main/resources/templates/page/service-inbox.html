@@ -155,7 +155,8 @@
                         </div>
                         <div class="cTitRight">
                             <div id="btn2"><a href="#popLayerServiceResultAdd"
-                                              class="btnM colorSky popLayerServiceResultAdd_open" v-if="selectedCs.callNo"><span>상담결과 저장</span></a>
+                                              class="btnM colorSky popLayerServiceResultAdd_open"
+                                              v-if="selectedCs.callNo"><span>상담결과 저장</span></a>
                             </div>
                         </div>
                     </div>
@@ -443,7 +444,7 @@
                 disabledDates: {},
                 disabledFn: {
                     customPredictor(date) {
-                        let t = new Date()
+                        var t = new Date()
                         if (date.getDate() < t.getDate()) {
                             return true;
                         }
@@ -454,11 +455,11 @@
                 vuejsDatepicker
             },
             mounted: function () {
-                let type = 'init'
+                var type = 'init'
                 this.searchList(type)
             },
             methods: {
-                searchList(data) {
+                searchList: function (data) {
                     var param = {
                         mntCarr: this.selectedCarr,
                         counselType: this.selectedType,
@@ -471,7 +472,7 @@
                     this.counselList = []
                     cf_call("/service/getCounselList", param, this.searchListCB)
                 },
-                searchListCB(data) {
+                searchListCB: function (data) {
                     this.pageInfo = data.pageInfo
                     for (idx in this.counselList) {
                         this.counselList[idx].idx = idx
@@ -489,12 +490,12 @@
                     }
                     this.counselList = data.counselList
                 },
-                goToPage(data) {
+                goToPage: function (data) {
                     this.pageNo = "" + data
-                    let type = 'page'
+                    var type = 'page'
                     this.searchList(type)
                 },
-                selectCs(data, idx) {
+                selectCs: function (data, idx) {
                     if (this.selectedCs.idx != idx) {
                         this.selectedCs = {}
                         this.selectedCs = data
@@ -517,14 +518,14 @@
                         this.currPolicy = {}
                     }
                 },
-                getTrClass(idx) {
+                getTrClass: function (idx) {
                     if (idx === this.selectedCs.idx) {
                         return true
                     } else {
                         return false
                     }
                 },
-                getCurrPolicy() {
+                getCurrPolicy: function () {
                     var param = {
                         pnRegDis: this.selectedCs.pnRegDis,
                         pnMdlNo: this.selectedCs.pnMdlNo,
@@ -533,17 +534,17 @@
                     }
                     cf_call("/service/getCurrPolicy", param, this.getCurrPolicyCB)
                 },
-                getCurrPolicyCB(data) {
+                getCurrPolicyCB: function (data) {
                     this.currPolicy = data
                 },
-                openPicker1() {
+                openPicker1: function () {
                     this.$refs.programaticOpen1.showCalendar();
                 },
-                getToday() {
-                    let today = new Date()
-                    let year = '' + today.getFullYear()
-                    let month = today.getMonth() + 1
-                    let day = today.getDate();
+                getToday: function () {
+                    var today = new Date()
+                    var year = '' + today.getFullYear()
+                    var month = today.getMonth() + 1
+                    var day = today.getDate();
 
                     if (("" + month).length == 1) {
                         month = "0" + month
@@ -553,11 +554,11 @@
                     }
                     return year.concat('', month, '', day)
                 },
-                saveCs() {
-                    let t = new Date(this.visitDd)
-                    let year = "" + t.getFullYear()
-                    let month = t.getMonth() + 1
-                    let day = t.getDate()
+                saveCs: function () {
+                    var t = new Date(this.visitDd)
+                    var year = "" + t.getFullYear()
+                    var month = t.getMonth() + 1
+                    var day = t.getDate()
 
                     if (("" + month).length == 1) {
                         month = "0" + month
@@ -573,18 +574,18 @@
                         alert('상담내용을 작성해주세요')
                         return
                     }
-                    let visitDt = year.concat("", month, "", day, this.visitHh, this.visitMm)
-                    let param = {
+                    var visitDt = year.concat("", month, "", day, this.visitHh, this.visitMm)
+                    var param = {
                         callNo: this.selectedCs.callNo,
                         visitDt: visitDt,
                         csContent: this.csContent
                     }
                     cf_call("/service/saveCounsel", param, this.saveCsCB)
                 },
-                saveCsCB(data) {
+                saveCsCB: function (data) {
                     if (data.succ === "Y") {
                         alert('상담결과가 저장되었습니다.')
-                        let type = 'init'
+                        var type = 'init'
                         this.visitDd = ""
                         this.visitHh = "all"
                         this.visitMm = "all"

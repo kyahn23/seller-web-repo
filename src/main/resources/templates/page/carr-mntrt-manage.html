@@ -209,9 +209,9 @@
                     if (this.selectedMntNo.length !== 0) {
                         if(confirm('선택하신요금제를 사용 하시겠습니까?')){
                             if (!this.mntValidate('use')) {
-                                let temparr = []
-                                for (let i = 0; i < this.selectedMntNo.length; i++) {
-                                    let tempobj = {}
+                                var temparr = []
+                                for (var i = 0; i < this.selectedMntNo.length; i++) {
+                                    var tempobj = {}
                                     tempobj.pnMntRtNo = this.selectedMntNo[i]
                                     temparr.push(tempobj)
                                 }
@@ -232,9 +232,9 @@
                     if (this.selectedMntNo.length !== 0) {
                         if(confirm('선택한 요금제가 판매중일 경우 미사용시\n판매중인 기기는 모두 판매가중지됩니다.\n\n선택하신요금제를 미사용 하시겠습니까?')){
                             if (!this.mntValidate('nUse')) {
-                                let temparr = []
-                                for (let i = 0; i < this.selectedMntNo.length; i++) {
-                                    let tempobj = {}
+                                var temparr = []
+                                for (var i = 0; i < this.selectedMntNo.length; i++) {
+                                    var tempobj = {}
                                     tempobj.pnMntRtNo = this.selectedMntNo[i]
                                     temparr.push(tempobj)
                                 }
@@ -252,10 +252,10 @@
                     }
                 },
                 mntValidate: function(chk) {
-                    let nUseChk = false      // 초기값 false null값이 있는것이 chk될경우 true
-                    let useChk = false     // 초기값 false null값이 없는것이 chk될경우 true
+                    var nUseChk = false      // 초기값 false null값이 있는것이 chk될경우 true
+                    var useChk = false     // 초기값 false null값이 없는것이 chk될경우 true
                     this.validateArr = []
-                    for (let i = 0; i < this.selectedMntNo.length; i++) {
+                    for (var i = 0; i < this.selectedMntNo.length; i++) {
                         for (validate in this.mntrtList) {
                             if (this.selectedMntNo[i] === this.mntrtList[validate].pnMntRtNo) this.validateArr.push(this.mntrtList[validate])
                         }

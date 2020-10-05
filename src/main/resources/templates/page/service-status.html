@@ -214,17 +214,23 @@
                             <tr>
                                 <th>통신사</th>
                                 <td v-if="selectedCs.callStCd === 'T'">{{selectedCs.regCarr}}</td>
-                                <td v-else-if="selectedCs.callStCd === 'P' || selectedCs.callStCd === 'R' || selectedCs.callStCd === 'E'">{{selectedCs.mntCarr}}</td>
+                                <td v-else-if="selectedCs.callStCd === 'P' || selectedCs.callStCd === 'R' || selectedCs.callStCd === 'E'">
+                                    {{selectedCs.mntCarr}}
+                                </td>
                                 <td v-else>-</td>
                                 <th>가입유형</th>
                                 <td v-if="selectedCs.callStCd === 'T'">{{selectedCs.regTypeNm}}</td>
-                                <td v-else-if="selectedCs.callStCd === 'P' || selectedCs.callStCd === 'R' || selectedCs.callStCd === 'E'">{{selectedCs.pnRegDisNm}}</td>
+                                <td v-else-if="selectedCs.callStCd === 'P' || selectedCs.callStCd === 'R' || selectedCs.callStCd === 'E'">
+                                    {{selectedCs.pnRegDisNm}}
+                                </td>
                                 <td v-else>-</td>
                             </tr>
                             <tr>
                                 <th>요금제</th>
                                 <td v-if="selectedCs.callStCd === 'T'">{{selectedCs.regMntRtNm}}</td>
-                                <td v-else-if="selectedCs.callStCd === 'P' || selectedCs.callStCd === 'R' || selectedCs.callStCd === 'E'">{{selectedCs.pnMntRtNm}}</td>
+                                <td v-else-if="selectedCs.callStCd === 'P' || selectedCs.callStCd === 'R' || selectedCs.callStCd === 'E'">
+                                    {{selectedCs.pnMntRtNm}}
+                                </td>
                                 <td v-else>-</td>
                                 <th>약정기간</th>
                                 <td v-if="selectedCs.callNo">
@@ -238,34 +244,48 @@
                             <tr>
                                 <th>제조사</th>
                                 <td v-if="selectedCs.callStCd === 'T'">{{selectedCs.regPnMkrNm}}</td>
-                                <td v-else-if="selectedCs.callStCd === 'P' || selectedCs.callStCd === 'R' || selectedCs.callStCd === 'E'">{{selectedCs.pnMkrNm}}</td>
+                                <td v-else-if="selectedCs.callStCd === 'P' || selectedCs.callStCd === 'R' || selectedCs.callStCd === 'E'">
+                                    {{selectedCs.pnMkrNm}}
+                                </td>
                                 <td v-else>-</td>
                                 <th>모델</th>
                                 <td v-if="selectedCs.callStCd === 'T'">{{selectedCs.regPnMdlNm}}</td>
-                                <td v-else-if="selectedCs.callStCd === 'P' || selectedCs.callStCd === 'R' || selectedCs.callStCd === 'E'">{{selectedCs.pnMdlNm}}</td>
+                                <td v-else-if="selectedCs.callStCd === 'P' || selectedCs.callStCd === 'R' || selectedCs.callStCd === 'E'">
+                                    {{selectedCs.pnMdlNm}}
+                                </td>
                                 <td v-else>-</td>
                             </tr>
                             <tr>
                                 <th>부가서비스</th>
                                 <td colspan="3" v-if="selectedCs.callNo">
-                                    <input v-if="selectedCs.callStCd === 'T'" type="radio" id="extServY" value="Y" v-model="selectedCs.regExtServYn" disabled>
-                                    <input v-else type="radio" id="extServY" value="Y" v-model="selectedCs.oldExtServYn" disabled>
+                                    <input v-if="selectedCs.callStCd === 'T'" type="radio" id="extServY" value="Y"
+                                           v-model="selectedCs.regExtServYn" disabled>
+                                    <input v-else type="radio" id="extServY" value="Y" v-model="selectedCs.oldExtServYn"
+                                           disabled>
                                     <label for="extServY">유</label>&nbsp;
-                                    <input v-if="selectedCs.callStCd === 'T'" type="radio" id="extServN" value="N" v-model="selectedCs.regExtServYn" disabled>
-                                    <input v-else type="radio" id="extServN" value="N" v-model="selectedCs.oldExtServYn" disabled>
+                                    <input v-if="selectedCs.callStCd === 'T'" type="radio" id="extServN" value="N"
+                                           v-model="selectedCs.regExtServYn" disabled>
+                                    <input v-else type="radio" id="extServN" value="N" v-model="selectedCs.oldExtServYn"
+                                           disabled>
                                     <label for="extServN">무</label>
                                 </td>
                                 <td colspan="3" v-else>-</td>
                             </tr>
                             <tr>
                                 <th>상담내용</th>
-                                <td colspan="3" v-if="selectedCs.callNo && selectedCs.callStCd !== 'R'">{{selectedCs.callCont}}</td>
+                                <td colspan="3" v-if="selectedCs.callNo && selectedCs.callStCd !== 'R'">
+                                    {{selectedCs.callCont}}
+                                </td>
                                 <td colspan="3" v-else>-</td>
                             </tr>
                             <tr>
                                 <th>기타사항</th>
-                                <td colspan="3" v-if="selectedCs.callNo && selectedCs.callStCd === 'T'">{{selectedCs.dealCont}}</td>
-                                <td colspan="3" v-else-if="selectedCs.callNo && selectedCs.callStCd === 'E'">{{selectedCs.cnclCmnt}}</td>
+                                <td colspan="3" v-if="selectedCs.callNo && selectedCs.callStCd === 'T'">
+                                    {{selectedCs.dealCont}}
+                                </td>
+                                <td colspan="3" v-else-if="selectedCs.callNo && selectedCs.callStCd === 'E'">
+                                    {{selectedCs.cnclCmnt}}
+                                </td>
                                 <td colspan="3" v-else>-</td>
                             </tr>
                             </tbody>
@@ -306,14 +326,17 @@
                         <tr>
                             <th>구분</th>
                             <td :colspan="modiCallStCd==='T'? 3 : 1">
-                                <input type="radio" id="saleSucc" name="saleRslt" value="T" v-model="modiCallStCd" :disabled="modiCall">
+                                <input type="radio" id="saleSucc" name="saleRslt" value="T" v-model="modiCallStCd"
+                                       :disabled="modiCall">
                                 <label for="saleSucc">개통완료</label>&nbsp;
-                                <input type="radio" id="saleFail" name="saleRslt" value="E" v-model="modiCallStCd" :disabled="modiCall">
+                                <input type="radio" id="saleFail" name="saleRslt" value="E" v-model="modiCallStCd"
+                                       :disabled="modiCall">
                                 <label for="saleFail">미개통</label>
                             </td>
                             <th v-if="modiCallStCd === 'E'">블랙여부</th>
                             <td v-if="modiCallStCd === 'E'">
-                                <input type="checkbox" id="addBlacklist" v-model="blackYn" @click="blackBtnChked" :disabled="modiCall">
+                                <input type="checkbox" id="addBlacklist" v-model="blackYn" @click="blackBtnChked"
+                                       :disabled="modiCall">
                                 <label for="addBlacklist">등록</label>
                             </td>
                         </tr>
@@ -331,9 +354,9 @@
                             </td>
                             <th>개통번호</th>
                             <td>
-                                <input class="wPer" type="text"
-                                       placeholder="개통번호" v-model="rsltToReg.mbrPnNo"
-                                       :disabled='modiCallStCd==="E"'>
+                                <input class="wPer" type="text" id="mbrPnNo"
+                                       placeholder="'-'없이 숫자 10-11자리 입력" v-model="rsltToReg.mbrPnNo"
+                                       @input="setMbrPnNo($event.target.value)" :disabled='modiCallStCd==="E"'>
                             </td>
                         </tr>
                         <tr>
@@ -362,9 +385,11 @@
                             </td>
                             <th>약정기간</th>
                             <td>
-                                <input type="radio" id="layerPeriod12" name="RegPeriod" value="12" v-model="rsltToReg.regPd" :disabled='modiCallStCd==="E"'>
+                                <input type="radio" id="layerPeriod12" name="RegPeriod" value="12"
+                                       v-model="rsltToReg.regPd" :disabled='modiCallStCd==="E"'>
                                 <label for="layerPeriod12">12개월</label>&nbsp;
-                                <input type="radio" id="layerPeriod24" name="RegPeriod" value="24" v-model="rsltToReg.regPd" :disabled='modiCallStCd==="E"'>
+                                <input type="radio" id="layerPeriod24" name="RegPeriod" value="24"
+                                       v-model="rsltToReg.regPd" :disabled='modiCallStCd==="E"'>
                                 <label for="layerPeriod24">24개월</label>
                             </td>
                         </tr>
@@ -380,7 +405,8 @@
                             <td>
                                 <select class="wPer" v-model="rsltToReg.regPnMdlNo" :disabled='modiCallStCd==="E"'>
                                     <option value="all">선택</option>
-                                    <option v-for="device in deviceList" :value="device.pnMdlNo">{{device.pnMdlNm}} {{device.pnStor}}GB
+                                    <option v-for="device in deviceList" :value="device.pnMdlNo">{{device.pnMdlNm}}
+                                        {{device.pnStor}}GB
                                     </option>
                                 </select>
                             </td>
@@ -397,13 +423,15 @@
                         <tr>
                             <th>상담내용</th>
                             <td colspan="3">
-                                <input class="wPer" type="text" placeholder="상담결과내용" v-model="rsltToReg.callCont" :disabled='modiCallStCd==="E"'>
+                                <input class="wPer" type="text" placeholder="상담결과내용" v-model="rsltToReg.callCont"
+                                       :disabled='modiCallStCd==="E"'>
                             </td>
                         </tr>
                         <tr>
                             <th>기타사항</th>
                             <td colspan="3" style="height: 85px">
-                                <textarea style="width: 100%; height: 100%;" v-model="rsltTxt" placeholder="특이사항또는 블랙사유를 입력해주세요." :disabled="modiCall"></textarea>
+                                <textarea style="width: 100%; height: 100%;" v-model="rsltTxt"
+                                          placeholder="특이사항또는 블랙사유를 입력해주세요." :disabled="modiCall"></textarea>
                             </td>
                         </tr>
                         </tbody>
@@ -422,15 +450,15 @@
 </div>
 
 <div layout:fragment="script">
-<!--     //팝업: 개통결과 또는 블랙고객등록-->
-        <script type="text/javascript">
-            $(function () {
-                if ($(".layerWrapper").length) {
-                    //개통결과등록
-                    $('#popLayerServiceResultAdd').popup();
-                }
-            });
-        </script>
+    <!--     //팝업: 개통결과 또는 블랙고객등록-->
+    <script type="text/javascript">
+        $(function () {
+            if ($(".layerWrapper").length) {
+                //개통결과등록
+                $('#popLayerServiceResultAdd').popup();
+            }
+        });
+    </script>
     <script>
         var app = new Vue({
             el: "#app",
@@ -484,15 +512,15 @@
                 selectedBnMbr: "all",
                 counselList: [],            // 현재 페이지 상담 리스트
                 blackYn: false,             // 블랙리스트 추가 버튼
-                blackYnChked:false,         // 블랙리스트 체크시 alert 를 위한 변수
+                blackYnChked: false,         // 블랙리스트 체크시 alert 를 위한 변수
                 modiCall: false,            // 블랙리스트 등록된 회원 수정불가 위한 변수
                 selectedCs: {},
                 rsltToReg: {},
                 modiCallStCd: "",
                 selectedMkr: "",
-                rsltTxt:"",
+                rsltTxt: "",
                 mntrtList: [],              // 사용중인 전체 요금제 리스트
-                netTypeByMntrt:"",  // 선택된 요금제에 따른 망 타입
+                netTypeByMntrt: "",  // 선택된 요금제에 따른 망 타입
                 deviceList: [],             // 전체 디바이스 목록
                 devListByMkr: [],           // 선택된 제조사에 따른 디바이스 목록
                 pageNo: "1",
@@ -512,7 +540,7 @@
                     },
                     immediate: true
                 },
-                'rsltToReg.regMntRtNo':{
+                'rsltToReg.regMntRtNo': {
                     handler(value) {
                         var pnNetType = this.getPnNetType(value)
                         this.rsltLayerMkrInit(pnNetType)
@@ -568,29 +596,29 @@
                     //         break
                     // }
                     this.rsltLayerDeviceInit(data)
-                    if (data !== this.selectedCs.regPnMkr){
+                    if (data !== this.selectedCs.regPnMkr) {
                         this.rsltToReg.regPnMdlNo = 'all'
                     }
                 },
-                modiCallStCd: function(data){
+                modiCallStCd: function (data) {
                     this.rsltTxt = ""
-                    if (data === 'T'){
+                    if (data === 'T') {
                         this.blackYn = false
                     }
                 },
             },
             methods: {
-                getBnMbrList() {
+                getBnMbrList: function () {
                     var param = {}
                     cf_call("/service/bnMbrList", param, this.getBnMbrListCB)
                 },
-                getBnMbrListCB(data) {
+                getBnMbrListCB: function (data) {
                     this.bnMbr = data
 
                     var type = 'init'
                     this.searchList(type)
                 },
-                searchList(data) {
+                searchList: function (data) {
                     var param = {
                         callStCd: this.selectedCallCd,
                         mntCarr: "all",
@@ -614,7 +642,7 @@
                     this.modiCallStCd = ''
                     cf_call("/service/getAllCounselList", param, this.searchListCB)
                 },
-                searchListCB(data) {
+                searchListCB: function (data) {
                     this.pageInfo = data.pageInfo
                     var tempArr = []
 
@@ -659,12 +687,12 @@
                     }
                     this.counselList = data.counselList
                 },
-                goToPage(data) {
+                goToPage: function (data) {
                     this.pageNo = "" + data
                     var type = 'page'
                     this.searchList(type)
                 },
-                selectCs(data, idx) {
+                selectCs: function (data, idx) {
                     this.modiCall = false    // false - 블랙리스트 등록안된
                     this.blackYn = false
 
@@ -718,22 +746,22 @@
                         this.modiCallStCd = ''
                     }
                 },
-                getTrClass(idx) {
+                getTrClass: function (idx) {
                     if (idx === this.selectedCs.idx) return true
                     else return false
                 },
-                modiBtnClick(){
+                modiBtnClick: function () {
                     this.rsltToReg = JSON.parse(JSON.stringify(this.selectedCs))
                     this.modiCallStCd = this.rsltToReg.callStCd
 
-                    if (this.rsltToReg.callStCd === 'T'){
+                    if (this.rsltToReg.callStCd === 'T') {
                         this.rsltTxt = this.rsltToReg.dealCont
                     } else {
                         this.rsltTxt = this.rsltToReg.cnclCmnt
                     }
                     this.modiCallYn()
                 },
-                rsltLayerMntRtInit() {
+                rsltLayerMntRtInit: function () {
 
                     if (!this.selectedCs.idx) {
                         this.selectedMkr = this.selectedCs.pnMkr
@@ -753,17 +781,17 @@
                         this.rsltLayerMkrInit(pnNetType)
                     }
                 },
-                getPnNetType: function(val) {
+                getPnNetType: function (val) {
                     var pnNetType = ''
-                    for (var i=0; i < this.mntrtList.length; i++) {
+                    for (var i = 0; i < this.mntrtList.length; i++) {
                         if (this.mntrtList[i].pnMntRtNo === Number(val)) {
                             pnNetType = this.mntrtList[i].pnNetType
                         }
                     }
                     return pnNetType
                 },
-                rsltLayerMkrInit(val){
-                    let carr = ''
+                rsltLayerMkrInit: function (val) {
+                    var carr = ''
                     switch (this.rsltToReg.mntCarr) {
                         case "SKT":
                             carr = 'S'
@@ -781,18 +809,18 @@
                     }
                     cf_call("/service/getPnMkr", param, this.rsltLayerMkrInitCB)
                 },
-                rsltLayerMkrInitCB(data){
+                rsltLayerMkrInitCB: function (data) {
                     this.pnMkrList = data.pnMkr
                     if (this.rsltToReg.regMntRtNo !== null) {
                         this.rsltLayerDeviceInit(this.rsltToReg.regPnMkr)
                     }
                 },
-                setPnMkrNm: function(val) {
-                    for (var i=0; i < this.pnMkrData.length; i++) {
+                setPnMkrNm: function (val) {
+                    for (var i = 0; i < this.pnMkrData.length; i++) {
                         if (this.pnMkrData[i].mkrCd === val) return this.pnMkrData[i].mkrNm
                     }
                 },
-                rsltLayerDeviceInit(val) {
+                rsltLayerDeviceInit: function (val) {
                     var carr = ''
                     var pnNetType = this.getPnNetType(this.rsltToReg.regMntRtNo)
                     switch (this.rsltToReg.regCarr) {
@@ -813,16 +841,16 @@
                     }
                     cf_call("/service/getDeviceList", param, this.rsltLayerDeviceInitCB)
                 },
-                rsltLayerDeviceInitCB(data) {
+                rsltLayerDeviceInitCB: function (data) {
                     this.deviceList = data.deviceList
                 },
-                registerRslt() {
+                registerRslt: function () {
                     if (this.modiCall) return
 
                     var param = {}
                     if (this.modiCallStCd === 'T') {
                         param = {
-                            modiYn : 'Y',
+                            modiYn: 'Y',
                             callStCd: this.modiCallStCd,
                             bnMbrId: this.rsltToReg.bnMbrId,
                             regMbrPnNo: this.rsltToReg.regMbrPnNo,
@@ -844,32 +872,31 @@
                             alert('가입유형을 선택해주세요.')
                             return
                         }
-                        if (param.regMntRtNo === 'all'){
+                        if (param.regMntRtNo === 'all') {
                             alert('요금제를 선택해주세요.')
                             return
                         }
-                        if (this.selectedMkr === 'all'){
+                        if (this.selectedMkr === 'all') {
                             alert('제조사를 선택해주세요.')
                             return
                         }
-                        if (param.regPnMdlNo === 'all'){
+                        if (param.regPnMdlNo === 'all') {
                             alert('모델을 선택해주세요.')
                             return
                         }
 
                     } else if (this.modiCallStCd === 'E') {
                         param = {
-                            modiYn : 'Y',
+                            modiYn: 'Y',
                             bnMbrId: this.rsltToReg.bnMbrId,
                             callStCd: this.modiCallStCd,
-                            blackYn : this.blackYn,
+                            blackYn: this.blackYn,
                             pnRegYn: 'N',
                             cnclCmnt: this.rsltTxt,
                             callNo: this.rsltToReg.callNo,
-                            clMbrId : this.rsltToReg.clMbrId
+                            clMbrId: this.rsltToReg.clMbrId
                         }
                     }
-
 
 
                     // 확인필요
@@ -883,7 +910,7 @@
                     }
 
                 },
-                registerRsltCB(data) {
+                registerRsltCB: function (data) {
                     if (data.succ === "Y") {
                         alert('결과가 수정되었습니다.')
                         // this.visitHH = "all"
@@ -893,21 +920,21 @@
                         this.getBnMbrList()
                     }
                 },
-                blackBtnChked: function(){
-                    if (!this.blackYnChked){
+                blackBtnChked: function () {
+                    if (!this.blackYnChked) {
                         this.blackYnChked = true
                         alert('블랙리스트에 등록될 시 정보 수정이 불가능합니다.')
                     }
                 },
-                modiCallYn: function(){
+                modiCallYn: function () {
                     var param = {
                         callNo: this.selectedCs.callNo,
                         clMbrId: this.selectedCs.clMbrId,
                     }
-                    cf_call("/service/blackYnChk", param,this.modiCallYnCB)
+                    cf_call("/service/blackYnChk", param, this.modiCallYnCB)
                 },
-                modiCallYnCB: function(data){
-                    if (data.cnt > 0){
+                modiCallYnCB: function (data) {
+                    if (data.cnt > 0) {
                         this.modiCall = true    // true - 블랙리스트 등록된 회원
                         this.blackYn = true
                     } else {
@@ -915,6 +942,25 @@
                         this.blackYn = false
                     }
                 },
+                setMbrPnNo: function(val) {
+                    var newChar = val.slice(-1)
+                    var newNo = val.replaceAll('-', '')
+                    if (/\d/.test(newChar)) {
+                        if (newNo.length === 10) {
+                            this.rsltToReg.mbrPnNo = newNo.substring(0, 3) + '-' + newNo.substring(3, 6) + '-' + newNo.substring(6, 10)
+                        } else if (newNo.length === 11) {
+                            this.rsltToReg.mbrPnNo = newNo.substring(0, 3) + '-' + newNo.substring(3, 7) + '-' + newNo.substring(7, 11)
+                        } else if (newNo.length >= 12 ) {
+                            this.rsltToReg.mbrPnNo = newNo.substring(0, 3) + '-' + newNo.substring(3, 7) + '-' + newNo.substring(7, 11)
+                        } else {
+                            this.rsltToReg.mbrPnNo = newNo
+                        }
+                        $('#mbrPnNo')[0].value = this.rsltToReg.mbrPnNo
+                    } else {
+                        this.mktEdit.mbrPnNo = this.mktEdit.mbrPnNo.substring(0, this.mktEdit.mbrPnNo.length)
+                        $('#mbrPnNo')[0].value = this.mktEdit.mbrPnNo
+                    }
+                }
             }
         })
     </script>

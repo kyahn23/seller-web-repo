@@ -791,7 +791,7 @@
                     }
                 },
                 stopSale: function() {
-                    let saleYn = false
+                    var saleYn = false
                     if (!this.checkedList.length) alert('판매중지할 모델을 선택해주세요.')
                     else {
                         if (confirm('선택하신 모델의 판매를 중지하시겠습니까?')) {
@@ -823,16 +823,11 @@
                         data.sellYn = 'Y'
                     } else {
                         data.sellYn = 'N'
-                        // data.pnOfclSubsd = null
-                        // data.pnExtSubsdDv = null
-                        // data.pnExtSubsdRt = null
-                        // data.pnEtc = null
-                        // data.pnExtServYn = null
                     }
                 },
                 savePolicy: function(type) {
-                    let tempArr = []
-                    let keyword = ''
+                    var tempArr = []
+                    var keyword = ''
                     switch (type) {
                         case 'moveCarr' :
                             tempArr = this.moveCarrList
@@ -876,12 +871,12 @@
                     }
                 },
                 changeChk: function(data) {
-                    let sellYn = data.sellYnOrg === data.sellYn
-                    let pnOfclSubsd = data.pnOfclSubsdOrg === data.pnOfclSubsd
-                    let pnExtSubsdDv = data.pnExtSubsdDvOrg === data.pnExtSubsdDv
-                    let pnExtSubsdRt = data.pnExtSubsdRtOrg === data.pnExtSubsdRt
-                    let pnEtc = data.pnEtcOrg === data.pnEtc
-                    // let pnExtServYn = data.pnExtServYnOrg === data.pnExtServYn
+                    var sellYn = data.sellYnOrg === data.sellYn
+                    var pnOfclSubsd = data.pnOfclSubsdOrg === data.pnOfclSubsd
+                    var pnExtSubsdDv = data.pnExtSubsdDvOrg === data.pnExtSubsdDv
+                    var pnExtSubsdRt = data.pnExtSubsdRtOrg === data.pnExtSubsdRt
+                    var pnEtc = data.pnEtcOrg === data.pnEtc
+                    // var pnExtServYn = data.pnExtServYnOrg === data.pnExtServYn
                     return (sellYn && pnOfclSubsd && pnExtSubsdDv && pnExtSubsdRt && pnEtc)
                 }
             }
