@@ -625,11 +625,12 @@
                         } else {
                             this.mktEdit.mbrPnNo = newNo
                         }
-                        $('#mbrPnNo')[0].value = this.mktEdit.mbrPnNo
+                    } else if (val === '') {
+                        this.mktEdit.mbrPnNo = ''
                     } else {
                         this.mktEdit.mbrPnNo = this.mktEdit.mbrPnNo.substring(0, this.mktEdit.mbrPnNo.length)
-                        $('#mbrPnNo')[0].value = this.mktEdit.mbrPnNo
                     }
+                    $('#mbrPnNo')[0].value = this.mktEdit.mbrPnNo
                 },
                 getMonthlyRate: function(val) {
                     var param = {
