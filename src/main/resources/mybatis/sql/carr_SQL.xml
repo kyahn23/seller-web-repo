@@ -11,10 +11,12 @@
         A.PN_MNT_DATA,
         A.PN_MNT_CALL,
         A.PN_MNT_SMS,
-<!--        B.AMD_MBR_ID, /*요금제사용테이블에 추가한 직원아이디*/-->
-        (SELECT AMD_MBR_ID FROM TBL015 t WHERE t.BN_NO =(SELECT cf_get_bn_no('gimjigwon1234@hanmail.net')) AND A.PN_MNT_RT_NO=t.PN_MNT_RT_NO ORDER by INP_DT desc LIMIT 0,1) as AMD_MBR_ID,
-<!--        DATE_FORMAT(B.AMD_DT, '%Y-%m-%d %H:%i') as AMD_DT, /*요금제사용테이블에 추가한 날짜*/-->
-        DATE_FORMAT((SELECT INP_DT FROM TBL015 t WHERE t.BN_NO =(SELECT cf_get_bn_no('gimjigwon1234@hanmail.net')) AND A.PN_MNT_RT_NO=t.PN_MNT_RT_NO ORDER by INP_DT desc LIMIT 0,1),'%Y-%m-%d %H:%i') as AMD_DT
+        (SELECT AMD_MBR_ID FROM TBL015 t WHERE t.BN_NO =(SELECT cf_get_bn_no(#{bnMbrId})) AND
+        A.PN_MNT_RT_NO=t.PN_MNT_RT_NO ORDER by INP_DT desc LIMIT 0,1) as AMD_MBR_ID,
+        (SELECT MBR_NM FROM TBL002 tt002 WHERE tt002.BN_MBR_ID = (SELECT AMD_MBR_ID FROM TBL015 t WHERE t.BN_NO =(SELECT
+        cf_get_bn_no(#{bnMbrId})) AND A.PN_MNT_RT_NO=t.PN_MNT_RT_NO ORDER by INP_DT desc LIMIT 0,1)) AS AMD_MBR_NM,
+        DATE_FORMAT((SELECT INP_DT FROM TBL015 t WHERE t.BN_NO =(SELECT cf_get_bn_no(#{bnMbrId})) AND
+        A.PN_MNT_RT_NO=t.PN_MNT_RT_NO ORDER by INP_DT desc LIMIT 0,1),'%Y-%m-%d %H:%i') as AMD_DT
         from TBL010 A left join (select * from TBL013 where BN_NO=(SELECT cf_get_bn_no(#{bnMbrId}))) B
         on A.PN_MNT_RT_NO = B.PN_MNT_RT_NO
         WHERE A.pn_carr = #{carr}
@@ -122,6 +124,28 @@
         AND bb2.BN_NO = (SELECT cf_get_bn_no(#{bnMbrId}))
         AND bb2.MNT_CARR = #{mntCarr}
         ), '%Y-%m-%d %H:%i') as 'lastModiDate',
+        (SELECT MBR_NM FROM TBL002 tt002 WHERE tt002.BN_MBR_ID = (
+        SELECT bb3.AMD_MBR_ID
+        FROM (
+        SELECT *
+        FROM
+        `TBL007-A`
+        UNION ALL
+        SELECT *
+        FROM
+        `TBL007-B`
+        UNION ALL
+        SELECT *
+        FROM
+        `TBL007-C`
+        ) bb3
+        WHERE a.PN_MDL_NO = bb3.PN_MDL_NO
+        AND a.PN_STOR = bb3.PN_STOR
+        AND bb3.BN_NO = (SELECT cf_get_bn_no(#{bnMbrId}))
+        AND bb3.MNT_CARR = #{mntCarr}
+        ORDER BY bb3.AMD_DT DESC
+        LIMIT 0, 1
+        )) as 'lastModiMbrNm',
         (
         SELECT bb3.AMD_MBR_ID
         FROM (
@@ -191,7 +215,8 @@
             AND a.PN_MDL_NM LIKE CONCAT('%', #{searchKey}, '%') ]]>
         </if>
         group by a.PN_MDL_NO, a.PN_STOR
-        order by sellStatus desc, a.REL_DT desc, a.PN_MDL_NO, convert(a.PN_STOR, decimal), convert(a.PN_MSRP, decimal) desc
+        order by sellStatus desc, a.REL_DT desc, a.PN_MDL_NO, convert(a.PN_STOR, decimal), convert(a.PN_MSRP, decimal)
+        desc
     </select>
 
     <select id="moveCarrList" parameterType="DevMap" resultType="DevMap">
@@ -552,7 +577,8 @@
                 FROM `TBL007-C`
             </when>
         </choose>
-        WHERE PN_MDL_NO = #{pnMdlNo} and PN_STOR = #{pnStor} and PN_MNT_RT_NO = #{pnMntRtNo} and BN_NO = (SELECT cf_get_bn_no(#{bnMbrId})) ),
+        WHERE PN_MDL_NO = #{pnMdlNo} and PN_STOR = #{pnStor} and PN_MNT_RT_NO = #{pnMntRtNo} and BN_NO = (SELECT
+        cf_get_bn_no(#{bnMbrId})) ),
         #{sellYn},
         #{pnOfclSubsd},
         #{pnExtSubsdDv},

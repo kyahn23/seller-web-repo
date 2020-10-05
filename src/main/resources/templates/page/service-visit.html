@@ -437,9 +437,9 @@
                             </td>
                             <th>개통번호</th>
                             <td>
-                                <input class="wPer" type="text"
-                                       placeholder="개통번호" v-model="rsltToReg.mbrPnNo"
-                                       :disabled='modiCallStCd==="E"'>
+                                <input class="wPer" type="text" id="mbrPnNo"
+                                       placeholder="'-'없이 숫자 10-11자리 입력" v-model="rsltToReg.mbrPnNo"
+                                       @input="setMbrPnNo($event.target.value)" :disabled='modiCallStCd==="E"'>
                             </td>
                         </tr>
                         <tr>
@@ -769,6 +769,8 @@
                         this.selectedCs = {}
                         this.selectedCs = data
                         this.selectedCs.idx = idx
+                        this.selectedCs.mbrPnNo = this.getMbrPnNo(this.selectedCs.mbrPnNo)
+
                         this.selectedMkr = this.selectedCs.pnMkr
                         this.rsltToReg = JSON.parse(JSON.stringify(data))
 
@@ -945,9 +947,14 @@
                             regPnMdlNo: this.rsltToReg.pnMdlNo,
                             regExtServYn: this.rsltToReg.oldExtServYn,
                             regPd: this.selectedPd,
+                            callCont: this.rsltToReg.callCont,
                             dealCont: this.rsltTxt,
                             pnRegYn: 'Y',
                             callNo: this.rsltToReg.callNo
+                        }
+                        if (param.regMbrPnNo.length <= 10){
+                            alert('개통번호를 확인해주세요.')
+                            return
                         }
                         if (param.regCarr === 'all') {
                             alert('통신사를 선택해주세요.')
@@ -994,6 +1001,9 @@
                         return
                     }
                     if(confirm('개통결과를 등록하시겠습니까?')){
+                        if (this.modiCallStCd === 'T'){
+                            param.regMbrPnNo = param.regMbrPnNo.replaceAll('-', '')
+                        }
                         cf_call("/service/registerRslt", param, this.registerRsltCB)
                     }
 
@@ -1005,6 +1015,36 @@
                         this.visitMM = "all"
                         $('#popLayerServiceResultAdd').popup("hide");
                         this.getToday()
+                    }
+                },
+                getMbrPnNo: function(val){
+                    var formatPnNo = ''
+                    if (val !== undefined) {
+                        if (val.length === 10) {
+                            formatPnNo = val.substring(0, 3) + '-' + val.substring(3, 6) + '-' + val.substring(6, 10)
+                        } else if (val.length === 11) {
+                            formatPnNo = val.substring(0, 3) + '-' + val.substring(3, 7) + '-' + val.substring(7, 11)
+                        }
+                    }
+                    return formatPnNo
+                },
+                setMbrPnNo: function(val) {
+                    var newChar = val.slice(-1)
+                    var newNo = val.replaceAll('-', '')
+                    if (/\d/.test(newChar)) {
+                        if (newNo.length === 10) {
+                            this.rsltToReg.mbrPnNo = newNo.substring(0, 3) + '-' + newNo.substring(3, 6) + '-' + newNo.substring(6, 10)
+                        } else if (newNo.length === 11) {
+                            this.rsltToReg.mbrPnNo = newNo.substring(0, 3) + '-' + newNo.substring(3, 7) + '-' + newNo.substring(7, 11)
+                        } else if (newNo.length >= 12 ) {
+                            this.rsltToReg.mbrPnNo = newNo.substring(0, 3) + '-' + newNo.substring(3, 7) + '-' + newNo.substring(7, 11)
+                        } else {
+                            this.rsltToReg.mbrPnNo = newNo
+                        }
+                        $('#mbrPnNo')[0].value = this.rsltToReg.mbrPnNo
+                    } else {
+                        this.rsltToReg.mbrPnNo = this.rsltToReg.mbrPnNo.substring(0, this.rsltToReg.mbrPnNo.length)
+                        $('#mbrPnNo')[0].value = this.rsltToReg.mbrPnNo
                     }
                 }
             }

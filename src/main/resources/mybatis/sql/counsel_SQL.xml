@@ -148,6 +148,7 @@
                 REG_MBR_PN_NO = #{regMbrPnNo},
                 REG_MNT_RT_NO = #{regMntRtNo},
                 REG_PN_MDL_NO = #{regPnMdlNo},
+                REG_EXT_SERV_YN = #{regExtServYn},
                 REG_TYPE = #{regType},
                 REG_PD = #{regPd},
         </if>
