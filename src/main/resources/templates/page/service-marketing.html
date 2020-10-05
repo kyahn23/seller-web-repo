@@ -409,7 +409,7 @@
                                     <option v-if="deviceList.length" value="-1">- 모델을 선택하세요 -</option>
                                     <option v-else-if="mktEdit.pnMkr != -1" value="-1">- 해당 조건에 맞는 모델이 없습니다 -</option>
                                     <option v-else value="-1">- 제조사 선택 후 선택 가능 -</option>
-                                    <option v-for="deviceOne in deviceList" :value="deviceOne.pnMdlNm">{{ deviceOne.pnMdlNm }}</option>
+                                    <option v-for="deviceOne in deviceList" :value="deviceOne.pnMdlNm">{{ deviceOne.pnMdlNm }} {{ deviceOne.pnStor }}GB</option>
                                 </select>
                             </td>
                         </tr>
