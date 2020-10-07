@@ -971,11 +971,13 @@
                         } else {
                             this.rsltToReg.regMbrPnNo = newNo
                         }
-                        $('#mbrPnNo')[0].value = this.rsltToReg.regMbrPnNo
+                    } else if (val === '') {
+                        this.rsltToReg.regMbrPnNo = ''
                     } else {
                         this.rsltToReg.regMbrPnNo = this.rsltToReg.regMbrPnNo.substring(0, this.rsltToReg.regMbrPnNo.length)
-                        $('#mbrPnNo')[0].value = this.rsltToReg.regMbrPnNo
                     }
+                    $('#mbrPnNo')[0].value = this.rsltToReg.regMbrPnNo
+
                 }
             }
         })

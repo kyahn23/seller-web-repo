@@ -468,9 +468,11 @@
                             </td>
                             <th>약정기간</th>
                             <td>
-                                <input type="radio" id="period12" name="RegPeriod" value="12" v-model="selectedPd" :disabled='modiCallStCd==="E"'>
+                                <input type="radio" id="period12" name="RegPeriod" value="12" v-model="selectedPd"
+                                       :disabled='modiCallStCd==="E"'>
                                 <label for="period12">12개월</label>&nbsp;
-                                <input type="radio" id="period24" name="RegPeriod" value="24" v-model="selectedPd" :disabled='modiCallStCd==="E"'>
+                                <input type="radio" id="period24" name="RegPeriod" value="24" v-model="selectedPd"
+                                       :disabled='modiCallStCd==="E"'>
                                 <label for="period24">24개월</label>
                             </td>
                         </tr>
@@ -486,7 +488,8 @@
                             <td>
                                 <select class="wPer" v-model="rsltToReg.pnMdlNo" :disabled='modiCallStCd==="E"'>
                                     <option value="all">선택</option>
-                                    <option v-for="device in deviceList" :value="device.pnMdlNo">{{device.pnMdlNm}} {{device.pnStor}}GB
+                                    <option v-for="device in deviceList" :value="device.pnMdlNo">{{device.pnMdlNm}}
+                                        {{device.pnStor}}GB
                                     </option>
                                 </select>
                             </td>
@@ -510,7 +513,8 @@
                         <tr>
                             <th>기타사항</th>
                             <td colspan="3" style="height: 85px">
-                                <textarea style="width: 100%; height: 100%;" v-model="rsltTxt" placeholder="특이사항을 작성해주세요"></textarea>
+                                <textarea style="width: 100%; height: 100%;" v-model="rsltTxt"
+                                          placeholder="특이사항을 작성해주세요"></textarea>
                             </td>
                         </tr>
                         </tbody>
@@ -653,7 +657,7 @@
 
                         if (value !== this.selectedCs.mntCarr) {
                             this.selectedCarrChg = true
-                            if (this.selectedCarrChg === true){
+                            if (this.selectedCarrChg === true) {
                                 this.rsltToReg.pnRegDis = "all"
                                 this.rsltToReg.pnMntRtNo = "all"
                             }
@@ -661,7 +665,7 @@
                     },
                     immediate: true
                 },
-                'rsltToReg.pnMntRtNo':{
+                'rsltToReg.pnMntRtNo': {
                     handler(value) {
                         var pnNetType = this.getPnNetType(value)
                         this.rsltLayerMkrInit(pnNetType)
@@ -674,7 +678,7 @@
                 selectedMkr: function (data) {
                     var mntCarr = this.rsltToReg.mntCarr
                     this.rsltLayerDeviceInit(data)
-                    if (data !== this.selectedCs.pnMkr){
+                    if (data !== this.selectedCs.pnMkr) {
                         this.rsltToReg.pnMdlNo = 'all'
                         this.selectedMkrChg = true  // 제조사 값 변경됨 - true
                     }
@@ -840,16 +844,16 @@
                         this.rsltLayerMkrInit(pnNetType)
                     }
                 },
-                getPnNetType: function(val) {
+                getPnNetType: function (val) {
                     var pnNetType = ''
-                    for (var i=0; i < this.mntrtList.length; i++) {
+                    for (var i = 0; i < this.mntrtList.length; i++) {
                         if (this.mntrtList[i].pnMntRtNo === Number(val)) {
                             pnNetType = this.mntrtList[i].pnNetType
                         }
                     }
                     return pnNetType
                 },
-                rsltLayerMkrInit: function (val){
+                rsltLayerMkrInit: function (val) {
                     var carr = ''
                     switch (this.rsltToReg.mntCarr) {
                         case "SKT":
@@ -868,14 +872,14 @@
                     }
                     cf_call("/service/getPnMkr", param, this.rsltLayerMkrInitCB)
                 },
-                rsltLayerMkrInitCB: function (data){
+                rsltLayerMkrInitCB: function (data) {
                     this.pnMkrList = data.pnMkr
                     if (this.rsltToReg.pnMntRtNo !== null) {
                         this.rsltLayerDeviceInit(this.rsltToReg.pnMkr)
                     }
                 },
-                setPnMkrNm: function(val) {
-                    for (var i=0; i < this.pnMkrData.length; i++) {
+                setPnMkrNm: function (val) {
+                    for (var i = 0; i < this.pnMkrData.length; i++) {
                         if (this.pnMkrData[i].mkrCd === val) return this.pnMkrData[i].mkrNm
                     }
                 },
@@ -951,7 +955,7 @@
                             pnRegYn: 'Y',
                             callNo: this.rsltToReg.callNo
                         }
-                        if (param.regMbrPnNo.length <= 10){
+                        if (param.regMbrPnNo.length <= 10) {
                             alert('개통번호를 확인해주세요.')
                             return
                         }
@@ -963,19 +967,19 @@
                             alert('가입유형을 선택해주세요.')
                             return
                         }
-                        if (param.regMntRtNo === 'all'){
+                        if (param.regMntRtNo === 'all') {
                             alert('요금제를 선택해주세요.')
                             return
                         }
-                        if (!this.selectedPd){
+                        if (!this.selectedPd) {
                             alert('약정기간을 선택해주세요.')
                             return
                         }
-                        if (this.selectedMkr === 'all'){
+                        if (this.selectedMkr === 'all') {
                             alert('제조사를 선택해주세요.')
                             return
                         }
-                        if (param.regPnMdlNo === 'all'){
+                        if (param.regPnMdlNo === 'all') {
                             alert('모델을 선택해주세요.')
                             return
                         }
@@ -995,12 +999,12 @@
                     }
 
                     // 확인필요
-                    if(this.rsltTxt.length===0){
+                    if (this.rsltTxt.length === 0) {
                         alert('특이사항을 입력해주세요.')
                         return
                     }
-                    if(confirm('개통결과를 등록하시겠습니까?')){
-                        if (this.modiCallStCd === 'T'){
+                    if (confirm('개통결과를 등록하시겠습니까?')) {
+                        if (this.modiCallStCd === 'T') {
                             param.regMbrPnNo = param.regMbrPnNo.replaceAll('-', '')
                         }
                         cf_call("/service/registerRslt", param, this.registerRsltCB)
@@ -1016,7 +1020,7 @@
                         this.getToday()
                     }
                 },
-                getMbrPnNo: function(val){
+                getMbrPnNo: function (val) {
                     var formatPnNo = ''
                     if (val !== undefined) {
                         if (val.length === 10) {
@@ -1027,7 +1031,7 @@
                     }
                     return formatPnNo
                 },
-                setMbrPnNo: function(val) {
+                setMbrPnNo: function (val) {
                     var newChar = val.slice(-1)
                     var newNo = val.replaceAll('-', '')
                     if (/\d/.test(newChar)) {
@@ -1035,16 +1039,18 @@
                             this.rsltToReg.mbrPnNo = newNo.substring(0, 3) + '-' + newNo.substring(3, 6) + '-' + newNo.substring(6, 10)
                         } else if (newNo.length === 11) {
                             this.rsltToReg.mbrPnNo = newNo.substring(0, 3) + '-' + newNo.substring(3, 7) + '-' + newNo.substring(7, 11)
-                        } else if (newNo.length >= 12 ) {
+                        } else if (newNo.length >= 12) {
                             this.rsltToReg.mbrPnNo = newNo.substring(0, 3) + '-' + newNo.substring(3, 7) + '-' + newNo.substring(7, 11)
                         } else {
                             this.rsltToReg.mbrPnNo = newNo
                         }
-                        $('#mbrPnNo')[0].value = this.rsltToReg.mbrPnNo
+                    } else if (val === '') {
+                        this.rsltToReg.mbrPnNo = ''
                     } else {
                         this.rsltToReg.mbrPnNo = this.rsltToReg.mbrPnNo.substring(0, this.rsltToReg.mbrPnNo.length)
-                        $('#mbrPnNo')[0].value = this.rsltToReg.mbrPnNo
                     }
+                    $('#mbrPnNo')[0].value = this.rsltToReg.mbrPnNo
+
                 }
             }
         })

@@ -85,7 +85,7 @@
             <div class="onlyWideView">
 
                 <div class="subHeader">
-                    <div id="foldUnfold"><a href="#" class="btnFold"><span>좌측메뉴 접기/펴기</span></a></div>
+                    <div id="foldUnfold"><a href="#;" class="btnFold"><span>좌측메뉴 접기/펴기</span></a></div>
                     <h2 class="h2"><img th:src="@{/images/cmmn/hidden.png}" class="ico-list" alt="아이콘">판매정책관리
                     </h2>
                     <div class="pageLocation">
@@ -119,7 +119,7 @@
                         </li>
                     </ul>
                     <div class="btnSearch">
-                        <a href="#none" class="btnM colorBlue" @click="searchList"><span>검색</span></a>
+                        <a href="#;" class="btnM colorBlue" @click="searchList"><span>검색</span></a>
                     </div>
                 </div>
 
@@ -131,7 +131,7 @@
                             <span class="icon"></span>
                         </div>
                         <div class="cTitRight">
-                            <a href="#none" class="btnM colorOrg" @click="stopSale"><span>판매중지</span></a>
+                            <a href="#;" class="btnM colorOrg" @click="stopSale"><span>판매중지</span></a>
                         </div>
                     </div>
                     <!-- slide content -->
@@ -247,7 +247,7 @@
                             번호이동정책
                         </div>
                         <div class="cTitRight">
-                            <a href="#" class="btnM colorSky" @click="savePolicy('moveCarr')"><span>번이정책 저장</span></a>
+                            <a href="#;" class="btnM colorSky" @click="savePolicy('moveCarr')"><span>번이정책 저장</span></a>
                         </div>
                     </div>
                     <!-- content -->
@@ -300,23 +300,22 @@
                                     </label>
                                 </td>
                                 <td><input style="width: 100%" class="inMoney" type="text" v-model="list.pnOfclSubsd"
-                                           placeholder="공시지원금" :disabled="!list.sellToggle">
+                                           v-mask="'#######'" placeholder="공시지원금" :disabled="!list.sellToggle">
                                 </td>
                                 <td>
                                     <input style="width: 100%" class="inMoney" type="text" v-model="list.pnExtSubsdDv"
-                                           placeholder="공시 추가지원금" :disabled="!list.sellToggle">
+                                           v-mask="'#######'" placeholder="공시 추가지원금" :disabled="!list.sellToggle">
                                 </td>
                                 <td>
-                                    {{Number(selectDevice.pnMsrp - list.pnOfclSubsd -
-                                    list.pnExtSubsdDv).toLocaleString()}}
+                                    {{setPrice1('move',idx, list.pnOfclSubsd, list.pnExtSubsdDv)}}
                                 </td>
                                 <td>
                                     <input style="width: 100%" class="wPer inNumber" type="text"
                                            placeholder="선약 추가지원금" v-model="list.pnExtSubsdRt"
-                                           :disabled="!list.sellToggle">
+                                           v-mask="'#######'" :disabled="!list.sellToggle">
                                 </td>
                                 <td>
-                                    {{Number(selectDevice.pnMsrp - list.pnExtSubsdRt).toLocaleString()}}
+                                    {{setPrice2('move',idx, list.pnExtSubsdRt)}}
                                 </td>
                                 <td>
                                     <input type="radio" :id="'mvCarrY'+idx" value="Y" v-model="list.pnExtServYn"
@@ -359,7 +358,7 @@
                             기기변경정책
                         </div>
                         <div class="cTitRight">
-                            <a href="#" class="btnM colorSky" @click="savePolicy('chgDevice')"><span>기변정책 저장</span></a>
+                            <a href="#;" class="btnM colorSky" @click="savePolicy('chgDevice')"><span>기변정책 저장</span></a>
                         </div>
                     </div>
                     <!-- content -->
@@ -412,23 +411,22 @@
                                     </label>
                                 </td>
                                 <td><input style="width: 100%" class="inMoney" type="text" v-model="list.pnOfclSubsd"
-                                           placeholder="공시지원금" :disabled="!list.sellToggle">
+                                           v-mask="'#######'" placeholder="공시지원금" :disabled="!list.sellToggle">
                                 </td>
                                 <td>
                                     <input style="width: 100%" class="inMoney" type="text" v-model="list.pnExtSubsdDv"
-                                           placeholder="공시 추가지원금" :disabled="!list.sellToggle">
+                                           v-mask="'#######'" placeholder="공시 추가지원금" :disabled="!list.sellToggle">
                                 </td>
                                 <td>
-                                    {{Number(selectDevice.pnMsrp - list.pnOfclSubsd -
-                                    list.pnExtSubsdDv).toLocaleString()}}
+                                    {{setPrice1('chg',idx,list.pnOfclSubsd, list.pnExtSubsdDv)}}
                                 </td>
                                 <td>
                                     <input style="width: 100%" class="wPer inNumber" type="text"
                                            placeholder="선약 추가지원금" v-model="list.pnExtSubsdRt"
-                                           :disabled="!list.sellToggle">
+                                           v-mask="'#######'" :disabled="!list.sellToggle">
                                 </td>
                                 <td>
-                                    {{Number(selectDevice.pnMsrp - list.pnExtSubsdRt).toLocaleString()}}
+                                    {{setPrice2('chg',idx,list.pnExtSubsdRt)}}
                                 </td>
                                 <td>
                                     <input type="radio" :id="'idxY'+idx" value="Y" v-model="list.pnExtServYn"
@@ -471,7 +469,7 @@
                             신규가입정책
                         </div>
                         <div class="cTitRight">
-                            <a href="#none" class="btnM colorSky" @click="savePolicy('newSignUp')"><span>신규정책 저장</span></a>
+                            <a href="#;" class="btnM colorSky" @click="savePolicy('newSignUp')"><span>신규정책 저장</span></a>
                         </div>
                     </div>
                     <!-- content -->
@@ -524,23 +522,22 @@
                                     </label>
                                 </td>
                                 <td><input style="width: 100%" class="inMoney" type="text" v-model="list.pnOfclSubsd"
-                                           placeholder="공시지원금" :disabled="!list.sellToggle">
+                                           v-mask="'#######'" placeholder="공시지원금" :disabled="!list.sellToggle">
                                 </td>
                                 <td>
                                     <input style="width: 100%" class="inMoney" type="text" v-model="list.pnExtSubsdDv"
-                                           placeholder="공시 추가지원금" :disabled="!list.sellToggle">
+                                           v-mask="'#######'" placeholder="공시 추가지원금" :disabled="!list.sellToggle">
                                 </td>
                                 <td>
-                                    {{Number(selectDevice.pnMsrp - list.pnOfclSubsd -
-                                    list.pnExtSubsdDv).toLocaleString()}}
+                                    {{setPrice1('new',idx,list.pnOfclSubsd, list.pnExtSubsdDv)}}
                                 </td>
                                 <td>
                                     <input style="width: 100%" class="wPer inNumber" type="text"
                                            placeholder="선약 추가지원금" v-model="list.pnExtSubsdRt"
-                                           :disabled="!list.sellToggle">
+                                           v-mask="'#######'" :disabled="!list.sellToggle">
                                 </td>
                                 <td>
-                                    {{Number(selectDevice.pnMsrp - list.pnExtSubsdRt).toLocaleString()}}
+                                    {{setPrice2('new',idx,list.pnExtSubsdRt)}}
                                 </td>
                                 <td>
                                     <input type="radio" :id="'idxY'+idx" value="Y" v-model="list.pnExtServYn"
@@ -640,7 +637,7 @@
                 this.searchList()
             },
             methods: {
-                searchList: function() {
+                searchList: function () {
                     var param = {
                         mntCarr: this.carr,
                         deviceCarr: this.deviceCarr,
@@ -650,7 +647,7 @@
                     }
                     cf_call("/carr/getSellDeviceList", param, this.searchListCB)
                 },
-                searchListCB: function(data) {
+                searchListCB: function (data) {
                     this.dpList = []
                     switch (this.selectedSellOpt) {
                         case 'y' :
@@ -701,11 +698,11 @@
                         }
                     }
                 },
-                getTrClass: function(idx) {
+                getTrClass: function (idx) {
                     if (idx === this.selectDevice.idx) return true
                     else return false
                 },
-                checkAll: function() {
+                checkAll: function () {
                     this.checkedList = []
 
                     if (this.allchecked) {
@@ -714,14 +711,14 @@
                         }
                     }
                 },
-                chkboxClick: function() {
+                chkboxClick: function () {
                     this.allchecked = false
                     if (this.checkedList.length === this.dpList.length) {
                         this.allchecked = true
                     }
                 },
-                rowClick: function(data, idx) {
-                    if (this.selectDevice.idx != idx){
+                rowClick: function (data, idx) {
+                    if (this.selectDevice.idx != idx) {
                         this.selectDevice = {}
                         this.selectDevice = data
                         this.selectDevice.idx = idx
@@ -742,7 +739,7 @@
                     }
 
                 },
-                rowClickCB: function(data) {
+                rowClickCB: function (data) {
                     this.moveCarrList = []
                     this.chgDeviceList = []
                     this.newSignUpList = []
@@ -790,7 +787,7 @@
                         this.newSignUpList[idx].pnExtServYnOrg = this.newSignUpList[idx].pnExtServYn
                     }
                 },
-                stopSale: function() {
+                stopSale: function () {
                     var saleYn = false
                     if (!this.checkedList.length) alert('판매중지할 모델을 선택해주세요.')
                     else {
@@ -807,7 +804,7 @@
                         }
                     }
                 },
-                stopSaleCB: function(data) {
+                stopSaleCB: function (data) {
                     alert('선택하신 모델의 판매가 중지되었습니다.')
                     if (data.succ === "Y") {
                         this.selectDevice = {}
@@ -818,14 +815,14 @@
                         this.searchList()
                     }
                 },
-                sellToggleBtn: function(data) {
+                sellToggleBtn: function (data) {
                     if (data.sellToggle === true) {
                         data.sellYn = 'Y'
                     } else {
                         data.sellYn = 'N'
                     }
                 },
-                savePolicy: function(type) {
+                savePolicy: function (type) {
                     var tempArr = []
                     var keyword = ''
                     switch (type) {
@@ -850,15 +847,45 @@
                                 tempArr[idx].pnStor = this.selectDevice.pnStor
                                 tempArr[idx].mntCarr = this.carr.toUpperCase()
 
+
                                 if (this.changeChk(tempArr[idx])) {
                                     tempArr[idx].saveYn = 'N' // return true. 값 변동 없음
-                                } else tempArr[idx].saveYn = 'Y' // return false. 값 변동 있음
+                                } else {
+                                    tempArr[idx].saveYn = 'Y' // return false. 값 변동 있음
+                                }
+
+                                if (tempArr[idx].saveYn === 'Y') {
+                                    if (tempArr[idx].sellYn === 'Y') {
+                                        if (!tempArr[idx].pnExtSubsdDv || !tempArr[idx].pnExtSubsdRt || !tempArr[idx].pnOfclSubsd) {
+                                            alert('지원금을 입력해주세요.')
+                                            return
+                                        }
+                                        if (tempArr[idx].pnExtSubsdDv && tempArr[idx].pnExtSubsdRt && tempArr[idx].pnOfclSubsd) {
+                                            tempArr[idx].pnOfclSubsd = tempArr[idx].pnOfclSubsd.replaceAll(',', '')     // 공시지원금
+                                            tempArr[idx].pnExtSubsdDv = tempArr[idx].pnExtSubsdDv.replaceAll(',', '')    // 공시추가지원금
+                                            tempArr[idx].pnExtSubsdRt = tempArr[idx].pnExtSubsdRt.replaceAll(',', '')    // 선약 추가지원금
+                                        }
+
+                                        if (!tempArr[idx].pnExtServYn) {
+                                            alert('부가서비스 유무를 선택해주세요.')
+                                            return
+                                        }
+                                        if (tempArr[idx].pnExtServYn === 'Y') {
+                                            if (!tempArr[idx].pnEtc) {
+                                                alert('부가서비스 정책을 입력해주세요.')
+                                                return
+                                            }
+                                        }
+                                    }
+                                }
+
                             }
-                            cf_call("/carr/saveSalePolicy/" + type, tempArr, this.savePolicyCB);
+                            console.log(tempArr)
+                            cf_call("/carr/saveSalePolicy/" + type, tempArr, this.savePolicyCB)
                         }
                     }
                 },
-                savePolicyCB: function(data) {
+                savePolicyCB: function (data) {
                     if (data.succ === "Y") {
                         alert('저장되었습니다.')
 
@@ -870,7 +897,7 @@
                         this.searchList()
                     }
                 },
-                changeChk: function(data) {
+                changeChk: function (data) {
                     var sellYn = data.sellYnOrg === data.sellYn
                     var pnOfclSubsd = data.pnOfclSubsdOrg === data.pnOfclSubsd
                     var pnExtSubsdDv = data.pnExtSubsdDvOrg === data.pnExtSubsdDv
@@ -878,7 +905,84 @@
                     var pnEtc = data.pnEtcOrg === data.pnEtc
                     // var pnExtServYn = data.pnExtServYnOrg === data.pnExtServYn
                     return (sellYn && pnOfclSubsd && pnExtSubsdDv && pnExtSubsdRt && pnEtc)
-                }
+                },
+                setPrice1: function (policyNm, idx, val1, val2) {  // 공시 할부원금계산
+                    var pnMsrp = this.selectDevice.pnMsrp   // 출고가
+                    var pnOfclSubsd = val1  // 공시지원금
+                    var pnExtSubsdDv = val2 // 공시 추가지원금
+
+                    var keyword = ''
+                    switch (policyNm) {
+                        case 'move':
+                            keyword = this.moveCarrList
+                            break
+                        case 'chg':
+                            keyword = this.chgDeviceList
+                            break
+                        case 'new':
+                            keyword = this.newSignUpList
+                            break
+                    }
+                    if(val1 !== undefined && val1 !== null){
+                        pnOfclSubsd = pnOfclSubsd.replaceAll(',', '')
+                        if(Number(pnMsrp - pnOfclSubsd)<0){
+                            alert('입력하신 지원금을 확인해주세요.')
+                            keyword[idx].pnOfclSubsd = keyword[idx].pnOfclSubsd.substring(0, keyword[idx].pnOfclSubsd.length-1)
+                            // pnOfclSubsd = pnOfclSubsd.substring(0, pnOfclSubsd.length)
+                            return
+                        }
+                    }
+
+                    if (val1 !== undefined && val1 !== null && val2 !== undefined && val2 !== null) {
+                        pnOfclSubsd = val1.replaceAll(',', '')
+                        pnExtSubsdDv = val2.replaceAll(',', '')
+                        var rslt = Number(pnMsrp - pnOfclSubsd - pnExtSubsdDv)
+                        if (rslt < 0){
+                            alert('입력하신 지원금을 확인해주세요.')
+                            keyword[idx].pnExtSubsdDv = keyword[idx].pnExtSubsdDv.substring(0, keyword[idx].pnExtSubsdDv.length-1)
+                            return
+                        } else return rslt.toLocaleString()
+                    } else {
+                        return cf_numberFormat(pnMsrp)
+                    }
+
+                },
+                setPrice2: function (policyNm, idx, val) {     // 선약 할부원금 계산
+                    var keyword = ''
+                    switch (policyNm) {
+                        case 'move':
+                            keyword = this.moveCarrList
+                            break
+                        case 'chg':
+                            keyword = this.chgDeviceList
+                            break
+                        case 'new':
+                            keyword = this.newSignUpList
+                            break
+                    }
+
+                    var pnMsrp = this.selectDevice.pnMsrp
+                    if (val !== undefined && val !== null) {
+                        var pnExtSubsdRt = val.replaceAll(',', '')
+                        var rslt = Number(pnMsrp - pnExtSubsdRt)
+                        if (rslt < 0){
+                            alert('입력하신 지원금액을 확인해주세요.')
+                            // pnExtSubsdRt = pnExtSubsdRt.substring(0, pnExtSubsdRt.length)
+                            keyword[idx].pnExtSubsdRt = keyword[idx].pnExtSubsdRt.substring(0, keyword[idx].pnExtSubsdRt.length-1)
+                            return
+                        } else return rslt.toLocaleString()
+                    } else {
+                        return cf_numberFormat(pnMsrp)
+                    }
+                },
+                // inputPrice: function(val){
+                //     console.log(val)
+                //     var onlyNum = val.replace(/[^0-9]/g, '');
+                //     // if (/\d/.test(newChar) === false) {
+                //     //         return false
+                //     // }
+                //     return onlyNum
+                // }
             }
         })
     </script>
