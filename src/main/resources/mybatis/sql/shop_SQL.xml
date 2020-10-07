@@ -16,6 +16,9 @@
             ,CARD_CHK_YN
             ,BN_PN_NO
             ,BN_IMG
+            ,MKT_YN
+            ,DROPBY_YN
+            ,DROPBY_COST
         FROM TBL003
         WHERE BN_NO = (SELECT cf_get_bn_no(#{bnMbrId}))
     </select>
@@ -32,6 +35,9 @@
             ,CARD_CHK_YN = #{cardChkYn}
             ,BN_PN_NO = #{bnPnNo}
             ,BN_IMG = #{bnImg}
+            ,MKT_YN = #{mktYn}
+            ,DROPBY_YN = #{dropbyYn}
+            ,DROPBY_COST = #{dropbyCost}
             ,AMD_DT = CURRENT_TIMESTAMP()
         WHERE
             BN_NO = #{bnNo}

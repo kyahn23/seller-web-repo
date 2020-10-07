@@ -181,4 +181,8 @@
         WHERE BN_MBR_ID = #{bnMbrId}
     </update>
 
+    <select id="selectBnCardChk" parameterType="string" resultType="string">
+        SELECT CARD_CHK_YN FROM TBL003 WHERE BN_NO = (SELECT cf_get_bn_no(#{bnMbrId}))
+    </select>
+
 </mapper>

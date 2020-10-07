@@ -338,9 +338,11 @@
                 resetMstPwPost: function() {
                     alert('가입정보 확인 후 가입하신 이메일로\n임시 비밀번호가 전송됩니다.')
                     $('#popLayerIDPW').popup('hide')
-                    this.bnRegNo = ''
-                    this.ownerNm = ''
-                    this.mstMbrId = ''
+                    setTimeout(function() {
+                        this.bnRegNo = ''
+                        this.ownerNm = ''
+                        this.mstMbrId = ''
+                    }, 10)
                 }
             },
             computed: {

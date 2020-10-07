@@ -356,4 +356,11 @@ public class CommonService {
         return hashPwd;
     }
 
+    /**
+     * 사업자 등록증 확인 여부 (시스템 관리자가 확인)
+     * @param param
+     * @return
+     */
+    public String checkBnCardChk(String param) { return cmmnDao.selectOne("sellerweb.common.selectBnCardChk", param); }
+
 }

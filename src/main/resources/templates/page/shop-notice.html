@@ -748,7 +748,9 @@
                     if (rslt.rsltStat === 'SUCC') {
                         alert('공지사항이 작성되었습니다.')
                         $('#popLayerNoticeAdd').popup('hide')
-                        this.initPage()
+                        setTimeout(function() {
+                            this.initPage()
+                        }, 10)
                     }
                 }
             },

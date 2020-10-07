@@ -254,16 +254,20 @@
             data: {
                 mstMbrYn: '[[${session.mstMbrYn}]]',
                 pwnoInitYn: '[[${session.pwnoInitYn}]]',
+                bnCardChkYn: '[[${session.bnCardChkYn}]]',
                 newPwdNo: '',
                 pwDirty: false,
                 pwChk: false
             },
             mounted: function(){
-                this.pwnoInit()
+                this.mainInit()
             },
             methods: {
-                pwnoInit: function() {
-                    if (this.pwnoInitYn === 'Y') {
+                mainInit: function() {
+                    if (this.bnCardChkYn === 'N') {
+                        alert('현재 사업자 등록증 확인 중입니다.\n확인 완료 후 로그인 하실 수 있습니다.\n(평일(공휴일 제외) 24시간 이내 완료)')
+                        window.location.href = "/logout"
+                    } else if (this.pwnoInitYn === 'Y') {
                         $('#popLayerInitPw').popup('show')
                     }
                 },

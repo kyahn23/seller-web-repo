@@ -522,6 +522,7 @@
                     this.checkAll = false
                     this.initSrchCond()
                     this.getEmpList()
+                    this.initModiEmp()
                 },
                 initSrchCond: function() {
                     this.srchCond = {
@@ -708,20 +709,20 @@
                 addNewEmpInfoCB: function(rslt) {
                     if (rslt.rsltStat === 'SUCC') {
                         alert('신규 직원이 추가되었습니다.')
-
-                        this.newEmpInfo.idChk = false
-                        this.newEmpInfo.emailId = ''
-                        this.newEmpInfo.emailDomain = ''
-                        $('#emailDomainSel')[0].value = ''
-                        this.newEmpInfo.pwdNo = ''
-                        $('#pwdNoChk')[0].value = ''
-                        this.newEmpInfo.pwDirty = false
-                        this.newEmpInfo.pwChk = false
-                        this.newEmpInfo.sellerPrms = 'READONLY'
-                        this.newEmpInfo.mbrNm = ''
-
                         $('#popLayerEmployeeAdd').popup('hide')
-                        this.initPage()
+                        setTimeout(function() {
+                            this.newEmpInfo.idChk = false
+                            this.newEmpInfo.emailId = ''
+                            this.newEmpInfo.emailDomain = ''
+                            $('#emailDomainSel')[0].value = ''
+                            this.newEmpInfo.pwdNo = ''
+                            $('#pwdNoChk')[0].value = ''
+                            this.newEmpInfo.pwDirty = false
+                            this.newEmpInfo.pwChk = false
+                            this.newEmpInfo.sellerPrms = 'READONLY'
+                            this.newEmpInfo.mbrNm = ''
+                            this.initPage()
+                        }, 10)
                     }
                 },
                 setChkMbrId: function() {

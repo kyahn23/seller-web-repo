@@ -70,10 +70,13 @@ public class LoginController {
                 return "redirect:/login";
             }
 
+            String bnCardChkYn = commonService.checkBnCardChk(bnMbrId);
+
             session.setAttribute("bnMbrId", userVO.getBnMbrId());
             session.setAttribute("mbrNm", userVO.getMbrNm());
             session.setAttribute("pwnoInitYn", userVO.getPwnoInitYn());
             session.setAttribute("mstMbrYn", userVO.getMstMbrYn());
+            session.setAttribute("bnCardChkYn", bnCardChkYn);
             redirect.addFlashAttribute("loginStat", "SUCC");
             return "redirect:/";
         }

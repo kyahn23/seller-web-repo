@@ -136,7 +136,7 @@
                                 <th>사업자등록증<span class="icoMust"><em>필수</em></span></th>
                                 <td colspan="3">
                                     <p class="desBr">
-                                        신청 정보를 증명할 수 있는 사업자등록증 사본을 제출해 주세요
+                                        신청 정보를 증명할 수 있는 사업자등록증 사본을 제출해 주세요.
                                     </p>
                                     <p class="br">
                                         일반과세자(개인사업자)의 경우, 사업자등록증에 주민등록번호가 포함되어 있으면 뒷자리 7자리를
@@ -237,6 +237,30 @@
                                     </a>
                                 </td>
                             </tr>
+                            <tr>
+                                <th>마케팅 동의여부</th>
+                                <td colspan="3">
+                                    <input type="checkbox" id="mktChk" v-model="mktChk" style="margin-left: 2px; margin-bottom: 4px;">
+                                    <label for="mktChk" style="margin-top: 0 !important; margin-bottom: 4px;">마케팅 동의</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>방문개통</th>
+                                <td colspan="3">
+                                    <p class="br">
+                                        고객들에게 방문개통 서비스를 제공하는지 알려줄 수 있습니다.
+                                    </p>
+                                    <br>
+                                    <input type="checkbox" id="dropbyChk" v-model="dropbyChk" style="margin-left: 2px; margin-bottom: 4px;">
+                                    <label for="dropbyChk" style="margin-top: 0 !important; margin-bottom: 4px;">방문개통 가능</label>
+                                    <span style="margin-left: 28px; margin-right: 4px;">방문개통 서비스 요금</span>
+                                    <select id="dropbyFree" v-model="dropbyFree" :disabled="!dropbyChk" style="height: 30px; width: 60px !important;">
+                                        <option value="true">무료</option>
+                                        <option value="false">유료</option>
+                                    </select>
+                                    <input type="text" class="inMoney" id="dropbyCost" v-model="shopInfo.dropbyCost" :disabled="disableDropbyCost" v-mask="'######'" style="width: 14% !important;"> 원
+                                </td>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
@@ -303,6 +327,9 @@
                 phoneMaskSeoul: ['##-###-####', '##-####-####'],
                 phoneMaskOther: ['###-###-####', '###-####-####'],
                 uploadTgtNm: '',
+                mktChk: false,
+                dropbyChk: false,
+                dropbyFree: 'true'
             },
             mounted: function(){
                 this.getShopInfo()
@@ -329,6 +356,9 @@
                         this.bnPnNo = rslt.bnPnNo
                     }
                     this.bnAddrStr = rslt.bnAddrDtl
+                    this.mktChk = this.ynToBool(rslt.mktYn)
+                    this.dropbyChk = this.ynToBool(rslt.dropbyYn)
+                    if (rslt.dropbyCost * 1 > 0) this.dropbyFree = 'false'
                     this.shopInfo = rslt
                     this.initDone = true
                 },
@@ -372,6 +402,9 @@
                     param.bnAddrDtl = this.bnAddrFull
                     param.bnRegNo = this.bnRegNoND
                     param.bnPnNo = this.bnPnNoND
+                    param.mktYn = this.boolToYn(this.mktChk)
+                    param.dropbyYn = this.boolToYn(this.dropbyChk)
+                    if (this.dropbyFree === 'true') param.dropbyCost = 0
                     cf_call("/shop/modiShopInfo", param, this.modiShopInfoCB)
                 },
                 modiShopInfoCB: function(rslt) {
@@ -397,6 +430,13 @@
                             return '/images/shop/bnimg/shop.png'
                         }
                     }
+                },
+                ynToBool: function (ynVal) {
+                    return ynVal === 'Y'
+                },
+                boolToYn: function (boolVal) {
+                    if (boolVal) return 'Y'
+                    return 'N'
                 }
             },
             computed: {
@@ -408,6 +448,10 @@
                 },
                 bnPnNoND: function() {
                     return this.bnPnNo.replaceAll('-', '')
+                },
+                disableDropbyCost: function() {
+                    if (this.dropbyChk) return (this.dropbyFree === 'true')
+                    return true
                 }
             }
         })

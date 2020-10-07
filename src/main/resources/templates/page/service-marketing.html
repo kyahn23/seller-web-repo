@@ -387,7 +387,7 @@
                             <th>요금제</th>
                             <td colspan="3">
                                 <select class="wPer" id="selMonthlyRate" v-model="mktEdit.pnMntRtNo">
-                                    <option v-if="mntRtNull" value="-1">- 해당 요금제는 현재 판매중단 되었습니다 -</option>
+                                    <option v-if="mktOneEdit && mntRtNull" value="-1">- 해당 요금제는 현재 판매중단 되었습니다 -</option>
                                     <option v-else-if="monthlyRateList.length" value="-1">- 요금제를 선택하세요 -</option>
                                     <option v-else value="-1">- 통신사 선택 후 선택 가능 -</option>
                                     <option v-for="(plan, index) in monthlyRateList" :value="plan.pnMntRtNo">{{ plan.pnMntRtNm }} [월 {{ addCommaToPrice(plan.pnMntAmt) }}원]</option>
@@ -735,18 +735,22 @@
                     if (rslt.rsltStat === 'SUCC') {
                         alert('마케팅 정보가 저장되었습니다.')
                         $('#popLayerMarketingForm').popup('hide')
-                        this.srchType = 'A'
-                        this.srchName = ''
-                        this.newPnRegDt = new Date()
-                        this.editDate = new Date()
-                        this.getMarketingList('1')
-                        this.selRow = -1
-                        this.initMktOne()
+                        setTimeout(function() {
+                            this.srchType = 'A'
+                            this.srchName = ''
+                            this.newPnRegDt = new Date()
+                            this.editDate = new Date()
+                            this.getMarketingList('1')
+                            this.selRow = -1
+                            this.initMktOne()
+                        }, 10)
                     }
                 },
                 closeMktEdit: function() {
-                    this.initMktEditInfo()
                     $('#popLayerMarketingForm').popup('hide')
+                    setTimeout(function() {
+                        this.initMktEditInfo()
+                    }, 10)
                 },
                 initMktEditInfo: function() {
                     this.mktEdit.mbrNm = ""
@@ -768,6 +772,11 @@
                     if (enabled) {
                         $('#popLayerMarketingForm').popup('show')
                         if (mode === 'edit') {
+                            if (this.mktOne.mktRslt === 'N') {
+                                this.mktOneEdit = false
+                            } else {
+                                this.mktOneEdit = true
+                            }
                             this.mktEdit.mbrNm = this.mktOne.mbrNm
                             this.mktEdit.mbrPnNo = this.mktOne.mbrPnNo
                             this.mktEdit.mktRslt = this.mktOne.mktRslt
