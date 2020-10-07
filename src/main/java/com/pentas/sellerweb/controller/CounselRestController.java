@@ -121,6 +121,28 @@ public class CounselRestController {
     }
 
     /**
+     * 상담거절
+     * @param param
+     * @param request
+     * @return
+     */
+    @PostMapping("/service/refuseCounsel")
+    public DevMap refuseCounsel(@RequestBody DevMap param, HttpServletRequest request){
+//        세션에서 회원아이디 가져오기
+        HttpSession session = request.getSession();
+        String loginMbrId = (String) session.getAttribute("bnMbrId");
+        param.put("LOGIN_MBR_ID", loginMbrId);
+
+        param.put("CALL_ST_CD", "E");   // 상담상태 미개통(종료)으로 변경
+
+        DevMap rslt = new DevMap();
+        counselService.refuseCounsel(param);
+
+        rslt.put("succ", "Y");
+        return rslt;
+    }
+
+    /**
      * 상담결과저장
      * @param param
      * @return

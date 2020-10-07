@@ -110,6 +110,15 @@
         and CALL_NO=#{callNo}
     </update>
 
+    <update id="refuseCounsel" parameterType="DevMap">
+        update `TBL008`
+        set CALL_ST_CD = #{callStCd},
+        CNCL_CMNT = #{cnclCmnt},
+        AMD_DT = SYSDATE()
+        where BN_NO=(SELECT cf_get_bn_no(#{loginMbrId}))
+        and CALL_NO=#{callNo}
+    </update>
+
     <update id="modiVisitDt" parameterType="DevMap">
         update `TBL008`
         set VISIT_DT = #{visitDt},

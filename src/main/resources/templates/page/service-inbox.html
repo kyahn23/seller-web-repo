@@ -154,6 +154,10 @@
                             상담 접수 상세정보
                         </div>
                         <div class="cTitRight">
+                            <div id="btn1"><a href="#popLayerServiceResultRefuse"
+                                              class="btnM colorOrg popLayerServiceResultRefuse_open"
+                                              v-if="selectedCs.callNo"><span>상담 거절</span></a>
+                            </div>
                             <div id="btn2"><a href="#popLayerServiceResultAdd"
                                               class="btnM colorSky popLayerServiceResultAdd_open"
                                               v-if="selectedCs.callNo"><span>상담결과 저장</span></a>
@@ -301,12 +305,52 @@
 </div>
 
 <div layout:fragment="layer">
+    <!-- 팝업: 상담거절 -->
+    <div class="layerWrapper layerSizeM" id="popLayerServiceResultRefuse">
+        <div class="layerHeader">
+            <strong>상담 거절</strong>
+            <a href="#" @click="closebtnInit" class="btnClose popLayerServiceResultRefuse_close">
+                <img src="../images/cmmn/btn-layer-close.png" alt="창닫기">
+            </a>
+        </div>
+        <div class="layerContainer">
+            <div class="layerContent">
+
+                <!-- 컨텐츠 -->
+                <div class="guidanceWrapper">
+                    <table class="tblDataRow">
+                        <colgroup>
+                            <col style="width:85px">
+                            <col style="width:*">
+                        </colgroup>
+                        <tbody>
+                        <tr>
+                            <th>거절사유</th>
+                            <td style="height: 85px">
+                                <textarea
+                                        style="width: 100%; height: 100%;" v-model="refuseCmnt"></textarea>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- //컨텐츠 -->
+                <div class="btnWrapper">
+                    <a href="#;" class="btnL colorBlue"
+                       @click="refuseCs"><span>저장</span></a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
     <!-- 팝업: 개통결과등록 -->
     <div class="layerWrapper layerSizeM" id="popLayerServiceResultAdd" style="display:inherit !important">
         <div class="layerHeader">
             <strong>상담결과저장</strong>
-            <a href="#" class="btnClose popLayerServiceResultAdd_close"><img src="../images/cmmn/btn-layer-close.png"
-                                                                             alt="창닫기"></a>
+            <a href="#;" @click="closebtnInit" class="btnClose popLayerServiceResultAdd_close">
+                <img src="../images/cmmn/btn-layer-close.png" alt="창닫기">
+            </a>
         </div>
         <div class="layerContainer">
             <div class="layerContent">
@@ -325,7 +369,7 @@
                             <th>고객명</th>
                             <td>{{selectedCs.clMbrNm}}</td>
                             <th>고객번호</th>
-                            <td>{{selectedCs.mbrPnNo}}</td>
+                            <td>{{ getMbrPnNo( selectedCs.mbrPnNo )}}</td>
                         </tr>
                         <tr>
                             <th>방문예정일시</th>
@@ -367,7 +411,7 @@
                 </div>
                 <!-- //컨텐츠 -->
                 <div class="btnWrapper">
-                    <a href="#none" class="btnL colorBlue"
+                    <a href="#;" class="btnL colorBlue"
                        @click="saveCs"><span>저장</span></a>
                 </div>
             </div>
@@ -381,12 +425,18 @@
     <!-- //팝업: 상담내용등록 -->
     <script type="text/javascript">
         $(function () {
-            if ($(".layerWrapper").length) {
+            if ($('#popLayerServiceResultRefuse').length) {
+                //상담거절
+                $('#popLayerServiceResultRefuse').popup();
+            }
+            if ($("#popLayerServiceResultAdd").length) {
                 //상담내용등록
                 $('#popLayerServiceResultAdd').popup();
             }
         });
     </script>
+
+
     <script type="text/javascript" th:src="@{/js/lib/vuejs-datepicker-1.6.2/vuejs-datepicker.js}"></script>
     <script type="text/javascript" th:src="@{/js/lib/vuejs-datepicker-1.6.2/locale/translations/ko.js}"></script>
     <script>
@@ -441,6 +491,7 @@
                 visitHh: "all",
                 visitMm: "all",
                 csContent: "",
+                refuseCmnt: "",
                 disabledDates: {},
                 disabledFn: {
                     customPredictor(date) {
@@ -580,7 +631,9 @@
                         visitDt: visitDt,
                         csContent: this.csContent
                     }
-                    cf_call("/service/saveCounsel", param, this.saveCsCB)
+                    if (confirm('상담결과를 저장하시겠습니까?')) {
+                        cf_call("/service/saveCounsel", param, this.saveCsCB)
+                    }
                 },
                 saveCsCB: function (data) {
                     if (data.succ === "Y") {
@@ -593,6 +646,47 @@
                         this.currPolicy = {}
                         this.searchList(type)
                     }
+                },
+                refuseCs: function () {
+
+                    var param = {
+                        callNo: this.selectedCs.callNo,
+                        cnclCmnt: this.refuseCmnt
+                    }
+                    if (!this.refuseCmnt) {
+                        alert('거절사유를 입력해주세요.')
+                        return
+                    }
+                    if (confirm('상담을 거절하시겠습니까?')) {
+                        cf_call("/service/refuseCounsel", param, this.refuseCsCB)
+                    }
+                },
+                refuseCsCB: function (data) {
+                    if (data.succ === "Y") {
+                        var type = 'init'
+                        $('#popLayerServiceResultRefuse').popup("hide");
+                        alert('상담을 거절하였습니다.')
+                        this.currPolicy = {}
+                        this.searchList(type)
+                    }
+                },
+                getMbrPnNo: function (val) {
+                    var formatPnNo = ''
+                    if (val !== undefined) {
+                        if (val.length === 10) {
+                            formatPnNo = val.substring(0, 3) + '-' + val.substring(3, 6) + '-' + val.substring(6, 10)
+                        } else if (val.length === 11) {
+                            formatPnNo = val.substring(0, 3) + '-' + val.substring(3, 7) + '-' + val.substring(7, 11)
+                        }
+                    }
+                    return formatPnNo
+                },
+                closebtnInit: function(){
+                    this.refuseCmnt = ""
+                    this.visitDd = ""
+                    this.visitHh = "all"
+                    this.visitMm = "all"
+                    this.csContent = ""
                 }
             }
         })

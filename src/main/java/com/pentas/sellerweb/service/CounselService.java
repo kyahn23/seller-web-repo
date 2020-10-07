@@ -33,6 +33,10 @@ public class CounselService {
         return cmmnDao.selectList("sellerweb.counsel.bnMbrList", param);
     }
 
+    /**
+     * 방문예정일 저장
+     * @param param
+     */
     public void saveCounsel(DevMap param) {
         String visitDt = param.getString("visitDt");
         visitDt = visitDt.concat("00");
@@ -57,6 +61,10 @@ public class CounselService {
         return cmmnDao.selectList("sellerweb.counsel.allDeviceListByCarr", param);
     }
 
+    /**
+     * 상담결과저장
+     * @param param
+     */
     public void registerRslt(DevMap param) {
         cmmnDao.update("sellerweb.counsel.registerRslt", param);
     }
@@ -159,5 +167,11 @@ public class CounselService {
      */
     public void addBlkClient(DevMap param) {
         cmmnDao.insert("sellerweb.counsel.addBlkClient", param);
+    }
+
+
+
+    public void refuseCounsel(DevMap param) {
+        cmmnDao.update("sellerweb.counsel.refuseCounsel", param);
     }
 }
