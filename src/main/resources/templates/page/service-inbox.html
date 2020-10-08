@@ -525,20 +525,35 @@
                 },
                 searchListCB: function (data) {
                     this.pageInfo = data.pageInfo
-                    for (idx in this.counselList) {
-                        this.counselList[idx].idx = idx
-                        switch (this.counselList[idx].pnRegDis) {
+                    for (var i = 0; i < this.counselList.length i++) {
+                        this.counselList[i].idx = i
+                        switch (this.counselList[i].pnRegDis) {
                             case 'A':
-                                this.counselList[idx].pnRegDisNm = '번호이동'
+                                this.counselList[i].pnRegDisNm = '번호이동'
                                 break
                             case 'B':
-                                this.counselList[idx].pnRegDisNm = '기기변경'
+                                this.counselList[i].pnRegDisNm = '기기변경'
                                 break
                             case 'C':
-                                this.counselList[idx].pnRegDisNm = '신규가입'
+                                this.counselList[i].pnRegDisNm = '신규가입'
                                 break
                         }
                     }
+
+                    // for (idx in this.counselList) {
+                    //     this.counselList[idx].idx = idx
+                    //     switch (this.counselList[idx].pnRegDis) {
+                    //         case 'A':
+                    //             this.counselList[idx].pnRegDisNm = '번호이동'
+                    //             break
+                    //         case 'B':
+                    //             this.counselList[idx].pnRegDisNm = '기기변경'
+                    //             break
+                    //         case 'C':
+                    //             this.counselList[idx].pnRegDisNm = '신규가입'
+                    //             break
+                    //     }
+                    // }
                     this.counselList = data.counselList
                 },
                 goToPage: function (data) {

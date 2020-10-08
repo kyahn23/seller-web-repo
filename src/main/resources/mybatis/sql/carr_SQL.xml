@@ -474,11 +474,6 @@
     <update id="stopSaleDevMvCarr" parameterType="DevMap">
         update `TBL007-A`
         set SELL_YN = 'N',
-        PN_OFCL_SUBSD = NULL,
-        PN_EXT_SUBSD_DV = NULL,
-        PN_EXT_SUBSD_RT = NULL,
-        PN_EXT_SERV_YN = NULL,
-        PN_ETC = NULL,
         AMD_DT = sysdate(),
         AMD_MBR_ID =#{bnMbrId}
         where BN_NO=(SELECT cf_get_bn_no(#{bnMbrId}))
@@ -499,11 +494,6 @@
     <update id="stopSaleDevChgDev" parameterType="DevMap">
         update `TBL007-B`
         set SELL_YN = 'N',
-        PN_OFCL_SUBSD = NULL,
-        PN_EXT_SUBSD_DV = NULL,
-        PN_EXT_SUBSD_RT = NULL,
-        PN_EXT_SERV_YN = NULL,
-        PN_ETC = NULL,
         AMD_DT = sysdate(),
         AMD_MBR_ID =#{bnMbrId}
         where BN_NO=(SELECT cf_get_bn_no(#{bnMbrId}))
@@ -524,11 +514,6 @@
     <update id="stopSaleDevNewSignup" parameterType="DevMap">
         update `TBL007-C`
         set SELL_YN = 'N',
-        PN_OFCL_SUBSD = NULL,
-        PN_EXT_SUBSD_DV = NULL,
-        PN_EXT_SUBSD_RT = NULL,
-        PN_EXT_SERV_YN = NULL,
-        PN_ETC = NULL,
         AMD_DT = sysdate(),
         AMD_MBR_ID =#{bnMbrId}
         where BN_NO=(SELECT cf_get_bn_no(#{bnMbrId}))

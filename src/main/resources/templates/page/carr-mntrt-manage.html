@@ -89,7 +89,7 @@
                             <tbody v-if="mntrtList.length !== 0">
                             <tr v-for="mntrt in mntrtList" @click="chkRowClick(mntrt)">
                                 <td class="alignC">
-                                    <input type="checkbox" @click="chkboxClick" v-model="selectedMntNo"
+                                    <input type="checkbox" @click.stop.prevent="chkboxClick" v-model="selectedMntNo"
                                            :value="mntrt.pnMntRtNo">
                                 </td>
                                 <td class="alignC" v-if="mntrt.mntUseynNo">사용</td>
@@ -185,23 +185,29 @@
                 chkRowClick: function(data) {
                     this.allSelected = false
 
-                    if (!this.selectedMntNo.includes(data.pnMntRtNo)) {
+                    if (this.selectedMntNo.indexOf(data.pnMntRtNo)<0) {
                         this.selectedMntNo.push(data.pnMntRtNo)
                     } else {
-                        const idx = this.selectedMntNo.indexOf(data.pnMntRtNo)
+                        var idx = this.selectedMntNo.indexOf(data.pnMntRtNo)
                         if (idx > -1) this.selectedMntNo.splice(idx, 1)
                     }
                 },
                 chkboxClick: function() {
                     this.allSelected = false
+
                 },
                 checkAll: function() {
                     this.selectedMntNo = []
 
                     if (this.allSelected) {
-                        for (list in this.mntrtList) {
-                            this.selectedMntNo.push(this.mntrtList[list].pnMntRtNo)
+
+                        for(var i=0; i<this.mntrtList.length; i++){
+                            this.selectedMntNo.push(this.mntrtList[i].pnMntRtNo)
                         }
+
+                        // for (list in this.mntrtList) {
+                        //     this.selectedMntNo.push(this.mntrtList[list].pnMntRtNo)
+                        // }
                     }
                 },
                 useMntrt: function() {
@@ -255,27 +261,45 @@
                     var useChk = false     // 초기값 false null값이 없는것이 chk될경우 true
                     this.validateArr = []
                     for (var i = 0; i < this.selectedMntNo.length; i++) {
-                        for (validate in this.mntrtList) {
-                            if (this.selectedMntNo[i] === this.mntrtList[validate].pnMntRtNo) this.validateArr.push(this.mntrtList[validate])
+                        for(var j = 0; j < this.mntrtList.length; j++) {
+                            if (this.selectedMntNo[i] === this.mntrtList[j].pnMntRtNo) this.validateArr.push(this.mntrtList[j])
+
                         }
+                        // for (validate in this.mntrtList) {
+                        //     if (this.selectedMntNo[i] === this.mntrtList[validate].pnMntRtNo) this.validateArr.push(this.mntrtList[validate])
+                        // }
                     }
                     if (chk === 'nUse') {
-                        for (chk in this.validateArr) {
-                            if (this.validateArr[chk].mntUseynNo == null) {
+                        for (let i = 0; i < this.validateArr.length; i++) {
+                            if (this.validateArr[i].mntUseynNo == null) {
                                 nUseChk = true
                                 break
                             }
                         }
+
+                        // for (chk in this.validateArr) {
+                        //     if (this.validateArr[chk].mntUseynNo == null) {
+                        //         nUseChk = true
+                        //         break
+                        //     }
+                        // }
                         this.validateArr = []
                         return nUseChk
 
                     } else if (chk === 'use') {
-                        for (chk in this.validateArr) {
-                            if (this.validateArr[chk].mntUseynNo != null) {
+                        for (let i = 0; i < this.validateArr.length; i++) {
+                            if (this.validateArr[i].mntUseynNo != null) {
                                 useChk = true
                                 break
                             }
                         }
+
+                        // for (chk in this.validateArr) {
+                        //     if (this.validateArr[chk].mntUseynNo != null) {
+                        //         useChk = true
+                        //         break
+                        //     }
+                        // }
                         this.validateArr = []
                         return useChk
                     }

@@ -153,7 +153,7 @@
                                     </colgroup>
                                     <thead>
                                     <tr>
-                                        <th scope="col"><input type="checkbox" title="행 선택" @change="checkAll"
+                                        <th scope="col"><input type="checkbox" title="행 선택" @change.stop="checkAll"
                                                                v-model="allchecked"></th>
                                         <th scope="col">판매상태</th>
                                         <th scope="col">제조사</th>
@@ -651,52 +651,93 @@
                     this.dpList = []
                     switch (this.selectedSellOpt) {
                         case 'y' :
-                            for (idx in data.sellDeviceList) {
-                                if (data.sellDeviceList[idx].sellStatus === 'Y') {
-                                    this.dpList.push(data.sellDeviceList[idx])
+                            for (var i = 0; i < data.sellDeviceList.length; i++) {
+                                if (data.sellDeviceList[i].sellStatus === 'Y') {
+                                    this.dpList.push(data.sellDeviceList[i])
                                 }
                             }
+
+                            // for (idx in data.sellDeviceList) {
+                            //     if (data.sellDeviceList[idx].sellStatus === 'Y') {
+                            //         this.dpList.push(data.sellDeviceList[idx])
+                            //     }
+                            // }
                             break
                         case 'p' :
-                            for (idx in data.sellDeviceList) {
-                                if (data.sellDeviceList[idx].sellStatus === 'P') {
-                                    this.dpList.push(data.sellDeviceList[idx])
+                            for (var i = 0; i < data.sellDeviceList.length; i++) {
+                                if (data.sellDeviceList[i].sellStatus === 'P') {
+                                    this.dpList.push(data.sellDeviceList[i])
                                 }
                             }
+
+                            // for (idx in data.sellDeviceList) {
+                            //     if (data.sellDeviceList[idx].sellStatus === 'P') {
+                            //         this.dpList.push(data.sellDeviceList[idx])
+                            //     }
+                            // }
                             break
                         case "n" :
-                            for (idx in data.sellDeviceList) {
-                                if (data.sellDeviceList[idx].sellStatus === 'N') {
-                                    this.dpList.push(data.sellDeviceList[idx])
+                            for (var i = 0; i < data.sellDeviceList.length; i++) {
+                                if (data.sellDeviceList[i].sellStatus === 'N') {
+                                    this.dpList.push(data.sellDeviceList[i])
                                 }
                             }
+
+                            // for (idx in data.sellDeviceList) {
+                            //     if (data.sellDeviceList[idx].sellStatus === 'N') {
+                            //         this.dpList.push(data.sellDeviceList[idx])
+                            //     }
+                            // }
                             break
                         default:
                             this.dpList = data.sellDeviceList
                             break
                     }
-                    for (sell in this.dpList) {
-                        this.dpList[sell].idx = sell
-                        this.dpList[sell].mntCarr = this.carr.toUpperCase()
+                    for (var i = 0; i < this.dpList.length; i++) {
+                        this.dpList[i].idx = i
+                        this.dpList[i].mntCarr = this.carr.toUpperCase()
 
-                        switch (this.dpList[sell].pnMkr) {
+                        switch (this.dpList[i].pnMkr) {
                             case 'SAM':
-                                this.dpList[sell].pnMkr = '삼성전자'
+                                this.dpList[i].pnMkr = '삼성전자'
                                 break
                             case 'LGE':
-                                this.dpList[sell].pnMkr = 'LG전자'
+                                this.dpList[i].pnMkr = 'LG전자'
                                 break
                             case 'APP':
-                                this.dpList[sell].pnMkr = '애플'
+                                this.dpList[i].pnMkr = '애플'
                                 break
                             case 'XIA':
-                                this.dpList[sell].pnMkr = '샤오미'
+                                this.dpList[i].pnMkr = '샤오미'
                                 break
                             case 'ETC':
-                                this.dpList[sell].pnMkr = '기타'
+                                this.dpList[i].pnMkr = '기타'
                                 break
                         }
                     }
+
+                    // for (sell in this.dpList) {
+                    //     this.dpList[sell].idx = sell
+                    //     this.dpList[sell].mntCarr = this.carr.toUpperCase()
+                    //
+                    //     switch (this.dpList[sell].pnMkr) {
+                    //         case 'SAM':
+                    //             this.dpList[sell].pnMkr = '삼성전자'
+                    //             break
+                    //         case 'LGE':
+                    //             this.dpList[sell].pnMkr = 'LG전자'
+                    //             break
+                    //         case 'APP':
+                    //             this.dpList[sell].pnMkr = '애플'
+                    //             break
+                    //         case 'XIA':
+                    //             this.dpList[sell].pnMkr = '샤오미'
+                    //             break
+                    //         case 'ETC':
+                    //             this.dpList[sell].pnMkr = '기타'
+                    //             break
+                    //     }
+                    // }
                 },
                 getTrClass: function (idx) {
                     if (idx === this.selectDevice.idx) return true
@@ -706,9 +747,13 @@
                     this.checkedList = []
 
                     if (this.allchecked) {
-                        for (list in this.dpList) {
-                            this.checkedList.push(this.dpList[list])
+                        for (var i = 0; i < this.dpList.length; i++) {
+                            this.checkedList.push(this.dpList[i])
                         }
+
+                        // for (list in this.dpList) {
+                        //     this.checkedList.push(this.dpList[list])
+                        // }
                     }
                 },
                 chkboxClick: function () {
@@ -745,57 +790,108 @@
                     this.newSignUpList = []
 
                     this.moveCarrList = data.moveCarrList
-                    for (idx in this.moveCarrList) {
-                        if (this.moveCarrList[idx].sellYn === 'Y') {
-                            this.moveCarrList[idx].sellToggle = true
+                    for (var i = 0; i < this.moveCarrList.length; i++) {
+                        if (this.moveCarrList[i].sellYn === 'Y') {
+                            this.moveCarrList[i].sellToggle = true
                         } else {
-                            this.moveCarrList[idx].sellToggle = false
+                            this.moveCarrList[i].sellToggle = false
                         }
-                        this.moveCarrList[idx].sellYnOrg = this.moveCarrList[idx].sellYn
-                        this.moveCarrList[idx].pnOfclSubsdOrg = this.moveCarrList[idx].pnOfclSubsd
-                        this.moveCarrList[idx].pnExtSubsdDvOrg = this.moveCarrList[idx].pnExtSubsdDv
-                        this.moveCarrList[idx].pnExtSubsdRtOrg = this.moveCarrList[idx].pnExtSubsdRt
-                        this.moveCarrList[idx].pnEtcOrg = this.moveCarrList[idx].pnEtc
-                        this.moveCarrList[idx].pnExtServYnOrg = this.moveCarrList[idx].pnExtServYn
+                        this.moveCarrList[i].sellYnOrg = this.moveCarrList[i].sellYn
+                        this.moveCarrList[i].pnOfclSubsdOrg = this.moveCarrList[i].pnOfclSubsd
+                        this.moveCarrList[i].pnExtSubsdDvOrg = this.moveCarrList[i].pnExtSubsdDv
+                        this.moveCarrList[i].pnExtSubsdRtOrg = this.moveCarrList[i].pnExtSubsdRt
+                        this.moveCarrList[i].pnEtcOrg = this.moveCarrList[i].pnEtc
+                        this.moveCarrList[i].pnExtServYnOrg = this.moveCarrList[i].pnExtServYn
                     }
+
+
+                    // for (idx in this.moveCarrList) {
+                    //     if (this.moveCarrList[idx].sellYn === 'Y') {
+                    //         this.moveCarrList[idx].sellToggle = true
+                    //     } else {
+                    //         this.moveCarrList[idx].sellToggle = false
+                    //     }
+                    //     this.moveCarrList[idx].sellYnOrg = this.moveCarrList[idx].sellYn
+                    //     this.moveCarrList[idx].pnOfclSubsdOrg = this.moveCarrList[idx].pnOfclSubsd
+                    //     this.moveCarrList[idx].pnExtSubsdDvOrg = this.moveCarrList[idx].pnExtSubsdDv
+                    //     this.moveCarrList[idx].pnExtSubsdRtOrg = this.moveCarrList[idx].pnExtSubsdRt
+                    //     this.moveCarrList[idx].pnEtcOrg = this.moveCarrList[idx].pnEtc
+                    //     this.moveCarrList[idx].pnExtServYnOrg = this.moveCarrList[idx].pnExtServYn
+                    // }
                     this.chgDeviceList = data.chgDeviceList
-                    for (idx in this.chgDeviceList) {
-                        if (this.chgDeviceList[idx].sellYn === 'Y') {
-                            this.chgDeviceList[idx].sellToggle = true
+                    for (var i = 0; i < this.chgDeviceList.length; i++) {
+                        if (this.chgDeviceList[i].sellYn === 'Y') {
+                            this.chgDeviceList[i].sellToggle = true
                         } else {
-                            this.chgDeviceList[idx].sellToggle = false
+                            this.chgDeviceList[i].sellToggle = false
                         }
-                        this.chgDeviceList[idx].sellYnOrg = this.chgDeviceList[idx].sellYn
-                        this.chgDeviceList[idx].pnOfclSubsdOrg = this.chgDeviceList[idx].pnOfclSubsd
-                        this.chgDeviceList[idx].pnExtSubsdDvOrg = this.chgDeviceList[idx].pnExtSubsdDv
-                        this.chgDeviceList[idx].pnExtSubsdRtOrg = this.chgDeviceList[idx].pnExtSubsdRt
-                        this.chgDeviceList[idx].pnEtcOrg = this.chgDeviceList[idx].pnEtc
-                        this.chgDeviceList[idx].pnExtServYnOrg = this.chgDeviceList[idx].pnExtServYn
+                        this.chgDeviceList[i].sellYnOrg = this.chgDeviceList[i].sellYn
+                        this.chgDeviceList[i].pnOfclSubsdOrg = this.chgDeviceList[i].pnOfclSubsd
+                        this.chgDeviceList[i].pnExtSubsdDvOrg = this.chgDeviceList[i].pnExtSubsdDv
+                        this.chgDeviceList[i].pnExtSubsdRtOrg = this.chgDeviceList[i].pnExtSubsdRt
+                        this.chgDeviceList[i].pnEtcOrg = this.chgDeviceList[i].pnEtc
+                        this.chgDeviceList[i].pnExtServYnOrg = this.chgDeviceList[i].pnExtServYn
                     }
+
+                    // for (idx in this.chgDeviceList) {
+                    //     if (this.chgDeviceList[idx].sellYn === 'Y') {
+                    //         this.chgDeviceList[idx].sellToggle = true
+                    //     } else {
+                    //         this.chgDeviceList[idx].sellToggle = false
+                    //     }
+                    //     this.chgDeviceList[idx].sellYnOrg = this.chgDeviceList[idx].sellYn
+                    //     this.chgDeviceList[idx].pnOfclSubsdOrg = this.chgDeviceList[idx].pnOfclSubsd
+                    //     this.chgDeviceList[idx].pnExtSubsdDvOrg = this.chgDeviceList[idx].pnExtSubsdDv
+                    //     this.chgDeviceList[idx].pnExtSubsdRtOrg = this.chgDeviceList[idx].pnExtSubsdRt
+                    //     this.chgDeviceList[idx].pnEtcOrg = this.chgDeviceList[idx].pnEtc
+                    //     this.chgDeviceList[idx].pnExtServYnOrg = this.chgDeviceList[idx].pnExtServYn
+                    // }
+
                     this.newSignUpList = data.newSignUpList
-                    for (idx in this.newSignUpList) {
-                        if (this.newSignUpList[idx].sellYn === 'Y') {
-                            this.newSignUpList[idx].sellToggle = true
+                    for (var i = 0; i < this.newSignUpList.length; i++) {
+                        if (this.newSignUpList[i].sellYn === 'Y') {
+                            this.newSignUpList[i].sellToggle = true
                         } else {
-                            this.newSignUpList[idx].sellToggle = false
+                            this.newSignUpList[i].sellToggle = false
                         }
-                        this.newSignUpList[idx].sellYnOrg = this.newSignUpList[idx].sellYn
-                        this.newSignUpList[idx].pnOfclSubsdOrg = this.newSignUpList[idx].pnOfclSubsd
-                        this.newSignUpList[idx].pnExtSubsdDvOrg = this.newSignUpList[idx].pnExtSubsdDv
-                        this.newSignUpList[idx].pnExtSubsdRtOrg = this.newSignUpList[idx].pnExtSubsdRt
-                        this.newSignUpList[idx].pnEtcOrg = this.newSignUpList[idx].pnEtc
-                        this.newSignUpList[idx].pnExtServYnOrg = this.newSignUpList[idx].pnExtServYn
+                        this.newSignUpList[i].sellYnOrg = this.newSignUpList[i].sellYn
+                        this.newSignUpList[i].pnOfclSubsdOrg = this.newSignUpList[i].pnOfclSubsd
+                        this.newSignUpList[i].pnExtSubsdDvOrg = this.newSignUpList[i].pnExtSubsdDv
+                        this.newSignUpList[i].pnExtSubsdRtOrg = this.newSignUpList[i].pnExtSubsdRt
+                        this.newSignUpList[i].pnEtcOrg = this.newSignUpList[i].pnEtc
+                        this.newSignUpList[i].pnExtServYnOrg = this.newSignUpList[i].pnExtServYn
                     }
+
+                    // for (idx in this.newSignUpList) {
+                    //     if (this.newSignUpList[idx].sellYn === 'Y') {
+                    //         this.newSignUpList[idx].sellToggle = true
+                    //     } else {
+                    //         this.newSignUpList[idx].sellToggle = false
+                    //     }
+                    //     this.newSignUpList[idx].sellYnOrg = this.newSignUpList[idx].sellYn
+                    //     this.newSignUpList[idx].pnOfclSubsdOrg = this.newSignUpList[idx].pnOfclSubsd
+                    //     this.newSignUpList[idx].pnExtSubsdDvOrg = this.newSignUpList[idx].pnExtSubsdDv
+                    //     this.newSignUpList[idx].pnExtSubsdRtOrg = this.newSignUpList[idx].pnExtSubsdRt
+                    //     this.newSignUpList[idx].pnEtcOrg = this.newSignUpList[idx].pnEtc
+                    //     this.newSignUpList[idx].pnExtServYnOrg = this.newSignUpList[idx].pnExtServYn
+                    // }
                 },
                 stopSale: function () {
                     var saleYn = false
                     if (!this.checkedList.length) alert('판매중지할 모델을 선택해주세요.')
                     else {
                         if (confirm('선택하신 모델의 판매를 중지하시겠습니까?')) {
-                            for (idx in this.checkedList) {
-                                // sellYn의 값이 없으면(미판매) true
-                                if (!this.checkedList[idx].sellStatus) saleYn = true
+                            for (var i = 0; i < this.checkedList.length; i++) {
+                                console.log(this.checkedList[i].sellStatus)
+                                if (this.checkedList[i].sellStatus !== 'Y') {
+                                    saleYn = true
+                                }
                             }
+
+                            // for (idx in this.checkedList) {
+                            //     // sellYn의 값이 없으면(미판매) true
+                            //     if (!this.checkedList[idx].sellStatus) saleYn = true
+                            // }
                             // 판매상태 - 미판매중인
                             if (saleYn) alert("선택하신 모델의 판매상태를 확인해주세요.")
                             else {

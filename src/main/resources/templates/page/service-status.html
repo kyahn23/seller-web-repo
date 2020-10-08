@@ -553,48 +553,6 @@
                 },
                 selectedMkr: function (data) {
                     var mntCarr = this.rsltToReg.regCarr
-                    // switch (this.rsltToReg.regCarr) {
-                    //     case 'SKT':
-                    //         mntCarr = 'S'
-                    //         break
-                    //     case 'KT':
-                    //         mntCarr = 'K'
-                    //         break
-                    //     case 'SKT':
-                    //         mntCarr = 'L'
-                    //         break
-                    // }
-                    // var tempArr = []
-                    // switch (data) {
-                    //     case 'SAM':
-                    //         for (list in this.deviceList) {
-                    //             if (this.deviceList[list].pnMkr === 'SAM' && this.deviceList[list].pnCarr.includes(mntCarr) && this.deviceList[list].pnNetType === this.netTypeByMntrt) {
-                    //                 tempArr.push(this.deviceList[list])
-                    //             }
-                    //         }
-                    //         break
-                    //     case 'LGE':
-                    //         for (list in this.deviceList) {
-                    //             if (this.deviceList[list].pnMkr === 'LGE' && this.deviceList[list].pnCarr.includes(mntCarr)&& this.deviceList[list].pnNetType === this.netTypeByMntrt) {
-                    //                 tempArr.push(this.deviceList[list])
-                    //             }
-                    //         }
-                    //         break
-                    //     case 'APP':
-                    //         for (list in this.deviceList) {
-                    //             if (this.deviceList[list].pnMkr === 'APP' && this.deviceList[list].pnCarr.includes(mntCarr)&& this.deviceList[list].pnNetType === this.netTypeByMntrt) {
-                    //                 tempArr.push(this.deviceList[list])
-                    //             }
-                    //         }
-                    //         break
-                    //     case 'XIA':
-                    //         for (list in this.deviceList) {
-                    //             if (this.deviceList[list].pnMkr === 'XIA' && this.deviceList[list].pnCarr.includes(mntCarr)&& this.deviceList[list].pnNetType === this.netTypeByMntrt) {
-                    //                 tempArr.push(this.deviceList[list])
-                    //             }
-                    //         }
-                    //         break
-                    // }
                     this.rsltLayerDeviceInit(data)
                     if (data !== this.selectedCs.regPnMkr) {
                         this.rsltToReg.regPnMdlNo = 'all'
@@ -646,45 +604,85 @@
                     this.pageInfo = data.pageInfo
                     var tempArr = []
 
-                    for (idx in data.counselList) {
-                        data.counselList[idx].idx = idx
-                        switch (data.counselList[idx].pnRegDis) {
+                    for (var i = 0; i < data.counselList.length; i++) {
+                        data.counselList[i].idx = i
+                        switch (data.counselList[i].pnRegDis) {
                             case "A":
-                                data.counselList[idx].pnRegDisNm = '번호이동'
+                                data.counselList[i].pnRegDisNm = '번호이동'
                                 break
                             case "B":
-                                data.counselList[idx].pnRegDisNm = '기기변경'
+                                data.counselList[i].pnRegDisNm = '기기변경'
                                 break
                             case "C":
-                                data.counselList[idx].pnRegDisNm = '신규가입'
+                                data.counselList[i].pnRegDisNm = '신규가입'
                                 break
                         }
-                        switch (data.counselList[idx].regType) {
+                        switch (data.counselList[i].regType) {
                             case "A":
-                                data.counselList[idx].regTypeNm = '번호이동'
+                                data.counselList[i].regTypeNm = '번호이동'
                                 break
                             case "B":
-                                data.counselList[idx].regTypeNm = '기기변경'
+                                data.counselList[i].regTypeNm = '기기변경'
                                 break
                             case "C":
-                                data.counselList[idx].regTypeNm = '신규가입'
+                                data.counselList[i].regTypeNm = '신규가입'
                                 break
                         }
-                        switch (data.counselList[idx].callStCd) {
+                        switch (data.counselList[i].callStCd) {
                             case "R":
-                                data.counselList[idx].callStNm = '상담접수'
+                                data.counselList[i].callStNm = '상담접수'
                                 break
                             case "P":
-                                data.counselList[idx].callStNm = '방문예정'
+                                data.counselList[i].callStNm = '방문예정'
                                 break
                             case "T":
-                                data.counselList[idx].callStNm = '개통완료'
+                                data.counselList[i].callStNm = '개통완료'
                                 break
                             case "E":
-                                data.counselList[idx].callStNm = '미개통'
+                                data.counselList[i].callStNm = '미개통'
                                 break
                         }
                     }
+
+                    // for (idx in data.counselList) {
+                    //     data.counselList[idx].idx = idx
+                    //     switch (data.counselList[idx].pnRegDis) {
+                    //         case "A":
+                    //             data.counselList[idx].pnRegDisNm = '번호이동'
+                    //             break
+                    //         case "B":
+                    //             data.counselList[idx].pnRegDisNm = '기기변경'
+                    //             break
+                    //         case "C":
+                    //             data.counselList[idx].pnRegDisNm = '신규가입'
+                    //             break
+                    //     }
+                    //     switch (data.counselList[idx].regType) {
+                    //         case "A":
+                    //             data.counselList[idx].regTypeNm = '번호이동'
+                    //             break
+                    //         case "B":
+                    //             data.counselList[idx].regTypeNm = '기기변경'
+                    //             break
+                    //         case "C":
+                    //             data.counselList[idx].regTypeNm = '신규가입'
+                    //             break
+                    //     }
+                    //     switch (data.counselList[idx].callStCd) {
+                    //         case "R":
+                    //             data.counselList[idx].callStNm = '상담접수'
+                    //             break
+                    //         case "P":
+                    //             data.counselList[idx].callStNm = '방문예정'
+                    //             break
+                    //         case "T":
+                    //             data.counselList[idx].callStNm = '개통완료'
+                    //             break
+                    //         case "E":
+                    //             data.counselList[idx].callStNm = '미개통'
+                    //             break
+                    //     }
+                    // }
                     this.counselList = data.counselList
                 },
                 goToPage: function (data) {
