@@ -311,7 +311,7 @@
 
                     document.getElementById("bnAddrStr").value = roadAddr;
                     document.getElementById("bnAddrBldg").value = extraRoadAddr;
-                    app.daumPostCodeCB(roadAddr, extraRoadAddr);
+                    app.daumPostCodeCB(data.sido, data.sigungu, roadAddr, extraRoadAddr);
                 }
             }).open();
         }
@@ -344,7 +344,9 @@
                 }
             },
             methods: {
-                daumPostCodeCB: function(str, bldg) {
+                daumPostCodeCB: function(sido, sigg, str, bldg) {
+                    this.shopInfo.bnAddrSido = sido
+                    this.shopInfo.bnAddrSigg = sigg
                     this.bnAddrStr = str
                     this.bnAddrBldg = bldg
                 },
@@ -400,8 +402,6 @@
                 modiShopInfo: function() {
                     var param = this.shopInfo
                     param.oldImageList = this.oldImageList
-                    param.bnAddrSido = $('#bnAddrSido')[0].value
-                    param.bnAddrSigg = $('#bnAddrSigg')[0].value
                     param.bnAddrDtl = this.bnAddrFull
                     param.bnRegNo = this.bnRegNoND
                     param.bnPnNo = this.bnPnNoND
