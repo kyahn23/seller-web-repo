@@ -270,7 +270,7 @@
                         // }
                     }
                     if (chk === 'nUse') {
-                        for (let i = 0; i < this.validateArr.length; i++) {
+                        for (var i = 0; i < this.validateArr.length; i++) {
                             if (this.validateArr[i].mntUseynNo == null) {
                                 nUseChk = true
                                 break
@@ -287,7 +287,7 @@
                         return nUseChk
 
                     } else if (chk === 'use') {
-                        for (let i = 0; i < this.validateArr.length; i++) {
+                        for (var i = 0; i < this.validateArr.length; i++) {
                             if (this.validateArr[i].mntUseynNo != null) {
                                 useChk = true
                                 break
