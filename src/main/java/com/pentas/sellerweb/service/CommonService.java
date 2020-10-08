@@ -124,6 +124,11 @@ public class CommonService {
     public DevMap uploadFile(MultipartFile multipartFile, DevMap param) throws UserException {
         String mbrId = "";
         String fileTgt = "";
+        String filExtNm = "";
+        String origFilNm = "";
+        long filSizNo;
+        String filTyp = "";
+
         mbrId = param.getString("bnMbrId");
         fileTgt = param.getString("fileTgt");
 
@@ -131,24 +136,24 @@ public class CommonService {
         Date uploadDate = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmssSSS");
         String uploadDateStr = sdf.format(uploadDate);
-
         String storFilNm = uploadDateStr + "_" + UuidUtil.getUuidOnlyString(); // 저장파일명
-        String origFilNm = multipartFile.getOriginalFilename(); // 원시파일명
-        String filTyp = multipartFile.getContentType(); // 원시파일타입
-
-        if(origFilNm.getBytes().length > 50) {
-            throw new UserException("파일명의 길이가 50Byte를 초과할 수 없습니다.");
-        }
-
-        String filExtNm = origFilNm.substring(origFilNm.lastIndexOf(".")); // 파일 확장자
         String filStorPthTxt = "/" + fileTgt + "/"; // 파일 저장경로
-        long filSizNo = multipartFile.getSize(); // 파일크기
-        if (filSizNo > 100000000) {
-            throw new UserException("파일크기가 100MB를 초과할 수 없습니다.");
-        }
 
         // 파일 업로드
         try {
+            origFilNm = multipartFile.getOriginalFilename(); // 원시파일명
+            filTyp = multipartFile.getContentType(); // 원시파일타입
+
+            if(origFilNm.getBytes().length > 50) {
+                throw new UserException("파일명의 길이가 50Byte를 초과할 수 없습니다.");
+            }
+
+            filExtNm = origFilNm.substring(origFilNm.lastIndexOf(".")); // 파일 확장자
+            filSizNo = multipartFile.getSize(); // 파일크기
+            if (filSizNo > 100000000) {
+                throw new UserException("파일크기가 100MB를 초과할 수 없습니다.");
+            }
+
             InputStream fis = multipartFile.getInputStream();
 
             S3Util.s3ObjectUpload(
@@ -163,10 +168,7 @@ public class CommonService {
                     filTyp,
                     storFilNm
             );
-        } catch (IllegalStateException e) {
-            throw new UserException("파일저장중 오류가 발생했습니다. 운영자에게 문의바랍니다.");
-        }
-        catch (IOException e) {
+        } catch (IllegalStateException | IOException e) {
             throw new UserException("파일저장중 오류가 발생했습니다. 운영자에게 문의바랍니다.");
         }
 
