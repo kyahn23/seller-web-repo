@@ -306,7 +306,7 @@
                                                 <a
                                                     href="#;"
                                                     class="btnS colorWhite"
-                                                    @click="openDaumPostCode"
+                                                    onclick="execDaumPostcode()"
                                                 >
                                                     <span>주소 검색</span>
                                                 </a>
@@ -440,8 +440,10 @@
                     document.getElementById('bnZipcode').value = data.zonecode;
                     document.getElementById('bnAddrSido').value = data.sido;
                     document.getElementById('bnAddrSigg').value = data.sigungu;
+
                     document.getElementById("bnAddrStr").value = roadAddr;
                     document.getElementById("bnAddrBldg").value = extraRoadAddr;
+                    app.daumPostCodeCB(roadAddr, extraRoadAddr);
                 }
             }).open();
         }
@@ -479,8 +481,9 @@
                 }
             },
             methods: {
-                openDaumPostCode: function() {
-                    execDaumPostcode()
+                daumPostCodeCB: function(str, bldg) {
+                    this.bnAddrStr = str
+                    this.bnAddrBldg = bldg
                 },
                 addNewBnInfo: function() {
                     if (
