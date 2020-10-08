@@ -444,7 +444,7 @@
             },
             computed: {
                 bnAddrFull: function() {
-                    return $('#bnAddrStr')[0].value + ' ' + $('#bnAddrBldg')[0].value
+                    return this.bnAddrStr + ' ' + this.bnAddrBldg
                 },
                 bnRegNoND: function() {
                     return this.shopInfo.bnRegNo.replaceAll('-', '')
