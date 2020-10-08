@@ -494,7 +494,7 @@
                 refuseCmnt: "",
                 disabledDates: {},
                 disabledFn: {
-                    customPredictor(date) {
+                    customPredictor:function(date) {
                         var t = new Date()
                         if (date.getDate() < t.getDate()) {
                             return true;
