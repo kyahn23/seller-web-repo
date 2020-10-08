@@ -882,7 +882,6 @@
                     else {
                         if (confirm('선택하신 모델의 판매를 중지하시겠습니까?')) {
                             for (var i = 0; i < this.checkedList.length; i++) {
-                                console.log(this.checkedList[i].sellStatus)
                                 if (this.checkedList[i].sellStatus !== 'Y') {
                                     saleYn = true
                                 }
@@ -976,7 +975,6 @@
                                 }
 
                             }
-                            console.log(tempArr)
                             cf_call("/carr/saveSalePolicy/" + type, tempArr, this.savePolicyCB)
                         }
                     }
@@ -1072,7 +1070,6 @@
                     }
                 },
                 // inputPrice: function(val){
-                //     console.log(val)
                 //     var onlyNum = val.replace(/[^0-9]/g, '');
                 //     // if (/\d/.test(newChar) === false) {
                 //     //         return false
