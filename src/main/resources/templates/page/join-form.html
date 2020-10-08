@@ -297,6 +297,7 @@
                                             <th>주소<span class="icoMust"><em>필수</em></span></th>
                                             <td colspan="3">
                                                 <input
+                                                    id="bnZipcode"
                                                     type="text"
                                                     class="wZipcode"
                                                     style="width: 120px !important;"
@@ -411,7 +412,8 @@
 
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
-    <script type="text/javascript">var mktYnIdx = location.search.indexOf('?')+5
+    <script type="text/javascript">
+        var mktYnIdx = location.search.indexOf('?')+5
         var mktYn = location.search.substring(mktYnIdx, mktYnIdx+1)
         if (mktYn === undefined || (mktYn !== 'Y' && mktYn !== 'N')) {
             alert('잘못된 접근입니다.')
