@@ -691,6 +691,7 @@
                     this.searchList(type)
                 },
                 selectCs: function (data, idx) {
+                    alert(idx)
                     this.modiCall = false    // false - 블랙리스트 등록안된
                     this.blackYn = false
 
@@ -698,26 +699,23 @@
                         this.selectedCs = {}
                         this.selectedCs = data
                         this.selectedCs.idx = idx
-                        this.selectedCs.regMbrPnNo = this.getMbrPnNo(this.selectedCs.regMbrPnNo)
-
-                        this.selectedMkr = this.selectedCs.regPnMkr
-                        this.rsltToReg = JSON.parse(JSON.stringify(data))
-                        this.modiCallStCd = this.rsltToReg.callStCd
-
+                        if (this.selectedCs.regMbrPnNo !== null && this.selectedCs.regMbrPnNo !== undefined){
+                            this.selectedCs.regMbrPnNo = this.getMbrPnNo(this.selectedCs.regMbrPnNo)
+                        }
                         switch (this.selectedCs.pnMkr) {
-                            case "SAM":
+                            case 'SAM':
                                 this.selectedCs.pnMkrNm = '삼성전자'
                                 break
-                            case "LGE":
+                            case 'LGE':
                                 this.selectedCs.pnMkrNm = 'LG전자'
                                 break
-                            case "APP":
+                            case 'APP':
                                 this.selectedCs.pnMkrNm = '애플'
                                 break
-                            case "XIA":
+                            case 'XIA':
                                 this.selectedCs.pnMkrNm = '샤오미'
                                 break
-                            case "ETC":
+                            case 'ETC':
                                 this.selectedCs.pnMkrNm = '기타'
                                 break
                         }
@@ -738,6 +736,10 @@
                                 this.selectedCs.regPnMkrNm = '기타'
                                 break
                         }
+
+                        this.selectedMkr = this.selectedCs.regPnMkr
+                        this.rsltToReg = JSON.parse(JSON.stringify(data))
+                        this.modiCallStCd = this.rsltToReg.callStCd
 
                         this.rsltLayerMntRtInit()
                     } else {
