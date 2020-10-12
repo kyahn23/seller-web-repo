@@ -89,7 +89,7 @@
                             <tbody v-if="mntrtList.length !== 0">
                             <tr v-for="mntrt in mntrtList" @click="chkRowClick(mntrt)">
                                 <td class="alignC">
-                                    <input type="checkbox" @click.stop.prevent="chkboxClick" v-model="selectedMntNo"
+                                    <input type="checkbox" @click.stop="chkboxClick" v-model="selectedMntNo"
                                            :value="mntrt.pnMntRtNo">
                                 </td>
                                 <td class="alignC" v-if="mntrt.mntUseynNo">사용</td>
