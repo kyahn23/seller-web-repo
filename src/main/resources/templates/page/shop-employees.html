@@ -483,6 +483,12 @@
             });
         });
 
+        function delay10(delayedFn) {
+            setTimeout(function() {
+                delayedFn()
+            }, 10)
+        }
+
         var app = new Vue({
             el: "#app",
             data: {
@@ -710,20 +716,21 @@
                     if (rslt.rsltStat === 'SUCC') {
                         alert('신규 직원이 추가되었습니다.')
                         $('#popLayerEmployeeAdd').popup('hide')
-                        setTimeout(function() {
-                            this.newEmpInfo.idChk = false
-                            this.newEmpInfo.emailId = ''
-                            this.newEmpInfo.emailDomain = ''
-                            $('#emailDomainSel')[0].value = ''
-                            this.newEmpInfo.pwdNo = ''
-                            $('#pwdNoChk')[0].value = ''
-                            this.newEmpInfo.pwDirty = false
-                            this.newEmpInfo.pwChk = false
-                            this.newEmpInfo.sellerPrms = 'READONLY'
-                            this.newEmpInfo.mbrNm = ''
-                            this.initPage()
-                        }, 10)
+                        delay10(this.initNewEmp())
                     }
+                },
+                initNewEmp: function() {
+                    this.newEmpInfo.idChk = false
+                    this.newEmpInfo.emailId = ''
+                    this.newEmpInfo.emailDomain = ''
+                    $('#emailDomainSel')[0].value = ''
+                    this.newEmpInfo.pwdNo = ''
+                    $('#pwdNoChk')[0].value = ''
+                    this.newEmpInfo.pwDirty = false
+                    this.newEmpInfo.pwChk = false
+                    this.newEmpInfo.sellerPrms = 'READONLY'
+                    this.newEmpInfo.mbrNm = ''
+                    this.initPage()
                 },
                 setChkMbrId: function() {
                     this.newEmpInfo.idChk = false

@@ -473,6 +473,12 @@
             }
         });
 
+        function delay10(delayedFn) {
+            setTimeout(function() {
+                delayedFn()
+            }, 10)
+        }
+
         var app = new Vue({
             el: "#app",
             data: {
@@ -735,22 +741,21 @@
                     if (rslt.rsltStat === 'SUCC') {
                         alert('마케팅 정보가 저장되었습니다.')
                         $('#popLayerMarketingForm').popup('hide')
-                        setTimeout(function() {
-                            this.srchType = 'A'
-                            this.srchName = ''
-                            this.newPnRegDt = new Date()
-                            this.editDate = new Date()
-                            this.getMarketingList('1')
-                            this.selRow = -1
-                            this.initMktOne()
-                        }, 10)
+                        delay10(this.initPage())
                     }
                 },
                 closeMktEdit: function() {
                     $('#popLayerMarketingForm').popup('hide')
-                    setTimeout(function() {
-                        this.initMktEditInfo()
-                    }, 10)
+                    delay10(this.initMktEditInfo())
+                },
+                initPage: function() {
+                    this.srchType = 'A'
+                    this.srchName = ''
+                    this.newPnRegDt = new Date()
+                    this.editDate = new Date()
+                    this.getMarketingList('1')
+                    this.selRow = -1
+                    this.initMktOne()
                 },
                 initMktEditInfo: function() {
                     this.mktEdit.mbrNm = ""

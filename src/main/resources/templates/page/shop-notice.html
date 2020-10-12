@@ -491,6 +491,12 @@
             }
         });
 
+        function delay10(delayedFn) {
+            setTimeout(function() {
+                delayedFn()
+            }, 10)
+        }
+
         var app = new Vue({
             el: "#app",
             data: {
@@ -748,9 +754,7 @@
                     if (rslt.rsltStat === 'SUCC') {
                         alert('공지사항이 작성되었습니다.')
                         $('#popLayerNoticeAdd').popup('hide')
-                        setTimeout(function() {
-                            this.initPage()
-                        }, 10)
+                        delay10(this.initPage())
                     }
                 }
             },

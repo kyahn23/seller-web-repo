@@ -317,6 +317,12 @@
             });
         });
 
+        function delay10(delayedFn) {
+            setTimeout(function() {
+                delayedFn()
+            }, 10)
+        }
+
         var app = new Vue({
             el: "#app",
             data: {
@@ -325,6 +331,11 @@
                 mstMbrId: ''
             },
             methods: {
+                initPop: function() {
+                    this.bnRegNo = ''
+                    this.ownerNm = ''
+                    this.mstMbrId = ''
+                },
                 resetMstPw: function() {
                     var param = {
                         bnRegNo: this.bnRegNoND,
@@ -338,11 +349,7 @@
                 resetMstPwPost: function() {
                     alert('가입정보 확인 후 가입하신 이메일로\n임시 비밀번호가 전송됩니다.')
                     $('#popLayerIDPW').popup('hide')
-                    setTimeout(function() {
-                        this.bnRegNo = ''
-                        this.ownerNm = ''
-                        this.mstMbrId = ''
-                    }, 10)
+                    delay10(this.initPop())
                 }
             },
             computed: {
