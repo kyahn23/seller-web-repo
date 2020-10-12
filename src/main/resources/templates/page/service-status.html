@@ -773,7 +773,7 @@
                     }
                     cf_call("/service/getMonthlyRate", param, this.rsltLayerMntRtInitCB)
                 },
-                rsltLayerMntRtInitCB(data) {
+                rsltLayerMntRtInitCB: function (data) {
                     this.mntrtList = data.monthlyRate
 
                     if (this.rsltToReg.regMntRtNo !== null && (this.rsltToReg.regMntRtNo * 1) !== -1) {
