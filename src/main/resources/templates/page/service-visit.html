@@ -339,7 +339,7 @@
                             </tr>
                             <tr>
                                 <th>고객연락처</th>
-                                <td v-if="selectedCs.callNo">{{selectedCs.mbrPnNo}}</td>
+                                <td v-if="selectedCs.callNo">{{getMbrPnNo(selectedCs.mbrPnNo)}}</td>
                                 <td v-else>-</td>
                                 <th>방문예정일시<span class="icoMust"><em>필수</em></span></th>
                                 <td>
@@ -739,6 +739,7 @@
                         param.visitDt = this.today
                     }
                     this.selectedCs = {}
+                    this.currPolicy = {}
                     this.counselList = []
                     cf_call("/service/getVisitCounselList", param, this.searchListCB)
                 },
@@ -786,10 +787,10 @@
                         this.selectedCs = {}
                         this.selectedCs = data
                         this.selectedCs.idx = idx
-                        this.selectedCs.mbrPnNo = this.getMbrPnNo(this.selectedCs.mbrPnNo)
 
                         this.selectedMkr = this.selectedCs.pnMkr
                         this.rsltToReg = JSON.parse(JSON.stringify(data))
+                        this.rsltToReg.mbrPnNo = this.getMbrPnNo(this.rsltToReg.mbrPnNo)
 
                         var t = new Date(this.selectedCs.visitDt)
                         var hh = "" + t.getHours()
@@ -945,8 +946,9 @@
                     if (data.succ === "Y") {
                         alert('방문예정일시가 변경되었습니다.')
                         var type = 'page'
-                        this.visitHH = "all"
-                        this.visitMM = "all"
+                        this.modiHH = "all"
+                        this.modiMM = "all"
+                        this.rsltToReg = {}
                         this.searchList(type)
                     }
                 },
@@ -1027,8 +1029,8 @@
                 registerRsltCB: function (data) {
                     if (data.succ === "Y") {
                         alert('결과가 등록되었습니다.')
-                        this.visitHH = "all"
-                        this.visitMM = "all"
+                        this.modiHH = "all"
+                        this.modiMM = "all"
                         $('#popLayerServiceResultAdd').popup("hide");
                         this.getToday()
                     }
