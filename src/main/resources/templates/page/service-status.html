@@ -531,7 +531,7 @@
             },
             watch: {
                 'rsltToReg.regCarr': {
-                    handler(value) {
+                    handler: function (value) {
                         this.rsltLayerMntRtInit()
                         if (value !== this.selectedCs.regCarr) {
                             this.rsltToReg.regType = "all"
@@ -541,7 +541,7 @@
                     immediate: true
                 },
                 'rsltToReg.regMntRtNo': {
-                    handler(value) {
+                    handler: function (value) {
                         var pnNetType = this.getPnNetType(value)
                         this.rsltLayerMkrInit(pnNetType)
 

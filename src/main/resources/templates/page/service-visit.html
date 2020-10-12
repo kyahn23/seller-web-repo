@@ -652,7 +652,7 @@
             },
             watch: {
                 'rsltToReg.mntCarr': {
-                    handler(value) {
+                    handler: function (value) {
                         this.rsltLayerMntRtInit()
 
                         if (value !== this.selectedCs.mntCarr) {
@@ -666,7 +666,7 @@
                     immediate: true
                 },
                 'rsltToReg.pnMntRtNo': {
-                    handler(value) {
+                    handler: function (value) {
                         var pnNetType = this.getPnNetType(value)
                         this.rsltLayerMkrInit(pnNetType)
                         if (value !== this.selectedCs.pnMntRtNo) {
