@@ -746,7 +746,7 @@
                     this.pageInfo = data.pageInfo
                     var tempArr = []
                     for (var i = 0; i < data.counselList.length; i++) {
-                        data.counselList[i].idx = idx
+                        data.counselList[i].idx = i
                         switch (data.counselList[i].pnRegDis) {
                             case "A":
                                 data.counselList[i].pnRegDisNm = '번호이동'
