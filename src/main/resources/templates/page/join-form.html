@@ -254,7 +254,7 @@
                                                     class="wPer"
                                                     id="bnRegNo"
                                                     placeholder="'-'없이 숫자 10자리 입력"
-                                                    v-mask="'###-##-#####'"
+                                                    v-mask="'##########'"
                                                     v-model="bnRegNo"
                                                 >
                                             </td>
@@ -341,7 +341,7 @@
                                                     style="width: 100%;"
                                                     type="text"
                                                     placeholder="'-'없이 숫자 9-11자리 입력"
-                                                    v-mask="phoneMask"
+                                                    v-mask="'###########'"
                                                     v-model="bnPnNo"
                                                 >
                                             </td>
@@ -468,17 +468,7 @@
                 bnAddrStr: '',
                 bnAddrBldg: '',
                 bnPnNo: '',
-                phoneMask: ['##'],
-                phoneMaskSeoul: ['##-###-####', '##-####-####'],
-                phoneMaskOther: ['###-###-####', '###-####-####'],
                 uploadTgtNm: ''
-            },
-            watch: {
-                bnPnNo: function (newPhoneNo) {
-                    if (newPhoneNo.length === 2) {
-                        this.setPhoneMask(newPhoneNo)
-                    }
-                }
             },
             methods: {
                 daumPostCodeCB: function(str, bldg) {
@@ -560,14 +550,6 @@
                         this.emailId = ''
                         this.emailDomain = ''
                         $('#emailDomainSel')[0].value = ''
-                    }
-                },
-                setPhoneMask: function(phoneNo) {
-                    var areaCode = phoneNo.substring(0, 2)
-                    if (areaCode === '02') {
-                        this.phoneMask = this.phoneMaskSeoul
-                    } else {
-                        this.phoneMask = this.phoneMaskOther
                     }
                 },
                 getImagePath: function(fileName) {

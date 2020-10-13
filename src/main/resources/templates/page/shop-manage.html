@@ -127,7 +127,7 @@
                                             style="width: 100%;"
                                             type="text"
                                             placeholder="'-'없이 숫자 10자리 입력"
-                                            v-mask="'###-##-#####'"
+                                            v-mask="'##########'"
                                             v-model="shopInfo.bnRegNo"
                                     >
                                 </td>
@@ -209,7 +209,7 @@
                                             style="width: 100%;"
                                             type="text"
                                             placeholder="'-'없이 숫자 9-11자리 입력"
-                                            v-mask="phoneMask"
+                                            v-mask="'###########'"
                                             v-model="bnPnNo"
                                     >
                                 </td>
@@ -325,9 +325,6 @@
                 bnAddrStr: '',
                 bnAddrBldg: '',
                 bnPnNo: '',
-                phoneMask: ['##'],
-                phoneMaskSeoul: ['##-###-####', '##-####-####'],
-                phoneMaskOther: ['###-###-####', '###-####-####'],
                 uploadTgtNm: '',
                 mktChk: false,
                 dropbyChk: false,
@@ -335,13 +332,6 @@
             },
             mounted: function(){
                 this.getShopInfo()
-            },
-            watch: {
-                bnPnNo: function (newPhoneNo) {
-                    if (newPhoneNo.length === 2) {
-                        this.setPhoneMask(newPhoneNo)
-                    }
-                }
             },
             methods: {
                 daumPostCodeCB: function(sido, sigg, str, bldg) {
@@ -356,10 +346,7 @@
                     cf_call("/shop/getShopInfo", param, this.getShopInfoCB);
                 },
                 getShopInfoCB: function(rslt){
-                    if (rslt.bnPnNo !== undefined) {
-                        this.setPhoneMask(rslt.bnPnNo)
-                        this.bnPnNo = rslt.bnPnNo
-                    }
+                    this.bnPnNo = rslt.bnPnNo
                     this.bnAddrStr = rslt.bnAddrDtl
                     this.mktChk = this.ynToBool(rslt.mktYn)
                     this.dropbyChk = this.ynToBool(rslt.dropbyYn)
@@ -371,6 +358,10 @@
                     this.uploadTgtNm = tgtNm
                     var fileTgt = ''
                     if (tgtNm === 'bnRegCard') {
+                        if (!(confirm('사업자 등록증 변경 후 로그아웃 시\n등록증 재심사 후 로그인이 가능합니다.\n(평일(공휴일 제외) 24시간 이내 완료)\n사업자 등록증을 변경하시겠습니까?'))) {
+                            $("#bnRegCard")[0].value = ''
+                            return
+                        }
                         fileTgt = 'regcard'
                     } else if (tgtNm === 'bnImg') {
                         fileTgt = 'shopimg'
@@ -387,12 +378,10 @@
                 },
                 uploadImageCB: function(data) {
                     if (this.uploadTgtNm === 'bnRegCard') {
-                        if (confirm('사업자 등록증 변경 후 로그아웃 시\n등록증 재심사 후 로그인이 가능합니다.\n(평일(공휴일 제외) 24시간 이내 완료)\n사업자 등록증을 변경하시겠습니까?')) {
-                            this.oldImageList.push(this.shopInfo.bnRegCard)
-                            this.shopInfo.bnRegCard = data.filNm
-                            this.shopInfo.cardChkYn = 'N'
-                            $("#bnRegCard")[0].value = ''
-                        }
+                        this.oldImageList.push(this.shopInfo.bnRegCard)
+                        this.shopInfo.bnRegCard = data.filNm
+                        this.shopInfo.cardChkYn = 'N'
+                        $("#bnRegCard")[0].value = ''
                     }
                     if (this.uploadTgtNm === 'bnImg') {
                         this.oldImageList.push(this.shopInfo.bnImg)
@@ -417,14 +406,6 @@
                         alert("변경사항이 저장되었습니다.")
                         this.bnAddrBldg = ''
                         this.getShopInfo()
-                    }
-                },
-                setPhoneMask: function(phoneNo) {
-                    var areaCode = phoneNo.substring(0, 2)
-                    if (areaCode === '02') {
-                        this.phoneMask = this.phoneMaskSeoul
-                    } else {
-                        this.phoneMask = this.phoneMaskOther
                     }
                 },
                 getImagePath: function(fileTgt, fileName) {
