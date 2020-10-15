@@ -306,7 +306,7 @@
     <div class="layerWrapper layerSizeM" id="popLayerServiceResultAdd" style="display:inline-block !important">
         <div class="layerHeader">
             <strong v-if>개통결과 수정</strong>
-            <a href="#" class="btnClose popLayerServiceResultAdd_close"><img src="../images/cmmn/btn-layer-close.png"
+            <a href="#" class="btnClose popLayerServiceResultAdd_close" @click="closeBtnClick"><img src="../images/cmmn/btn-layer-close.png"
                                                                              alt="창닫기"></a>
         </div>
         <div class="layerContainer">
@@ -525,6 +525,7 @@
                 devListByMkr: [],           // 선택된 제조사에 따른 디바이스 목록
                 pageNo: "1",
                 pageInfo: [],              // 현재 페이지 정보
+                layerModiInit : false       // 레이어화면 수정여부
             },
             mounted: function () {
                 this.getBnMbrList()
@@ -534,8 +535,15 @@
                     handler: function (value) {
                         this.rsltLayerMntRtInit()
                         if (value !== this.selectedCs.regCarr) {
+                            this.layerModiInit = true           // 값이 바뀌면 레이어화면 수정모드로
+                        }
+
+                        if (this.layerModiInit){
                             this.rsltToReg.regType = "all"
                             this.rsltToReg.regMntRtNo = "all"
+                            this.selectedMkr = "all"
+                            this.rsltToReg.regPnMdlNo = "all"
+                            this.deviceList = []
                         }
                     },
                     immediate: true
@@ -546,14 +554,21 @@
                         this.rsltLayerMkrInit(pnNetType)
 
                         if (value !== this.selectedCs.regMntRtNo) {
+                            this.layerModiInit = true
+                        }
+                        if (this.layerModiInit){
                             this.selectedMkr = "all"
+                            this.rsltToReg.regPnMdlNo = "all"
+                            this.deviceList = []
                         }
                     },
                     immediate: true
                 },
                 selectedMkr: function (data) {
                     var mntCarr = this.rsltToReg.regCarr
-                    this.rsltLayerDeviceInit(data)
+                    if (data !== 'all'){
+                        this.rsltLayerDeviceInit(data)
+                    }
                     if (data !== this.selectedCs.regPnMkr) {
                         this.rsltToReg.regPnMdlNo = 'all'
                     }
@@ -754,6 +769,7 @@
                 modiBtnClick: function () {
                     this.rsltToReg = JSON.parse(JSON.stringify(this.selectedCs))
                     this.modiCallStCd = this.rsltToReg.callStCd
+                    this.layerModiInit = false
 
                     if (this.rsltToReg.callStCd === 'T') {
                         this.rsltTxt = this.rsltToReg.dealCont
@@ -761,6 +777,12 @@
                         this.rsltTxt = this.rsltToReg.cnclCmnt
                     }
                     this.modiCallYn()
+                },
+                closeBtnClick: function(){
+                    if (this.selectedCs.regPnMkr  !== null && this.selectedCs.regPnMkr  !== undefined){
+                        this.selectedMkr = this.selectedCs.regPnMkr
+                    }
+
                 },
                 rsltLayerMntRtInit: function () {
 
@@ -812,9 +834,12 @@
                 },
                 rsltLayerMkrInitCB: function (data) {
                     this.pnMkrList = data.pnMkr
-                    if (this.rsltToReg.regMntRtNo !== null) {
-                        this.rsltLayerDeviceInit(this.rsltToReg.regPnMkr)
+                    if (this.selectedMkr !== 'all'){
+                        if (this.rsltToReg.regMntRtNo !== null) {
+                            this.rsltLayerDeviceInit(this.rsltToReg.regPnMkr)
+                        }
                     }
+
                 },
                 setPnMkrNm: function (val) {
                     for (var i = 0; i < this.pnMkrData.length; i++) {

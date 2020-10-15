@@ -177,7 +177,7 @@
                             <!-- !!! 여기가 팝업 버튼 !!! -->
                             <div id="btn2" v-if="selectedCs.callNo"><a href="#popLayerServiceResultAdd"
                                                                        class="btnM colorGreen popLayerServiceResultAdd_open"
-                                                                       @click="rsltLayerMntRtInit"><span>개통결과 등록</span></a>
+                                                                       @click="regBtnClick"><span>개통결과 등록</span></a>
                             </div>
                         </div>
                     </div>
@@ -397,7 +397,7 @@
     <div class="layerWrapper layerSizeM" id="popLayerServiceResultAdd" style="display:inline-block !important">
         <div class="layerHeader">
             <strong>개통결과등록</strong>
-            <a href="#" class="btnClose popLayerServiceResultAdd_close"><img src="../images/cmmn/btn-layer-close.png"
+            <a href="#" class="btnClose popLayerServiceResultAdd_close" @click="closeBtnClick"><img src="../images/cmmn/btn-layer-close.png"
                                                                              alt="창닫기"></a>
         </div>
         <div class="layerContainer">
@@ -599,6 +599,7 @@
                 devListByMkr: [],
                 selectedMkr: "",              // 개통결과등록레이어팝업 내에 제조사 항목
                 selectedCarrChg: false,
+                selectedMntChg: false,
                 selectedMkrChg: false,
                 selectedMdlChg: false,
                 // pnMkr: [
@@ -636,7 +637,7 @@
                 today: "",
                 disabledDates: {},
                 disabledFn: {
-                    customPredictor: function(date) {
+                    customPredictor: function (date) {
                         var t = new Date()
                         if (date.getDate() < t.getDate()) {
                             return true;
@@ -657,10 +658,13 @@
 
                         if (value !== this.selectedCs.mntCarr) {
                             this.selectedCarrChg = true
-                            if (this.selectedCarrChg === true) {
-                                this.rsltToReg.pnRegDis = "all"
-                                this.rsltToReg.pnMntRtNo = "all"
-                            }
+                        }
+                        if (this.selectedCarrChg === true) {
+                            this.rsltToReg.pnRegDis = "all"
+                            this.rsltToReg.pnMntRtNo = "all"
+                            this.selectedMkr = "all"
+                            this.rsltToReg.PnMdlNo = "all"
+                            this.deviceList = []
                         }
                     },
                     immediate: true
@@ -670,14 +674,23 @@
                         var pnNetType = this.getPnNetType(value)
                         this.rsltLayerMkrInit(pnNetType)
                         if (value !== this.selectedCs.pnMntRtNo) {
+                            this.selectedMntChg = true
+
+                        }
+                        if (this.selectedMntChg) {
                             this.selectedMkr = "all"
+                            this.rsltToReg.PnMdlNo = "all"
+                            this.deviceList = []
+
                         }
                     },
                     immediate: true
                 },
                 selectedMkr: function (data) {
                     var mntCarr = this.rsltToReg.mntCarr
-                    this.rsltLayerDeviceInit(data)
+                    if (data !== 'all') {
+                        this.rsltLayerDeviceInit(data)
+                    }
                     if (data !== this.selectedCs.pnMkr) {
                         this.rsltToReg.pnMdlNo = 'all'
                         this.selectedMkrChg = true  // 제조사 값 변경됨 - true
@@ -789,8 +802,9 @@
                         this.selectedCs.idx = idx
 
                         this.selectedMkr = this.selectedCs.pnMkr
-                        this.rsltToReg = JSON.parse(JSON.stringify(data))
-                        this.rsltToReg.mbrPnNo = this.getMbrPnNo(this.rsltToReg.mbrPnNo)
+                        this.selectedCs.mbrPnNo = this.getMbrPnNo(this.selectedCs.mbrPnNo)
+                        this.rsltToReg = JSON.parse(JSON.stringify(this.selectedCs))
+
 
                         var t = new Date(this.selectedCs.visitDt)
                         var hh = "" + t.getHours()
@@ -837,6 +851,21 @@
                 },
                 getCurrPolicyCB: function (data) {
                     this.currPolicy = data
+                },
+                regBtnClick: function () {
+                    this.modiCallStCd = ''
+                    this.rsltToReg = JSON.parse(JSON.stringify(this.selectedCs))
+                    this.selectedCarrChg = false
+                    this.selectedMntChg = false
+                    this.selectedMkrChg = false
+                    this.selectedMdlChg = false
+
+                    this.rsltLayerMntRtInit()
+                },
+                closeBtnClick: function(){
+                    if (this.selectedCs.pnMkr  !== null && this.selectedCs.pnMkr  !== undefined){
+                        this.selectedMkr = this.selectedCs.pnMkr
+                    }
                 },
                 openPicker1: function () {
                     this.$refs.programaticOpen1.showCalendar();
@@ -888,8 +917,10 @@
                 },
                 rsltLayerMkrInitCB: function (data) {
                     this.pnMkrList = data.pnMkr
-                    if (this.rsltToReg.pnMntRtNo !== null) {
-                        this.rsltLayerDeviceInit(this.rsltToReg.pnMkr)
+                    if (this.selectedMkr !== 'all') {
+                        if (this.rsltToReg.pnMntRtNo !== null) {
+                            this.rsltLayerDeviceInit(this.rsltToReg.pnMkr)
+                        }
                     }
                 },
                 setPnMkrNm: function (val) {
