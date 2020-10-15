@@ -85,25 +85,6 @@ public class ShopRestController {
     }
 
     /**
-     * 직원정보 추가
-     * @param request
-     * @param param
-     * @return rslt
-     */
-    @PostMapping("/shop/addEmpInfo")
-    public DevMap addEmpInfo(HttpServletRequest request, @RequestBody DevMap param) {
-        HttpSession session = request.getSession();
-        String bnMbrId = (String) session.getAttribute("bnMbrId");
-        param.put("amdMbrId", bnMbrId);
-
-        shopService.addEmpInfo(param);
-
-        DevMap rslt = new DevMap();
-        rslt.put("rsltStat", "SUCC");
-        return rslt;
-    }
-
-    /**
      * 직원 비밀번호 재발급
      * @param request
      * @param param

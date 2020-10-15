@@ -69,34 +69,6 @@
         ORDER BY MST_MBR_YN DESC, INP_DT ASC
     </select>
 
-    <insert id="addEmpInfo" parameterType="DevMap">
-        INSERT INTO TBL002 (
-            BN_MBR_ID
-            ,PWD_NO
-            ,PWNO_INIT_YN
-            ,PWERR_CNT
-            ,LGIN_AVL_YN
-            ,BN_NO
-            ,MBR_NM
-            ,MST_MBR_YN
-            ,SELLER_PRMS
-            ,ACTV_YN
-            ,AMD_MBR_ID
-        ) VALUES (
-            #{bnMbrId}
-            ,#{pwdNo}
-            ,'Y'
-            ,'0'
-            ,'Y'
-            ,(SELECT cf_get_bn_no(#{amdMbrId}))
-            ,#{mbrNm}
-            ,#{mstMbrYn}
-            ,#{sellerPrms}
-            ,'Y'
-            ,#{amdMbrId}
-        )
-    </insert>
-
     <update id="updateEmpPwd" parameterType="DevMap">
         UPDATE TBL002
         SET PWD_NO = #{pwdNo}

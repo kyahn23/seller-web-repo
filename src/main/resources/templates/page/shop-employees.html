@@ -220,7 +220,7 @@
                                     <td class="alignC" :title="infoTitle(empInfo)">{{ infoText(empInfo) }}</td>
                                     <td class="alignC" :title="empInfo.mbrNm" @click="setTrIndex(index)">{{ empInfo.mbrNm }}</td>
                                     <td class="alignC" :title="empInfo.bnMbrId" @click="setTrIndex(index)">{{ empInfo.bnMbrId }}</td>
-                                    <td class="alignC" @click="setTrIndex(index)">{{ empInfo.sellerPrms }}</td>
+                                    <td class="alignC" @click="setTrIndex(index)">{{ setSellerPrmsTxt(empInfo.sellerPrms) }}</td>
                                     <td class="alignC" :title="empInfo.amdMbrNm" @click="setTrIndex(index)">{{ empInfo.amdMbrNm }}</td>
                                     <td class="alignC" @click="setTrIndex(index)">{{ empInfo.amdDt }}</td>
                                 </tr>
@@ -282,7 +282,7 @@
                                                     <option value="ADMIN">관리자</option>
                                                     <option value="BOARD">글작성</option>
                                                     <option value="PRICE">가격설정</option>
-                                                    <option value="READONLY">가격열람</option>
+                                                    <option value="READONLY">조회</option>
                                                 </optgroup>
                                                 <optgroup label="퇴사자 여부 설정">
                                                     <option value="LEAVE">퇴사처리</option>
@@ -405,27 +405,13 @@
                             <td style="text-align: center;"><a href="#;" class="btnS colorWhite" @click="chkMbrId"><span>중복체크</span></a></td>
                         </tr>
                         <tr>
-                            <th>초기 비밀번호<span class="icoMust"><em>필수</em></span></th>
-                            <td>
-                                <input class="wPer" type="password" id="pwdNo" placeholder="숫자 6자리 기입" v-mask="'######'" v-model="newEmpInfo.pwdNo">
-                            </td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <th>초기 비밀번호 확인<span class="icoMust"><em>필수</em></span></th>
-                            <td>
-                                <input class="wPer" type="password" id="pwdNoChk" placeholder="위와 동일하게 기입" v-mask="'######'" @blur="newEmpPwdChk">
-                            </td>
-                            <td style="text-align: center;"><a href="#;" class="btnS colorRed" v-if="!newEmpInfo.pwChk && newEmpInfo.pwDirty"><span>불일치</span></a></td>
-                        </tr>
-                        <tr>
                             <th>회원 권한<span class="icoMust"><em>필수</em></span></th>
                             <td>
                                 <select class="wPer" id="sellerPrms" v-model="newEmpInfo.sellerPrms">
                                     <option value="ADMIN">관리자</option>
                                     <option value="BOARD">글작성</option>
                                     <option value="PRICE">가격설정</option>
-                                    <option value="READONLY">가격열람</option>
+                                    <option value="READONLY">조회</option>
                                 </select>
                             </td>
                             <td></td>
@@ -510,12 +496,8 @@
                     emailId: '',
                     emailDomain: '',
                     idChk: false,
-                    pwdNo: '',
-                    pwDirty: false,
-                    pwChk: false,
                     sellerPrms: 'READONLY',
-                    mbrNm: '',
-                    mstMbrYn: 'N'
+                    mbrNm: ''
                 }
             },
             mounted: function(){
@@ -576,7 +558,7 @@
                     return fontWeight
                 },
                 infoTitle: function(empInfo) {
-                    var titleStr = "선택"
+                    var titleStr = '선택'
                     if (empInfo.lginAvlYn === 'N') {
                         titleStr = '로그인 제한'
                     }
@@ -592,7 +574,7 @@
                     return titleStr
                 },
                 infoText: function(empInfo) {
-                    var textStr = "직원"
+                    var textStr = '직원'
                     if (empInfo.lginAvlYn === 'N') {
                         textStr = '제한'
                     }
@@ -606,6 +588,16 @@
                         textStr = '미인증'
                     }
                     return textStr
+                },
+                setSellerPrmsTxt: function(sellerPrms) {
+                    switch (sellerPrms) {
+                        case 'MASTER': return '마스터'
+                        case 'ADMIN': return '관리자'
+                        case 'BOARD': return '글작성'
+                        case 'PRICE': return '가격설정'
+                        case 'READONLY': return '조회'
+                        default: return '-'
+                    }
                 },
                 setTrIndex: function(idx) {
                     if (this.empList[idx].mstMbrYn === 'Y') {
@@ -697,24 +689,21 @@
                     if (
                         this.newEmpInfo.emailId.trim() === ''
                         || this.newEmpInfo.emailDomain.trim() === ''
-                        || this.newEmpInfo.pwdNo.trim() === ''
                         || this.newEmpInfo.sellerPrms.trim() === ''
                         || this.newEmpInfo.mbrNm.trim() === ''
                     ) {
                         alert('빈 항목을 입력해주세요.')
                     } else if (!this.newEmpInfo.idChk) {
                         alert('가입하지 않은 이메일을 입력 후\n아이디 중복체크를 해주세요.')
-                    } else if (!this.newEmpInfo.pwChk) {
-                        alert('비밀번호 확인을 완료해주세요.')
                     } else {
                         var param = this.newEmpInfo
                         param.bnMbrId = this.newBnMbrId
-                        cf_call('/shop/addEmpInfo', param, this.addNewEmpInfoCB)
+                        cf_call('/member/newEmpAcc', param, this.addNewEmpInfoCB)
                     }
                 },
                 addNewEmpInfoCB: function(rslt) {
                     if (rslt.rsltStat === 'SUCC') {
-                        alert('신규 직원이 추가되었습니다.')
+                        alert('신규 직원이 추가되었습니다.\n이메일로 전송된 임시 비밀번호로 로그인 해주세요.')
                         $('#popLayerEmployeeAdd').popup('hide')
                         delay10(this.initNewEmp())
                     }
@@ -724,10 +713,6 @@
                     this.newEmpInfo.emailId = ''
                     this.newEmpInfo.emailDomain = ''
                     $('#emailDomainSel')[0].value = ''
-                    this.newEmpInfo.pwdNo = ''
-                    $('#pwdNoChk')[0].value = ''
-                    this.newEmpInfo.pwDirty = false
-                    this.newEmpInfo.pwChk = false
                     this.newEmpInfo.sellerPrms = 'READONLY'
                     this.newEmpInfo.mbrNm = ''
                     this.initPage()
@@ -753,10 +738,6 @@
                         this.newEmpInfo.emailDomain = ''
                         $('#emailDomainSel')[0].value = ''
                     }
-                },
-                newEmpPwdChk: function($e) {
-                    this.newEmpInfo.pwDirty = true
-                    this.newEmpInfo.pwChk = this.newEmpInfo.pwdNo === $e.target.value
                 }
             },
             computed: {

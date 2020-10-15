@@ -115,6 +115,20 @@ public class CommonService {
     }
 
     /**
+     * 직원 회원 가입
+     * @param param
+     */
+    public void addEmpAcc(DevMap param) {
+        String bnMbrId = (String) param.get("bnMbrId");
+        String mbrNm = (String) param.get("mbrNm");
+
+        String hashPwd = generateTempPwd(bnMbrId, mbrNm);
+        param.put("tempPwd", hashPwd);
+
+        cmmnDao.insert("sellerweb.common.insertNewEmpAcc", param);
+    }
+
+    /**
      * 파일 업로드
      * @param multipartFile
      * @param param
@@ -333,11 +347,11 @@ public class CommonService {
 
     /**
      * 임시 비밀번호 생성 후 이메일 발송
-     * @param mstMbrId
-     * @param ownerNm
+     * @param mbrEmail
+     * @param mbrNm
      * @return
      */
-    private String generateTempPwd(String mstMbrId, String ownerNm) {
+    private String generateTempPwd(String mbrEmail, String mbrNm) {
         String tempPwd = (new Random().nextInt(900000) + 100000) + "";
         String hashPwd = CmmnUtil.encryptSHA256(tempPwd.toString());
 
@@ -347,10 +361,10 @@ public class CommonService {
                 emailProperties.getSmtpUser(),
                 emailProperties.getSmtpPassword(),
                 "[Pentaworks Service] 임시 비밀번호 발급 안내",
-                "<html><p>" + ownerNm + "님의 임시 비밀번호가 발급되었습니다.<br>" +
+                "<html><p>" + mbrNm + "님의 임시 비밀번호가 발급되었습니다.<br>" +
                         "임시 비밀번호로 로그인 후 새 비밀번호로 변경해주세요.<br></p>" +
                         "<h4>임시 비밀번호 : " + tempPwd + "</h4></html>",
-                mstMbrId + "",
+                mbrEmail + "",
                 emailProperties.getFromEmail(),
                 emailProperties.getFromName()
         );

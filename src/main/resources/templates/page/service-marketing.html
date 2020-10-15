@@ -576,6 +576,8 @@
                 getMarketingListCB: function(rslt) {
                     this.pageInfo = rslt.pageInfo
                     this.mktList = rslt.mktList
+                    this.selRow = -1
+                    this.initMktOne()
                 },
                 setTrIndex: function(idx) {
                     if (idx === this.selRow) {
@@ -779,12 +781,13 @@
                         if (mode === 'edit') {
                             if (this.mktOne.mktRslt === 'N') {
                                 this.mktOneEdit = false
+                                this.mktEdit.mktRslt = '-1'
                             } else {
                                 this.mktOneEdit = true
+                                this.mktEdit.mktRslt = this.mktOne.mktRslt
                             }
                             this.mktEdit.mbrNm = this.mktOne.mbrNm
                             this.mktEdit.mbrPnNo = this.mktOne.mbrPnNo
-                            this.mktEdit.mktRslt = this.mktOne.mktRslt
                             this.mktEdit.pnRegDt = this.mktOne.pnRegDt
                             this.mktEdit.visitDt = this.mktOne.visitDt.replaceAll('-', '/')
                             this.editDate = new Date(this.mktEdit.visitDt)
@@ -797,7 +800,11 @@
                             this.mktEdit.pnMdl = this.mktOne.pnMdl
                             this.mktEdit.mktCmnt = this.mktOne.mktCmnt
                             this.getMonthlyRate(this.mktEdit.pnCarr)
-                            if (this.mntRtNull) this.mktEdit.pnMntRtNo = -1
+                            if (this.mntRtNull) {
+                                this.mktEdit.pnMntRtNo = -1
+                                this.mktEdit.pnMkr = -1
+                                this.mktEdit.pnMdl = -1
+                            }
                         } else if (mode == 'new') {
                             this.initMktEditInfo()
                         } else {

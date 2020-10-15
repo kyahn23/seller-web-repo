@@ -87,6 +87,24 @@ public class CommonRestController {
     }
 
     /**
+     * 직원 회원 가입
+     * @param param
+     * @return
+     */
+    @PostMapping("/member/newEmpAcc")
+    public DevMap newEmpAcc(HttpServletRequest request, @RequestBody DevMap param) {
+        HttpSession session = request.getSession();
+        String bnMbrId = (String) session.getAttribute("bnMbrId");
+        param.put("amdMbrId", bnMbrId);
+
+        commonService.addEmpAcc(param);
+
+        DevMap rslt = new DevMap();
+        rslt.put("rsltStat", "SUCC");
+        return rslt;
+    }
+
+    /**
      * 이미지 업로드 (return 객체에 새 파일명 filNm 포함)
      * @param request
      * @param multipartRequest

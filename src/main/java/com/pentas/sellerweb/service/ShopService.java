@@ -52,12 +52,6 @@ public class ShopService {
     public List<DevMap> getEmpList(DevMap param) { return cmmnDao.selectList("sellerweb.shop.getEmpList", param); }
 
     /**
-     * 직원추가
-     * @param param
-     */
-    public void addEmpInfo(DevMap param) { cmmnDao.insert("sellerweb.shop.addEmpInfo", param); }
-
-    /**
      * 직원 비밀번호 재발급
      * @param param
      */
