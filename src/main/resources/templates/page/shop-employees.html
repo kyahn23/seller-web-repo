@@ -506,11 +506,8 @@
             watch: {},
             methods: {
                 initPage: function() {
-                    this.selEmp = -1
-                    this.checkAll = false
                     this.initSrchCond()
                     this.getEmpList()
-                    this.initModiEmp()
                 },
                 initSrchCond: function() {
                     this.srchCond = {
@@ -536,6 +533,10 @@
                     if (!cf_isEmpty(rsltList)) {
                         this.empList = rsltList
                     }
+
+                    this.selEmp = -1
+                    this.checkAll = false
+                    this.initModiEmp()
                 },
                 infoStyle: function(empInfo) {
                     var colorSwitch = ''

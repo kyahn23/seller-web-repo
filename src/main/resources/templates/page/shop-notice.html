@@ -534,13 +534,9 @@
             },
             methods: {
                 initPage: function() {
-                    this.selBrd = -1
-                    this.checkAll = false
                     this.initChkBrdList()
                     this.initSrchCond()
                     this.getBnBrdList()
-                    this.initBnBrdOne()
-                    this.initPop()
                 },
                 initSrchCond: function() {
                     this.srchCond = {
@@ -583,6 +579,12 @@
                     if (rslt.bnBrdList !== undefined) {
                         this.bnBrdList = rslt.bnBrdList
                     }
+
+                    this.selBrd = -1
+                    this.checkAll = false
+                    this.initBnBrdOne()
+                    this.initPop()
+
                     this.initDone = true
                 },
                 rowStyle: function(bnBrdRow) {
