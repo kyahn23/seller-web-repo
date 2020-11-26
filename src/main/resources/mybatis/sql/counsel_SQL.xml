@@ -12,7 +12,7 @@
         t1.PN_MDL_NO,
         (select DISTINCT PN_MDL_NM FROM TBL011 tt2 where tt2.PN_MDL_NO = t1.PN_MDL_NO) as PN_MDL_NM,
         t1.PN_STOR,
-        (select PN_MSRP FROM TBL011 tt4 where tt4.PN_MDL_NO = t1.PN_MDL_NO) as PN_MSRP,
+        (select PN_MSRP FROM TBL011 tt4 where tt4.PN_MDL_NO = t1.PN_MDL_NO and tt4.PN_STOR = t1.PN_STOR) as PN_MSRP,
         (SELECT MBR_NM FROM TBL001 tt3 where tt3.CL_MBR_ID = t1.CL_MBR_ID) as CL_MBR_NM,
         t1.CL_MBR_ID,
         (SELECT DISTINCT PN_MKR FROM TBL011 pnmkr where pnmkr.PN_MDL_NO = t1.PN_MDL_NO) as PN_MKR,
