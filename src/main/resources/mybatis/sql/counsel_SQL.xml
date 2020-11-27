@@ -69,7 +69,7 @@
     </select>
 
     <select id="currPolicy" parameterType="DevMap" resultType="Devmap">
-        select (select PN_MSRP FROM TBL011 tt1 where tt1.PN_MDL_NO = T.PN_MDL_NO) as PN_MSRP,
+        select (select PN_MSRP FROM TBL011 tt1 where tt1.PN_MDL_NO = T.PN_MDL_NO and tt1.PN_STOR = T.PN_STOR) as PN_MSRP,
         T.SELL_YN,
         T.PN_OFCL_SUBSD,
         T.PN_EXT_SUBSD_DV,
