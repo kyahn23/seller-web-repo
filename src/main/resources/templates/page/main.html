@@ -70,27 +70,27 @@
                         <div class="topNaviSub">
                             <div id="GNB">
                                 <ul data-target="1">
-                                    <li><a href="/service/inbox"><span>상담접수관리</span></a></li>
-                                    <li><a href="/service/visit"><span>방문개통관리</span></a></li>
-                                    <li><a href="/service/status"><span>상담관리현황</span></a></li>
-                                    <li><a href="/service/marketing"><span>마케팅대상관리</span></a></li>
+                                    <li><a th:href="@{/service/inbox}"><span>상담접수관리</span></a></li>
+                                    <li><a th:href="@{/service/visit}"><span>방문개통관리</span></a></li>
+                                    <li><a th:href="@{/service/status}"><span>상담관리현황</span></a></li>
+                                    <li><a th:href="@{/service/marketing}"><span>마케팅대상관리</span></a></li>
                                 </ul>
                                 <ul data-target="2">
-                                    <li><a href="/carr/mntrt/skt"><span>요금제등록관리</span></a></li>
-                                    <li><a href="/carr/deal/skt"><span>판매정책관리</span></a></li>
+                                    <li><a th:href="@{/carr/mntrt/skt}"><span>요금제등록관리</span></a></li>
+                                    <li><a th:href="@{/carr/deal/skt}"><span>판매정책관리</span></a></li>
                                 </ul>
                                 <ul data-target="3">
-                                    <li><a href="/carr/mntrt/kt"><span>요금제등록관리</span></a></li>
-                                    <li><a href="/carr/deal/kt"><span>판매정책관리</span></a></li>
+                                    <li><a th:href="@{/carr/mntrt/kt}"><span>요금제등록관리</span></a></li>
+                                    <li><a th:href="@{/carr/deal/kt}"><span>판매정책관리</span></a></li>
                                 </ul>
                                 <ul data-target="4">
-                                    <li><a href="/carr/mntrt/lgu"><span>요금제등록관리</span></a></li>
-                                    <li><a href="/carr/deal/lgu"><span>판매정책관리</span></a></li>
+                                    <li><a th:href="@{/carr/mntrt/lgu}"><span>요금제등록관리</span></a></li>
+                                    <li><a th:href="@{/carr/deal/lgu}"><span>판매정책관리</span></a></li>
                                 </ul>
                                 <ul data-target="5">
-                                    <li><a href="/shop/manage"><span>매장정보관리</span></a></li>
-                                    <li><a href="/shop/employees"><span>직원관리</span></a></li>
-                                    <li><a href="/shop/notice"><span>공지사항관리</span></a></li>
+                                    <li><a th:href="@{/shop/manage}"><span>매장정보관리</span></a></li>
+                                    <li><a th:href="@{/shop/employees}"><span>직원관리</span></a></li>
+                                    <li><a th:href="@{/shop/notice}"><span>공지사항관리</span></a></li>
                                 </ul>
                             </div>
                         </div>
@@ -104,7 +104,7 @@
             <div class="afterLogin">
                 <div style="text-align: right !important; width: 100% !important; padding-right: 10px;">
                     <span class="loginName" th:text="${session.mbrNm}">회원명</span> ({{ mstMbrTxt }}회원) 님 환영합니다.
-                    <a href="/logout">
+                    <a th:href="@{/logout}">
                         <button type="button" id="logoutBtn" class="white">로그아웃</button>
                     </a>
 <!--                    &nbsp; &nbsp;(최근로그인 | 2019-12-23 08:50)-->
