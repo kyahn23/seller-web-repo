@@ -1,4 +1,4 @@
-var g_cxt = '/'
+var g_cxt = '/seller-web/'
 g_cxt = g_cxt.substring(0, g_cxt.length - 1)
 
 $(function () {

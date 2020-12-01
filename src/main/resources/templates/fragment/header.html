@@ -5,12 +5,12 @@
         <div class="header">
             <div class="fixedWidth">
                 <h1 class="logo">
-                    <a href="/"><img th:src="@{/images/cmmn/logo.png}" alt="PentaWorks" style="height: 30px;" /></a>
+                    <a th:href="@{/}"><img th:src="@{/images/cmmn/logo.png}" alt="PentaWorks" style="height: 30px;" /></a>
                 </h1>
                 <div class="headerRight">
 <!--                    <p class="hdTime"><em>09:59</em><a href="#" class="btnExtension">연장하기</a></p>-->
                     <p class="hdUser"><em th:text="${session.mbrNm}">회원명</em>님 안녕하세요!</p>
-                    <p class="hdLogout"><a href="/logout" title="로그아웃">logout</a></p>
+                    <p class="hdLogout"><a th:href="@{/logout}" title="로그아웃">logout</a></p>
                 </div>
             </div>
         </div>

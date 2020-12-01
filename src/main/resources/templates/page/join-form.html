@@ -150,7 +150,7 @@
         <div class="header">
             <div class="fixedWidth">
                 <h1 class="logo">
-                    <a href="/"><img th:src="@{/images/cmmn/logo.png}" alt="PentaWorks" style="height: 30px;" /></a>
+                    <a th:href="@{/}"><img th:src="@{/images/cmmn/logo.png}" alt="PentaWorks" style="height: 30px;" /></a>
                 </h1>
             </div>
         </div>
@@ -375,7 +375,7 @@
                                 </div>
                                 <!-- //content -->
                                 <div class="btnWrapper">
-                                    <a href="/login" class="btnL colorGray"><span>취소</span></a>
+                                    <a th:href="@{/login}" class="btnL colorGray"><span>취소</span></a>
                                     <a href="#;" class="btnL colorBlue" @click="addNewBnInfo"><span>가입</span></a>
                                 </div>
                             </div>
@@ -417,7 +417,7 @@
         var mktYn = location.search.substring(mktYnIdx, mktYnIdx+1)
         if (mktYn === undefined || (mktYn !== 'Y' && mktYn !== 'N')) {
             alert('잘못된 접근입니다.')
-            window.location.href = "/"
+            window.location.href = "/" + g_cxt
         }
 
         function execDaumPostcode() {
@@ -505,7 +505,7 @@
                 addNewBnInfoCB: function(rslt) {
                     if (rslt.rsltStat === 'SUCC') {
                         alert('가입이 완료되었습니다.\n가입하신 이메일로 전송된 임시 비밀번호로 로그인 해주세요.')
-                        window.location.href = "/"
+                        window.location.href = "/" + g_cxt
                     }
                 },
                 setChkMbrId: function() {
