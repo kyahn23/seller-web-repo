@@ -307,7 +307,7 @@
                                            v-mask="'#######'" placeholder="공시 추가지원금" :disabled="!list.sellToggle">
                                 </td>
                                 <td>
-                                    {{setPrice1('move',idx, list.pnOfclSubsd, list.pnExtSubsdDv)}}
+                                    {{setPrice1('move',idx,list.pnOfclSubsd, list.pnExtSubsdDv)}}
                                 </td>
                                 <td>
                                     <input style="width: 100%" class="wPer inNumber" type="text"
@@ -636,6 +636,7 @@
                 }
                 this.searchList()
             },
+            computed: {},
             methods: {
                 searchList: function () {
                     var param = {
@@ -763,6 +764,7 @@
                     }
                 },
                 rowClick: function (data, idx) {
+                    console.log('rowClickIdx : ' + idx)
                     if (this.selectDevice.idx != idx) {
                         this.selectDevice = {}
                         this.selectDevice = data
@@ -973,7 +975,6 @@
                                         }
                                     }
                                 }
-
                             }
                             cf_call("/carr/saveSalePolicy/" + type, tempArr, this.savePolicyCB)
                         }
@@ -982,7 +983,6 @@
                 savePolicyCB: function (data) {
                     if (data.succ === "Y") {
                         alert('저장되었습니다.')
-
                         this.selectDevice = {}
                         this.checkedList = []
                         this.moveCarrList = []
@@ -1001,11 +1001,12 @@
                     return (sellYn && pnOfclSubsd && pnExtSubsdDv && pnExtSubsdRt && pnEtc)
                 },
                 setPrice1: function (policyNm, idx, val1, val2) {  // 공시 할부원금계산
-                    var pnMsrp = this.selectDevice.pnMsrp   // 출고가
+                    console.log(policyNm + ' setPriceRow: ' + idx)
+                    var pnMsrp = 0;
+                    pnMsrp = this.selectDevice.pnMsrp// 출고가
                     var pnOfclSubsd = val1  // 공시지원금
                     var pnExtSubsdDv = val2 // 공시 추가지원금
-
-                    var keyword = ''
+                    var keyword = []
                     switch (policyNm) {
                         case 'move':
                             keyword = this.moveCarrList
@@ -1017,11 +1018,11 @@
                             keyword = this.newSignUpList
                             break
                     }
-                    if(val1 !== undefined && val1 !== null){
+                    if (val1 !== undefined && val1 !== null) {
                         pnOfclSubsd = pnOfclSubsd.replaceAll(',', '')
-                        if(Number(pnMsrp - pnOfclSubsd)<0){
-                            alert('입력하신 지원금을 확인해주세요.')
-                            keyword[idx].pnOfclSubsd = keyword[idx].pnOfclSubsd.substring(0, keyword[idx].pnOfclSubsd.length-1)
+                        if (Number(pnMsrp - pnOfclSubsd) < 0) {
+                            alert('입력하신 공시지원금을 확인해주세요.')
+                            keyword[idx].pnOfclSubsd = keyword[idx].pnOfclSubsd.substring(0, keyword[idx].pnOfclSubsd.length - 1)
                             // pnOfclSubsd = pnOfclSubsd.substring(0, pnOfclSubsd.length)
                             return
                         }
@@ -1030,19 +1031,21 @@
                     if (val1 !== undefined && val1 !== null && val2 !== undefined && val2 !== null) {
                         pnOfclSubsd = val1.replaceAll(',', '')
                         pnExtSubsdDv = val2.replaceAll(',', '')
-                        var rslt = Number(pnMsrp - pnOfclSubsd - pnExtSubsdDv)
-                        if (rslt < 0){
-                            alert('입력하신 지원금을 확인해주세요.')
-                            keyword[idx].pnExtSubsdDv = keyword[idx].pnExtSubsdDv.substring(0, keyword[idx].pnExtSubsdDv.length-1)
-                            return
-                        } else return rslt.toLocaleString()
+                        var rslt = Number(pnMsrp) - Number(pnOfclSubsd) - Number(pnExtSubsdDv)
+                        // if (rslt < 0) {
+                        //     console.log(idx)
+                        //     alert('입력하신 공시 추가지원금을 확인해주세요.')
+                        //     keyword[idx].pnExtSubsdDv = keyword[idx].pnExtSubsdDv.substring(0, keyword[idx].pnExtSubsdDv.length - 1)
+                        //     return
+                        // } else
+                        return rslt.toLocaleString()
                     } else {
                         return cf_numberFormat(pnMsrp)
                     }
 
                 },
                 setPrice2: function (policyNm, idx, val) {     // 선약 할부원금 계산
-                    var keyword = ''
+                    var keyword = []
                     switch (policyNm) {
                         case 'move':
                             keyword = this.moveCarrList
@@ -1059,23 +1062,17 @@
                     if (val !== undefined && val !== null) {
                         var pnExtSubsdRt = val.replaceAll(',', '')
                         var rslt = Number(pnMsrp - pnExtSubsdRt)
-                        if (rslt < 0){
-                            alert('입력하신 지원금액을 확인해주세요.')
-                            // pnExtSubsdRt = pnExtSubsdRt.substring(0, pnExtSubsdRt.length)
-                            keyword[idx].pnExtSubsdRt = keyword[idx].pnExtSubsdRt.substring(0, keyword[idx].pnExtSubsdRt.length-1)
-                            return
-                        } else return rslt.toLocaleString()
+                        // if (rslt < 0) {
+                        //     alert('입력하신 선택약정 추가지원금액을\n 확인해주세요.')
+                        //     // pnExtSubsdRt = pnExtSubsdRt.substring(0, pnExtSubsdRt.length)
+                        //     keyword[idx].pnExtSubsdRt = keyword[idx].pnExtSubsdRt.substring(0, keyword[idx].pnExtSubsdRt.length - 1)
+                        //     return
+                        // } else
+                        return rslt.toLocaleString()
                     } else {
                         return cf_numberFormat(pnMsrp)
                     }
-                },
-                // inputPrice: function(val){
-                //     var onlyNum = val.replace(/[^0-9]/g, '');
-                //     // if (/\d/.test(newChar) === false) {
-                //     //         return false
-                //     // }
-                //     return onlyNum
-                // }
+                }
             }
         })
     </script>

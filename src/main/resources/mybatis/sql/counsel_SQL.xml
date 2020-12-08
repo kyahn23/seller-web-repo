@@ -28,17 +28,19 @@
         T.DEAL_CONT,
         T.CNCL_CMNT,
         T.BN_MBR_ID,
-        T.REG_PD,           /* 개통한 약정기간 */
-        T.REG_TYPE,         /* 개통한 가입유형 */
-        T.REG_MBR_PN_NO,    /* 개통한 번호 */
-        T.REG_MNT_RT_NO,    /* 개통한 요금제 */
+        T.REG_PD, /* 개통한 약정기간 */
+        T.REG_TYPE, /* 개통한 가입유형 */
+        T.REG_MBR_PN_NO, /* 개통한 번호 */
+        T.REG_MNT_RT_NO, /* 개통한 요금제 */
         (select PN_MNT_RT_NM FROM TBL010 tt9 where tt9.PN_MNT_RT_NO = T.REG_MNT_RT_NO) as REG_MNT_RT_NM,
-        T.REG_CARR,         /* 개통한 통신사 */
-        (SELECT DISTINCT PN_MKR FROM TBL011 pnmkr where pnmkr.PN_MDL_NO = T.REG_PN_MDL_NO) as REG_PN_MKR,         /* 개통한 모델제조사 */
-        T.REG_PN_MDL_NO,    /* 개통한 모델 */
-        T.REG_PN_STOR,      /* 개통한 모델 용량 */
-        (select DISTINCT PN_MDL_NM FROM TBL011 tt2 where tt2.PN_MDL_NO = T.REG_PN_MDL_NO) as REG_PN_MDL_NM,    /* 개통한 모델이름 */
-        T.REG_EXT_SERV_YN,    /* 개통시 부가서비스여부 */
+        T.REG_CARR, /* 개통한 통신사 */
+        (SELECT DISTINCT PN_MKR FROM TBL011 pnmkr where pnmkr.PN_MDL_NO = T.REG_PN_MDL_NO) as REG_PN_MKR, /* 개통한 모델제조사
+        */
+        T.REG_PN_MDL_NO, /* 개통한 모델 */
+        T.REG_PN_STOR, /* 개통한 모델 용량 */
+        (select DISTINCT PN_MDL_NM FROM TBL011 tt2 where tt2.PN_MDL_NO = T.REG_PN_MDL_NO) as REG_PN_MDL_NM, /* 개통한 모델이름
+        */
+        T.REG_EXT_SERV_YN, /* 개통시 부가서비스여부 */
         (SELECT MBR_NM FROM TBL002 tt5 WHERE tt5.BN_MBR_ID = T.BN_MBR_ID) as MBR_NM,
         DATE_FORMAT(T.INP_DT, '%Y-%m-%d %H:%i') as INP_DT,
         DATE_FORMAT(T.AMD_DT, '%Y-%m-%d %H:%i') as AMD_DT
@@ -69,7 +71,8 @@
     </select>
 
     <select id="currPolicy" parameterType="DevMap" resultType="Devmap">
-        select (select PN_MSRP FROM TBL011 tt1 where tt1.PN_MDL_NO = T.PN_MDL_NO and tt1.PN_STOR = T.PN_STOR) as PN_MSRP,
+        select (select PN_MSRP FROM TBL011 tt1 where tt1.PN_MDL_NO = T.PN_MDL_NO and tt1.PN_STOR = T.PN_STOR) as
+        PN_MSRP,
         T.SELL_YN,
         T.PN_OFCL_SUBSD,
         T.PN_EXT_SUBSD_DV,
@@ -91,12 +94,12 @@
         and PN_MNT_RT_NO = #{pnMntRtNo}
         and BN_NO = (SELECT cf_get_bn_no(#{loginMbrId}))
     </select>
-    
+
     <select id="bnMbrList" parameterType="DevMap" resultType="DevMap">
         SELECT BN_MBR_ID, MBR_NM
-          FROM TBL002 t
-         WHERE BN_NO = (SELECT cf_get_bn_no(#{loginMbrId}))
-            AND ACTV_YN  = 'Y'
+        FROM TBL002 t
+        WHERE BN_NO = (SELECT cf_get_bn_no(#{loginMbrId}))
+        AND ACTV_YN = 'Y'
     </select>
 
     <update id="saveCounsel" parameterType="DevMap">
@@ -149,23 +152,23 @@
         update `TBL008`
         <if test='callStCd == "T"'>
             set BN_MBR_ID = #{bnMbrId},
-                CALL_ST_CD = #{callStCd},
-                CALL_CONT = #{callCont},
-                DEAL_CONT = #{dealCont},
-                PN_REG_YN = #{pnRegYn},
-                REG_CARR = #{regCarr},
-                REG_MBR_PN_NO = #{regMbrPnNo},
-                REG_MNT_RT_NO = #{regMntRtNo},
-                REG_PN_MDL_NO = #{regPnMdlNo},
-                REG_EXT_SERV_YN = #{regExtServYn},
-                REG_TYPE = #{regType},
-                REG_PD = #{regPd},
+            CALL_ST_CD = #{callStCd},
+            CALL_CONT = #{callCont},
+            DEAL_CONT = #{dealCont},
+            PN_REG_YN = #{pnRegYn},
+            REG_CARR = #{regCarr},
+            REG_MBR_PN_NO = #{regMbrPnNo},
+            REG_MNT_RT_NO = #{regMntRtNo},
+            REG_PN_MDL_NO = #{regPnMdlNo},
+            REG_EXT_SERV_YN = #{regExtServYn},
+            REG_TYPE = #{regType},
+            REG_PD = #{regPd},
         </if>
         <if test='callStCd == "E"'>
             set BN_MBR_ID = #{bnMbrId},
-                CALL_ST_CD = #{callStCd},
-                CNCL_CMNT = #{cnclCmnt},
-                PN_REG_YN = #{pnRegYn},
+            CALL_ST_CD = #{callStCd},
+            CNCL_CMNT = #{cnclCmnt},
+            PN_REG_YN = #{pnRegYn},
         </if>
         AMD_DT = SYSDATE()
         where BN_NO=(SELECT cf_get_bn_no(#{loginMbrId}))
@@ -174,139 +177,139 @@
 
     <select id="selectClientMarketing" parameterType="DevMap" resultType="string">
         SELECT MKT_YN FROM TBL001 WHERE CL_MBR_ID = (
-            SELECT CL_MBR_ID FROM TBL006 WHERE DEAL_NO = (
-                SELECT DEAL_NO FROM TBL008 WHERE CALL_NO = #{callNo}
-            )
+        SELECT CL_MBR_ID FROM TBL006 WHERE DEAL_NO = (
+        SELECT DEAL_NO FROM TBL008 WHERE CALL_NO = #{callNo}
+        )
         )
     </select>
 
     <insert id="insertMarketingOne" parameterType="DevMap">
         INSERT INTO TBL009
-            (
-                MKT_NO
-                ,CALL_NO
-                ,BN_NO
-                ,MBR_NM
-                ,MBR_PN_NO
-                ,PN_REG_DT
-            )
+        (
+        MKT_NO
+        ,CALL_NO
+        ,BN_NO
+        ,MBR_NM
+        ,MBR_PN_NO
+        ,PN_REG_DT
+        )
         SELECT
-                (SELECT (
-                    IFNULL(
-                        (
-                            SELECT MAX(MKT_NO)
-                            FROM TBL009 D
-                            WHERE MKT_NO LIKE CONCAT((DATE_FORMAT(CURRENT_TIMESTAMP, '%Y%m%d')),'%')
-                        ), CONCAT((DATE_FORMAT(CURRENT_TIMESTAMP, '%Y%m%d')),'0000')
-                    ) + 1 )
-                AS MKT_NO)
-                ,A.CALL_NO
-                ,A.BN_NO
-                ,(
-                    SELECT C.MBR_NM FROM TBL001 C WHERE C.CL_MBR_ID = (
-                        SELECT B.CL_MBR_ID FROM TBL006 B WHERE B.DEAL_NO = A.DEAL_NO
-                    )
-                ) AS MBR_NM
-                ,A.MBR_PN_NO
-                ,(SELECT CURRENT_TIMESTAMP) AS PN_REG_DT
+        (SELECT (
+        IFNULL(
+        (
+        SELECT MAX(MKT_NO)
+        FROM TBL009 D
+        WHERE MKT_NO LIKE CONCAT((DATE_FORMAT(CURRENT_TIMESTAMP, '%Y%m%d')),'%')
+        ), CONCAT((DATE_FORMAT(CURRENT_TIMESTAMP, '%Y%m%d')),'0000')
+        ) + 1 )
+        AS MKT_NO)
+        ,A.CALL_NO
+        ,A.BN_NO
+        ,(
+        SELECT C.MBR_NM FROM TBL001 C WHERE C.CL_MBR_ID = (
+        SELECT B.CL_MBR_ID FROM TBL006 B WHERE B.DEAL_NO = A.DEAL_NO
+        )
+        ) AS MBR_NM
+        ,A.MBR_PN_NO
+        ,(SELECT CURRENT_TIMESTAMP) AS PN_REG_DT
         FROM TBL008 A
         WHERE A.CALL_NO = #{callNo}
     </insert>
 
     <select id="selectMarketingList" resultType="DevMap" parameterType="DevMap">
         (
-            SELECT A.MKT_NO
-                ,A.CALL_NO
-                ,A.MBR_NM
-                ,A.MBR_PN_NO
-                ,DATE_FORMAT(A.PN_REG_DT, '%Y-%m-%d') AS PN_REG_DT
-                ,(
-                    SELECT CASE
-                    WHEN B.MKT_RSLT = 'S' THEN '성공'
-                    WHEN B.MKT_RSLT = 'F' THEN '실패'
-                    WHEN B.MKT_RSLT = 'P' THEN '진행중'
-                    ELSE '미진행' END MKT_RSLT_TXT
-                    FROM TBL009 B
-                    WHERE B.MKT_NO = A.MKT_NO
-                ) AS MKT_RSLT_TXT
-                ,DATE_FORMAT(A.AMD_DT, '%Y-%m-%d %H:%i') AS AMD_DT
-                ,C.REG_CARR AS MNT_CARR
-                ,(
-                    SELECT DISTINCT D.PN_MDL_NM
-                    FROM TBL011 D
-                    WHERE D.PN_MDL_NO = C.REG_PN_MDL_NO
-                ) AS PN_MDL_NM
-            FROM TBL009 A, TBL008 C
-            WHERE A.BN_NO = (SELECT cf_get_bn_no(#{bnMbrId}))
-            AND A.CALL_NO = C.CALL_NO
-            <if test='!(srchType.equals("A"))'>
-                AND A.MKT_RSLT = #{srchType}
-            </if>
-            AND A.MBR_NM LIKE CONCAT('%', #{srchName}, '%')
-            AND PN_REG_DT LIKE CONCAT(#{srchDate}, '%')
+        SELECT A.MKT_NO
+        ,A.CALL_NO
+        ,A.MBR_NM
+        ,A.MBR_PN_NO
+        ,DATE_FORMAT(A.PN_REG_DT, '%Y-%m-%d') AS PN_REG_DT
+        ,(
+        SELECT CASE
+        WHEN B.MKT_RSLT = 'S' THEN '성공'
+        WHEN B.MKT_RSLT = 'F' THEN '실패'
+        WHEN B.MKT_RSLT = 'P' THEN '진행중'
+        ELSE '미진행' END MKT_RSLT_TXT
+        FROM TBL009 B
+        WHERE B.MKT_NO = A.MKT_NO
+        ) AS MKT_RSLT_TXT
+        ,DATE_FORMAT(A.AMD_DT, '%Y-%m-%d %H:%i') AS AMD_DT
+        ,C.REG_CARR AS MNT_CARR
+        ,(
+        SELECT DISTINCT D.PN_MDL_NM
+        FROM TBL011 D
+        WHERE D.PN_MDL_NO = C.REG_PN_MDL_NO
+        ) AS PN_MDL_NM
+        FROM TBL009 A, TBL008 C
+        WHERE A.BN_NO = (SELECT cf_get_bn_no(#{bnMbrId}))
+        AND A.CALL_NO = C.CALL_NO
+        <if test='!(srchType.equals("A"))'>
+            AND A.MKT_RSLT = #{srchType}
+        </if>
+        AND A.MBR_NM LIKE CONCAT('%', #{srchName}, '%')
+        AND PN_REG_DT LIKE CONCAT(#{srchDate}, '%')
         ) UNION ALL (
-            SELECT E.MKT_NO
-                ,'' AS CALL_NO
-                ,E.MBR_NM
-                ,E.MBR_PN_NO
-                ,DATE_FORMAT(E.PN_REG_DT, '%Y-%m-%d') AS PN_REG_DT
-                ,(
-                    SELECT CASE
-                    WHEN F.MKT_RSLT = 'S' THEN '성공'
-                    WHEN F.MKT_RSLT = 'F' THEN '실패'
-                    WHEN F.MKT_RSLT = 'P' THEN '진행중'
-                    ELSE '미진행' END MKT_RSLT_TXT
-                    FROM TBL009 F
-                    WHERE F.MKT_NO = E.MKT_NO
-                ) AS MKT_RSLT_TXT
-                ,DATE_FORMAT(E.AMD_DT, '%Y-%m-%d %H:%i') AS AMD_DT
-                ,'' AS MNT_CARR
-                ,'' AS PN_MDL_NM
-            FROM TBL009 E
-            WHERE E.BN_NO = (SELECT cf_get_bn_no(#{bnMbrId}))
-            AND E.CALL_NO IS NULL
-            <if test='!(srchType.equals("A"))'>
-                AND E.MKT_RSLT = #{srchType}
-            </if>
-            AND E.MBR_NM LIKE CONCAT('%', #{srchName}, '%')
-            AND PN_REG_DT LIKE CONCAT(#{srchDate}, '%')
+        SELECT E.MKT_NO
+        ,'' AS CALL_NO
+        ,E.MBR_NM
+        ,E.MBR_PN_NO
+        ,DATE_FORMAT(E.PN_REG_DT, '%Y-%m-%d') AS PN_REG_DT
+        ,(
+        SELECT CASE
+        WHEN F.MKT_RSLT = 'S' THEN '성공'
+        WHEN F.MKT_RSLT = 'F' THEN '실패'
+        WHEN F.MKT_RSLT = 'P' THEN '진행중'
+        ELSE '미진행' END MKT_RSLT_TXT
+        FROM TBL009 F
+        WHERE F.MKT_NO = E.MKT_NO
+        ) AS MKT_RSLT_TXT
+        ,DATE_FORMAT(E.AMD_DT, '%Y-%m-%d %H:%i') AS AMD_DT
+        ,'' AS MNT_CARR
+        ,'' AS PN_MDL_NM
+        FROM TBL009 E
+        WHERE E.BN_NO = (SELECT cf_get_bn_no(#{bnMbrId}))
+        AND E.CALL_NO IS NULL
+        <if test='!(srchType.equals("A"))'>
+            AND E.MKT_RSLT = #{srchType}
+        </if>
+        AND E.MBR_NM LIKE CONCAT('%', #{srchName}, '%')
+        AND PN_REG_DT LIKE CONCAT(#{srchDate}, '%')
         )
     </select>
 
     <select id="selectMarketingOne" resultType="DevMap" parameterType="DevMap">
         SELECT A.MKT_NO
-            ,A.CALL_NO
-            ,A.MBR_NM
-            ,DATE_FORMAT(A.PN_REG_DT, '%Y-%m-%d') AS PN_REG_DT
-            ,A.MBR_PN_NO
-            ,A.MKT_RSLT
-            ,(
-                SELECT CASE
-                    WHEN B.MKT_RSLT = 'S' THEN '성공'
-                    WHEN B.MKT_RSLT = 'F' THEN '실패'
-                    WHEN B.MKT_RSLT = 'P' THEN '진행중'
-                    ELSE '미진행' END MKT_RSLT_TXT
-                FROM TBL009 B
-                WHERE B.MKT_NO = A.MKT_NO
-            ) AS MKT_RSLT_TXT
-            ,DATE_FORMAT(A.VISIT_DT, '%Y-%m-%d %H:%i') AS VISIT_DT
-            ,A.PN_CARR
-            ,A.PN_REG_DIS
-            ,(
-                SELECT CASE
-                    WHEN C.PN_REG_DIS = 'A' THEN '번호이동'
-                    WHEN C.PN_REG_DIS = 'B' THEN '기기변경'
-                    WHEN C.PN_REG_DIS = 'C' THEN '신규가입'
-                    ELSE '' END PN_REG_DIS_TXT
-                FROM TBL009 C
-                WHERE C.MKT_NO = A.MKT_NO
-            ) AS PN_REG_DIS_TXT
-            ,A.PN_MNT_RT_NO
-            ,(
-                SELECT D.PN_MNT_RT_NM FROM TBL010 D WHERE D.PN_MNT_RT_NO =  A.PN_MNT_RT_NO
-            ) AS PN_MNT_RT_NM
-            ,A.PN_MDL
-            ,A.MKT_CMNT
+        ,A.CALL_NO
+        ,A.MBR_NM
+        ,DATE_FORMAT(A.PN_REG_DT, '%Y-%m-%d') AS PN_REG_DT
+        ,A.MBR_PN_NO
+        ,A.MKT_RSLT
+        ,(
+        SELECT CASE
+        WHEN B.MKT_RSLT = 'S' THEN '성공'
+        WHEN B.MKT_RSLT = 'F' THEN '실패'
+        WHEN B.MKT_RSLT = 'P' THEN '진행중'
+        ELSE '미진행' END MKT_RSLT_TXT
+        FROM TBL009 B
+        WHERE B.MKT_NO = A.MKT_NO
+        ) AS MKT_RSLT_TXT
+        ,DATE_FORMAT(A.VISIT_DT, '%Y-%m-%d %H:%i') AS VISIT_DT
+        ,A.PN_CARR
+        ,A.PN_REG_DIS
+        ,(
+        SELECT CASE
+        WHEN C.PN_REG_DIS = 'A' THEN '번호이동'
+        WHEN C.PN_REG_DIS = 'B' THEN '기기변경'
+        WHEN C.PN_REG_DIS = 'C' THEN '신규가입'
+        ELSE '' END PN_REG_DIS_TXT
+        FROM TBL009 C
+        WHERE C.MKT_NO = A.MKT_NO
+        ) AS PN_REG_DIS_TXT
+        ,A.PN_MNT_RT_NO
+        ,(
+        SELECT D.PN_MNT_RT_NM FROM TBL010 D WHERE D.PN_MNT_RT_NO = A.PN_MNT_RT_NO
+        ) AS PN_MNT_RT_NM
+        ,A.PN_MDL
+        ,A.MKT_CMNT
         FROM TBL009 A
         WHERE MKT_NO = #{mktNo}
     </select>
@@ -364,39 +367,39 @@
     <insert id="insertMarketingNew" parameterType="DevMap">
         INSERT INTO TBL009
         (
-            MKT_NO
-            ,BN_NO
-            ,MBR_NM
-            ,MBR_PN_NO
-            ,PN_REG_DT
-            ,MKT_RSLT
-            ,VISIT_DT
-            ,PN_CARR
-            ,PN_REG_DIS
-            ,PN_MNT_RT_NO
-            ,PN_MDL
-            ,MKT_CMNT
+        MKT_NO
+        ,BN_NO
+        ,MBR_NM
+        ,MBR_PN_NO
+        ,PN_REG_DT
+        ,MKT_RSLT
+        ,VISIT_DT
+        ,PN_CARR
+        ,PN_REG_DIS
+        ,PN_MNT_RT_NO
+        ,PN_MDL
+        ,MKT_CMNT
         ) VALUES (
-            (SELECT (
-                IFNULL(
-                    (
-                        SELECT MAX(MKT_NO)
-                        FROM TBL009 D
-                        WHERE MKT_NO LIKE CONCAT((DATE_FORMAT(CURRENT_TIMESTAMP, '%Y%m%d')),'%')
-                    ), CONCAT((DATE_FORMAT(CURRENT_TIMESTAMP, '%Y%m%d')),'0000')
-                ) + 1 )
-            AS MKT_NO)
-            ,(SELECT cf_get_bn_no(#{bnMbrId}))
-            ,#{mbrNm}
-            ,#{mbrPnNo}
-            ,#{pnRegDt}
-            ,#{mktRslt}
-            ,#{visitDt}
-            ,#{pnCarr}
-            ,#{pnRegDis}
-            ,#{pnMntRtNo}
-            ,#{pnMdl}
-            ,#{mktCmnt}
+        (SELECT (
+        IFNULL(
+        (
+        SELECT MAX(MKT_NO)
+        FROM TBL009 D
+        WHERE MKT_NO LIKE CONCAT((DATE_FORMAT(CURRENT_TIMESTAMP, '%Y%m%d')),'%')
+        ), CONCAT((DATE_FORMAT(CURRENT_TIMESTAMP, '%Y%m%d')),'0000')
+        ) + 1 )
+        AS MKT_NO)
+        ,(SELECT cf_get_bn_no(#{bnMbrId}))
+        ,#{mbrNm}
+        ,#{mbrPnNo}
+        ,#{pnRegDt}
+        ,#{mktRslt}
+        ,#{visitDt}
+        ,#{pnCarr}
+        ,#{pnRegDis}
+        ,#{pnMntRtNo}
+        ,#{pnMdl}
+        ,#{mktCmnt}
         )
     </insert>
 
@@ -428,4 +431,74 @@
         where CL_MBR_ID =#{clMbrId}
         and DEAL_NO = (select t.DEAL_NO from TBL008 t where t.CALL_NO = #{callNo})
     </select>
+
+
+    <!-- 최저가리스트 -->
+    <select id="lplist" resultType="DevMap">
+        select ta.MNT_CARR,
+        'A' as PN_REG_DIS,
+        ta.PN_MNT_RT_NO,
+        ta.PN_MDL_NO,
+        ta.PN_STOR,
+        MIN(convert((SELECT t11.PN_MSRP from `TBL011` t11 where t11.PN_MDL_NO=ta.PN_MDL_NO and t11.PN_STOR =
+        ta.PN_STOR), decimal) - convert(ta.PN_OFCL_SUBSD, decimal)
+        - convert(ta.PN_EXT_SUBSD_DV , decimal)) as 'PN_SUBSD_DV',
+        MIN(convert((SELECT t11.PN_MSRP from `TBL011` t11 where t11.PN_MDL_NO=ta.PN_MDL_NO and t11.PN_STOR =
+        ta.PN_STOR), decimal)
+        - convert(ta.PN_EXT_SUBSD_RT, decimal)) as 'PN_SUBSD_RT',
+        DATE_FORMAT(SYSDATE(), '%Y%m%d') as INP_DT,
+        DATE_FORMAT(SYSDATE(), '%Y%m%d') as AMD_DT
+        from `TBL007-A` ta
+        WHERE ta.SELL_YN = 'Y'
+        group by PN_MDL_NO, PN_STOR, PN_MNT_RT_NO
+        UNION ALL
+        select ta.MNT_CARR,
+        'B' as PN_REG_DIS,
+        ta.PN_MNT_RT_NO,
+        ta.PN_MDL_NO,
+        ta.PN_STOR,
+        MIN(convert((SELECT t11.PN_MSRP from `TBL011` t11 where t11.PN_MDL_NO=ta.PN_MDL_NO and t11.PN_STOR =
+        ta.PN_STOR), decimal) - convert(ta.PN_OFCL_SUBSD, decimal)
+        - convert(ta.PN_EXT_SUBSD_DV , decimal)) as 'PN_SUBSD_DV',
+        MIN(convert((SELECT t11.PN_MSRP from `TBL011` t11 where t11.PN_MDL_NO=ta.PN_MDL_NO and t11.PN_STOR =
+        ta.PN_STOR), decimal)
+        - convert(ta.PN_EXT_SUBSD_RT, decimal)) as 'PN_SUBSD_RT',
+        DATE_FORMAT(SYSDATE(), '%Y%m%d') as INP_DT,
+        DATE_FORMAT(SYSDATE(), '%Y%m%d') as AMD_DT
+        from `TBL007-B` ta
+        WHERE ta.SELL_YN = 'Y'
+        group by PN_MDL_NO, PN_STOR, PN_MNT_RT_NO
+        UNION ALL
+        select ta.MNT_CARR,
+        'C' as PN_REG_DIS,
+        ta.PN_MNT_RT_NO,
+        ta.PN_MDL_NO,
+        ta.PN_STOR,
+        MIN(convert((SELECT t11.PN_MSRP from `TBL011` t11 where t11.PN_MDL_NO=ta.PN_MDL_NO and t11.PN_STOR =
+        ta.PN_STOR), decimal) - convert(ta.PN_OFCL_SUBSD, decimal)
+        - convert(ta.PN_EXT_SUBSD_DV , decimal)) as 'PN_SUBSD_DV',
+        MIN(convert((SELECT t11.PN_MSRP from `TBL011` t11 where t11.PN_MDL_NO=ta.PN_MDL_NO and t11.PN_STOR =
+        ta.PN_STOR), decimal)
+        - convert(ta.PN_EXT_SUBSD_RT, decimal)) as 'PN_SUBSD_RT',
+        DATE_FORMAT(SYSDATE(), '%Y%m%d') as INP_DT,
+        DATE_FORMAT(SYSDATE(), '%Y%m%d') as AMD_DT
+        from `TBL007-C` ta
+        WHERE ta.SELL_YN = 'Y'
+        group by PN_MDL_NO, PN_STOR, PN_MNT_RT_NO
+    </select>
+
+    <insert id="insertLplist" parameterType="DevMap">
+        INSERT INTO TBL017 (LP_CARR, LP_SIGN_TYPE, PN_MNT_RT_NO, PN_MDL_NO, PN_STOR, PN_SUBSD_DV, PN_SUBSD_RT, INP_DT,
+        AMD_DT) VALUES(
+        #{mntCarr},
+        #{pnRegDis},
+        #{pnMntRtNo},
+        #{pnMdlNo},
+        #{pnStor},
+        #{pnSubsdDv},
+        #{pnSubsdRt},
+        #{inpDt},
+        #{amdDt}
+        )
+    </insert>
 </mapper>
