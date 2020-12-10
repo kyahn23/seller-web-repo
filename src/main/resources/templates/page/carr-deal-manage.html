@@ -953,8 +953,16 @@
 
                                 if (tempArr[idx].saveYn === 'Y') {
                                     if (tempArr[idx].sellYn === 'Y') {
-                                        if (!tempArr[idx].pnExtSubsdDv || !tempArr[idx].pnExtSubsdRt || !tempArr[idx].pnOfclSubsd) {
-                                            alert('지원금을 입력해주세요.')
+                                        if (!tempArr[idx].pnOfclSubsd) {
+                                            alert('공시지원금을 입력해주세요.')
+                                            return
+                                        }
+                                        if (!tempArr[idx].pnExtSubsdDv) {
+                                            alert('공시 추가지원금을 입력해주세요.')
+                                            return
+                                        }
+                                        if (!tempArr[idx].pnExtSubsdRt) {
+                                            alert('선택약정 추가지원금을 입력해주세요.')
                                             return
                                         }
                                         if (tempArr[idx].pnExtSubsdDv && tempArr[idx].pnExtSubsdRt && tempArr[idx].pnOfclSubsd) {
