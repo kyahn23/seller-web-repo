@@ -65,8 +65,13 @@
             box-shadow: inset 0 0 1px #adedcb;
         }
 
-        .active .toggle__switch::after,
-        .active .toggle__switch::before {
+        .active_pl .toggle__switch {
+            background: #aee5f9;
+            box-shadow: inset 0 0 1px #6bcff4;
+        }
+
+        .active .active_pl .toggle__switch::after,
+        .active .active_pl .toggle__switch::before {
             transform: translateX(30px -18px);
         }
 
@@ -74,6 +79,12 @@
             left: 13px;
             background: #53B883;
             box-shadow: 0 0 1px #53B883;
+        }
+
+        .active_pl .toggle__switch::after {
+            left: 13px;
+            background: #0d84b0;
+            box-shadow: 0 0 1px #0d84b0;
         }
     </style>
 </th:block>
@@ -244,10 +255,20 @@
                 <div class="contentBlock">
                     <div class="contentTitle">
                         <div class="cTit">
-                            번호이동정책
+                            <span>번호이동정책</span>
                         </div>
                         <div class="cTitRight">
-                            <a href="#;" class="btnM colorSky" @click="savePolicy('moveCarr')"><span>번이정책 저장</span></a>
+                            <label for="modiYnMvCarr" :class="{'active_pl': modiYnMvCarr}"
+                                   class="toggle__button">
+                                <span v-if="modiYnMvCarr" class="toggle__label">수정중</span>
+                                <span v-else class="toggle__label">수정하기</span>
+                                <input type="checkbox" v-model="modiYnMvCarr" id="modiYnMvCarr"
+                                       @click.prevent="modiPolicyToggle('moveCarr')">
+                                <span class="toggle__switch"></span>
+                            </label>
+                            <a href="#;" v-if="modiYnMvCarr && modiPolicy === 'moveCarr'" class="btnM colorSky"
+                               @click="savePolicy('moveCarr')"><span>번이정책 저장</span></a>
+                            <a href="#;" v-else class="btnM disabled"><span>번이정책 저장</span></a>
                         </div>
                     </div>
                     <!-- content -->
@@ -295,16 +316,18 @@
                                         <span v-else class="toggle__label">미판매</span>
 
                                         <input type="checkbox" :id="'moveCarrYnBtn'+idx" v-model="list.sellToggle"
-                                               @change="sellToggleBtn(list)">
+                                               @change="sellToggleBtn(list)" :disabled="!modiYnMvCarr">
                                         <span class="toggle__switch"></span>
                                     </label>
                                 </td>
                                 <td><input style="width: 100%" class="inMoney" type="text" v-model="list.pnOfclSubsd"
-                                           v-mask="'#######'" placeholder="공시지원금" :disabled="!list.sellToggle">
+                                           v-mask="'#######'" placeholder="공시지원금"
+                                           :disabled="!list.sellToggle || !modiYnMvCarr">
                                 </td>
                                 <td>
                                     <input style="width: 100%" class="inMoney" type="text" v-model="list.pnExtSubsdDv"
-                                           v-mask="'#######'" placeholder="공시 추가지원금" :disabled="!list.sellToggle">
+                                           v-mask="'#######'" placeholder="공시 추가지원금"
+                                           :disabled="!list.sellToggle || !modiYnMvCarr">
                                 </td>
                                 <td>
                                     {{setPrice1('move',idx,list.pnOfclSubsd, list.pnExtSubsdDv)}}
@@ -312,22 +335,22 @@
                                 <td>
                                     <input style="width: 100%" class="wPer inNumber" type="text"
                                            placeholder="선약 추가지원금" v-model="list.pnExtSubsdRt"
-                                           v-mask="'#######'" :disabled="!list.sellToggle">
+                                           v-mask="'#######'" :disabled="!list.sellToggle || !modiYnMvCarr">
                                 </td>
                                 <td>
                                     {{setPrice2('move',idx, list.pnExtSubsdRt)}}
                                 </td>
                                 <td>
                                     <input type="radio" :id="'mvCarrY'+idx" value="Y" v-model="list.pnExtServYn"
-                                           :disabled="!list.sellToggle">
+                                           :disabled="!list.sellToggle || !modiYnMvCarr">
                                     <label :for="'mvCarrY'+idx">유</label>
                                     <input type="radio" :id="'mvCarrN'+idx" value="N" v-model="list.pnExtServYn"
-                                           :disabled="!list.sellToggle">
+                                           :disabled="!list.sellToggle || !modiYnMvCarr">
                                     <label :for="'mvCarrN'+idx">무</label>
                                 </td>
                                 <td>
                                     <input style="width: 100%;" type="text" v-model="list.pnEtc"
-                                           :disabled="list.pnExtServYn === 'N' || !list.sellToggle">
+                                           :disabled="list.pnExtServYn === 'N' || !list.sellToggle || !modiYnMvCarr">
                                 </td>
                             </tr>
                             </tbody>
@@ -358,7 +381,17 @@
                             기기변경정책
                         </div>
                         <div class="cTitRight">
-                            <a href="#;" class="btnM colorSky" @click="savePolicy('chgDevice')"><span>기변정책 저장</span></a>
+                            <label for="modiYnChgDev" :class="{'active_pl': modiYnChgDev}"
+                                   class="toggle__button">
+                                <span v-if="modiYnChgDev" class="toggle__label">수정중</span>
+                                <span v-else class="toggle__label">수정하기</span>
+                                <input type="checkbox" v-model="modiYnChgDev" id="modiYnChgDev"
+                                       @click.prevent="modiPolicyToggle('chgDevice')">
+                                <span class="toggle__switch"></span>
+                            </label>
+                            <a href="#;" v-if="modiYnChgDev && modiPolicy === 'chgDevice'" class="btnM colorSky"
+                               @click="savePolicy('chgDevice')"><span>기변정책 저장</span></a>
+                            <a href="#;" v-else class="btnM disabled"><span>기변정책 저장</span></a>
                         </div>
                     </div>
                     <!-- content -->
@@ -406,16 +439,18 @@
                                         <span v-else class="toggle__label">미판매</span>
 
                                         <input type="checkbox" :id="'chgDeviceYnBtn'+idx" v-model="list.sellToggle"
-                                               @change="sellToggleBtn(list)">
+                                               @change="sellToggleBtn(list)" :disabled="!modiYnChgDev">
                                         <span class="toggle__switch"></span>
                                     </label>
                                 </td>
                                 <td><input style="width: 100%" class="inMoney" type="text" v-model="list.pnOfclSubsd"
-                                           v-mask="'#######'" placeholder="공시지원금" :disabled="!list.sellToggle">
+                                           v-mask="'#######'" placeholder="공시지원금"
+                                           :disabled="!list.sellToggle || !modiYnChgDev">
                                 </td>
                                 <td>
                                     <input style="width: 100%" class="inMoney" type="text" v-model="list.pnExtSubsdDv"
-                                           v-mask="'#######'" placeholder="공시 추가지원금" :disabled="!list.sellToggle">
+                                           v-mask="'#######'" placeholder="공시 추가지원금"
+                                           :disabled="!list.sellToggle || !modiYnChgDev">
                                 </td>
                                 <td>
                                     {{setPrice1('chg',idx,list.pnOfclSubsd, list.pnExtSubsdDv)}}
@@ -423,7 +458,7 @@
                                 <td>
                                     <input style="width: 100%" class="wPer inNumber" type="text"
                                            placeholder="선약 추가지원금" v-model="list.pnExtSubsdRt"
-                                           v-mask="'#######'" :disabled="!list.sellToggle">
+                                           v-mask="'#######'" :disabled="!list.sellToggle || !modiYnChgDev">
                                 </td>
                                 <td>
                                     {{setPrice2('chg',idx,list.pnExtSubsdRt)}}
@@ -433,12 +468,12 @@
                                            :disabled="!list.sellToggle">
                                     <label :for="'idxY'+idx">유</label>
                                     <input type="radio" :id="'idxN'+idx" value="N" v-model="list.pnExtServYn"
-                                           @change="list.pnEtc = ''" :disabled="!list.sellToggle">
+                                           @change="list.pnEtc = ''" :disabled="!list.sellToggle || !modiYnChgDev">
                                     <label :for="'idxN'+idx">무</label>
                                 </td>
                                 <td>
                                     <input style="width: 100%;" type="text" v-model="list.pnEtc"
-                                           :disabled="list.pnExtServYn === 'N' || !list.sellToggle">
+                                           :disabled="list.pnExtServYn === 'N' || !list.sellToggle || !modiYnChgDev">
                                 </td>
                             </tr>
                             </tbody>
@@ -469,7 +504,17 @@
                             신규가입정책
                         </div>
                         <div class="cTitRight">
-                            <a href="#;" class="btnM colorSky" @click="savePolicy('newSignUp')"><span>신규정책 저장</span></a>
+                            <label for="modiYnNewSignUp" :class="{'active_pl': modiYnNewSignUp}"
+                                   class="toggle__button">
+                                <span v-if="modiYnNewSignUp" class="toggle__label">수정중</span>
+                                <span v-else class="toggle__label">수정하기</span>
+                                <input type="checkbox" v-model="modiYnNewSignUp" id="modiYnNewSignUp"
+                                       @click.prevent="modiPolicyToggle('newSignUp')">
+                                <span class="toggle__switch"></span>
+                            </label>
+                            <a href="#;" v-if="modiYnNewSignUp && modiPolicy === 'newSignUp'" class="btnM colorSky"
+                               @click="savePolicy('newSignUp')"><span>신규정책 저장</span></a>
+                            <a href="#;" v-else class="btnM disabled"><span>신규정책 저장</span></a>
                         </div>
                     </div>
                     <!-- content -->
@@ -517,16 +562,18 @@
                                         <span v-else class="toggle__label">미판매</span>
 
                                         <input type="checkbox" :id="'newSignUpYnBtn'+idx" v-model="list.sellToggle"
-                                               @change="sellToggleBtn(list)">
+                                               @change="sellToggleBtn(list)" :disabled="!modiYnNewSignUp">
                                         <span class="toggle__switch"></span>
                                     </label>
                                 </td>
                                 <td><input style="width: 100%" class="inMoney" type="text" v-model="list.pnOfclSubsd"
-                                           v-mask="'#######'" placeholder="공시지원금" :disabled="!list.sellToggle">
+                                           v-mask="'#######'" placeholder="공시지원금"
+                                           :disabled="!list.sellToggle || !modiYnNewSignUp">
                                 </td>
                                 <td>
                                     <input style="width: 100%" class="inMoney" type="text" v-model="list.pnExtSubsdDv"
-                                           v-mask="'#######'" placeholder="공시 추가지원금" :disabled="!list.sellToggle">
+                                           v-mask="'#######'" placeholder="공시 추가지원금"
+                                           :disabled="!list.sellToggle || !modiYnNewSignUp">
                                 </td>
                                 <td>
                                     {{setPrice1('new',idx,list.pnOfclSubsd, list.pnExtSubsdDv)}}
@@ -534,7 +581,7 @@
                                 <td>
                                     <input style="width: 100%" class="wPer inNumber" type="text"
                                            placeholder="선약 추가지원금" v-model="list.pnExtSubsdRt"
-                                           v-mask="'#######'" :disabled="!list.sellToggle">
+                                           v-mask="'#######'" :disabled="!list.sellToggle || !modiYnNewSignUp">
                                 </td>
                                 <td>
                                     {{setPrice2('new',idx,list.pnExtSubsdRt)}}
@@ -544,13 +591,13 @@
                                            :disabled="!list.sellToggle">
                                     <label :for="'idxY'+idx">유</label>
                                     <input type="radio" :id="'idxN'+idx" value="N" v-model="list.pnExtServYn"
-                                           :disabled="!list.sellToggle"
+                                           :disabled="!list.sellToggle || !modiYnNewSignUp"
                                            @change="list.pnEtc = ''">
                                     <label :for="'idxN'+idx">무</label>
                                 </td>
                                 <td>
                                     <input style="width: 100%;" type="text" v-model="list.pnEtc"
-                                           :disabled="list.pnExtServYn === 'N' || !list.sellToggle">
+                                           :disabled="list.pnExtServYn === 'N' || !list.sellToggle || !modiYnNewSignUp">
                                 </td>
                             </tr>
                             </tbody>
@@ -586,6 +633,10 @@
         var app = new Vue({
             el: "#app",
             data: {
+                modiPolicy: '',
+                modiYnMvCarr: false,
+                modiYnChgDev: false,
+                modiYnNewSignUp: false,
                 deviceCarr: "",
                 carr: "",
                 sellYn: [
@@ -764,7 +815,6 @@
                     }
                 },
                 rowClick: function (data, idx) {
-                    console.log('rowClickIdx : ' + idx)
                     if (this.selectDevice.idx != idx) {
                         this.selectDevice = {}
                         this.selectDevice = data
@@ -984,6 +1034,8 @@
                                     }
                                 }
                             }
+                            this.modiYn(type, false)
+                            this.modiPolicy = ''
                             cf_call("/carr/saveSalePolicy/" + type, tempArr, this.savePolicyCB)
                         }
                     }
@@ -1009,7 +1061,6 @@
                     return (sellYn && pnOfclSubsd && pnExtSubsdDv && pnExtSubsdRt && pnEtc)
                 },
                 setPrice1: function (policyNm, idx, val1, val2) {  // 공시 할부원금계산
-                    console.log(policyNm + ' setPriceRow: ' + idx)
                     var pnMsrp = 0;
                     pnMsrp = this.selectDevice.pnMsrp// 출고가
                     var pnOfclSubsd = val1  // 공시지원금
@@ -1079,6 +1130,93 @@
                         return rslt.toLocaleString()
                     } else {
                         return cf_numberFormat(pnMsrp)
+                    }
+                },
+                modiPolicyToggle(policy) {
+                    var tempArr = []
+                    var policyNm = ''
+                    switch (policy) {
+                        case 'moveCarr' :
+                            tempArr = this.moveCarrList
+                            policyNm = '번호이동'
+                            break
+                        case 'chgDevice' :
+                            tempArr = this.chgDeviceList
+                            policyNm = '기기변경'
+                            break
+                        case 'newSignUp' :
+                            tempArr = this.newSignUpList
+                            policyNm = '신규가입'
+                            break
+                    }
+                    if (!tempArr.length) {
+                        alert('정책을 수정할 모델을 선택해주세요')
+                        return
+                    }
+                    if (this.modiPolicy === '') {
+                        if (confirm(policyNm + ' 판매정책을 수정하시겠습니까?')) {
+                            switch (this.modiPolicy) {
+                                case 'moveCarr' :
+                                    policyNm = '번호이동'
+                                    break
+                                case 'chgDevice' :
+                                    policyNm = '기기변경'
+                                    break
+                                case 'newSignUp' :
+                                    policyNm = '신규가입'
+                                    break
+                            }
+                            this.modiPolicy = policy
+                            this.modiYn(policy, true)
+                            return
+                        }
+                    } else {
+                        if (this.modiPolicy === policy) {
+                            if (confirm(policyNm + ' 판매정책 수정을 취소하시겠습니까?')) {
+                                this.modiYn(policy, false)
+                                this.modiPolicy = ''
+                                switch (policy) {
+                                    case 'moveCarr' :
+                                        tempArr = this.moveCarrList
+                                        break
+                                    case 'chgDevice' :
+                                        tempArr = this.chgDeviceList
+                                        break
+                                    case 'newSignUp' :
+                                        tempArr = this.newSignUpList
+                                        break
+                                }
+                                return
+                            }
+                        } else {
+                            switch (this.modiPolicy) {
+                                case 'moveCarr' :
+                                    policyNm = '번호이동'
+                                    break
+                                case 'chgDevice' :
+                                    policyNm = '기기변경'
+                                    break
+                                case 'newSignUp' :
+                                    policyNm = '신규가입'
+                                    break
+                            }
+                            alert('현재 ' + policyNm + ' 정책이 수정중입니다.')
+                            this.modiYn(policy, false)
+                            return
+                        }
+                    }
+                },
+                modiYn: function (policy, value) {
+                    switch (policy) {
+                        case 'moveCarr' :
+                            this.modiYnMvCarr = value
+                            break
+                        case 'chgDevice' :
+                            this.modiYnChgDev = value
+                            break
+                        case 'newSignUp' :
+                            this.modiYnNewSignUp = value
+                            break
                     }
                 }
             }
