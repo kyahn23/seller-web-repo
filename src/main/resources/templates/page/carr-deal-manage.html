@@ -465,7 +465,7 @@
                                 </td>
                                 <td>
                                     <input type="radio" :id="'idxY'+idx" value="Y" v-model="list.pnExtServYn"
-                                           :disabled="!list.sellToggle">
+                                           :disabled="!list.sellToggle || !modiYnChgDev">
                                     <label :for="'idxY'+idx">유</label>
                                     <input type="radio" :id="'idxN'+idx" value="N" v-model="list.pnExtServYn"
                                            @change="list.pnEtc = ''" :disabled="!list.sellToggle || !modiYnChgDev">
@@ -670,6 +670,7 @@
                 moveCarrList: [],
                 chgDeviceList: [],
                 newSignUpList: [],
+                selectPolicy: []
             },
             mounted: function () {
                 var currentPath = window.location.pathname
@@ -708,12 +709,6 @@
                                     this.dpList.push(data.sellDeviceList[i])
                                 }
                             }
-
-                            // for (idx in data.sellDeviceList) {
-                            //     if (data.sellDeviceList[idx].sellStatus === 'Y') {
-                            //         this.dpList.push(data.sellDeviceList[idx])
-                            //     }
-                            // }
                             break
                         case 'p' :
                             for (var i = 0; i < data.sellDeviceList.length; i++) {
@@ -721,12 +716,6 @@
                                     this.dpList.push(data.sellDeviceList[i])
                                 }
                             }
-
-                            // for (idx in data.sellDeviceList) {
-                            //     if (data.sellDeviceList[idx].sellStatus === 'P') {
-                            //         this.dpList.push(data.sellDeviceList[idx])
-                            //     }
-                            // }
                             break
                         case "n" :
                             for (var i = 0; i < data.sellDeviceList.length; i++) {
@@ -734,12 +723,6 @@
                                     this.dpList.push(data.sellDeviceList[i])
                                 }
                             }
-
-                            // for (idx in data.sellDeviceList) {
-                            //     if (data.sellDeviceList[idx].sellStatus === 'N') {
-                            //         this.dpList.push(data.sellDeviceList[idx])
-                            //     }
-                            // }
                             break
                         default:
                             this.dpList = data.sellDeviceList
@@ -767,29 +750,6 @@
                                 break
                         }
                     }
-
-                    // for (sell in this.dpList) {
-                    //     this.dpList[sell].idx = sell
-                    //     this.dpList[sell].mntCarr = this.carr.toUpperCase()
-                    //
-                    //     switch (this.dpList[sell].pnMkr) {
-                    //         case 'SAM':
-                    //             this.dpList[sell].pnMkr = '삼성전자'
-                    //             break
-                    //         case 'LGE':
-                    //             this.dpList[sell].pnMkr = 'LG전자'
-                    //             break
-                    //         case 'APP':
-                    //             this.dpList[sell].pnMkr = '애플'
-                    //             break
-                    //         case 'XIA':
-                    //             this.dpList[sell].pnMkr = '샤오미'
-                    //             break
-                    //         case 'ETC':
-                    //             this.dpList[sell].pnMkr = '기타'
-                    //             break
-                    //     }
-                    // }
                 },
                 getTrClass: function (idx) {
                     if (idx === this.selectDevice.idx) return true
@@ -802,10 +762,6 @@
                         for (var i = 0; i < this.dpList.length; i++) {
                             this.checkedList.push(this.dpList[i])
                         }
-
-                        // for (list in this.dpList) {
-                        //     this.checkedList.push(this.dpList[list])
-                        // }
                     }
                 },
                 chkboxClick: function () {
@@ -814,25 +770,47 @@
                         this.allchecked = true
                     }
                 },
-                rowClick: function (data, idx) {
-                    if (this.selectDevice.idx != idx) {
-                        this.selectDevice = {}
-                        this.selectDevice = data
-                        this.selectDevice.idx = idx
 
-                        var param = {
-                            pnCarr: this.carr.toUpperCase(),
-                            pnNetType: this.selectDevice.pnNetType,
-                            pnStor: this.selectDevice.pnStor,
-                            pnMdlNo: this.selectDevice.pnMdlNo
+                rowClick: function (data, idx) {
+                    if (this.modiPolicy !== '') {
+                        if (confirm('현재 ' + this.selectDevice.pnMdlNm + ' ' + this.selectDevice.pnStor + 'GB '
+                            + this.policyChk(this.modiPolicy, 'policyNm') + ' 정책을 수정중입니다. \n모델을 변경하시겠습니까?')) {
+                            this.modiYn(this.modiPolicy, false)
+                            this.modiPolicy = ''
+                            this.selectPolicy = []
+
+                            this.selectDevice = {}
+                            this.selectDevice = data
+                            this.selectDevice.idx = idx
+
+                            var param = {
+                                pnCarr: this.carr.toUpperCase(),
+                                pnNetType: this.selectDevice.pnNetType,
+                                pnStor: this.selectDevice.pnStor,
+                                pnMdlNo: this.selectDevice.pnMdlNo
+                            }
+                            cf_call("/carr/getUseMntByDevice", param, this.rowClickCB)
                         }
-                        cf_call("/carr/getUseMntByDevice", param, this.rowClickCB)
                     } else {
-                        this.selectDevice = {}
-                        this.currPolicy = {}
-                        this.moveCarrList = []
-                        this.chgDeviceList = []
-                        this.newSignUpList = []
+                        if (this.selectDevice.idx != idx) {
+                            this.selectDevice = {}
+                            this.selectDevice = data
+                            this.selectDevice.idx = idx
+
+                            var param = {
+                                pnCarr: this.carr.toUpperCase(),
+                                pnNetType: this.selectDevice.pnNetType,
+                                pnStor: this.selectDevice.pnStor,
+                                pnMdlNo: this.selectDevice.pnMdlNo
+                            }
+                            cf_call("/carr/getUseMntByDevice", param, this.rowClickCB)
+                        } else {
+                            this.selectDevice = {}
+                            this.currPolicy = {}
+                            this.moveCarrList = []
+                            this.chgDeviceList = []
+                            this.newSignUpList = []
+                        }
                     }
 
                 },
@@ -1034,8 +1012,7 @@
                                     }
                                 }
                             }
-                            this.modiYn(type, false)
-                            this.modiPolicy = ''
+
                             cf_call("/carr/saveSalePolicy/" + type, tempArr, this.savePolicyCB)
                         }
                     }
@@ -1043,6 +1020,8 @@
                 savePolicyCB: function (data) {
                     if (data.succ === "Y") {
                         alert('저장되었습니다.')
+                        this.modiYn(this.modiPolicy, false)
+                        this.modiPolicy = ''
                         this.selectDevice = {}
                         this.checkedList = []
                         this.moveCarrList = []
@@ -1057,7 +1036,6 @@
                     var pnExtSubsdDv = data.pnExtSubsdDvOrg === data.pnExtSubsdDv
                     var pnExtSubsdRt = data.pnExtSubsdRtOrg === data.pnExtSubsdRt
                     var pnEtc = data.pnEtcOrg === data.pnEtc
-                    // var pnExtServYn = data.pnExtServYnOrg === data.pnExtServYn
                     return (sellYn && pnOfclSubsd && pnExtSubsdDv && pnExtSubsdRt && pnEtc)
                 },
                 setPrice1: function (policyNm, idx, val1, val2) {  // 공시 할부원금계산
@@ -1092,7 +1070,6 @@
                         pnExtSubsdDv = val2.replaceAll(',', '')
                         var rslt = Number(pnMsrp) - Number(pnOfclSubsd) - Number(pnExtSubsdDv)
                         // if (rslt < 0) {
-                        //     console.log(idx)
                         //     alert('입력하신 공시 추가지원금을 확인해주세요.')
                         //     keyword[idx].pnExtSubsdDv = keyword[idx].pnExtSubsdDv.substring(0, keyword[idx].pnExtSubsdDv.length - 1)
                         //     return
@@ -1133,80 +1110,40 @@
                     }
                 },
                 modiPolicyToggle(policy) {
-                    var tempArr = []
-                    var policyNm = ''
-                    switch (policy) {
-                        case 'moveCarr' :
-                            tempArr = this.moveCarrList
-                            policyNm = '번호이동'
-                            break
-                        case 'chgDevice' :
-                            tempArr = this.chgDeviceList
-                            policyNm = '기기변경'
-                            break
-                        case 'newSignUp' :
-                            tempArr = this.newSignUpList
-                            policyNm = '신규가입'
-                            break
-                    }
-                    if (!tempArr.length) {
+                    if (!this.selectDevice.pnMdlNo) {
                         alert('정책을 수정할 모델을 선택해주세요')
                         return
                     }
                     if (this.modiPolicy === '') {
-                        if (confirm(policyNm + ' 판매정책을 수정하시겠습니까?')) {
-                            switch (this.modiPolicy) {
-                                case 'moveCarr' :
-                                    policyNm = '번호이동'
-                                    break
-                                case 'chgDevice' :
-                                    policyNm = '기기변경'
-                                    break
-                                case 'newSignUp' :
-                                    policyNm = '신규가입'
-                                    break
-                            }
-                            this.modiPolicy = policy
-                            this.modiYn(policy, true)
-                            return
-                        }
+                        this.policyChk(policy, 'policyList') //수정중인 판매정책 리스트 선택
+                        this.modiPolicy = policy
+                        this.modiYn(policy, true)
+                        return
+                        // }
                     } else {
                         if (this.modiPolicy === policy) {
-                            if (confirm(policyNm + ' 판매정책 수정을 취소하시겠습니까?')) {
+                            if (confirm(this.policyChk(policy, 'policyNm') + ' 판매정책 수정을 취소하시겠습니까?')) {
                                 this.modiYn(policy, false)
                                 this.modiPolicy = ''
-                                switch (policy) {
-                                    case 'moveCarr' :
-                                        tempArr = this.moveCarrList
-                                        break
-                                    case 'chgDevice' :
-                                        tempArr = this.chgDeviceList
-                                        break
-                                    case 'newSignUp' :
-                                        tempArr = this.newSignUpList
-                                        break
-                                }
+                                this.policyChk(policy, 'restore') // 판매정책 수정값이 있을시 복원
+
+                                this.selectPolicy = []
                                 return
                             }
                         } else {
-                            switch (this.modiPolicy) {
-                                case 'moveCarr' :
-                                    policyNm = '번호이동'
-                                    break
-                                case 'chgDevice' :
-                                    policyNm = '기기변경'
-                                    break
-                                case 'newSignUp' :
-                                    policyNm = '신규가입'
-                                    break
+                            if (confirm('현재 ' + this.policyChk(this.modiPolicy, 'policyNm') + ' 정책이 수정중입니다.\n수정할 정책을 변경하시겠습니까?')) {
+                                this.policyChk(this.modiPolicy, 'restore') // 판매정책 수정값이 있을시 복원
+                                this.modiYn(this.modiPolicy, false)
+
+                                this.policyChk(policy, 'policyList') //수정중인 판매정책 리스트 선택
+                                this.modiPolicy = policy
+                                this.modiYn(policy, true)
+                                return
                             }
-                            alert('현재 ' + policyNm + ' 정책이 수정중입니다.')
-                            this.modiYn(policy, false)
-                            return
                         }
                     }
                 },
-                modiYn: function (policy, value) {
+                modiYn: function (policy, value) {  // 판매정책 수정상태
                     switch (policy) {
                         case 'moveCarr' :
                             this.modiYnMvCarr = value
@@ -1217,6 +1154,80 @@
                         case 'newSignUp' :
                             this.modiYnNewSignUp = value
                             break
+                    }
+                },
+                policyNm: function(val){
+                  var plNm = ''
+                  switch (val) {
+                      case 'moveCarr' :
+                          plNm = '번호이동'
+                          break
+                      case 'chgDevice' :
+                          plNm = '기기변경'
+                          break
+                      case 'newSignUp' :
+                          plNm = '신규가입'
+                          break
+                  }
+                  return plNm
+                },
+                policyList: function(val){
+                    switch (val) {
+                        case 'moveCarr' :
+                            this.selectPolicy = JSON.parse(JSON.stringify(this.moveCarrList))
+                            break
+                        case 'chgDevice' :
+                            this.selectPolicy = JSON.parse(JSON.stringify(this.chgDeviceList))
+                            break
+                        case 'newSignUp' :
+                            this.selectPolicy = JSON.parse(JSON.stringify(this.newSignUpList))
+                            break
+                    }
+                },
+                policyChk: function (policy, val) {
+
+                    if (val === 'policyNm'){ //판매정책 이름
+                        switch (policy) {
+                            case 'moveCarr' :
+                                policyKr = '번호이동'
+                                break
+                            case 'chgDevice' :
+                                policyKr = '기기변경'
+                                break
+                            case 'newSignUp' :
+                                policyKr = '신규가입'
+                                break
+                        }
+                        return policyKr;
+                    } else {
+                        switch (val) {
+                            case 'policyList' : //수정중인 판매정책 리스트 선택
+                                switch (policy) {
+                                    case 'moveCarr' :
+                                        this.selectPolicy = JSON.parse(JSON.stringify(this.moveCarrList))
+                                        break
+                                    case 'chgDevice' :
+                                        this.selectPolicy = JSON.parse(JSON.stringify(this.chgDeviceList))
+                                        break
+                                    case 'newSignUp' :
+                                        this.selectPolicy = JSON.parse(JSON.stringify(this.newSignUpList))
+                                        break
+                                }
+                                break
+                            case 'restore' :    // 판매정책 수정값이 있을시 복원
+                                switch (policy) {
+                                    case 'moveCarr' :
+                                        this.moveCarrList = this.selectPolicy
+                                        break
+                                    case 'chgDevice' :
+                                        this.chgDeviceList = this.selectPolicy
+                                        break
+                                    case 'newSignUp' :
+                                        this.newSignUpList = this.selectPolicy
+                                        break
+                                }
+                                break
+                        }
                     }
                 }
             }
