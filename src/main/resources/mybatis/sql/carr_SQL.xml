@@ -85,15 +85,18 @@
         (
         SELECT bb1.SELL_YN
         FROM (
-        SELECT *
+        SELECT
+        SELL_COND_NO, PN_MDL_NO, PN_STOR, BN_NO, MNT_CARR, SELL_YN
         FROM
         `TBL007-A`
         UNION ALL
-        SELECT *
+        SELECT
+        SELL_COND_NO, PN_MDL_NO, PN_STOR, BN_NO, MNT_CARR, SELL_YN
         FROM
         `TBL007-B`
         UNION ALL
-        SELECT *
+        SELECT
+        SELL_COND_NO, PN_MDL_NO, PN_STOR, BN_NO, MNT_CARR, SELL_YN
         FROM
         `TBL007-C`
         ) bb1
@@ -107,15 +110,18 @@
         DATE_FORMAT((
         SELECT MAX(AMD_DT)
         FROM (
-        SELECT *
+        SELECT
+        PN_MDL_NO, PN_STOR, BN_NO, MNT_CARR, AMD_DT
         FROM
         `TBL007-A`
         UNION ALL
-        SELECT *
+        SELECT
+        PN_MDL_NO, PN_STOR, BN_NO, MNT_CARR, AMD_DT
         FROM
         `TBL007-B`
         UNION ALL
-        SELECT *
+        SELECT
+        PN_MDL_NO, PN_STOR, BN_NO, MNT_CARR, AMD_DT
         FROM
         `TBL007-C`
         ) bb2
@@ -127,15 +133,18 @@
         (SELECT MBR_NM FROM TBL002 tt002 WHERE tt002.BN_MBR_ID = (
         SELECT bb3.AMD_MBR_ID
         FROM (
-        SELECT *
+        SELECT
+        PN_MDL_NO, PN_STOR, BN_NO, MNT_CARR, AMD_DT, AMD_MBR_ID
         FROM
         `TBL007-A`
         UNION ALL
-        SELECT *
+        SELECT
+        PN_MDL_NO, PN_STOR, BN_NO, MNT_CARR, AMD_DT, AMD_MBR_ID
         FROM
         `TBL007-B`
         UNION ALL
-        SELECT *
+        SELECT
+        PN_MDL_NO, PN_STOR, BN_NO, MNT_CARR, AMD_DT, AMD_MBR_ID
         FROM
         `TBL007-C`
         ) bb3
@@ -147,25 +156,28 @@
         LIMIT 0, 1
         )) as 'lastModiMbrNm',
         (
-        SELECT bb3.AMD_MBR_ID
+        SELECT bb4.AMD_MBR_ID
         FROM (
-        SELECT *
+        SELECT
+        PN_MDL_NO, PN_STOR, BN_NO, MNT_CARR, AMD_DT, AMD_MBR_ID
         FROM
         `TBL007-A`
         UNION ALL
-        SELECT *
+        SELECT
+        PN_MDL_NO, PN_STOR, BN_NO, MNT_CARR, AMD_DT, AMD_MBR_ID
         FROM
         `TBL007-B`
         UNION ALL
-        SELECT *
+        SELECT
+        PN_MDL_NO, PN_STOR, BN_NO, MNT_CARR, AMD_DT, AMD_MBR_ID
         FROM
         `TBL007-C`
-        ) bb3
-        WHERE a.PN_MDL_NO = bb3.PN_MDL_NO
-        AND a.PN_STOR = bb3.PN_STOR
-        AND bb3.BN_NO = (SELECT cf_get_bn_no(#{bnMbrId}))
-        AND bb3.MNT_CARR = #{mntCarr}
-        ORDER BY bb3.AMD_DT DESC
+        ) bb4
+        WHERE a.PN_MDL_NO = bb4.PN_MDL_NO
+        AND a.PN_STOR = bb4.PN_STOR
+        AND bb4.BN_NO = (SELECT cf_get_bn_no(#{bnMbrId}))
+        AND bb4.MNT_CARR = #{mntCarr}
+        ORDER BY bb4.AMD_DT DESC
         LIMIT 0, 1
         ) AS 'lastModiMbr',
         a.PN_MKR,
@@ -178,15 +190,15 @@
         FROM
         `TBL011` a
         LEFT JOIN (
-        SELECT *
+        SELECT PN_MDL_NO
         FROM
         `TBL007-A`
         UNION ALL
-        SELECT *
+        SELECT PN_MDL_NO
         FROM
         `TBL007-B`
         UNION ALL
-        SELECT *
+        SELECT PN_MDL_NO
         FROM
         `TBL007-C`
         ) b
@@ -570,7 +582,7 @@
         #{pnExtSubsdRt},
         #{pnExtServYn},
         #{pnEtc},
-        #{amdMbrId}
+        #{bnMbrId}
         )
     </insert>
 

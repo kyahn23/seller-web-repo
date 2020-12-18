@@ -776,6 +776,7 @@
                                 break
                         }
                     }
+
                 },
                 getTrClass: function (idx) {
                     if (idx === this.selectDevice.idx) return true
@@ -798,13 +799,14 @@
                 },
 
                 rowClick: function (data, idx) {
+                    var param = {}
                     if (this.selectDevice.idx !== idx) {  // 현재 선택된 모델이 없거나. 이미 선택된 모델이 있고 다른모델을 클릭하는 경우
                         if (this.modiPolicy === '') {    // 수정중인 정책이 없을 시(없으려면 현재 선택된 모델이 없음)
                             this.selectDevice = {}
                             this.selectDevice = data
                             this.selectDevice.idx = idx
 
-                            var param = {
+                            param = {
                                 pnCarr: this.carr.toUpperCase(),
                                 pnNetType: this.selectDevice.pnNetType,
                                 pnStor: this.selectDevice.pnStor,
@@ -822,7 +824,7 @@
                                 this.selectDevice = data
                                 this.selectDevice.idx = idx
 
-                                var param = {
+                                param = {
                                     pnCarr: this.carr.toUpperCase(),
                                     pnNetType: this.selectDevice.pnNetType,
                                     pnStor: this.selectDevice.pnStor,
@@ -1071,7 +1073,7 @@
                         this.newSignUpList = []
                         this.searchList()
                         document.querySelector(".tBodyScroll").scrollTop = 0
-                        window.scrollTo(0,0)
+                        window.scrollTo(0, 0)
                     }
                 }
                 ,
