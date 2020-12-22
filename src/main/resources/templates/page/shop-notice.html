@@ -376,7 +376,9 @@
     <div class="layerWrapper layerSizeL" id="popLayerNoticeAdd" style="display:inline-block !important">
         <div class="layerHeader">
             <strong>공지사항 등록</strong>
-            <a href="#" class="btnClose popLayerNoticeAdd_close"><img th:src="@{/images/cmmn/btn-layer-close.png}" alt="창닫기"></a>
+            <a href="#" class="btnClose popLayerNoticeAdd_close" @click="closeNewBnBrd">
+                <img th:src="@{/images/cmmn/btn-layer-close.png}" alt="창닫기">
+            </a>
         </div>
         <div class="layerContainer">
             <div class="layerContent">
@@ -756,8 +758,11 @@
                     if (rslt.rsltStat === 'SUCC') {
                         alert('공지사항이 작성되었습니다.')
                         $('#popLayerNoticeAdd').popup('hide')
-                        delay10(this.initPage())
+                        delay10(this.initPage)
                     }
+                },
+                closeNewBnBrd: function () {
+                    delay10(this.initPop)
                 }
             },
             computed: {

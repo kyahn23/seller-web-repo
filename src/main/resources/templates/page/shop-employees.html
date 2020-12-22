@@ -372,8 +372,9 @@
     <div class="layerWrapper layerSizeM" id="popLayerEmployeeAdd" style="display:inline-block !important">
         <div class="layerHeader">
             <strong>직원등록</strong>
-            <a href="#" class="btnClose popLayerEmployeeAdd_close"><img th:src="@{/images/cmmn/btn-layer-close.png}"
-                                                                        alt="창닫기"></a>
+            <a href="#" class="btnClose popLayerEmployeeAdd_close" @click="closeNewEmp">
+                <img th:src="@{/images/cmmn/btn-layer-close.png}" alt="창닫기">
+            </a>
         </div>
         <div class="layerContainer">
             <div class="layerContent">
@@ -468,7 +469,7 @@
 
         function delay10(delayedFn) {
             setTimeout(function() {
-                delayedFn()
+                delayedFn();
             }, 10)
         }
 
@@ -703,7 +704,8 @@
                     if (rslt.rsltStat === 'SUCC') {
                         alert('신규 직원이 추가되었습니다.\n이메일로 전송된 임시 비밀번호로 로그인 해주세요.')
                         $('#popLayerEmployeeAdd').popup('hide')
-                        delay10(this.initNewEmp())
+                        this.initPage()
+                        delay10(this.initNewEmp)
                     }
                 },
                 initNewEmp: function() {
@@ -713,7 +715,6 @@
                     $('#emailDomainSel')[0].value = ''
                     this.newEmpInfo.sellerPrms = 'READONLY'
                     this.newEmpInfo.mbrNm = ''
-                    this.initPage()
                 },
                 setChkMbrId: function() {
                     this.newEmpInfo.idChk = false
@@ -736,6 +737,9 @@
                         this.newEmpInfo.emailDomain = ''
                         $('#emailDomainSel')[0].value = ''
                     }
+                },
+                closeNewEmp: function() {
+                    delay10(this.initNewEmp)
                 }
             },
             computed: {
