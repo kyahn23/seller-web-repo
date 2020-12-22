@@ -132,8 +132,9 @@
                                 <input type="text" id="userId" name="userId" placeholder="ID(이메일)">
                             </p>
                             <p class="txtPW">
-                                <label for="userPw">비밀번호</label>
-                                <input type="password" id="userPw" name="userPw" placeholder="Password">
+                                <label for="inputPw">비밀번호</label>
+                                <input type="password" id="inputPw" name="inputPw" placeholder="Password">
+                                <input type="hidden" id="userPw" name="userPw">
                             </p>
                             <a href="#;" class="btnLogin" id="btnLogin"><span><img th:src="@{/images/cmmn/login-btn.png}" alt="로그인"></span></a>
                         </form>
@@ -307,7 +308,7 @@
 
             // 로그인 버튼 클릭 시 로그인 처리
             $("#btnLogin").click(function() {
-                var userPw = $("#userPw").val();
+                var userPw = $("#inputPw").val();
                 var hashedPw = CryptoJS.SHA256(userPw).toString();
                 $("#userPw").val(hashedPw);
                 document.loginPostForm.submit();
