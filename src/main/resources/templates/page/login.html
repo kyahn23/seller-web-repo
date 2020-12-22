@@ -299,7 +299,7 @@
             });
 
             // 비밀번호 input 박스에서 enter 키 누를 시 로그인 버튼 클릭 처리
-            $('#userPw').keypress(function(event){
+            $('#inputPw').keypress(function(event){
                 var keycode = (event.keyCode ? event.keyCode : event.which);
                 if(keycode == '13'){
                     $("#btnLogin").trigger("click");
