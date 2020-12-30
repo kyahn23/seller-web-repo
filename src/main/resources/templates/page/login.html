@@ -1,17 +1,8 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/full-page">
-
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorator="layout/login-layout">
 <!-- login 고유 css -->
 <th:block layout:fragment="css">
-    <link rel="stylesheet" th:href="@{/css/cmmn/login.css}">
     <style>
-        .etcLink {
-            width: 103% !important;
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-        }
-
         /* 탭메뉴(line) */
         .tbMenuSub {
             height: 38px;
@@ -64,10 +55,6 @@
             border-width: 1px 1px 0 0;
         }
 
-        .tab_content {
-            height: 717px;
-        }
-
         /* 탭내용 */
         .tbMenuSubContent {
             display: none;
@@ -111,158 +98,46 @@
     <script type="text/javascript" th:src="@{/js/lib/CryptoJS/3.1.2/rollups/sha256.js}"></script>
 </th:block>
 
+<!-- login 내용 -->
 <div layout:fragment="content">
-    <div class="loginWrapper">
-        <div class="loginVisual">
-            <div class="visualBox">
-                <h1 class="logo"><img th:src="@{/images/cmmn/logo.png}" alt="PentaWorks"></h1>
-                <div class=" vImg"><img th:src="@{/images/cmmn/login-img.png}" alt="로그인이미지">
+    <div class="block">
+        <div class="centered">
+            <p class="top-content01">「 펜타에스에서는 휴대폰 최저가 조회 및 상담을 하고 있습니다. 」</p>
+            <p class="top-content02">로그인 해주시면  펜타에스 서비스를 이용할 수 있습니다.</p>
+            <hr>
+            <h1>로그인</h1>
+
+            <form th:action="@{/loginProc}" name="loginPostForm" method="post" autocomplete="off">
+            <div class="infonation_inut01" >
+                <div class="id01">
+                    <input type="text" id="userId" name="userId" placeholder="아이디(이메일)을 입력해 주세요.">
+                </div>
+                <div class="password01" >
+                    <input class="mdl-textfield__input" type="password" id="inputPw" name="inputPw" placeholder="비밀번호를 입력해 주세요.">
+                    <input type="hidden" id="userPw" name="userPw">
                 </div>
             </div>
-        </div>
-        <div class="loginBox">
-            <div class="loginForm">
-                <h2><img th:src="@{/images/cmmn/login-tit.png}" alt="로그인"></h2>
-                <fieldset>
-                    <legend>로그인</legend>
-                    <div class="formWrapper">
-                        <form th:action="@{/loginProc}" name="loginPostForm" method="post" autocomplete="off">
-                            <p class="txtID">
-                                <label for="userId">아이디</label>
-                                <input type="text" id="userId" name="userId" placeholder="ID(이메일)">
-                            </p>
-                            <p class="txtPW">
-                                <label for="inputPw">비밀번호</label>
-                                <input type="password" id="inputPw" name="inputPw" placeholder="Password">
-                                <input type="hidden" id="userPw" name="userPw">
-                            </p>
-                            <a href="#;" class="btnLogin" id="btnLogin"><span><img th:src="@{/images/cmmn/login-btn.png}" alt="로그인"></span></a>
-                        </form>
-                    </div>
-                </fieldset>
-                <div style="height: 10px;"></div>
-                <div class="etcLink">
-                    <a th:href="@{/join}">회원가입</a>
-                    <a href="#popLayerIDPW" class="linkIdpw popLayerIDPW_open">비밀번호 찾기</a>
-                </div>
+            <div class="login-icon">
+                <p><img th:src="@{/images/cmmn/login-phone.png}"></p>
             </div>
-        </div>
-        <div class="loginFooter">
-            <p>copyrights PENTAS. all rights reserved.</p>
+            <div class="button01">
+                <p class="mdl-button mdl-js-button mdl-js-ripple-effect pentas-button__login" alt="로그인">
+                    <a href="#" class="btnLogin" id="btnLogin">
+                        로그인
+                    </a>
+                </p>
+            </div>
+            </form>
+
+            <div class="join_membership01">
+                <span class="join_membership"><a th:href="@{/join}">회원가입</a></span>
+            </div>
+            <div class="find01">
+                <span class="find_password"><a href="#">비밀번호 찾기</a></span>
+            </div>
+            <p class="coplyright_content">copyrights PENTAS. all rights reserved.</p>
         </div>
     </div>
-</div>
-
-<div layout:fragment="layer">
-    <!-- 팝업: 비밀번호 찾기 -->
-    <div class="layerWrapper layerSizeML" id="popLayerIDPW" style="display:inline-block !important">
-        <div class="layerHeader">
-            <strong>비밀번호 찾기</strong>
-            <a href="#" class="btnClose popLayerIDPW_close"><img th:src="@{/images/cmmn/btn-layer-close.png}" alt="창닫기"></a>
-        </div>
-        <div class="layerContainer">
-            <div class="layerContent">
-                <!-- 컨텐츠 -->
-                <div class="guidanceWrapper">
-                    <div class="tabToggleWrap">
-                        <!-- Tab Menu -->
-                        <ul class="tbMenuSub">
-                            <li class="on" data-target="rep"><a><span>대표 회원</span></a></li>
-                            <li data-target="emp"><a><span>직원 회원</span></a></li>
-                        </ul>
-
-                        <!-- Tab1 -->
-                        <div class="tbMenuSubContent on" id="tab_rep">
-                            <h3 class="tts">대표 회원</h3>
-
-                            <div class="tblWrapper resetPW">
-                                <!-- <h3>대표 회원 내용</h3> -->
-                                <div style="height: 20px;"></div>
-                                <table class="tblDataRow">
-                                    <caption>대표 회원 비밀번호 변경</caption>
-                                    <colgroup>
-                                        <col style="width:35%">
-                                        <col style="width:65%">
-                                    </colgroup>
-                                    <tbody>
-                                    <tr>
-                                        <th scope="row"><label for="repNum">사업자 등록번호<span class="icoMust"><em>필수</em></span></label>
-                                        </th>
-                                        <td>
-                                            <input
-                                                type="text"
-                                                id="repNum"
-                                                placeholder="'-'없이 숫자 10자리 입력"
-                                                autocomplete="off"
-                                                v-mask="'###-##-#####'"
-                                                v-model="bnRegNo"
-                                            >
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row"><label for="repName">대표명<span class="icoMust"><em>필수</em></span></label>
-                                        </th>
-                                        <td>
-                                            <input
-                                                type="text"
-                                                id="repName"
-                                                placeholder="대표명을 입력해주세요"
-                                                autocomplete="off"
-                                                :value="ownerNm"
-                                                @input="ownerNm = $event.target.value"
-                                            >
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th scope="row"><label for="repEmail">이메일<span class="icoMust"><em>필수</em></span></label>
-                                        </th>
-                                        <td>
-                                            <input
-                                                type="text"
-                                                id="repEmail"
-                                                placeholder="이메일을 입력하세요"
-                                                autocomplete="off"
-                                                v-model="mstMbrId"
-                                            >
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                                <div class="addMemberInfo">
-                                    <ul class="listDot colorRed">
-                                        <li>· 가입하신 이메일로 임시 비밀번호가 전송됩니다.</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div style="height: 10px;"></div>
-                            <div class="btnWrapper">
-                                <a href="#;" class="btnL colorBlue" @click="resetMstPw"><span>확인</span></a>
-                            </div>
-                        </div>
-
-                        <!-- Tab2 -->
-                        <div class="tbMenuSubContent" id="tab_emp">
-                            <h3 class="tts">직원 회원</h3>
-
-                            <div class="tblWrapper resetPW">
-                                <div style="height: 10px;"></div>
-                                <div class="addMemberInfo">
-                                    <p><strong>· 직원 회원은 대표 회원에게 요청하여 비밀번호 재설정이 가능합니다.</strong></p><br />
-                                    <p>· 메뉴 : 로그인(대표회원) ▷ 매장 관리 ▷ 직원관리 ▷ 비밀번호 재발급</p>
-                                </div>
-                            </div>
-
-                            <div class="btnWrapper">
-                                <a href="#" class="btnL colorBlue popLayerIDPW_close"><span>확인</span></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- //컨텐츠 -->
-            </div>
-        </div>
-    </div>
-<!-- //팝업: 아이디/비밀번호 찾기  -->
 </div>
 
 <div layout:fragment="script">
@@ -281,23 +156,6 @@
         }
 
         $(function () {
-            // 레이어
-            if ($(".layerWrapper").length) {
-                //아이디/비밀번호 찾기
-                $('#popLayerIDPW').popup();
-            }
-
-            // 회원관리 -> 회원정보 수정 탭 클릭
-            $(".tbMenuSub li").click(function () {
-                $(".tbMenuSub li").removeClass("on");
-                $(this).addClass("on");
-
-                var tabName = $(this).attr("data-target");
-
-                $(".tbMenuSubContent").removeClass("on");
-                $("#tab_" + tabName).addClass("on");
-            });
-
             // 비밀번호 input 박스에서 enter 키 누를 시 로그인 버튼 클릭 처리
             $('#inputPw').keypress(function(event){
                 var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -314,48 +172,7 @@
                 document.loginPostForm.submit();
             });
         });
-
-        function delay10(delayedFn) {
-            setTimeout(function() {
-                delayedFn()
-            }, 10)
-        }
-
-        var app = new Vue({
-            el: "#app",
-            data: {
-                bnRegNo: '',
-                ownerNm: '',
-                mstMbrId: ''
-            },
-            methods: {
-                initPop: function() {
-                    this.bnRegNo = ''
-                    this.ownerNm = ''
-                    this.mstMbrId = ''
-                },
-                resetMstPw: function() {
-                    var param = {
-                        bnRegNo: this.bnRegNoND,
-                        ownerNm: this.ownerNm,
-                        mstMbrId: this.mstMbrId
-                    }
-                    cf_call('/member/resetMstPw', param, this.resetMstPwCB)
-                    this.resetMstPwPost()
-                },
-                resetMstPwCB: function(rslt) {},
-                resetMstPwPost: function() {
-                    alert('가입정보 확인 후 가입하신 이메일로\n임시 비밀번호가 전송됩니다.')
-                    $('#popLayerIDPW').popup('hide')
-                    delay10(this.initPop())
-                }
-            },
-            computed: {
-                bnRegNoND: function() {
-                    return this.bnRegNo.replaceAll('-', '')
-                }
-            }
-        })
     </script>
 </div>
+
 </html>
