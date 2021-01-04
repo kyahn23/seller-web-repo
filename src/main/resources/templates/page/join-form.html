@@ -150,7 +150,7 @@
         <div class="header">
             <div class="fixedWidth">
                 <h1 class="logo">
-                    <a th:href="@{/}"><img th:src="@{/images/cmmn/logo.png}" alt="PentaWorks" style="height: 30px;" /></a>
+                    <a th:href="@{/}" ref="logo"><img th:src="@{/images/cmmn/logo.png}" alt="PentaWorks" style="height: 30px;" /></a>
                 </h1>
             </div>
         </div>
@@ -505,7 +505,7 @@
                 addNewBnInfoCB: function(rslt) {
                     if (rslt.rsltStat === 'SUCC') {
                         alert('가입이 완료되었습니다.\n가입하신 이메일로 전송된 임시 비밀번호로 로그인 해주세요.')
-                        window.location.href = "/" + g_cxt
+                        this.$refs.logo.click() // 메인으로 이동하기위한 로고 클릭
                     }
                 },
                 setChkMbrId: function() {

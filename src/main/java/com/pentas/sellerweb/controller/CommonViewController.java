@@ -17,4 +17,6 @@ public class CommonViewController {
     @GetMapping("/join/form")
     public String joinForm() { return "page/join-form"; }
 
+    @GetMapping("/findpw")
+    public String findPw(){ return "page/find-password"; }
 }
