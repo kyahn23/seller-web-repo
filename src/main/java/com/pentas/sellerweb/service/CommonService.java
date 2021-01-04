@@ -33,7 +33,7 @@ public class CommonService {
     SettingProperties settingProperties;
 
     @Autowired
-    EmailProperties emailProperties;
+    EmailService emailService;
 
     @Autowired
     S3Properties s3Properties;
@@ -355,19 +355,7 @@ public class CommonService {
         String tempPwd = (new Random().nextInt(900000) + 100000) + "";
         String hashPwd = CmmnUtil.encryptSHA256(tempPwd.toString());
 
-        EmailUtil.sendMailAuthSSL(
-                emailProperties.getSmtpHost(),
-                emailProperties.getSmtpPort(),
-                emailProperties.getSmtpUser(),
-                emailProperties.getSmtpPassword(),
-                "[Pentaworks Service] 임시 비밀번호 발급 안내",
-                "<html><p>" + mbrNm + "님의 임시 비밀번호가 발급되었습니다.<br>" +
-                        "임시 비밀번호로 로그인 후 새 비밀번호로 변경해주세요.<br></p>" +
-                        "<h4>임시 비밀번호 : " + tempPwd + "</h4></html>",
-                mbrEmail + "",
-                emailProperties.getFromEmail(),
-                emailProperties.getFromName()
-        );
+        emailService.sendTempPwdEmail(mbrEmail, mbrNm, tempPwd);
 
         return hashPwd;
     }
