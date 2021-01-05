@@ -5,15 +5,16 @@
   line-height: 1.4;
   font-family: NanumGothic; 
 }
- body{
+
+body {
  background-image:url('../../images/cmmn/login-bg.png');
  background-repeat:no-repeat;
  background-size:cover;
  background-position:center center;
  height:100vh;
- }
+}
 
- .block {
+.block {
   text-align: center;
   /*background: #c0c0c0;
   border:1px solid #a0a0a0; */
