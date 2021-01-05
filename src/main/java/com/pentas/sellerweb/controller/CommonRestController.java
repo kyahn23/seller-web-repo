@@ -53,6 +53,8 @@ public class CommonRestController {
         DevMap rslt = new DevMap();
         if (serviceResult == 1) {
             rsltStat = "SUCC";
+        } else {
+            rsltStat = "NOAC";
         }
         rslt.put("rsltStat", rsltStat);
         return rslt;
