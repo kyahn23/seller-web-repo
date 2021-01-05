@@ -90,6 +90,16 @@
         .colorRed a {
             color: #e74b3e !important;
         }
+
+        #btnLogin {
+            cursor: pointer;
+        }
+
+        .button01 span {
+            color: #ffffff;
+            font-weight: bold;
+            font-size: 1.4rem;
+        }
     </style>
 </th:block>
 
@@ -120,11 +130,9 @@
             <div class="login-icon">
                 <p><img th:src="@{/images/cmmn/login-phone.png}"></p>
             </div>
-            <div class="button01">
+            <div class="button01" id="btnLogin">
                 <p class="mdl-button mdl-js-button mdl-js-ripple-effect pentas-button__login" alt="로그인">
-                    <a href="#" class="btnLogin" id="btnLogin">
-                        로그인
-                    </a>
+                    <span>로그인</span>
                 </p>
             </div>
             </form>
