@@ -47,10 +47,14 @@ public class CommonRestController {
      */
     @PostMapping("/member/resetMstPw")
     public DevMap resetMstPw(HttpServletRequest request, @RequestBody DevMap param) {
-        commonService.updateMstPwInit(param);
+        int serviceResult = commonService.updateMstPwInit(param);
+        String rsltStat = "FAIL";
 
         DevMap rslt = new DevMap();
-        rslt.put("rsltStat", "SUCC");
+        if (serviceResult == 1) {
+            rsltStat = "SUCC";
+        }
+        rslt.put("rsltStat", rsltStat);
         return rslt;
     }
 

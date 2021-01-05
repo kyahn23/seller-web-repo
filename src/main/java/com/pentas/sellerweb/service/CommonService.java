@@ -80,14 +80,18 @@ public class CommonService {
      * 마스터 회원 비밀번호 변경
      * @param param
      */
-    public void updateMstPwInit(DevMap param) {
+    public int updateMstPwInit(DevMap param) {
         String mstMbrId = (String) param.get("mstMbrId");
         String ownerNm = (String) param.get("ownerNm");
-
-        String hashPwd = generateTempPwd(mstMbrId, ownerNm);
+        String hashPwd = generateTempPwd();
         param.put("tempPwd", hashPwd);
 
-        cmmnDao.update("sellerweb.common.updateMstPwInit", param);
+        int updateResult = cmmnDao.update("sellerweb.common.updateMstPwInit", param);
+        if (updateResult == 1) {
+            emailService.sendTempPwdEmail(mstMbrId, ownerNm, hashPwd);
+        }
+
+        return updateResult;
     }
 
     /**
@@ -108,10 +112,11 @@ public class CommonService {
         String mstMbrId = (String) param.get("mstMbrId");
         String ownerNm = (String) param.get("ownerNm");
 
-        String hashPwd = generateTempPwd(mstMbrId, ownerNm);
+        String hashPwd = generateTempPwd();
         param.put("tempPwd", hashPwd);
 
         cmmnDao.insert("sellerweb.common.insertNewMstAcc", param);
+        emailService.sendTempPwdEmail(mstMbrId, ownerNm, hashPwd);
     }
 
     /**
@@ -122,10 +127,11 @@ public class CommonService {
         String bnMbrId = (String) param.get("bnMbrId");
         String mbrNm = (String) param.get("mbrNm");
 
-        String hashPwd = generateTempPwd(bnMbrId, mbrNm);
+        String hashPwd = generateTempPwd();
         param.put("tempPwd", hashPwd);
 
         cmmnDao.insert("sellerweb.common.insertNewEmpAcc", param);
+        emailService.sendTempPwdEmail(bnMbrId, mbrNm, hashPwd);
     }
 
     /**
@@ -346,18 +352,12 @@ public class CommonService {
     }
 
     /**
-     * 임시 비밀번호 생성 후 이메일 발송
-     * @param mbrEmail
-     * @param mbrNm
+     * 임시 비밀번호 생성
      * @return
      */
-    private String generateTempPwd(String mbrEmail, String mbrNm) {
+    private String generateTempPwd() {
         String tempPwd = (new Random().nextInt(900000) + 100000) + "";
-        String hashPwd = CmmnUtil.encryptSHA256(tempPwd.toString());
-
-        emailService.sendTempPwdEmail(mbrEmail, mbrNm, tempPwd);
-
-        return hashPwd;
+        return CmmnUtil.encryptSHA256(tempPwd.toString());
     }
 
     /**
