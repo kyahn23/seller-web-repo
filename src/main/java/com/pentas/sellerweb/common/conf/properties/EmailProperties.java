@@ -5,7 +5,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 @Component("emailProperties")
-@PropertySource({ "classpath:properties/email.properties" })
+@PropertySource(value = {"classpath:properties/email.properties"}, encoding = "UTF-8")
 public class EmailProperties {
 
     @Value("${email.smtpHost}")
