@@ -83,12 +83,14 @@ public class CommonService {
     public int updateMstPwInit(DevMap param) {
         String mstMbrId = (String) param.get("mstMbrId");
         String ownerNm = (String) param.get("ownerNm");
-        String hashPwd = generateTempPwd();
+        DevMap passwordMap = generateTempPwd();
+        String tempPwd = passwordMap.getString("tempPwd");
+        String hashPwd = passwordMap.getString("hashPwd");
         param.put("tempPwd", hashPwd);
 
         int updateResult = cmmnDao.update("sellerweb.common.updateMstPwInit", param);
         if (updateResult == 1) {
-            emailService.sendTempPwdEmail(mstMbrId, ownerNm, hashPwd);
+            emailService.sendTempPwdEmail(mstMbrId, ownerNm, tempPwd);
         }
 
         return updateResult;
@@ -112,11 +114,13 @@ public class CommonService {
         String mstMbrId = (String) param.get("mstMbrId");
         String ownerNm = (String) param.get("ownerNm");
 
-        String hashPwd = generateTempPwd();
+        DevMap passwordMap = generateTempPwd();
+        String tempPwd = passwordMap.getString("tempPwd");
+        String hashPwd = passwordMap.getString("hashPwd");
         param.put("tempPwd", hashPwd);
 
         cmmnDao.insert("sellerweb.common.insertNewMstAcc", param);
-        emailService.sendTempPwdEmail(mstMbrId, ownerNm, hashPwd);
+        emailService.sendTempPwdEmail(mstMbrId, ownerNm, tempPwd);
     }
 
     /**
@@ -127,11 +131,13 @@ public class CommonService {
         String bnMbrId = (String) param.get("bnMbrId");
         String mbrNm = (String) param.get("mbrNm");
 
-        String hashPwd = generateTempPwd();
+        DevMap passwordMap = generateTempPwd();
+        String tempPwd = passwordMap.getString("tempPwd");
+        String hashPwd = passwordMap.getString("hashPwd");
         param.put("tempPwd", hashPwd);
 
         cmmnDao.insert("sellerweb.common.insertNewEmpAcc", param);
-        emailService.sendTempPwdEmail(bnMbrId, mbrNm, hashPwd);
+        emailService.sendTempPwdEmail(bnMbrId, mbrNm, tempPwd);
     }
 
     /**
@@ -355,9 +361,13 @@ public class CommonService {
      * 임시 비밀번호 생성
      * @return
      */
-    private String generateTempPwd() {
+    private DevMap generateTempPwd() {
+        DevMap passwordMap = new DevMap();
         String tempPwd = (new Random().nextInt(900000) + 100000) + "";
-        return CmmnUtil.encryptSHA256(tempPwd.toString());
+        String hashPwd = CmmnUtil.encryptSHA256(tempPwd.toString());
+        passwordMap.put("tempPwd", tempPwd);
+        passwordMap.put("hashPwd", hashPwd);
+        return passwordMap;
     }
 
     /**
